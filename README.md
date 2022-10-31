@@ -41,7 +41,7 @@ To install Fugu15 via Safari, do the following (requires you to own a domain):
 7. Visit `https://<your domain>` on your iPhone and follow the instructions
 
 ## Installing via USB
-1. Install `Fugu15_Developer.ipa`, e.g. via `ideviceinstaller -i Fugu15_Developer.ipa`
+1. Install `Fugu15_Developer.ipa`, e.g. via `ideviceinstaller -i Fugu15_Developer.ipa`. Alternatively, install Fugu15/Fugu15.ipa via TrollStore.
 2. Open the newly installed "Developer" App (or whatever AppStore App you used) on your iPhone
 
 # iDownload
