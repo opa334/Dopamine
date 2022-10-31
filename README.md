@@ -16,7 +16,7 @@ Non-arm64e devices are not supported.
 
 # Building
 Prerequisites:  
-1. Make sure you have Xcode 13/14 installed
+1. Make sure you have Xcode ~~13/14~~ 14.1 installed
 2. Import the fastPath arm certificate (`Exploits/fastPath/arm.pfx`) into your Keychain (double click on the file). The password is "password" (without quotes)
 3. You need a validly signed copy of Apple's Developer App from the AppStore (with DRM!). Copy the IPA to `Server/orig.ipa`. Note that if you would like to use a different AppStore App you will need to get it's Team ID and add `TEAMID=<the App's Team ID>` to all `make` commands
 
