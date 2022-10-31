@@ -1,0 +1,3 @@
+module Security_Codesign [system] {
+    header "SecCodeSigner.h"
+}

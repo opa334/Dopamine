@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "ZIPFoundation",
+        "repositoryURL": "https://github.com/weichsel/ZIPFoundation.git",
+        "state": {
+          "branch": null,
+          "revision": "1b662e2e7a091710ad8a963263939984e2ebf527",
+          "version": "0.9.14"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

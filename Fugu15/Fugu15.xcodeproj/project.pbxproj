@@ -1,0 +1,472 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1502A40C2891B03F0011CB6E /* Fugu15App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1502A40B2891B03F0011CB6E /* Fugu15App.swift */; };
+		1502A40E2891B03F0011CB6E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1502A40D2891B03F0011CB6E /* ContentView.swift */; };
+		1502A4102891B0410011CB6E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1502A40F2891B0410011CB6E /* Assets.xcassets */; };
+		1502A4132891B0410011CB6E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1502A4122891B0410011CB6E /* Preview Assets.xcassets */; };
+		1502A4242891BD800011CB6E /* Fugu15KernelExploit in Frameworks */ = {isa = PBXBuildFile; productRef = 1502A4232891BD800011CB6E /* Fugu15KernelExploit */; };
+		1502A4262891BE320011CB6E /* oobPCI in Resources */ = {isa = PBXBuildFile; fileRef = 1502A4252891BE320011CB6E /* oobPCI */; };
+		151CAFA2289348E200B2A6BA /* RemoveFuguInstall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151CAFA1289348E200B2A6BA /* RemoveFuguInstall.swift */; };
+		151CAFAD2893645C00B2A6BA /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 151CAFAC2893645C00B2A6BA /* CoreServices.framework */; };
+		151CAFAF28936D4B00B2A6BA /* JailbreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151CAFAE28936D4B00B2A6BA /* JailbreakView.swift */; };
+		151CAFB128936DE800B2A6BA /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151CAFB028936DE800B2A6BA /* LogView.swift */; };
+		151CAFB32894041D00B2A6BA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151CAFB22894041D00B2A6BA /* main.swift */; };
+		151CAFB52894070300B2A6BA /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151CAFB42894070300B2A6BA /* AboutView.swift */; };
+		15372EA228DDF5EF00514A73 /* TrustCache in Resources */ = {isa = PBXBuildFile; fileRef = 15372E9F28DDF5EF00514A73 /* TrustCache */; };
+		15372EA328DDF5EF00514A73 /* bootstrap.tar in Resources */ = {isa = PBXBuildFile; fileRef = 15372EA028DDF5EF00514A73 /* bootstrap.tar */; };
+		15372EA428DDF5EF00514A73 /* tar in Resources */ = {isa = PBXBuildFile; fileRef = 15372EA128DDF5EF00514A73 /* tar */; };
+		15372EA628DDFF9000514A73 /* sileo.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 15372EA528DDFF9000514A73 /* sileo.deb */; };
+		15372EA728DDFF9A00514A73 /* sileo.deb in Resources */ = {isa = PBXBuildFile; fileRef = 15372EA528DDFF9000514A73 /* sileo.deb */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1502A4082891B03F0011CB6E /* Fugu15.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fugu15.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1502A40B2891B03F0011CB6E /* Fugu15App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fugu15App.swift; sourceTree = "<group>"; };
+		1502A40D2891B03F0011CB6E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		1502A40F2891B0410011CB6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1502A4122891B0410011CB6E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		1502A41B2891B0980011CB6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		1502A41C2891B1260011CB6E /* posix_spawn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = posix_spawn.h; sourceTree = "<group>"; };
+		1502A41D2891B1360011CB6E /* Fugu15-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Fugu15-Bridging-Header.h"; sourceTree = "<group>"; };
+		1502A4212891BD790011CB6E /* Fugu15KernelExploit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Fugu15KernelExploit; path = ../Packages/Fugu15KernelExploit; sourceTree = "<group>"; };
+		1502A4252891BE320011CB6E /* oobPCI */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = oobPCI; path = ../Exploits/oobPCI/oobPCI; sourceTree = "<group>"; };
+		1502A4292891BF0A0011CB6E /* Fugu15.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Fugu15.entitlements; sourceTree = "<group>"; };
+		1502A42A2891BF130011CB6E /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		151CAFA1289348E200B2A6BA /* RemoveFuguInstall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveFuguInstall.swift; sourceTree = "<group>"; };
+		151CAFA42893622C00B2A6BA /* _LSApplicationState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = _LSApplicationState.h; sourceTree = "<group>"; };
+		151CAFA52893622C00B2A6BA /* LSApplicationProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LSApplicationProxy.h; sourceTree = "<group>"; };
+		151CAFA62893622C00B2A6BA /* LSApplicationWorkspace.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LSApplicationWorkspace.h; sourceTree = "<group>"; };
+		151CAFA72893622C00B2A6BA /* LSBundleProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LSBundleProxy.h; sourceTree = "<group>"; };
+		151CAFAC2893645C00B2A6BA /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		151CAFAE28936D4B00B2A6BA /* JailbreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JailbreakView.swift; sourceTree = "<group>"; };
+		151CAFB028936DE800B2A6BA /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
+		151CAFB22894041D00B2A6BA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		151CAFB42894070300B2A6BA /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		15372E9F28DDF5EF00514A73 /* TrustCache */ = {isa = PBXFileReference; lastKnownFileType = file; path = TrustCache; sourceTree = "<group>"; };
+		15372EA028DDF5EF00514A73 /* bootstrap.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = bootstrap.tar; sourceTree = "<group>"; };
+		15372EA128DDF5EF00514A73 /* tar */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = tar; sourceTree = "<group>"; };
+		15372EA528DDFF9000514A73 /* sileo.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = sileo.deb; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1502A4052891B03F0011CB6E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1502A4242891BD800011CB6E /* Fugu15KernelExploit in Frameworks */,
+				15372EA628DDFF9000514A73 /* sileo.deb in Frameworks */,
+				151CAFAD2893645C00B2A6BA /* CoreServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1502A3FF2891B03F0011CB6E = {
+			isa = PBXGroup;
+			children = (
+				1502A4252891BE320011CB6E /* oobPCI */,
+				1502A4212891BD790011CB6E /* Fugu15KernelExploit */,
+				1502A42A2891BF130011CB6E /* Makefile */,
+				1502A40A2891B03F0011CB6E /* Fugu15 */,
+				1502A4092891B03F0011CB6E /* Products */,
+				151CAFAB2893645C00B2A6BA /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		1502A4092891B03F0011CB6E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1502A4082891B03F0011CB6E /* Fugu15.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1502A40A2891B03F0011CB6E /* Fugu15 */ = {
+			isa = PBXGroup;
+			children = (
+				15372E9E28DDF5D300514A73 /* bootstrap */,
+				1502A41B2891B0980011CB6E /* Info.plist */,
+				1502A40B2891B03F0011CB6E /* Fugu15App.swift */,
+				1502A40D2891B03F0011CB6E /* ContentView.swift */,
+				151CAFAE28936D4B00B2A6BA /* JailbreakView.swift */,
+				151CAFB028936DE800B2A6BA /* LogView.swift */,
+				151CAFB42894070300B2A6BA /* AboutView.swift */,
+				151CAFA1289348E200B2A6BA /* RemoveFuguInstall.swift */,
+				151CAFB22894041D00B2A6BA /* main.swift */,
+				1502A40F2891B0410011CB6E /* Assets.xcassets */,
+				1502A4112891B0410011CB6E /* Preview Content */,
+				151CAFA32893621300B2A6BA /* include */,
+				1502A41D2891B1360011CB6E /* Fugu15-Bridging-Header.h */,
+				1502A4292891BF0A0011CB6E /* Fugu15.entitlements */,
+			);
+			path = Fugu15;
+			sourceTree = "<group>";
+		};
+		1502A4112891B0410011CB6E /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				1502A4122891B0410011CB6E /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		151CAFA32893621300B2A6BA /* include */ = {
+			isa = PBXGroup;
+			children = (
+				151CAFA42893622C00B2A6BA /* _LSApplicationState.h */,
+				151CAFA52893622C00B2A6BA /* LSApplicationProxy.h */,
+				151CAFA62893622C00B2A6BA /* LSApplicationWorkspace.h */,
+				151CAFA72893622C00B2A6BA /* LSBundleProxy.h */,
+				1502A41C2891B1260011CB6E /* posix_spawn.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		151CAFAB2893645C00B2A6BA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				151CAFAC2893645C00B2A6BA /* CoreServices.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		15372E9E28DDF5D300514A73 /* bootstrap */ = {
+			isa = PBXGroup;
+			children = (
+				15372EA528DDFF9000514A73 /* sileo.deb */,
+				15372EA028DDF5EF00514A73 /* bootstrap.tar */,
+				15372EA128DDF5EF00514A73 /* tar */,
+				15372E9F28DDF5EF00514A73 /* TrustCache */,
+			);
+			path = bootstrap;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1502A4072891B03F0011CB6E /* Fugu15 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1502A4162891B0410011CB6E /* Build configuration list for PBXNativeTarget "Fugu15" */;
+			buildPhases = (
+				1502A4042891B03F0011CB6E /* Sources */,
+				1502A4052891B03F0011CB6E /* Frameworks */,
+				1502A4062891B03F0011CB6E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Fugu15;
+			packageProductDependencies = (
+				1502A4232891BD800011CB6E /* Fugu15KernelExploit */,
+			);
+			productName = Fugu15;
+			productReference = 1502A4082891B03F0011CB6E /* Fugu15.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1502A4002891B03F0011CB6E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1400;
+				LastUpgradeCheck = 1400;
+				TargetAttributes = {
+					1502A4072891B03F0011CB6E = {
+						CreatedOnToolsVersion = 14.0;
+						LastSwiftMigration = 1400;
+					};
+				};
+			};
+			buildConfigurationList = 1502A4032891B03F0011CB6E /* Build configuration list for PBXProject "Fugu15" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1502A3FF2891B03F0011CB6E;
+			productRefGroup = 1502A4092891B03F0011CB6E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1502A4072891B03F0011CB6E /* Fugu15 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1502A4062891B03F0011CB6E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15372EA728DDFF9A00514A73 /* sileo.deb in Resources */,
+				15372EA428DDF5EF00514A73 /* tar in Resources */,
+				15372EA228DDF5EF00514A73 /* TrustCache in Resources */,
+				1502A4262891BE320011CB6E /* oobPCI in Resources */,
+				1502A4132891B0410011CB6E /* Preview Assets.xcassets in Resources */,
+				15372EA328DDF5EF00514A73 /* bootstrap.tar in Resources */,
+				1502A4102891B0410011CB6E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1502A4042891B03F0011CB6E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				151CAFB52894070300B2A6BA /* AboutView.swift in Sources */,
+				1502A40E2891B03F0011CB6E /* ContentView.swift in Sources */,
+				151CAFB32894041D00B2A6BA /* main.swift in Sources */,
+				151CAFB128936DE800B2A6BA /* LogView.swift in Sources */,
+				1502A40C2891B03F0011CB6E /* Fugu15App.swift in Sources */,
+				151CAFAF28936D4B00B2A6BA /* JailbreakView.swift in Sources */,
+				151CAFA2289348E200B2A6BA /* RemoveFuguInstall.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1502A4142891B0410011CB6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		1502A4152891B0410011CB6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1502A4172891B0410011CB6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Fugu15/Preview Content\"";
+				DEVELOPMENT_TEAM = 3ZQ6958H75;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Fugu15/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Fugu15/bootstrap",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					IOKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = de.pinauten.Fugu15;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Fugu15/Fugu15-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1502A4182891B0410011CB6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Fugu15/Preview Content\"";
+				DEVELOPMENT_TEAM = 3ZQ6958H75;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Fugu15/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Fugu15/bootstrap",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					IOKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = de.pinauten.Fugu15;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Fugu15/Fugu15-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1502A4032891B03F0011CB6E /* Build configuration list for PBXProject "Fugu15" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1502A4142891B0410011CB6E /* Debug */,
+				1502A4152891B0410011CB6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1502A4162891B0410011CB6E /* Build configuration list for PBXNativeTarget "Fugu15" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1502A4172891B0410011CB6E /* Debug */,
+				1502A4182891B0410011CB6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1502A4232891BD800011CB6E /* Fugu15KernelExploit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Fugu15KernelExploit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 1502A4002891B03F0011CB6E /* Project object */;
+}
