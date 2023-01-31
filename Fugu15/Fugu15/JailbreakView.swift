@@ -95,6 +95,7 @@ struct JailbreakView: View {
     }
     
     func print(_ text: String, ender: String = "\n") {
+        NSLog(text)
         logText += text + ender
     }
     

@@ -29,7 +29,7 @@ with open("orig.ipa", "rb") as f:
     appBinaryPath = theApp.joinpath(appBinaryPath)
     appBinary     = appBinaryPath.read_bytes()
 
-    patchedBinary = subprocess.check_output(["../Tools/installHaxx/installHaxx", "-", "FuguInstall", "-", "Fugu15.ipa"], input=appBinary)
+    patchedBinary = subprocess.check_output(["../Tools/installHaxx/installHaxx", "-", "FuguInstall", "-", "Fugu15.tipa"], input=appBinary)
     
     for item in ipaZip.infolist():
         buffer = ipaZip.read(item.filename)
