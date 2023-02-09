@@ -12,10 +12,10 @@
       },
       {
         "package": "KernelPatchfinder",
-        "repositoryURL": "https://github.com/pinauten/KernelPatchfinder",
+        "repositoryURL": "https://github.com/opa334/KernelPatchfinder",
         "state": {
           "branch": "master",
-          "revision": "f53a9e7a15d6fa4afdb447838ff7a65892d52a82",
+          "revision": "27b00ee9062eadf0aa722ac454f52698fa3be598",
           "version": null
         }
       },
