@@ -4,7 +4,7 @@ void *mapInRange(uint64_t pageStart, uint32_t pageCount, uint8_t** mappingStart)
 void mappingDestroy(void* ctx);
 
 void physreadbuf(uint64_t physaddr, void* output, size_t size);
-void physwritebuf(uint64_t physaddr, void* input, size_t size);
+void physwritebuf(uint64_t physaddr, const void* input, size_t size);
 
 uint64_t physread64(uint64_t pa);
 uint64_t physread_ptr(uint64_t va);
@@ -18,7 +18,7 @@ void physwrite16(uint64_t pa, uint16_t v);
 void physwrite8(uint64_t pa, uint8_t v);
 
 void kreadbuf(uint64_t kaddr, void* output, size_t size);
-void kwritebuf(uint64_t kaddr, void* input, size_t size);
+void kwritebuf(uint64_t kaddr, const void* input, size_t size);
 
 uint64_t kread64(uint64_t va);
 uint64_t kread_ptr(uint64_t va);
@@ -32,4 +32,4 @@ void kwrite16(uint64_t va, uint16_t v);
 void kwrite8(uint64_t va, uint8_t v);
 
 void initPPLPrimitives(uint64_t magicPage);
-uint64_t passPrimitives(pid_t pid);
+int handoffPPLPrimitives(pid_t pid, uint64_t *mapOut);

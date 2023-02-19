@@ -12,6 +12,9 @@
 uint64_t gSelfProc;
 uint64_t gSelfTask;
 
+PPLStatus gPPLStatus = kPPLStatusNotInitialized;
+PACStatus gPACStatus = kPACStatusNotInitialized;
+
 void populateGlobalVars(void)
 {
 	gSelfProc = proc_for_pid(getpid());
@@ -20,23 +23,15 @@ void populateGlobalVars(void)
 	NSLog(@"Found self task: 0x%llX", gSelfTask);
 }
 
-// KILL JETSAM
-// Credits: https://gist.github.com/Lessica/ecfc5816467dcbaac41c50fd9074b8e9
-// There is literally no other way to do it, fucking hell
-static __attribute__ ((constructor(101), visibility("hidden")))
-void BypassJetsam(void) {
-    pid_t me = getpid();
-    int rc; memorystatus_priority_properties_t props = {JETSAM_PRIORITY_CRITICAL, 0};
-    rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PRIORITY_PROPERTIES, me, 0, &props, sizeof(props));
-    if (rc < 0) { perror ("memorystatus_control"); exit(rc);}
-    rc = memorystatus_control(MEMORYSTATUS_CMD_SET_JETSAM_HIGH_WATER_MARK, me, -1, NULL, 0);
-    if (rc < 0) { perror ("memorystatus_control"); exit(rc);}
-    rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PROCESS_IS_MANAGED, me, 0, NULL, 0);
-    if (rc < 0) { perror ("memorystatus_control"); exit(rc);}
-    rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PROCESS_IS_FREEZABLE, me, 0, NULL, 0);
-    if (rc < 0) { perror ("memorystatus_control"); exit(rc); }
-    rc = proc_track_dirty(me, 0);
-    if (rc != 0) { perror("proc_track_dirty"); exit(rc); }
+void PPLInitializedCallback(void)
+{
+	populateGlobalVars();
+	//recoverPACPrimitivesIfPossible();
+}
+
+void PACInitializedCallback(void)
+{
+	startTrustCacheFileListener();
 }
 
 int main(int argc, char* argv[])
@@ -59,8 +54,6 @@ int main(int argc, char* argv[])
 			if (type == XPC_TYPE_CONNECTION)
 			{
 				NSLog(@"XPC server received incoming connection: %s", xpc_copy_description(object));
-				//audit_token_t auditToken;
-				//xpc_connection_get_audit_token(object, &auditToken);
 
 				xpc_connection_set_event_handler(object, ^(xpc_object_t message)
 				{
@@ -71,24 +64,59 @@ int main(int argc, char* argv[])
 					{
 						if(xpc_get_type(message) == XPC_TYPE_DICTIONARY)
 						{
-							const char *action = xpc_dictionary_get_string(message, "action");
-
-							if (strcmp(action, "ppl-init") == 0) {
-								uint64_t magicPage = xpc_dictionary_get_uint64(message, "magicPage");
-								initPPLPrimitives(magicPage);
-								populateGlobalVars();
-							}
-							else if (strcmp(action, "pac-init") == 0) {
-								uint64_t kernelAllocation = xpc_dictionary_get_uint64(message, "kernelAllocation");
-								uint64_t arcContext = initPACPrimitives(kernelAllocation);
-								xpc_dictionary_set_uint64(reply, "arcContext", arcContext);
-							}
-							else if (strcmp(action, "pac-finalize") == 0) {
-								finalizePACPrimitives();
-								killAMFI();
-							}
-							else if (strcmp(action, "rebuild-trustcache") == 0) {
-								rebuildTrustCache();
+							const char *cAction = xpc_dictionary_get_string(message, "action");
+							if (cAction)
+							{
+								NSString *action = [NSString stringWithUTF8String:xpc_dictionary_get_string(message, "action")];
+								if ([action isEqualToString:@"status"]) {
+									xpc_dictionary_set_uint64(reply, "ppl-status", gPPLStatus);
+									xpc_dictionary_set_uint64(reply, "pac-status", gPACStatus);
+								}
+								else if ([action isEqualToString:@"ppl-init"]) {
+									if (gPPLStatus == kPPLStatusNotInitialized) {
+										uint64_t magicPage = xpc_dictionary_get_uint64(message, "magicPage");
+										initPPLPrimitives(magicPage);
+									}
+								}
+								else if ([action isEqualToString:@"pac-init"]) {
+									if (gPACStatus == kPACStatusNotInitialized && gPPLStatus == kPPLStatusInitialized) {
+										uint64_t kernelAllocation = xpc_dictionary_get_uint64(message, "kernelAllocation");
+										uint64_t arcContext = initPACPrimitives(kernelAllocation);
+										xpc_dictionary_set_uint64(reply, "arcContext", arcContext);
+									}
+								}
+								else if ([action isEqualToString:@"pac-finalize"]) {
+									if (gPACStatus == kPACStatusPrepared && gPPLStatus == kPPLStatusInitialized) {
+										finalizePACPrimitives();
+									}
+								}
+								else if ([action isEqualToString:@"rebuild-trustcache"]) {
+									rebuildTrustCache();
+								}
+								else if ([action isEqualToString:@"kcall"]) {
+									uint64_t func = xpc_dictionary_get_uint64(message, "func");
+									uint64_t a1 = xpc_dictionary_get_uint64(message, "a1");
+									uint64_t a2 = xpc_dictionary_get_uint64(message, "a2");
+									uint64_t a3 = xpc_dictionary_get_uint64(message, "a3");
+									uint64_t a4 = xpc_dictionary_get_uint64(message, "a4");
+									uint64_t a5 = xpc_dictionary_get_uint64(message, "a5");
+									uint64_t a6 = xpc_dictionary_get_uint64(message, "a6");
+									uint64_t a7 = xpc_dictionary_get_uint64(message, "a7");
+									uint64_t a8 = xpc_dictionary_get_uint64(message, "a8");
+									uint64_t ret = kcall(func, a1, a2, a3, a4, a5, a6, a7, a8);
+									xpc_dictionary_set_uint64(message, "ret", ret);
+								}
+								else if ([action isEqualToString:@"handoff-ppl"]) {
+									pid_t pid = xpc_connection_get_pid(connection);
+									uint64_t map;
+									int r = handoffPPLPrimitives(pid, &map);
+									if (r == 0) {
+										xpc_dictionary_set_uint64(reply, "magic-map", map);
+									}
+									else {
+										xpc_dictionary_set_int64(reply, "error-code", r);
+									}
+								}
 							}
 						}
 
@@ -113,4 +141,23 @@ int main(int argc, char* argv[])
 		[[NSRunLoop currentRunLoop] run];
 		return 0;
 	}
+}
+
+// KILL JETSAM
+// Credits: https://gist.github.com/Lessica/ecfc5816467dcbaac41c50fd9074b8e9
+// There is literally no other way to do it, fucking hell
+static __attribute__ ((constructor(101), visibility("hidden")))
+void BypassJetsam(void) {
+    pid_t me = getpid();
+    int rc; memorystatus_priority_properties_t props = {JETSAM_PRIORITY_CRITICAL, 0};
+    rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PRIORITY_PROPERTIES, me, 0, &props, sizeof(props));
+    if (rc < 0) { perror ("memorystatus_control"); exit(rc);}
+    rc = memorystatus_control(MEMORYSTATUS_CMD_SET_JETSAM_HIGH_WATER_MARK, me, -1, NULL, 0);
+    if (rc < 0) { perror ("memorystatus_control"); exit(rc);}
+    rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PROCESS_IS_MANAGED, me, 0, NULL, 0);
+    if (rc < 0) { perror ("memorystatus_control"); exit(rc);}
+    rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PROCESS_IS_FREEZABLE, me, 0, NULL, 0);
+    if (rc < 0) { perror ("memorystatus_control"); exit(rc); }
+    rc = proc_track_dirty(me, 0);
+    if (rc != 0) { perror("proc_track_dirty"); exit(rc); }
 }

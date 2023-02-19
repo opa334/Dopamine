@@ -100,7 +100,7 @@ void rebuildTrustCache(void)
 	NSLog(@"Initial TrustCache upload done!");
 }
 
-void killAMFI(void)
+void startTrustCacheFileListener(void)
 {
 	static dispatch_once_t onceToken;
 	dispatch_once (&onceToken, ^{

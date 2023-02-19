@@ -7,3 +7,20 @@ NSData* bootInfo_getData(NSString* name);
 
 extern uint64_t gSelfProc;
 extern uint64_t gSelfTask;
+
+typedef enum {
+	kPPLStatusNotInitialized = 0,
+	kPPLStatusInitialized = 1
+} PPLStatus;
+
+typedef enum {
+	kPACStatusNotInitialized = 0,
+	kPACStatusPrepared = 1,
+	kPACStatusFinalized = 2
+} PACStatus;
+
+extern PPLStatus gPPLStatus;
+extern PACStatus gPACStatus;
+
+void PPLInitializedCallback(void);
+void PACInitializedCallback(void);

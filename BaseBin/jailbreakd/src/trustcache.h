@@ -1,2 +1,2 @@
-void killAMFI(void);
+void startTrustCacheFileListener(void);
 void rebuildTrustCache(void);
