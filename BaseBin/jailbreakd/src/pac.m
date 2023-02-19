@@ -48,6 +48,8 @@ typedef struct {
 static void* gThreadMapContext;
 static uint8_t* gThreadMapStart;
 static Fugu14KcallThread gFugu14KcallThread;
+PACStatus gPACStatus = kPACStatusNotInitialized;
+
 #define MEMORY_BARRIER asm volatile("dmb sy");
 
 uint64_t gUserReturnThreadContext = 0;

@@ -1,5 +1,11 @@
 #import <Foundation/Foundation.h>
 
+typedef enum {
+	kPPLStatusNotInitialized = 0,
+	kPPLStatusInitialized = 1
+} PPLStatus;
+extern PPLStatus gPPLStatus;
+
 void *mapInRange(uint64_t pageStart, uint32_t pageCount, uint8_t** mappingStart);
 void mappingDestroy(void* ctx);
 

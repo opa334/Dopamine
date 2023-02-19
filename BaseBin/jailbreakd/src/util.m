@@ -4,25 +4,20 @@
 
 uint64_t proc_get_task(uint64_t proc_ptr)
 {
-	NSLog(@"proc_get_task: 0x%llX", proc_ptr); usleep(1000);
 	return kread_ptr(proc_ptr + 0x10ULL);
 }
 
 pid_t proc_get_pid(uint64_t proc_ptr)
 {
-	NSLog(@"proc_get_pid: 0x%llX", proc_ptr); usleep(1000);
 	return kread32(proc_ptr + 0x68ULL);
 }
 
 void proc_iterate(void (^itBlock)(uint64_t, BOOL*))
 {
 	uint64_t allproc = bootInfo_getSlidUInt64(@"allproc");
-	NSLog(@"allproc: 0x%llX", allproc); usleep(1000);
     uint64_t proc = allproc;
     while((proc = kread_ptr(proc)))
     {
-		NSLog(@"proc: 0x%llX", allproc); usleep(1000);
-		
         BOOL stop = NO;
         itBlock(proc, &stop);
         if(stop == 1) return;

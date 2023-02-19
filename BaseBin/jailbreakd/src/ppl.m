@@ -13,6 +13,7 @@
 static uint64_t* gMagicPage = NULL;
 static uint64_t gCpuTTEP = 0;
 static NSLock* gLock = nil;
+PPLStatus gPPLStatus = kPPLStatusNotInitialized;
 
 #define PTE_TO_PERM(pte)  ((((pte) >> 4ULL) & 0xC) | (((pte) >> 52ULL) & 2) | (((pte) >> 54ULL) & 1))
 #define _PERM_TO_PTE(perm) ((((perm) & 0xC) << 4ULL) | (((perm) & 2) << 52ULL) | (((perm) & 1) << 54ULL))
@@ -227,7 +228,7 @@ void *mapIn(uint64_t pageVirt, PPLWindow* window)
 
 void *mapInRange(uint64_t pageStart, uint32_t pageCount, uint8_t** mappingStart)
 {
-	if(gPPLStatus == 0) {
+	if(gPPLStatus == kPPLStatusNotInitialized) {
 		if (mappingStart) *mappingStart = 0;
 		return NULL;
 	}
@@ -264,7 +265,7 @@ void mappingDestroy(void* ctx)
 
 void physreadbuf(uint64_t physaddr, void* output, size_t size)
 {
-	if(gPPLStatus == 0) {
+	if(gPPLStatus == kPPLStatusNotInitialized) {
 		bzero(output, size);
 		return;
 	}
@@ -291,7 +292,7 @@ void physreadbuf(uint64_t physaddr, void* output, size_t size)
 
 void physwritebuf(uint64_t physaddr, const void* input, size_t size)
 {
-	if(gPPLStatus == 0) {
+	if(gPPLStatus == kPPLStatusNotInitialized) {
 		return;
 	}
 
@@ -319,7 +320,7 @@ void physwritebuf(uint64_t physaddr, const void* input, size_t size)
 
 void kreadbuf(uint64_t kaddr, void* output, size_t size)
 {
-	if(gPPLStatus == 0) {
+	if(gPPLStatus == kPPLStatusNotInitialized) {
 		bzero(output, size);
 		return;
 	}
@@ -354,7 +355,7 @@ void kreadbuf(uint64_t kaddr, void* output, size_t size)
 
 void kwritebuf(uint64_t kaddr, const void* input, size_t size)
 {
-	if(gPPLStatus == 0) {
+	if(gPPLStatus == kPPLStatusNotInitialized) {
 		return;
 	}
 
@@ -518,6 +519,19 @@ void initPPLPrimitives(uint64_t magicPage)
 	}
 }
 
+kern_return_t pmap_enter_options_addr(uint64_t pmap, uint64_t pa, uint64_t va) {
+    while (1) {
+        kern_return_t kr = (kern_return_t) kcall(bootInfo_getSlidUInt64(@"pmap_enter_options_addr"), pmap, va, pa, VM_PROT_READ | VM_PROT_WRITE, 0, 0, 1, 1);
+        if (kr != KERN_RESOURCE_SHORTAGE) {
+            return kr;
+        }
+    }
+}
+
+void pmap_remove(uint64_t pmap, uint64_t start, uint64_t end) {
+    kcall(bootInfo_getSlidUInt64(@"pmap_remove_options"), pmap, start, end, 0x100, 0, 0, 0, 0);
+}
+
 int handoffPPLPrimitives(pid_t pid, uint64_t *mapOut)
 {
 	if (!pid || !mapOut) return -1;
@@ -535,7 +549,7 @@ int handoffPPLPrimitives(pid_t pid, uint64_t *mapOut)
 	if (pmap == 0) return -5;
 	
 	// Map the fake page
-	kern_return_t kr = kcall(bootInfo_getSlidUInt64(@"pmap_enter_options_addr"), pmap, FAKE_PHYSPAGE_TO_MAP, PPL_MAP_ADDR, 0, 0, 0, 0, 0);
+	kern_return_t kr = pmap_enter_options_addr(pmap, FAKE_PHYSPAGE_TO_MAP, PPL_MAP_ADDR);
 	if (kr != KERN_SUCCESS) {
 		return -6;
 	}
@@ -544,7 +558,7 @@ int handoffPPLPrimitives(pid_t pid, uint64_t *mapOut)
 	pmap_set_type(pmap, 3);
 	
 	// Remove mapping (table will not be removed because we changed the pmap type)
-	kcall(bootInfo_getSlidUInt64(@"pmap_remove_options"), PPL_MAP_ADDR, PPL_MAP_ADDR + 0x4000, 0, 0, 0, 0, 0, 0);
+	pmap_remove(pmap, PPL_MAP_ADDR, PPL_MAP_ADDR + 0x4000);
 	
 	// Change type back
 	pmap_set_type(pmap, 0);

@@ -12,9 +12,6 @@
 uint64_t gSelfProc;
 uint64_t gSelfTask;
 
-PPLStatus gPPLStatus = kPPLStatusNotInitialized;
-PACStatus gPACStatus = kPACStatusNotInitialized;
-
 void populateGlobalVars(void)
 {
 	gSelfProc = proc_for_pid(getpid());
@@ -53,9 +50,10 @@ int main(int argc, char* argv[])
 			xpc_type_t type = xpc_get_type(object);
 			if (type == XPC_TYPE_CONNECTION)
 			{
-				NSLog(@"XPC server received incoming connection: %s", xpc_copy_description(object));
+				xpc_object_t incomingConnection = object;
+				NSLog(@"XPC server received incoming connection: %s", xpc_copy_description(incomingConnection));
 
-				xpc_connection_set_event_handler(object, ^(xpc_object_t message)
+				xpc_connection_set_event_handler(incomingConnection, ^(xpc_object_t message)
 				{
 					NSLog(@"XPC connection received message: %s", xpc_copy_description(message));
 
@@ -107,7 +105,7 @@ int main(int argc, char* argv[])
 									xpc_dictionary_set_uint64(message, "ret", ret);
 								}
 								else if ([action isEqualToString:@"handoff-ppl"]) {
-									pid_t pid = xpc_connection_get_pid(connection);
+									pid_t pid = xpc_connection_get_pid(incomingConnection);
 									uint64_t map;
 									int r = handoffPPLPrimitives(pid, &map);
 									if (r == 0) {
@@ -124,7 +122,7 @@ int main(int argc, char* argv[])
 						xpc_connection_send_message(xpc_dictionary_get_remote_connection(message), reply);
 					}
 				});
-				xpc_connection_resume(object);
+				xpc_connection_resume(incomingConnection);
 			}
 			else if (type == XPC_TYPE_ERROR)
 			{
