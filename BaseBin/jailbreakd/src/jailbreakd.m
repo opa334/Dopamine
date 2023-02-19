@@ -106,10 +106,10 @@ int main(int argc, char* argv[])
 								}
 								else if ([action isEqualToString:@"handoff-ppl"]) {
 									pid_t pid = xpc_connection_get_pid(incomingConnection);
-									uint64_t map;
-									int r = handoffPPLPrimitives(pid, &map);
+									uint64_t magicPage;
+									int r = handoffPPLPrimitives(pid, &magicPage);
 									if (r == 0) {
-										xpc_dictionary_set_uint64(reply, "magic-map", map);
+										xpc_dictionary_set_uint64(reply, "magic-page", magicPage);
 									}
 									else {
 										xpc_dictionary_set_int64(reply, "error-code", r);

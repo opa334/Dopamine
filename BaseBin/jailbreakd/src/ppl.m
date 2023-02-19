@@ -532,9 +532,9 @@ void pmap_remove(uint64_t pmap, uint64_t start, uint64_t end) {
     kcall(bootInfo_getSlidUInt64(@"pmap_remove_options"), pmap, start, end, 0x100, 0, 0, 0, 0);
 }
 
-int handoffPPLPrimitives(pid_t pid, uint64_t *mapOut)
+int handoffPPLPrimitives(pid_t pid, uint64_t *magicPageOut)
 {
-	if (!pid || !mapOut) return -1;
+	if (!pid || !magicPageOut) return -1;
 
 	uint64_t proc = proc_for_pid(pid);
 	if (proc == 0) return -2;
@@ -573,6 +573,6 @@ int handoffPPLPrimitives(pid_t pid, uint64_t *mapOut)
 	uint64_t pte = table3 | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY;
 	physwrite64(table3, pte);
 	
-	*mapOut = PPL_MAP_ADDR;
+	*magicPageOut = PPL_MAP_ADDR;
 	return 0;
 }
