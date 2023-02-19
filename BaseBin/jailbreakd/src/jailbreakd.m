@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
 									uint64_t a7 = xpc_dictionary_get_uint64(message, "a7");
 									uint64_t a8 = xpc_dictionary_get_uint64(message, "a8");
 									uint64_t ret = kcall(func, a1, a2, a3, a4, a5, a6, a7, a8);
-									xpc_dictionary_set_uint64(message, "ret", ret);
+									xpc_dictionary_set_uint64(reply, "ret", ret);
 								}
 								else if ([action isEqualToString:@"handoff-ppl"]) {
 									pid_t pid = xpc_connection_get_pid(incomingConnection);
