@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ProcessType</key>
+	<string>Interactive</string>
+	<key>Label</key>
+	<string>com.opa334.jailbreakd</string>
+	<key>MachServices</key>
+	<dict>
+		<key>com.opa334.jailbreakd</key>
+		<true/>
+	</dict>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/var/jb/basebin/jailbreakd</string>
+	</array>
+	<key>UserName</key>
+	<string>root</string>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>KeepAlive</key>
+	<true/>
+</dict>
+</plist>

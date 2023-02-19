@@ -62,5 +62,14 @@
 	<true/>
 	<key>com.apple.private.security.syspolicy.kext-management</key>
 	<true/>
+	<key>com.apple.security.exception.mach-lookup.global-name</key>
+	<array>
+		<string>com.opa334.jailbreakd</string>
+	</array>
+	<key>com.apple.security.exception.iokit-user-client-class</key>
+	<array>
+		<string>AGXDeviceUserClient</string>
+		<string>IOSurfaceRootUserClient</string>
+	</array>
 </dict>
 </plist>

@@ -107,6 +107,9 @@ struct JailbreakView: View {
     
     func launchExploit() {
         do {
+            statusUpdate("Status: Bootstrapping")
+            _ = execCmd(args: [CommandLine.arguments[0], "do-bootstrap"])
+
             statusUpdate("Status: Launching kexploitd")
             
             try Fugu15.launchKernelExploit(oobPCI: Bundle.main.bundleURL.appendingPathComponent("oobPCI")) { msg in
