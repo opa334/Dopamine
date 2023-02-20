@@ -32,6 +32,13 @@ make
 cd -
 cp "./kickstart/kickstart" ".tmp/basebin/kickstart"
 
+# jbctl
+
+cd "jbctl"
+make
+cd -
+cp "./jbctl/jbctl" ".tmp/basebin/jbctl"
+
 # Create TrustCache, for basebinaries
 trustcache create "./.tmp/basebin/basebin.tc" "./.tmp/basebin"
 

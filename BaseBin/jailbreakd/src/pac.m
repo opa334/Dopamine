@@ -328,17 +328,3 @@ void destroyPACPrimitives(void)
 {
 	// TODO
 }
-
-// UTILS
-
-uint64_t kalloc(uint64_t size)
-{
-	uint64_t kalloc_data_external = bootInfo_getSlidUInt64(@"kalloc_data_external");
-	return kcall(kalloc_data_external, size, 1, 0, 0, 0, 0, 0, 0);
-}
-
-uint64_t kfree(uint64_t addr, uint64_t size)
-{
-	uint64_t kfree_data_external = bootInfo_getSlidUInt64(@"kfree_data_external");
-	return kcall(kfree_data_external, addr, size, 0, 0, 0, 0, 0, 0);
-}

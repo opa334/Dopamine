@@ -115,6 +115,17 @@ int main(int argc, char* argv[])
 										xpc_dictionary_set_int64(reply, "error-code", r);
 									}
 								}
+								else if ([action isEqualToString:@"unrestrict-cs"]) {
+									pid_t pid = xpc_dictionary_get_uint64(message, "pid");
+									uint64_t proc = proc_for_pid(pid);
+									NSLog(@"proc: 0x%llX", proc); usleep(1000);
+									NSMutableDictionary *entitlements = proc_dump_entitlements(proc);
+									NSLog(@"Got entitlements: %@", entitlements); usleep(1000);
+									entitlements[@"get-task-allow"] = @1;
+									entitlements[@"run-invalid-allow"] = @1;
+									entitlements[@"run-unsigned-code"] = @1;
+									proc_replace_entitlements(proc, entitlements);
+								}
 							}
 						}
 
