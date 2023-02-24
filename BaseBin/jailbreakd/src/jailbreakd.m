@@ -118,13 +118,15 @@ int main(int argc, char* argv[])
 								else if ([action isEqualToString:@"unrestrict-cs"]) {
 									pid_t pid = xpc_dictionary_get_uint64(message, "pid");
 									uint64_t proc = proc_for_pid(pid);
-									NSLog(@"proc: 0x%llX", proc); usleep(1000);
-									NSMutableDictionary *entitlements = proc_dump_entitlements(proc);
-									NSLog(@"Got entitlements: %@", entitlements); usleep(1000);
-									entitlements[@"get-task-allow"] = @1;
-									entitlements[@"run-invalid-allow"] = @1;
-									entitlements[@"run-unsigned-code"] = @1;
-									proc_replace_entitlements(proc, entitlements);
+									if (proc != 0) {
+										NSMutableDictionary *entitlements = proc_dump_entitlements(proc);
+										entitlements[@"get-task-allow"] = (__bridge id)kCFBooleanTrue;
+										//entitlements[@"run-invalid-allow"] = (__bridge id)kCFBooleanTrue;
+										//entitlements[@"run-unsigned-code"] = (__bridge id)kCFBooleanTrue;
+										proc_replace_entitlements(proc, entitlements);
+										bool success = cs_allow_invalid(proc);
+										xpc_dictionary_set_bool(reply, "success", success);
+									}
 								}
 							}
 						}

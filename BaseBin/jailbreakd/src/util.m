@@ -19,6 +19,12 @@ uint64_t kfree(uint64_t addr, uint64_t size)
 	return kcall(kfree_data_external, addr, size, 0, 0, 0, 0, 0, 0);
 }
 
+bool cs_allow_invalid(uint64_t proc_ptr)
+{
+    uint64_t cs_allow_invalid = bootInfo_getSlidUInt64(@"cs_allow_invalid");
+    return (bool)kcall(cs_allow_invalid, proc_ptr, 0, 0, 0, 0, 0, 0, 0);
+}
+
 uint64_t ptrauth_utils_sign_blob_generic(uint64_t ptr, uint64_t len_bytes, uint64_t salt, uint64_t flags)
 {
     uint64_t ptrauth_utils_sign_blob_generic = bootInfo_getSlidUInt64(@"ptrauth_utils_sign_blob_generic");
@@ -61,6 +67,41 @@ uint64_t proc_for_pid(pid_t pidToFind)
     });
     
     return foundProc;
+}
+
+uint64_t proc_get_proc_ro(uint64_t proc_ptr)
+{
+    return kread_ptr(proc_ptr + 0x20);
+}
+
+uint64_t proc_ro_get_ucred(uint64_t proc_ro_ptr)
+{
+    return kread_ptr(proc_ro_ptr + 0x20);
+}
+
+uint64_t proc_get_ucred(uint64_t proc_ptr)
+{
+    if (@available(iOS 15.2, *)) {
+        return proc_ro_get_ucred(proc_get_proc_ro(proc_ptr));
+    } else {
+        return kread_ptr(proc_ptr + 0xD8);
+    }
+}
+
+uint64_t proc_get_text_vnode(uint64_t proc_ptr)
+{
+    return kread_ptr(proc_ptr + 0x350);
+}
+
+uint64_t proc_get_vnode_by_file_descriptor(uint64_t proc_ptr, int fd)
+{
+    uint64_t ofiles_start = kread_ptr(proc_ptr + 0xD8 + 0x20);
+    if (!ofiles_start) return 0;
+    uint64_t file_proc_ptr = kread_ptr(ofiles_start + (fd * 8));
+    if (!file_proc_ptr) return 0;
+    uint64_t file_glob_ptr = kread_ptr(file_proc_ptr + 0x10);
+    if (!file_glob_ptr) return 0;
+    return kread_ptr(file_glob_ptr + 0x38);
 }
 
 uint64_t task_get_first_thread(uint64_t task_ptr)
@@ -120,23 +161,26 @@ uint64_t get_cspr_kern_intr_dis(void)
 	return (0x4013c0 | ((uint32_t)kernel_el));
 }
 
-uint64_t proc_get_proc_ro(uint64_t proc_ptr)
+uint64_t vnode_get_ubcinfo(uint64_t vnode_ptr)
 {
-    return kread_ptr(proc_ptr + 0x20);
+    return kread_ptr(vnode_ptr + 0x78);
 }
 
-uint64_t proc_ro_get_ucred(uint64_t proc_ro_ptr)
+void ubcinfo_iterate_csblobs(uint64_t ubc_info_ptr, void (^itBlock)(uint64_t, BOOL*))
 {
-    return kread_ptr(proc_ro_ptr + 0x20);
-}
-
-uint64_t proc_get_ucred(uint64_t proc_ptr)
-{
-    if (@available(iOS 15.2, *)) {
-        return proc_ro_get_ucred(proc_get_proc_ro(proc_ptr));
-    } else {
-        return kread_ptr(proc_ptr + 0xD8);
+    uint64_t csblobs = kread_ptr(ubc_info_ptr + 0x50);
+    while(csblobs != 0)
+    {
+        BOOL stop = NO;
+        itBlock(csblobs, &stop);
+        if(stop) return;
+        csblobs = kread_ptr(csblobs);
     }
+}
+
+uint64_t csblob_get_pmap_cs_entry(uint64_t csblob_ptr)
+{
+    return kread_ptr(csblob_ptr + 0xB0);
 }
 
 uint64_t ucred_get_cr_label(uint64_t ucred_ptr)
@@ -157,11 +201,10 @@ NSData *OSEntitlements_get_cdhash(uint64_t OSEntitlements_ptr)
     return cdHashData;
 }
 
-NSMutableDictionary *OSEntitlements_dump_entitlements(uint64_t OSEntitlements_ptr)
+NSMutableDictionary *CEQueryContext_dump_entitlements(uint64_t CEQueryContext_ptr)
 {
-    uint64_t CEQueryContext = OSEntitlements_ptr + 0x28;
-    uint64_t der_start = kread_ptr(CEQueryContext + 0x18);
-    uint64_t der_end = kread_ptr(CEQueryContext + 0x20);
+    uint64_t der_start = kread_ptr(CEQueryContext_ptr + 0x18);
+    uint64_t der_end = kread_ptr(CEQueryContext_ptr + 0x20);
 
     uint64_t der_len = der_end - der_start;
     uint8_t *us_der_start = malloc(der_len);
@@ -197,6 +240,32 @@ NSMutableDictionary *OSEntitlements_dump_entitlements(uint64_t OSEntitlements_pt
     return nil;
 }
 
+NSMutableDictionary *OSEntitlements_dump_entitlements(uint64_t OSEntitlements_ptr)
+{
+    uint64_t CEQueryContext = OSEntitlements_ptr + 0x28;
+    return CEQueryContext_dump_entitlements(CEQueryContext);
+}
+
+void CEQueryContext_replace_entitlements(uint64_t CEQueryContext_ptr, NSDictionary *newEntitlements)
+{
+    size_t der_size = der_sizeof_plist((__bridge CFDictionaryRef)newEntitlements, NULL);
+    uint8_t *der_start = malloc(der_size);
+    uint8_t *der_end = der_start + der_size;
+    der_encode_plist((__bridge CFDictionaryRef)newEntitlements, NULL, der_start, der_end);
+
+    uint64_t old_kern_der_start = kread_ptr(CEQueryContext_ptr + 0x18);
+    uint64_t old_kern_der_end = kread_ptr(CEQueryContext_ptr + 0x20);
+    uint64_t old_kern_der_size = old_kern_der_end - old_kern_der_start;
+    kfree(old_kern_der_start, old_kern_der_size);
+
+    uint64_t kern_der_start = kalloc(der_size);
+    uint64_t kern_der_end = kern_der_start + der_size;
+    kwritebuf(kern_der_start, der_start, der_size);
+
+    kwrite64(CEQueryContext_ptr + 0x18, kern_der_start);
+    kwrite64(CEQueryContext_ptr + 0x20, kern_der_end);
+}
+
 void resign_OSEntitlements(uint64_t OSEntitlements_ptr)
 {
     uint64_t signature = ptrauth_utils_sign_blob_generic(OSEntitlements_ptr + 0x10, 0x60, 0xBD9D, 1);
@@ -206,26 +275,49 @@ void resign_OSEntitlements(uint64_t OSEntitlements_ptr)
 void OSEntitlements_replace_entitlements(uint64_t OSEntitlements_ptr, NSDictionary *newEntitlements)
 {
     uint64_t CEQueryContext = OSEntitlements_ptr + 0x28;
-    uint64_t lock = kread_ptr(OSEntitlements_ptr + 0x78);
-
-    size_t der_size = der_sizeof_plist((__bridge CFDictionaryRef)newEntitlements, NULL);
-    uint8_t *der_start = malloc(der_size);
-    uint8_t *der_end = der_start + der_size;
-    der_encode_plist((__bridge CFDictionaryRef)newEntitlements, NULL, der_start, der_end);
-    
-    uint64_t old_kern_der_start = kread_ptr(CEQueryContext + 0x18);
-    uint64_t old_kern_der_end = kread_ptr(CEQueryContext + 0x20);
-    uint64_t old_kern_der_size = old_kern_der_end - old_kern_der_start;
-    kfree(old_kern_der_start, old_kern_der_size);
-
-    uint64_t kern_der_start = kalloc(der_size);
-    uint64_t kern_der_end = kern_der_start + der_size;
-    kwritebuf(kern_der_start, der_start, der_size);
-
-    kwrite64(CEQueryContext + 0x18, kern_der_start);
-    kwrite64(CEQueryContext + 0x20, kern_der_end);
-
+    CEQueryContext_replace_entitlements(CEQueryContext, newEntitlements);
     resign_OSEntitlements(OSEntitlements_ptr);
+}
+
+NSMutableDictionary *pmap_cs_entry_dump_entitlements(uint64_t pmap_cs_entry_ptr)
+{
+    uint64_t CEQueryContext = kread_ptr(pmap_cs_entry_ptr + 0x88);
+    return CEQueryContext_dump_entitlements(CEQueryContext);
+}
+
+void pmap_cs_entry_replace_entitlements(uint64_t pmap_cs_entry_ptr, NSDictionary *newEntitlements)
+{
+    uint64_t CEQueryContext = kread_ptr(pmap_cs_entry_ptr + 0x88);
+    CEQueryContext_replace_entitlements(CEQueryContext, newEntitlements);
+}
+
+NSMutableDictionary *vnode_dump_entitlements(uint64_t vnode_ptr)
+{
+    uint64_t ubc_info_ptr = vnode_get_ubcinfo(vnode_ptr);
+    if (!ubc_info_ptr) return nil;
+    
+   __block NSMutableDictionary *outDict = nil;
+    ubcinfo_iterate_csblobs(ubc_info_ptr, ^(uint64_t csblob, BOOL *stop)
+    {
+        uint64_t pmap_cs_entry_ptr = csblob_get_pmap_cs_entry(csblob);
+        if (!pmap_cs_entry_ptr) return;
+        outDict = pmap_cs_entry_dump_entitlements(pmap_cs_entry_ptr);
+        if (outDict) *stop = YES;
+    });
+    return outDict;
+}
+
+void vnode_replace_entitlements(uint64_t vnode_ptr, NSDictionary *newEntitlements)
+{
+    uint64_t ubc_info_ptr = vnode_get_ubcinfo(vnode_ptr);
+    if (!ubc_info_ptr) return;
+    ubcinfo_iterate_csblobs(ubc_info_ptr, ^(uint64_t csblob, BOOL *stop)
+    {
+        uint64_t pmap_cs_entry_ptr = csblob_get_pmap_cs_entry(csblob);
+        if (!pmap_cs_entry_ptr) return;
+        pmap_cs_entry_replace_entitlements(pmap_cs_entry_ptr, newEntitlements);
+        *stop = YES;
+    });
 }
 
 NSMutableDictionary *proc_dump_entitlements(uint64_t proc_ptr)
@@ -241,5 +333,10 @@ void proc_replace_entitlements(uint64_t proc_ptr, NSDictionary *newEntitlements)
     uint64_t ucred_ptr = proc_get_ucred(proc_ptr);
     uint64_t cr_label_ptr = ucred_get_cr_label(ucred_ptr);
     uint64_t OSEntitlements_ptr = cr_label_get_OSEntitlements(cr_label_ptr);
+
+    // Also apply changes on vnode
+    uint64_t text_vnode = proc_get_text_vnode(proc_ptr);
+    vnode_replace_entitlements(text_vnode, newEntitlements);
+
     OSEntitlements_replace_entitlements(OSEntitlements_ptr, newEntitlements);
 }
