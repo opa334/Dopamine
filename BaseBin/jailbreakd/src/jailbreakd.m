@@ -115,6 +115,17 @@ int main(int argc, char* argv[])
 										xpc_dictionary_set_int64(reply, "error-code", r);
 									}
 								}
+								else if ([action isEqualToString:@"handoff-ppl-pid"]) {
+									pid_t pid = xpc_dictionary_get_uint64(message, "pid");
+									uint64_t magicPage;
+									int r = handoffPPLPrimitives(pid, &magicPage);
+									if (r == 0) {
+										xpc_dictionary_set_uint64(reply, "magic-page", magicPage);
+									}
+									else {
+										xpc_dictionary_set_int64(reply, "error-code", r);
+									}
+								}
 								else if ([action isEqualToString:@"unrestrict-cs"]) {
 									pid_t pid = xpc_dictionary_get_uint64(message, "pid");
 									uint64_t proc = proc_for_pid(pid);

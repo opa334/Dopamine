@@ -22,6 +22,20 @@ void jbdUnrestrictCodeSigning(pid_t pid)
 	xpc_connection_send_message_with_reply_sync(jdbConnection, message);
 }
 
+uint64_t jbdInitPPLRemote(pid_t pid)
+{
+	xpc_connection_t jdbConnection = getJBDConnection();
+
+	xpc_object_t message = xpc_dictionary_create(NULL,NULL,0);
+	xpc_dictionary_set_string(message, "action", "handoff-ppl-pid");
+	xpc_dictionary_set_uint64(message, "pid", pid);
+
+	xpc_object_t reply = xpc_connection_send_message_with_reply_sync(jdbConnection, message);
+	int64_t errorCode = xpc_dictionary_get_int64(reply, "error-code");
+	uint64_t magicPage = xpc_dictionary_get_uint64(reply, "magic-page");
+	return magicPage;
+}
+
 /*uint64_t jbdInitPPL(void)
 {
 	xpc_connection_t jdbConnection = getJBDConnection();
