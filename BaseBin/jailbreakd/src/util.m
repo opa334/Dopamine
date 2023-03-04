@@ -90,7 +90,11 @@ uint64_t proc_get_ucred(uint64_t proc_ptr)
 
 uint64_t proc_get_text_vnode(uint64_t proc_ptr)
 {
-    return kread_ptr(proc_ptr + 0x350);
+    if (@available(iOS 15.4, *)) {
+        return kread_ptr(proc_ptr + 0x350);
+    } else {
+        return kread_ptr(proc_ptr + 0x358);
+    }
 }
 
 uint64_t proc_get_vnode_by_file_descriptor(uint64_t proc_ptr, int fd)

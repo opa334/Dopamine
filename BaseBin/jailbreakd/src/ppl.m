@@ -338,7 +338,7 @@ void kreadbuf(uint64_t kaddr, void* output, size_t size)
 		uint64_t pa = walkPageTable(gCpuTTEP, page, &failure);
 		if (failure)
 		{
-			NSLog(@"[kreadbuf] Lookup failure when trying to read %zu bytes at %llX, aborting", size, kaddr);
+			NSLog(@"[kreadbuf] Lookup failure when trying to read %zu bytes at 0x%llX, aborting", size, kaddr);
 			return;
 		}
 
@@ -372,7 +372,7 @@ void kwritebuf(uint64_t kaddr, const void* input, size_t size)
 		uint64_t pa = walkPageTable(gCpuTTEP, page, &failure);
 		if (failure)
 		{
-			NSLog(@"[kreadbuf] Lookup failure when trying to write %zu bytes to %llX, aborting", size, kaddr);
+			NSLog(@"[kwritebuf] Lookup failure when trying to write %zu bytes to 0x%llX, aborting", size, kaddr);
 			return;
 		}
 
