@@ -44,13 +44,14 @@ void mach_port_callback(mach_port_t machPort)
 
 	xpc_object_t reply = xpc_dictionary_create_reply(message);
 	xpc_type_t messageType = xpc_get_type(message);
+	JBD_MESSAGE_ID msgId = -1;
 	if (messageType == XPC_TYPE_DICTIONARY) {
 		audit_token_t auditToken = {};
 		xpc_dictionary_get_audit_token(message, &auditToken);
 		uid_t clientUid = audit_token_to_euid(auditToken);
 		pid_t clientPid = audit_token_to_pid(auditToken);
 
-		JBD_MESSAGE_ID msgId = xpc_dictionary_get_uint64(message, "id");
+		msgId = xpc_dictionary_get_uint64(message, "id");
 
 		NSLog(@"received message %d with dictionary: %s", msgId, xpc_copy_description(message));
 

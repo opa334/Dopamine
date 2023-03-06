@@ -290,7 +290,7 @@ void CEQueryContext_replace_entitlements(uint64_t CEQueryContext_ptr, NSDictiona
     kwrite64(CEQueryContext_ptr + 0x20, kern_der_end);
 }
 
-void resign_OSEntitlements(uint64_t OSEntitlements_ptr)
+void OSEntitlements_resign(uint64_t OSEntitlements_ptr)
 {
     uint64_t signature = ptrauth_utils_sign_blob_generic(OSEntitlements_ptr + 0x10, 0x60, 0xBD9D, 1);
     kwrite64(OSEntitlements_ptr + 0x70, signature);
@@ -300,7 +300,7 @@ void OSEntitlements_replace_entitlements(uint64_t OSEntitlements_ptr, NSDictiona
 {
     uint64_t CEQueryContext = OSEntitlements_ptr + 0x28;
     CEQueryContext_replace_entitlements(CEQueryContext, newEntitlements);
-    resign_OSEntitlements(OSEntitlements_ptr);
+    OSEntitlements_resign(OSEntitlements_ptr);
 }
 
 NSMutableDictionary *pmap_cs_entry_dump_entitlements(uint64_t pmap_cs_entry_ptr)
