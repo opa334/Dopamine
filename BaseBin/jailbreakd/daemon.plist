@@ -9,7 +9,10 @@
 	<key>MachServices</key>
 	<dict>
 		<key>com.opa334.jailbreakd</key>
-		<true/>
+		<dict>
+			<key>HostSpecialPort</key>
+			<integer>15</integer>
+		</dict>
 	</dict>
 	<key>ProgramArguments</key>
 	<array>

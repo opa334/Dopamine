@@ -1,10 +1,10 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-	kPPLStatusNotInitialized = 0,
-	kPPLStatusInitialized = 1
-} PPLStatus;
-extern PPLStatus gPPLStatus;
+	kPPLRWStatusNotInitialized = 0,
+	kPPLRWStatusInitialized = 1
+} PPLRWStatus;
+extern PPLRWStatus gPPLRWStatus;
 
 void *mapInRange(uint64_t pageStart, uint32_t pageCount, uint8_t** mappingStart);
 void mappingDestroy(void* ctx);
@@ -38,4 +38,3 @@ void kwrite16(uint64_t va, uint16_t v);
 void kwrite8(uint64_t va, uint8_t v);
 
 void initPPLPrimitives(uint64_t magicPage);
-int handoffPPLPrimitives(pid_t pid, uint64_t *magicPageOut);

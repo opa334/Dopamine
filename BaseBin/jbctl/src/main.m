@@ -1,23 +1,22 @@
-#import "libjailbreak.h"
+#import <libjailbreak/jailbreakd.h>
 
 int main(int argc, char* argv[])
 {
 	if (argc != 3) return 1;
 
 	char *cmd = argv[1];
-	if (!strcmp(cmd, "unrestrict-cs")) {
+	if (!strcmp(cmd, "unrestrict_proc")) {
 		int pid = atoi(argv[2]);
-		jbdUnrestrictCodeSigning(pid);
-	}
-	else if (!strcmp(cmd, "handoff-ppl")) {
-		int pid = atoi(argv[2]);
-		uint64_t page = jbdInitPPLRemote(pid);
-		if (page) {
-			printf("Initialized PPL primitives in pid %d, mapping: 0x%llX\n", pid, page);
+		bool suc = jbdUnrestrictProc(pid);
+		if (suc) {
+			printf("Successfully unrestricted proc of %d\n", pid);
 		}
 		else {
-			printf("Failed to initialize PPL primitives in pid %d\n", pid);
+			printf("Failed to unrestrict proc of %d\n", pid);
 		}
+	}
+	else if (!strcmp(cmd, "rebuild_trustcache")) {
+		jbdRebuildTrustCache();
 	}
 
 	return 0;

@@ -17,6 +17,17 @@ if [ -d ".tmp/basebin" ]; then
 fi
 mkdir -p ".tmp/basebin"
 
+# libjailbreak
+cd "libjailbreak"
+make
+cd -
+cp "./libjailbreak/libjailbreak.dylib" ".tmp/basebin/libjailbreak.dylib"
+
+# copy headers
+rm -rf "./_shared/libjailbreak"
+mkdir -p "./_shared/libjailbreak"
+cp ./libjailbreak/src/*.h ./_shared/libjailbreak
+
 # jailbreakd
 
 cd "jailbreakd"

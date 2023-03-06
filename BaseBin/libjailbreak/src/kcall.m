@@ -1,9 +1,9 @@
-#import "pac.h"
+#import "kcall.h"
 
 #import <stdint.h>
 #import <stdbool.h>
 #import <mach/mach.h>
-#import "ppl.h"
+#import "pplrw.h"
 #import "util.h"
 #import "jailbreakd.h"
 #import "boot_info.h"
@@ -48,7 +48,7 @@ typedef struct {
 static void* gThreadMapContext;
 static uint8_t* gThreadMapStart;
 static Fugu14KcallThread gFugu14KcallThread;
-PACStatus gPACStatus = kPACStatusNotInitialized;
+KcallStatus gKCallStatus = kKcallStatusNotInitialized;
 
 #define MEMORY_BARRIER asm volatile("dmb sy");
 
@@ -77,7 +77,7 @@ uint64_t getUserReturnThreadContext(void) {
     
     thread_suspend(chThread);
     
-    uint64_t returnThreadPtr = task_get_first_thread(gSelfTask);
+    uint64_t returnThreadPtr = task_get_first_thread(self_task());
     if (returnThreadPtr == 0) {
         NSLog(@"[-] getUserReturnThreadContext: Failed to find return thread!");
         return 0;
@@ -160,13 +160,13 @@ uint64_t Fugu14Kcall_onThread(Fugu14KcallThread *callThread, uint64_t func, uint
 
 uint64_t kcall(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8)
 {
-	if (gPACStatus != kPACStatusFinalized) return 0;
+	if (gKCallStatus != kKcallStatusFinalized) return 0;
 	return Fugu14Kcall_onThread(&gFugu14KcallThread, func, a1, a2, a3, a4, a5, a6, a7, a8);
 }
 
 uint64_t initPACPrimitives(uint64_t kernelAllocation)
 {
-    if (gPACStatus != kPACStatusNotInitialized || kernelAllocation == 0) {
+    if (gKCallStatus != kKcallStatusNotInitialized || kernelAllocation == 0) {
         return 0;
     }
 
@@ -180,7 +180,7 @@ uint64_t initPACPrimitives(uint64_t kernelAllocation)
     }
     
     // Find the thread
-    uint64_t threadPtr = task_get_first_thread(gSelfTask);
+    uint64_t threadPtr = task_get_first_thread(self_task());
     if (threadPtr == 0) {
         NSLog(@"[-] setupFugu14Kcall: Failed to find thread!");
         return false;
@@ -237,14 +237,14 @@ uint64_t initPACPrimitives(uint64_t kernelAllocation)
     gFugu14KcallThread.actContext          = actContext;
     gFugu14KcallThread.scratchMemoryMapped = (uint64_t*) ((uintptr_t)gThreadMapStart + 0xF000ULL);
 
-    gPACStatus = kPACStatusPrepared;
+    gKCallStatus = kKcallStatusPrepared;
 
 	return actContext;
 }
 
 void finalizePACPrimitives(void)
 {
-    if (gPACStatus != kPACStatusPrepared) {
+    if (gKCallStatus != kKcallStatusPrepared) {
         return;
     }
 
@@ -303,14 +303,14 @@ void finalizePACPrimitives(void)
     
     // Done!
     // Thread's fault handler is now set to the br x22 gadget
-    gPACStatus = kPACStatusFinalized;
+    gKCallStatus = kKcallStatusFinalized;
 
-    PACInitializedCallback();
+    //PACInitializedCallback();
 }
 
 /*void recoverPACPrimitivesIfPossible(void)
 {
-    if (gPPLStatus != kPPLStatusInitialized) return;
+    if (gPPLRWStatus != kPPLRWStatusInitialized) return;
 
     uint64_t kernelAllocation = bootInfo_getUInt64(@"pac_kernel_allocation");
     NSData *kernelSignedState = bootInfo_getData(@"pac_signed_state");

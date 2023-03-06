@@ -1,14 +1,13 @@
 #import "trustcache.h"
 
-#import "jailbreakd.h"
-#import "pac.h"
-#import "ppl.h"
+#import <libjailbreak/pplrw.h>
+#import <libjailbreak/kcall.h>
 #import <sys/stat.h>
 #import <unistd.h>
 #import <fileobserve/OPFileTree.h>
 #import "JBDFileLeaf.h"
 #import "JBDFileTree.h"
-#import "boot_info.h"
+#import <libjailbreak/boot_info.h>
 #import "trustcache_structs.h"
 #import "JBDTCPage.h"
 

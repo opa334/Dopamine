@@ -1,12 +1,12 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-	kPACStatusNotInitialized = 0,
-	kPACStatusPrepared = 1,
-	kPACStatusFinalized = 2
-} PACStatus;
+	kKcallStatusNotInitialized = 0,
+	kKcallStatusPrepared = 1,
+	kKcallStatusFinalized = 2
+} KcallStatus;
 
-extern PACStatus gPACStatus;
+extern KcallStatus gKCallStatus;
 
 void pac_loop(void);
 

@@ -1,0 +1,1 @@
+int handoffPPLPrimitives(pid_t pid, uint64_t *magicPageOut);

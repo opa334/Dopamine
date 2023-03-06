@@ -13,10 +13,13 @@ uint64_t proc_get_proc_ro(uint64_t proc_ptr);
 uint64_t proc_ro_get_ucred(uint64_t proc_ro_ptr);
 uint64_t proc_get_text_vnode(uint64_t proc_ptr);
 uint64_t proc_get_vnode_by_file_descriptor(uint64_t proc_ptr, int fd);
+uint64_t self_proc(void);
 
 uint64_t task_get_first_thread(uint64_t task_ptr);
 uint64_t thread_get_act_context(uint64_t thread_ptr);
 uint64_t task_get_vm_map(uint64_t task_ptr);
+uint64_t self_task(void);
+
 uint64_t vm_map_get_pmap(uint64_t vm_map_ptr);
 void pmap_set_type(uint64_t pmap_ptr, uint8_t type);
 uint64_t pmap_lv2(uint64_t pmap_ptr, uint64_t virt);

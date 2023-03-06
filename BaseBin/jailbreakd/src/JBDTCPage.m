@@ -1,7 +1,8 @@
 #import "JBDTCPage.h"
-#import "ppl.h"
-#import "pac.h"
-#import "boot_info.h"
+#import <libjailbreak/pplrw.h>
+#import <libjailbreak/kcall.h>
+#import <libjailbreak/boot_info.h>
+#import <libjailbreak/util.h>
 
 NSMutableArray<JBDTCPage *> *gTCPages = nil;
 

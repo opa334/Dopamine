@@ -13,3 +13,7 @@
 
 #define P_PAGE_SIZE 0x4000
 #define P_PAGE_MASK 0x3FFF
+
+#define PTE_TO_PERM(pte)  ((((pte) >> 4ULL) & 0xC) | (((pte) >> 52ULL) & 2) | (((pte) >> 54ULL) & 1))
+#define _PERM_TO_PTE(perm) ((((perm) & 0xC) << 4ULL) | (((perm) & 2) << 52ULL) | (((perm) & 1) << 54ULL))
+#define PERM_TO_PTE(perm) _PERM_TO_PTE((uint64_t) (perm))

@@ -1,7 +1,7 @@
 #import "util.h"
-#import "ppl.h"
-#import "pac.h"
-#import "jailbreakd.h"
+#import "pplrw.h"
+#import "kcall.h"
+#import "boot_info.h"
 
 extern const uint8_t *der_decode_plist(CFAllocatorRef allocator, CFTypeRef* output, CFErrorRef *error, const uint8_t *der_start, const uint8_t *der_end);
 extern const uint8_t *der_encode_plist(CFTypeRef input, CFErrorRef *error, const uint8_t *der_start, const uint8_t *der_end);
@@ -108,6 +108,16 @@ uint64_t proc_get_vnode_by_file_descriptor(uint64_t proc_ptr, int fd)
     return kread_ptr(file_glob_ptr + 0x38);
 }
 
+uint64_t self_proc(void)
+{
+    static uint64_t gSelfProc = 0;
+    static dispatch_once_t onceToken;
+    dispatch_once (&onceToken, ^{
+        gSelfProc = proc_for_pid(getpid());
+    });
+    return gSelfProc;
+}
+
 uint64_t task_get_first_thread(uint64_t task_ptr)
 {
 	return kread_ptr(task_ptr + 0x60ULL);
@@ -122,6 +132,16 @@ uint64_t thread_get_act_context(uint64_t thread_ptr)
 uint64_t task_get_vm_map(uint64_t task_ptr)
 {
     return kread_ptr(task_ptr + 0x28ULL);
+}
+
+uint64_t self_task(void)
+{
+    static uint64_t gSelfTask = 0;
+    static dispatch_once_t onceToken;
+    dispatch_once (&onceToken, ^{
+        gSelfTask = proc_get_task(self_proc());
+    });
+    return gSelfTask;
 }
 
 uint64_t vm_map_get_pmap(uint64_t vm_map_ptr)

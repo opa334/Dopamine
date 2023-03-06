@@ -1,11 +1,10 @@
 // Adapted from https://gist.github.com/LinusHenze/4fa58795914fb3c3438531fb3710f3da
 
-#import "ppl.h"
+#import "pplrw.h"
 #import "pte.h"
-#import "jailbreakd.h"
 #import "boot_info.h"
 #import "util.h"
-#import "pac.h"
+#import "kcall.h"
 
 #import <Foundation/Foundation.h>
 #define min(a,b) (((a)<(b))?(a):(b))
@@ -13,15 +12,7 @@
 static uint64_t* gMagicPage = NULL;
 static uint64_t gCpuTTEP = 0;
 static NSLock* gLock = nil;
-PPLStatus gPPLStatus = kPPLStatusNotInitialized;
-
-#define PTE_TO_PERM(pte)  ((((pte) >> 4ULL) & 0xC) | (((pte) >> 52ULL) & 2) | (((pte) >> 54ULL) & 1))
-#define _PERM_TO_PTE(perm) ((((perm) & 0xC) << 4ULL) | (((perm) & 2) << 52ULL) | (((perm) & 1) << 54ULL))
-#define PERM_TO_PTE(perm) _PERM_TO_PTE((uint64_t) (perm))
-
-#define PERM_KRW_URW 0x7 // R/W for kernel and user
-#define FAKE_PHYSPAGE_TO_MAP 0x13370000
-#define PPL_MAP_ADDR         0x2000000 // This is essentially guaranteed to be unused, minimum address is usually 0x100000000
+PPLRWStatus gPPLRWStatus = kPPLRWStatusNotInitialized;
 
 typedef struct PPLWindow
 {
@@ -228,7 +219,7 @@ void *mapIn(uint64_t pageVirt, PPLWindow* window)
 
 void *mapInRange(uint64_t pageStart, uint32_t pageCount, uint8_t** mappingStart)
 {
-	if(gPPLStatus == kPPLStatusNotInitialized) {
+	if(gPPLRWStatus == kPPLRWStatusNotInitialized) {
 		if (mappingStart) *mappingStart = 0;
 		return NULL;
 	}
@@ -265,7 +256,7 @@ void mappingDestroy(void* ctx)
 
 void physreadbuf(uint64_t physaddr, void* output, size_t size)
 {
-	if(gPPLStatus == kPPLStatusNotInitialized) {
+	if(gPPLRWStatus == kPPLRWStatusNotInitialized) {
 		bzero(output, size);
 		return;
 	}
@@ -292,7 +283,7 @@ void physreadbuf(uint64_t physaddr, void* output, size_t size)
 
 void physwritebuf(uint64_t physaddr, const void* input, size_t size)
 {
-	if(gPPLStatus == kPPLStatusNotInitialized) {
+	if(gPPLRWStatus == kPPLRWStatusNotInitialized) {
 		return;
 	}
 
@@ -320,7 +311,7 @@ void physwritebuf(uint64_t physaddr, const void* input, size_t size)
 
 void kreadbuf(uint64_t kaddr, void* output, size_t size)
 {
-	if(gPPLStatus == kPPLStatusNotInitialized) {
+	if(gPPLRWStatus == kPPLRWStatusNotInitialized) {
 		bzero(output, size);
 		return;
 	}
@@ -355,7 +346,7 @@ void kreadbuf(uint64_t kaddr, void* output, size_t size)
 
 void kwritebuf(uint64_t kaddr, const void* input, size_t size)
 {
-	if(gPPLStatus == kPPLStatusNotInitialized) {
+	if(gPPLRWStatus == kPPLRWStatusNotInitialized) {
 		return;
 	}
 
@@ -499,10 +490,9 @@ void kwrite8(uint64_t va, uint8_t v)
 	kwritebuf(va, &v, sizeof(v));
 }
 
-
 void initPPLPrimitives(uint64_t magicPage)
 {
-	if (gPPLStatus == kPPLStatusNotInitialized)
+	if (gPPLRWStatus == kPPLRWStatusNotInitialized)
 	{
 		uint64_t kernelslide = bootInfo_getUInt64(@"kernelslide");
 
@@ -511,68 +501,10 @@ void initPPLPrimitives(uint64_t magicPage)
 		gLock = [[NSLock alloc] init];
 		clearWindows();
 
-		gPPLStatus = kPPLStatusInitialized;
+		gPPLRWStatus = kPPLRWStatusInitialized;
 
 		NSLog(@"Initialized PPL primitives with magic page: 0x%llX", magicPage);
 
-		PPLInitializedCallback();
+		//PPLInitializedCallback();
 	}
-}
-
-kern_return_t pmap_enter_options_addr(uint64_t pmap, uint64_t pa, uint64_t va) {
-    while (1) {
-        kern_return_t kr = (kern_return_t) kcall(bootInfo_getSlidUInt64(@"pmap_enter_options_addr"), pmap, va, pa, VM_PROT_READ | VM_PROT_WRITE, 0, 0, 1, 1);
-        if (kr != KERN_RESOURCE_SHORTAGE) {
-            return kr;
-        }
-    }
-}
-
-void pmap_remove(uint64_t pmap, uint64_t start, uint64_t end) {
-    kcall(bootInfo_getSlidUInt64(@"pmap_remove_options"), pmap, start, end, 0x100, 0, 0, 0, 0);
-}
-
-int handoffPPLPrimitives(pid_t pid, uint64_t *magicPageOut)
-{
-	if (!pid || !magicPageOut) return -1;
-
-	uint64_t proc = proc_for_pid(pid);
-	if (proc == 0) return -2;
-	
-	uint64_t task = proc_get_task(proc);
-	if (task == 0) return -3;
-	
-	uint64_t vmMap = task_get_vm_map(task);
-	if (vmMap == 0) return -4;
-	
-	uint64_t pmap = vm_map_get_pmap(vmMap);
-	if (pmap == 0) return -5;
-	
-	// Map the fake page
-	kern_return_t kr = pmap_enter_options_addr(pmap, FAKE_PHYSPAGE_TO_MAP, PPL_MAP_ADDR);
-	if (kr != KERN_SUCCESS) {
-		return -6;
-	}
-	
-	// Temporarily change pmap type to nested
-	pmap_set_type(pmap, 3);
-	
-	// Remove mapping (table will not be removed because we changed the pmap type)
-	pmap_remove(pmap, PPL_MAP_ADDR, PPL_MAP_ADDR + 0x4000);
-	
-	// Change type back
-	pmap_set_type(pmap, 0);
-	
-	// Change the mapping to map the underlying page table
-	uint64_t table2Entry = pmap_lv2(pmap, PPL_MAP_ADDR);
-	if ((table2Entry & 0x3) != 0x3) {
-		return -7;
-	}
-	
-	uint64_t table3 = table2Entry & 0xFFFFFFFFC000ULL;
-	uint64_t pte = table3 | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY;
-	physwrite64(table3, pte);
-	
-	*magicPageOut = PPL_MAP_ADDR;
-	return 0;
 }
