@@ -9,6 +9,8 @@
 #import <libproc.h>
 #import "JBDTCPage.h"
 #import <stdint.h>
+#import <xpc/xpc.h>
+#import <bsm/libbsm.h>
 
 kern_return_t bootstrap_check_in(mach_port_t bootstrap_port, const char *service, mach_port_t *server_port);
 
@@ -31,41 +33,37 @@ uint64_t jbdParseNumUInt64(NSNumber *num)
 	return 0;
 }
 
-pid_t get_port_owner_pid(mach_port_t port) {
-    mach_port_t owner;
-    mach_port_status_t status;
-    mach_msg_type_number_t count = MACH_PORT_RECEIVE_STATUS_COUNT;
-    kern_return_t kr = mach_port_get_attributes(mach_task_self(), port, MACH_PORT_RECEIVE_STATUS, (mach_port_info_t)&status, &count);
-    if (kr != KERN_SUCCESS) {
-        printf("Error: mach_port_get_attributes() failed with error %d\n", kr);
-        return -1;
-    }
-    return status.mps_pset;
-}
-
-void mach_port_callback(CFMachPortRef port, void *msgV, CFIndex size, void *info)
+void mach_port_callback(mach_port_t machPort)
 {
-	mach_msg_header_t *msg = (mach_msg_header_t *)msgV;
-	mach_port_t client_port = msg->msgh_remote_port;
-	pid_t clientPid = get_port_owner_pid(client_port);
+	xpc_object_t message = nil;
+    int err = xpc_pipe_receive(machPort, &message);
+    if (err != 0) {
+		NSLog(@"xpc_pipe_receive error %d", err);
+        return;
+    }
 
-	NSMutableDictionary *responseDict = [NSMutableDictionary new];
+	xpc_object_t reply = xpc_dictionary_create_reply(message);
+	xpc_type_t messageType = xpc_get_type(message);
+	if (messageType == XPC_TYPE_DICTIONARY) {
+		audit_token_t auditToken = {};
+		xpc_dictionary_get_audit_token(message, &auditToken);
+		uid_t clientUid = audit_token_to_euid(auditToken);
+		pid_t clientPid = audit_token_to_pid(auditToken);
 
-	NSDictionary *msgDict = jbdDecodeMessage(msg);
-	if (msgDict) {
-		NSLog(@"received message %d with dictionary: %@", msg->msgh_id, msgDict);
+		JBD_MESSAGE_ID msgId = xpc_dictionary_get_uint64(message, "id");
 
-		switch (msg->msgh_id) {
+		NSLog(@"received message %d with dictionary: %s", msgId, xpc_copy_description(message));
+
+		switch (msgId) {
 			case JBD_MSG_GET_STATUS: {
-				responseDict[@"PPLRWStatus"] = @(gPPLRWStatus);
-				responseDict[@"kcallStatus"] = @(gKCallStatus);
-				responseDict[@"pid"] = @(getpid());
+				xpc_dictionary_set_uint64(reply, "pplrwStatus", gPPLRWStatus);
+				xpc_dictionary_set_uint64(reply, "kcallStatus", gKCallStatus);
 				break;
 			}
 			
 			case JBD_MSG_PPL_INIT: {
 				if (gPPLRWStatus == kPPLRWStatusNotInitialized) {
-					uint64_t magicPage = jbdParseNumUInt64(msgDict[@"magicPage"]);
+					uint64_t magicPage = xpc_dictionary_get_uint64(message, "magicPage");
 					if (magicPage) {
 						initPPLPrimitives(magicPage);
 						PPLInitializedCallback();
@@ -76,10 +74,10 @@ void mach_port_callback(CFMachPortRef port, void *msgV, CFIndex size, void *info
 			
 			case JBD_MSG_PAC_INIT: {
 				if (gKCallStatus == kKcallStatusNotInitialized && gPPLRWStatus == kPPLRWStatusInitialized) {
-					uint64_t kernelAllocation = jbdParseNumUInt64(msgDict[@"kernelAllocation"]);
+					uint64_t kernelAllocation = xpc_dictionary_get_uint64(message, "kernelAllocation");
 					if (kernelAllocation) {
 						uint64_t arcContext = initPACPrimitives(kernelAllocation);
-						responseDict[@"arcContext"] = @(arcContext);
+						xpc_dictionary_set_uint64(reply, "arcContext", arcContext);
 					}
 					break;
 				}
@@ -97,27 +95,26 @@ void mach_port_callback(CFMachPortRef port, void *msgV, CFIndex size, void *info
 				uint64_t magicPage = 0;
 				int r = handoffPPLPrimitives(clientPid, &magicPage);
 				if (r == 0) {
-					responseDict[@"magicPage"] = @(magicPage);
+					xpc_dictionary_set_uint64(reply, "magicPage", magicPage);
 				}
 				else {
-					responseDict[@"errorCode"] = @(r);
+					xpc_dictionary_set_uint64(reply, "errorCode", r);
 				}
 				break;
 			}
 			
-			
 			case JBD_MSG_KCALL: {
-				uint64_t func = jbdParseNumUInt64(msgDict[@"func"]);
-				uint64_t a1 = jbdParseNumUInt64(msgDict[@"a1"]);
-				uint64_t a2 = jbdParseNumUInt64(msgDict[@"a2"]);
-				uint64_t a3 = jbdParseNumUInt64(msgDict[@"a3"]);
-				uint64_t a4 = jbdParseNumUInt64(msgDict[@"a4"]);
-				uint64_t a5 = jbdParseNumUInt64(msgDict[@"a5"]);
-				uint64_t a6 = jbdParseNumUInt64(msgDict[@"a6"]);
-				uint64_t a7 = jbdParseNumUInt64(msgDict[@"a7"]);
-				uint64_t a8 = jbdParseNumUInt64(msgDict[@"a8"]);
+				uint64_t func = xpc_dictionary_get_uint64(message, "func");
+				uint64_t a1 = xpc_dictionary_get_uint64(message, "a1");
+				uint64_t a2 = xpc_dictionary_get_uint64(message, "a2");
+				uint64_t a3 = xpc_dictionary_get_uint64(message, "a3");
+				uint64_t a4 = xpc_dictionary_get_uint64(message, "a4");
+				uint64_t a5 = xpc_dictionary_get_uint64(message, "a5");
+				uint64_t a6 = xpc_dictionary_get_uint64(message, "a6");
+				uint64_t a7 = xpc_dictionary_get_uint64(message, "a7");
+				uint64_t a8 = xpc_dictionary_get_uint64(message, "a8");
 				uint64_t ret = kcall(func, a1, a2, a3, a4, a5, a6, a7, a8);
-				responseDict[@"ret"] = @(ret);
+				xpc_dictionary_set_uint64(reply, "ret", ret);
 				break;
 			}
 			
@@ -133,7 +130,7 @@ void mach_port_callback(CFMachPortRef port, void *msgV, CFIndex size, void *info
 			}
 
 			case JBD_MSG_UNRESTRICT_PROC: {
-				pid_t pid = jbdParseNumUInt64(msgDict[@"pid"]);
+				pid_t pid = xpc_dictionary_get_int64(message, "pid");
 				uint64_t proc = proc_for_pid(pid);
 				if (proc != 0) {
 					NSMutableDictionary *entitlements = proc_dump_entitlements(proc);
@@ -142,30 +139,19 @@ void mach_port_callback(CFMachPortRef port, void *msgV, CFIndex size, void *info
 					//entitlements[@"run-unsigned-code"] = (__bridge id)kCFBooleanTrue;
 					proc_replace_entitlements(proc, entitlements);
 					bool success = cs_allow_invalid(proc);
-					responseDict[@"success"] = @(success);
+					xpc_dictionary_set_bool(reply, "success", success);
 				}
 				break;
 			}
 		}
 	}
 
-	if (responseDict) {
-		NSLog(@"responding to message %d with %@", msg->msgh_id, responseDict);
-
-		mach_msg_header_t *responseMsg = malloc(0x1000);
-		memset(responseMsg, 0, 0x1000);
-		jbdEncodeMessage(responseMsg, responseDict, 0x1000);
-		responseMsg->msgh_bits = msg->msgh_bits & MACH_MSGH_BITS_REMOTE_MASK;
-		responseMsg->msgh_remote_port = client_port;
-		responseMsg->msgh_local_port = MACH_PORT_NULL;
-		responseMsg->msgh_id = msg->msgh_id;
-
-		kern_return_t kr = mach_msg(responseMsg, MACH_SEND_MSG, responseMsg->msgh_size, 0, MACH_PORT_NULL, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
-		if (kr != KERN_SUCCESS) {
-			NSLog(@"error sending response message: %d (%s)", kr, mach_error_string(kr));
+	if (reply) {
+		NSLog(@"responding to message %d with %s", msgId, xpc_copy_description(reply));
+		err = xpc_pipe_routine_reply(reply);
+		if (err != 0) {
+			NSLog(@"Error %d sending response", err);
 		}
-
-		free(responseMsg);
 	}
 }
 
@@ -183,18 +169,14 @@ int main(int argc, char* argv[])
 			return 1;
 		}
 
-		CFMachPortRef cfMachPort = CFMachPortCreateWithPort(NULL, machPort, mach_port_callback, NULL, NULL);
+		dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_MACH_RECV, (uintptr_t)machPort, 0, dispatch_get_main_queue());
+        dispatch_source_set_event_handler(source, ^{
+			mach_port_t machPort = (mach_port_t)dispatch_source_get_handle(source);
+			mach_port_callback(machPort);
+        });
+        dispatch_resume(source);
 
-		CFRunLoopSourceRef source = CFMachPortCreateRunLoopSource(NULL, cfMachPort, 0);
-		CFRunLoopAddSource(CFRunLoopGetCurrent(), source, kCFRunLoopDefaultMode);
-
-		mach_port_t port = 15;
-		mach_port_t bootstrapPort;
-		task_get_bootstrap_port(mach_task_self(), &bootstrapPort);
-
-		mach_port_insert_right(mach_task_self(), port, machPort, MACH_MSG_TYPE_MAKE_SEND);
-
-		CFRunLoopRun();
+		dispatch_main();
 		return 0;
 	}
 }

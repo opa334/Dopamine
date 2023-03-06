@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import <xpc/xpc.h>
 
 typedef enum {
 	JBD_MSG_GET_STATUS = 0,
@@ -19,9 +20,7 @@ uint64_t jbdParseNumInt64(NSNumber *num);
 bool jbdParseBool(NSNumber *num);
 
 mach_port_t jbdMachPort(void);
-int jbdEncodeMessage(mach_msg_header_t *msgPtr, NSDictionary *dictionary, size_t maxSize);
-NSDictionary *jbdDecodeMessage(mach_msg_header_t *msgPtr);
-NSDictionary *sendJBDMessage(JBD_MESSAGE_ID messageId, NSDictionary *messageDict);
+xpc_object_t sendJBDMessage(xpc_object_t message);
 
 void jbdGetStatus(uint64_t *PPLRWStatus, uint64_t *kcallStatus, pid_t *pid);
 void jbdTransferPPLRW(uint64_t magicPage);

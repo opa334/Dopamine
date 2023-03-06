@@ -331,6 +331,7 @@ XPC_ASSUME_NONNULL_END
 #undef __XPC_INDIRECT__
 #include <launch.h>
 #endif // __XPC_BUILDING_XPC__
+#include <xpc/private.h>
 XPC_ASSUME_NONNULL_BEGIN
 
 #pragma mark XPC Object Protocol
