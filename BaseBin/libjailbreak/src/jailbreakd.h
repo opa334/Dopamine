@@ -26,6 +26,7 @@ void jbdGetStatus(uint64_t *PPLRWStatus, uint64_t *kcallStatus, pid_t *pid);
 void jbdTransferPPLRW(uint64_t magicPage);
 uint64_t jbdTransferKcall(uint64_t kernelAllocation);
 void jbdFinalizeKcall(void);
+uint64_t jbdGetPPLRWPage(int64_t* errOut);
 int jbdInitPPLRW(void);
 uint64_t jbdKcall(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8);
 bool jbdUnrestrictProc(pid_t pid);

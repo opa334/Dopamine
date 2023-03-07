@@ -296,11 +296,19 @@ void OSEntitlements_resign(uint64_t OSEntitlements_ptr)
     kwrite64(OSEntitlements_ptr + 0x70, signature);
 }
 
-void OSEntitlements_replace_entitlements(uint64_t OSEntitlements_ptr, NSDictionary *newEntitlements)
+void cr_label_replace_entitlements(uint64_t cr_label_ptr, NSDictionary *newEntitlements)
 {
+    // While replacing the entitlements, we set them to 0
+    // This is so we don't hit a race condition between overwriting and resigning the entitlements
+    // There should be a better way to fix this (mac_set_label kcall), but I couldn't get it working
+    uint64_t OSEntitlements_ptr = kread64(cr_label_ptr + 0x8);
+    kwrite64(cr_label_ptr + 0x8, 0);
+
     uint64_t CEQueryContext = OSEntitlements_ptr + 0x28;
     CEQueryContext_replace_entitlements(CEQueryContext, newEntitlements);
     OSEntitlements_resign(OSEntitlements_ptr);
+
+    kwrite64(cr_label_ptr + 0x8, OSEntitlements_ptr);
 }
 
 NSMutableDictionary *pmap_cs_entry_dump_entitlements(uint64_t pmap_cs_entry_ptr)
@@ -356,11 +364,10 @@ void proc_replace_entitlements(uint64_t proc_ptr, NSDictionary *newEntitlements)
 {
     uint64_t ucred_ptr = proc_get_ucred(proc_ptr);
     uint64_t cr_label_ptr = ucred_get_cr_label(ucred_ptr);
-    uint64_t OSEntitlements_ptr = cr_label_get_OSEntitlements(cr_label_ptr);
 
     // Also apply changes on vnode
     uint64_t text_vnode = proc_get_text_vnode(proc_ptr);
     vnode_replace_entitlements(text_vnode, newEntitlements);
 
-    OSEntitlements_replace_entitlements(OSEntitlements_ptr, newEntitlements);
+    cr_label_replace_entitlements(cr_label_ptr, newEntitlements);
 }

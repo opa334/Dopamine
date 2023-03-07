@@ -78,7 +78,7 @@ void jbdFinalizeKcall(void)
 	sendJBDMessage(message);
 }
 
-int jbdInitPPLRW(void)
+uint64_t jbdGetPPLRWPage(int64_t* errOut)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_HANDOFF_PPL);
@@ -87,6 +87,14 @@ int jbdInitPPLRW(void)
 	int64_t errorCode = xpc_dictionary_get_int64(reply, "errorCode");
 	uint64_t magicPage = xpc_dictionary_get_uint64(reply, "magicPage");
 
+	if (errOut) *errOut = errorCode;
+	return magicPage;
+}
+
+int jbdInitPPLRW(void)
+{
+	int64_t errorCode = 0;
+	uint64_t magicPage = jbdGetPPLRWPage(&errorCode);
 	if (errorCode) return errorCode;
 	initPPLPrimitives(magicPage);
 	return 0;
