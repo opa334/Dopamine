@@ -8,7 +8,7 @@ Fugu15 Max is a continuation of the Fugu15 project and aims to bring a tradition
 
 It is currently **IN DEVELOPMENT** and not recommended to be used by **ANYONE**.
 
-The wifi and deep sleep bugs mentioned below have already been fixed in upstream commits, although the solution for the deep sleep is to just kill oobPCI after we have spawned jailbreakd and handed off the primitives to it.
+The wifi and deep sleep bugs mentioned below have already been fixed in upstream commits, although the solution for the deep sleep is to just kill oobPCI after we have spawned jailbreakd and handed off the primitives to it and the solution for the wifi bug still requires disabling wifi during the jailbreak (can be reenabled afterwards).
 
 # Fugu15
 Fugu15 is a semi-untethered permasigned jailbreak for iOS 15.  
