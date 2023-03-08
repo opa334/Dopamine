@@ -118,7 +118,7 @@ void mach_port_callback(mach_port_t machPort)
 				xpc_dictionary_set_uint64(reply, "ret", ret);
 				break;
 			}
-			
+
 
 			case JBD_MSG_REBUILD_TRUSTCACHE: {
 				rebuildTrustCache();

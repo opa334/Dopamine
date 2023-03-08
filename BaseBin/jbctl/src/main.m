@@ -2,10 +2,11 @@
 
 int main(int argc, char* argv[])
 {
-	if (argc != 3) return 1;
+	if (argc < 2) return 1;
 
 	char *cmd = argv[1];
 	if (!strcmp(cmd, "unrestrict_proc")) {
+		if (argc != 3) return 1;
 		int pid = atoi(argv[2]);
 		bool suc = jbdUnrestrictProc(pid);
 		if (suc) {

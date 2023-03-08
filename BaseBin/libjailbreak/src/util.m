@@ -19,6 +19,19 @@ uint64_t kfree(uint64_t addr, uint64_t size)
 	return kcall(kfree_data_external, addr, size, 0, 0, 0, 0, 0, 0);
 }
 
+uint64_t stringKalloc(const char *string)
+{
+    uint64_t stringLen = strlen(string) + 1;
+    uint64_t stringInKmem = kalloc(stringLen);
+    kwritebuf(stringInKmem, string, stringLen);
+    return stringInKmem;
+}
+
+void stringKFree(const char *string, uint64_t kmem)
+{
+    kfree(kmem, strlen(string)+1);
+}
+
 bool cs_allow_invalid(uint64_t proc_ptr)
 {
     uint64_t cs_allow_invalid = bootInfo_getSlidUInt64(@"cs_allow_invalid");

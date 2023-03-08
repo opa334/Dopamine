@@ -1,3 +1,5 @@
+_shared/libjailbreak
 libjailbreak/libjailbreak.dylib
 jailbreakd/jailbreakd
 kickstart/kickstart
+jbctl/jbctl

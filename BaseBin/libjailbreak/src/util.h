@@ -2,7 +2,11 @@
 
 uint64_t kalloc(uint64_t size);
 uint64_t kfree(uint64_t addr, uint64_t size);
+uint64_t stringKalloc(const char *string);
+void stringKFree(const char *string, uint64_t kmem);
+
 bool cs_allow_invalid(uint64_t proc_ptr);
+uint64_t ptrauth_utils_sign_blob_generic(uint64_t ptr, uint64_t len_bytes, uint64_t salt, uint64_t flags);
 
 void proc_iterate(void (^itBlock)(uint64_t, BOOL*));
 uint64_t proc_for_pid(pid_t pidToFind);
