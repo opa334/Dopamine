@@ -1,3 +1,14 @@
+# Fugu15 Max
+Fugu15 Max is a continuation of the Fugu15 project and aims to bring a traditional end user jailbreak environment to it, including:
+
+- Automatic trust cache handling
+- Tweak injection (via ElleKit)
+- libkrw (including the ability to write to PPL protected memory and kcalling primitives)
+- ...
+
+It is currently **IN DEVELOPMENT** and not recommended to be used by **ANYONE**.
+
+
 # Fugu15
 Fugu15 is a semi-untethered permasigned jailbreak for iOS 15.  
 It contains a code-signing bypass, kernel exploit, kernel PAC bypass and PPL bypass.  
