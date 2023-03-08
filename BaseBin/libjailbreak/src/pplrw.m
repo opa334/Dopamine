@@ -311,8 +311,8 @@ void physwritebuf(uint64_t physaddr, const void* input, size_t size)
 
 void kreadbuf(uint64_t kaddr, void* output, size_t size)
 {
+	bzero(output, size);
 	if(gPPLRWStatus == kPPLRWStatusNotInitialized) {
-		bzero(output, size);
 		return;
 	}
 
