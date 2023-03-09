@@ -11,7 +11,7 @@
 		<key>com.opa334.jailbreakd</key>
 		<dict>
 			<key>HostSpecialPort</key>
-			<integer>15</integer>
+			<integer>16</integer>
 		</dict>
 	</dict>
 	<key>ProgramArguments</key>

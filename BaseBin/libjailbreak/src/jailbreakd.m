@@ -13,7 +13,7 @@ mach_port_t jbdMachPort(void)
 	mach_port_t outPort = -1;
 
 	if (getpid() == 1) {
-		host_get_special_port(mach_host_self(), HOST_LOCAL_NODE, 15, &outPort);
+		host_get_special_port(mach_host_self(), HOST_LOCAL_NODE, 16, &outPort);
 	}
 	else {
 		bootstrap_look_up(bootstrap_port, "com.opa334.jailbreakd", &outPort);
