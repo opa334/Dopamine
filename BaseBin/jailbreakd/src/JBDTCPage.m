@@ -42,7 +42,7 @@ void tcPagesChanged(void)
 	self = [super init];
 	if (self) {
 		_mappedInPage = NULL;
-		[self allocateInKernel];
+		if (![self allocateInKernel]) return nil;
 		[self linkInKernel];
 	}
 	return self;
@@ -78,9 +78,10 @@ void tcPagesChanged(void)
 	}
 }
 
-- (void)allocateInKernel
+- (BOOL)allocateInKernel
 {
 	_kaddr = kalloc(0x4000);
+	if (_kaddr == 0) return NO;
 
 	NSLog(@"allocated trust cache page at 0x%llX", _kaddr);
 	
@@ -92,6 +93,7 @@ void tcPagesChanged(void)
 
 	[gTCPages addObject:self];
 	tcPagesChanged();
+	return YES;
 }
 
 - (void)linkInKernel
