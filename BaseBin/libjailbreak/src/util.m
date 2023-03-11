@@ -293,7 +293,7 @@ void CEQueryContext_replace_entitlements(uint64_t CEQueryContext_ptr, NSDictiona
     uint64_t old_kern_der_start = kread_ptr(CEQueryContext_ptr + 0x18);
     uint64_t old_kern_der_end = kread_ptr(CEQueryContext_ptr + 0x20);
     uint64_t old_kern_der_size = old_kern_der_end - old_kern_der_start;
-    kfree(old_kern_der_start, old_kern_der_size);
+    //kfree(old_kern_der_start, old_kern_der_size);
 
     uint64_t kern_der_start = kalloc(der_size);
     uint64_t kern_der_end = kern_der_start + der_size;
