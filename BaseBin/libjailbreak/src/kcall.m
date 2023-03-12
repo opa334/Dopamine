@@ -294,8 +294,6 @@ void finalizePACPrimitives(void)
 	// Done!
 	// Thread's fault handler is now set to the br x22 gadget
 	gKCallStatus = kKcallStatusFinalized;
-
-	//PACInitializedCallback();
 }
 
 NSString *getExecutablePath(void)

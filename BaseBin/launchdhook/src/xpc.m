@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <libjailbreak/libjailbreak.h>
 #import <libjailbreak/launchd.h>
+#import <libjailbreak/patchfind.h>
 #import <mach-o/dyld.h>
 #import <xpc/xpc.h>
 #import <bsm/libbsm.h>
@@ -81,10 +82,19 @@ void initXPCHooks(void)
 
 	if (launchdIndex == -1) return;
 
-	intptr_t launchdSlide = _dyld_get_image_vmaddr_slide(launchdIndex);
-	void *xpcHandlerPtr = (void *)(launchdSlide + 0x10003ABD4); //TODO: Patchfind
-	// ^ Only works on iPad 8, 15.4.1 for now
-	MSHookFunction(xpcHandlerPtr, (void *)xpc_handler_replacement, (void **)&xpc_handler_orig);
+	unsigned char xpcHandlerBytes[] = "\xE0\x03\x00\xAA\xE0\x03\x00\xAA\xE0\x03\x00\xAA\x00\x00\x80\x52\x00\x00\x00\x39";
+	unsigned char xpcHandlerBytesMask[] = "\xE0\xFF\xE0\xFF\xE0\xFF\xE0\xFF\xE0\xFF\xE0\xFF\x00\xFF\xE0\xFF\x00\x00\x00\xFF";
+	
+	void *xpcHandlerMid = patchfind_find(launchdIndex, (unsigned char*)xpcHandlerBytes, (unsigned char*)xpcHandlerBytesMask, sizeof(xpcHandlerBytes));
+	jbdRemoteLog(3, @"Launchd patchfinder found mid 0x%llX", xpcHandlerMid);
+
+	void *xpcHandlerPtr = patchfind_seek_back(xpcHandlerMid, 0xD503237F, 0xFFFFFFFF, 50 * 4);
+
+	jbdRemoteLog(3, @"Launchd patchfinder found 0x%llX", xpcHandlerPtr);
+	if (xpcHandlerPtr)
+	{
+		MSHookFunction(xpcHandlerPtr, (void *)xpc_handler_replacement, (void **)&xpc_handler_orig);
+	}
 }
 
 

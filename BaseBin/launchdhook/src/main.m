@@ -5,7 +5,7 @@
 
 __attribute__((constructor)) static void initializer(void)
 {
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+	dispatch_async(dispatch_get_main_queue(), ^(void){
 		if (bootInfo_getUInt64(@"launchdInitialized")) {
 			// Launchd was already initialized before, we are coming from a userspace reboot... recover primitives
 			// TODO
