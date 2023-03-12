@@ -6,6 +6,8 @@
 #import <bsm/libbsm.h>
 #import "pplrw.h"
 
+bool gIsJailbreakd = false;
+
 kern_return_t bootstrap_look_up(mach_port_t port, const char *service, mach_port_t *server_port);
 
 mach_port_t jbdMachPort(void)
@@ -62,11 +64,10 @@ void jbdTransferPPLRW(uint64_t magicPage)
 	sendJBDMessage(message);
 }
 
-uint64_t jbdTransferKcall(uint64_t kernelAllocation)
+uint64_t jbdTransferKcall(void)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_PAC_INIT);
-	xpc_dictionary_set_uint64(message, "kernelAllocation", kernelAllocation);
 	xpc_object_t reply = sendJBDMessage(message);
 	return xpc_dictionary_get_uint64(reply, "arcContext");
 }
@@ -103,7 +104,7 @@ int jbdInitPPLRW(void)
 uint64_t jbdKcall(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
-	xpc_dictionary_set_uint64(message, "id", JBD_MSG_KCALL);
+	xpc_dictionary_set_uint64(message, "id", JBD_MSG_DO_KCALL);
 	xpc_dictionary_set_uint64(message, "func", func);
 	xpc_dictionary_set_uint64(message, "a1", a1);
 	xpc_dictionary_set_uint64(message, "a2", a2);
@@ -118,14 +119,25 @@ uint64_t jbdKcall(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t
 	return xpc_dictionary_get_uint64(reply, "ret");
 }
 
-bool jbdUnrestrictProc(pid_t pid)
+void jbdRemoteLog(uint64_t verbosity, NSString *fString, ...)
 {
-	xpc_object_t message = xpc_dictionary_create_empty();
-	xpc_dictionary_set_uint64(message, "id", JBD_MSG_UNRESTRICT_PROC);
-	xpc_dictionary_set_int64(message, "pid", pid);
+	va_list va;
+	va_start(va, fString);
+	NSString* msg = [[NSString alloc] initWithFormat:fString arguments:va];
+	va_end(va);
 
-	xpc_object_t reply = sendJBDMessage(message);
-	return xpc_dictionary_get_bool(reply, "success");
+	xpc_object_t message = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(message, "id", JBD_MSG_REMOTELOG);
+	xpc_dictionary_set_uint64(message, "verbosity", verbosity);
+	xpc_dictionary_set_string(message, "log", [msg UTF8String]);
+
+	sendJBDMessage(message);
+}
+
+
+bool jbdEntitleVnode(pid_t pid, int fd)
+{
+	return NO;
 }
 
 void jbdRebuildTrustCache(void)
@@ -135,7 +147,22 @@ void jbdRebuildTrustCache(void)
 	sendJBDMessage(message);
 }
 
-int jbdInitKcall(void)
+bool jbdEntitleProc(pid_t pid)
 {
-	return 0;
+	xpc_object_t message = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(message, "id", JBD_MSG_ENTITLE_PROC);
+	xpc_dictionary_set_int64(message, "pid", pid);
+
+	xpc_object_t reply = sendJBDMessage(message);
+	return xpc_dictionary_get_bool(reply, "success");
+}
+
+bool jbdProcSetDebugged(pid_t pid)
+{
+	xpc_object_t message = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(message, "id", JBD_MSG_PROC_SET_DEBUGGED);
+	xpc_dictionary_set_int64(message, "pid", pid);
+
+	xpc_object_t reply = sendJBDMessage(message);
+	return xpc_dictionary_get_bool(reply, "success");
 }

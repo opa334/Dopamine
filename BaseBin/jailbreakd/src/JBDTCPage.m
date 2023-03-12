@@ -150,7 +150,9 @@ void tcPagesChanged(void)
 	if (_kaddr == 0) return;
 
 	kfree(_kaddr, 0x4000);
+	NSLog(@"freed trust cache page at 0x%llX", _kaddr);
 	[gTCPages removeObject:self];
+	tcPagesChanged();
 	_kaddr = 0;
 }
 

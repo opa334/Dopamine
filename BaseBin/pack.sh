@@ -50,6 +50,15 @@ make
 cd -
 cp "./jbctl/jbctl" ".tmp/basebin/jbctl"
 
+# launchdhook
+cd "launchdhook"
+make
+cd -
+cp "./launchdhook/launchdhook.dylib" ".tmp/basebin/launchdhook.dylib"
+
+# external
+cp -r ./_external/* .tmp/basebin/
+
 # Create TrustCache, for basebinaries
 trustcache create "./.tmp/basebin/basebin.tc" "./.tmp/basebin"
 

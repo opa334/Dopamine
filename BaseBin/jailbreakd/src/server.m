@@ -4,6 +4,8 @@
 #import <libjailbreak/util.h>
 #import <libjailbreak/jailbreakd.h>
 #import <libjailbreak/handoff.h>
+#import <libjailbreak/boot_info.h>
+#import <libjailbreak/launchd.h>
 #import "trustcache.h"
 #import <kern_memorystatus.h>
 #import <libproc.h>
@@ -11,9 +13,30 @@
 #import <stdint.h>
 #import <xpc/xpc.h>
 #import <bsm/libbsm.h>
+#import <libproc.h>
+
 
 kern_return_t bootstrap_check_in(mach_port_t bootstrap_port, const char *service, mach_port_t *server_port);
 
+const char *verbosityString(int verbosity)
+{
+	switch (verbosity) {
+		case 1:
+		return "ERROR";
+		case 2:
+		return "WARNING";
+		default:
+		return "INFO";
+	}
+}
+
+NSString *procPath(pid_t pid)
+{
+	char pathbuf[4*MAXPATHLEN];
+	int ret = proc_pidpath(pid, pathbuf, sizeof(pathbuf));
+	if (ret <= 0) return nil;
+	return [NSString stringWithUTF8String:pathbuf];
+}
 
 void PPLInitializedCallback(void)
 {
@@ -23,14 +46,6 @@ void PPLInitializedCallback(void)
 void PACInitializedCallback(void)
 {
 	startTrustCacheFileListener();
-}
-
-uint64_t jbdParseNumUInt64(NSNumber *num)
-{
-	if ([num isKindOfClass:NSNumber.class]) {
-		return num.unsignedLongLongValue;
-	}
-	return 0;
 }
 
 void mach_port_callback(mach_port_t machPort)
@@ -53,7 +68,9 @@ void mach_port_callback(mach_port_t machPort)
 
 		msgId = xpc_dictionary_get_uint64(message, "id");
 
-		NSLog(@"received message %d with dictionary: %s", msgId, xpc_copy_description(message));
+		if (msgId != JBD_MSG_REMOTELOG) {
+			NSLog(@"received message %d with dictionary: %s", msgId, xpc_copy_description(message));
+		}
 
 		switch (msgId) {
 			case JBD_MSG_GET_STATUS: {
@@ -75,7 +92,7 @@ void mach_port_callback(mach_port_t machPort)
 			
 			case JBD_MSG_PAC_INIT: {
 				if (gKCallStatus == kKcallStatusNotInitialized && gPPLRWStatus == kPPLRWStatusInitialized) {
-					uint64_t kernelAllocation = xpc_dictionary_get_uint64(message, "kernelAllocation");
+					uint64_t kernelAllocation = bootInfo_getUInt64(@"jailbreakd_pac_allocation");
 					if (kernelAllocation) {
 						uint64_t arcContext = initPACPrimitives(kernelAllocation);
 						xpc_dictionary_set_uint64(reply, "arcContext", arcContext);
@@ -93,54 +110,84 @@ void mach_port_callback(mach_port_t machPort)
 			}
 			
 			case JBD_MSG_HANDOFF_PPL: {
-				uint64_t magicPage = 0;
-				int r = handoffPPLPrimitives(clientPid, &magicPage);
-				if (r == 0) {
-					xpc_dictionary_set_uint64(reply, "magicPage", magicPage);
+				if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+					uint64_t magicPage = 0;
+					int r = handoffPPLPrimitives(clientPid, &magicPage);
+					if (r == 0) {
+						xpc_dictionary_set_uint64(reply, "magicPage", magicPage);
+					}
+					else {
+						xpc_dictionary_set_uint64(reply, "errorCode", r);
+					}
 				}
 				else {
-					xpc_dictionary_set_uint64(reply, "errorCode", r);
+					xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
 				}
 				break;
 			}
 			
-			case JBD_MSG_KCALL: {
-				uint64_t func = xpc_dictionary_get_uint64(message, "func");
-				uint64_t a1 = xpc_dictionary_get_uint64(message, "a1");
-				uint64_t a2 = xpc_dictionary_get_uint64(message, "a2");
-				uint64_t a3 = xpc_dictionary_get_uint64(message, "a3");
-				uint64_t a4 = xpc_dictionary_get_uint64(message, "a4");
-				uint64_t a5 = xpc_dictionary_get_uint64(message, "a5");
-				uint64_t a6 = xpc_dictionary_get_uint64(message, "a6");
-				uint64_t a7 = xpc_dictionary_get_uint64(message, "a7");
-				uint64_t a8 = xpc_dictionary_get_uint64(message, "a8");
-				uint64_t ret = kcall(func, a1, a2, a3, a4, a5, a6, a7, a8);
-				xpc_dictionary_set_uint64(reply, "ret", ret);
+			case JBD_MSG_DO_KCALL: {
+				if (gKCallStatus == kKcallStatusFinalized) {
+					uint64_t func = xpc_dictionary_get_uint64(message, "func");
+					uint64_t a1 = xpc_dictionary_get_uint64(message, "a1");
+					uint64_t a2 = xpc_dictionary_get_uint64(message, "a2");
+					uint64_t a3 = xpc_dictionary_get_uint64(message, "a3");
+					uint64_t a4 = xpc_dictionary_get_uint64(message, "a4");
+					uint64_t a5 = xpc_dictionary_get_uint64(message, "a5");
+					uint64_t a6 = xpc_dictionary_get_uint64(message, "a6");
+					uint64_t a7 = xpc_dictionary_get_uint64(message, "a7");
+					uint64_t a8 = xpc_dictionary_get_uint64(message, "a8");
+					uint64_t ret = kcall(func, a1, a2, a3, a4, a5, a6, a7, a8);
+					xpc_dictionary_set_uint64(reply, "ret", ret);
+				}
+				else {
+					xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
+				}
+				break;
+			}
+
+
+			case JBD_MSG_REMOTELOG: {
+				uint64_t verbosity = xpc_dictionary_get_uint64(message, "verbosity");
+				const char *log = xpc_dictionary_get_string(message, "log");
+				NSLog(@"[%@(%d)/%s] %s", procPath(clientPid).lastPathComponent, clientPid, verbosityString(verbosity), log);
 				break;
 			}
 
 
 			case JBD_MSG_REBUILD_TRUSTCACHE: {
-				rebuildTrustCache();
+				if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+					rebuildTrustCache();
+				}
+				else {
+					xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
+				}
 				break;
 			}
 			
-			case JBD_MSG_UNRESTRICT_VNODE: {
+			case JBD_MSG_ENTITLE_VNODE: {
 				//TODO
 				break;
 			}
 
-			case JBD_MSG_UNRESTRICT_PROC: {
-				pid_t pid = xpc_dictionary_get_int64(message, "pid");
-				uint64_t proc = proc_for_pid(pid);
-				if (proc != 0) {
-					NSMutableDictionary *entitlements = proc_dump_entitlements(proc);
-					entitlements[@"get-task-allow"] = (__bridge id)kCFBooleanTrue;
-					//entitlements[@"run-invalid-allow"] = (__bridge id)kCFBooleanTrue;
-					//entitlements[@"run-unsigned-code"] = (__bridge id)kCFBooleanTrue;
-					proc_replace_entitlements(proc, entitlements);
-					bool success = cs_allow_invalid(proc);
-					xpc_dictionary_set_bool(reply, "success", success);
+			case JBD_MSG_ENTITLE_PROC: {
+				if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+					pid_t pid = xpc_dictionary_get_int64(message, "pid");
+					xpc_dictionary_set_bool(reply, "success", entitle_proc(pid));
+				}
+				else {
+					xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
+				}
+				break;
+			}
+
+			case JBD_MSG_PROC_SET_DEBUGGED: {
+				if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+					pid_t pid = xpc_dictionary_get_int64(message, "pid");
+					xpc_dictionary_set_bool(reply, "success", proc_set_debugged(pid));
+				}
+				else {
+					xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
 				}
 				break;
 			}
@@ -148,7 +195,9 @@ void mach_port_callback(mach_port_t machPort)
 	}
 
 	if (reply) {
-		NSLog(@"responding to message %d with %s", msgId, xpc_copy_description(reply));
+		if (msgId != JBD_MSG_REMOTELOG) {
+			NSLog(@"responding to message %d with %s", msgId, xpc_copy_description(reply));
+		}
 		err = xpc_pipe_routine_reply(reply);
 		if (err != 0) {
 			NSLog(@"Error %d sending response", err);
@@ -156,10 +205,29 @@ void mach_port_callback(mach_port_t machPort)
 	}
 }
 
+int launchdInitPPLRW(void)
+{
+	xpc_object_t msg = xpc_dictionary_create_empty();
+	xpc_dictionary_set_bool(msg, "jailbreak", true);
+	xpc_dictionary_set_uint64(msg, "jailbreak-action", LAUNCHD_JB_MSG_ID_GET_PPLRW);
+	xpc_object_t reply = launchd_xpc_send_message(msg);
+
+	int error = xpc_dictionary_get_int64(reply, "error");
+	if (error == 0) {
+		uint64_t magicPage = xpc_dictionary_get_uint64(reply, "magicPage");
+		initPPLPrimitives(magicPage);
+		return 0;
+	}
+	else {
+		return error;
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	@autoreleasepool {
 		NSLog(@"Hello from the other side!");
+		gIsJailbreakd = YES;
 
 		gTCPages = [NSMutableArray new];
 
@@ -168,6 +236,24 @@ int main(int argc, char* argv[])
 		if (kr != KERN_SUCCESS) {
 			NSLog(@"Failed bootstrap check in: %d (%s)", kr, mach_error_string(kr));
 			return 1;
+		}
+
+		if (bootInfo_getUInt64(@"launchdInitialized")) {
+			NSLog(@"launchd already initialized, recovering primitives...");
+			int err = launchdInitPPLRW();
+			if (err == 0) {
+				PPLInitializedCallback();
+				err = recoverPACPrimitives();
+				if (err == 0) {
+					PACInitializedCallback();
+				}
+				else {
+					NSLog(@"error recovering PAC primitives: %d", err);
+				}
+			}
+			else {
+				NSLog(@"error recovering PPL primitives: %d", err);
+			}
 		}
 
 		dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_MACH_RECV, (uintptr_t)machPort, 0, dispatch_get_main_queue());

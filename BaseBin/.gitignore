@@ -3,3 +3,5 @@ libjailbreak/libjailbreak.dylib
 jailbreakd/jailbreakd
 kickstart/kickstart
 jbctl/jbctl
+launchdhook/launchdhook.dylib
+jbinit/jbinit.dylib

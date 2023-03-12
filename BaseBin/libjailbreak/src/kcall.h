@@ -6,6 +6,18 @@ typedef enum {
 	kKcallStatusFinalized = 2
 } KcallStatus;
 
+typedef struct {
+	uint64_t unk;
+	uint64_t x[29];
+	uint64_t fp;
+	uint64_t lr;
+	uint64_t sp;
+	uint64_t pc;
+	uint32_t cpsr;
+	// Other stuff
+	uint64_t other[70];
+} kRegisterState;
+
 extern KcallStatus gKCallStatus;
 
 void pac_loop(void);
@@ -13,8 +25,6 @@ void pac_loop(void);
 uint64_t kcall(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8);
 uint64_t initPACPrimitives(uint64_t kernelAllocation);
 void finalizePACPrimitives(void);
-//void recoverPACPrimitivesIfPossible(void);
+int signState(uint64_t actContext);
+int recoverPACPrimitives();
 void destroyPACPrimitives(void);
-
-uint64_t kalloc(uint64_t size);
-uint64_t kfree(uint64_t addr, uint64_t size);

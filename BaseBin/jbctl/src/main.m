@@ -8,7 +8,10 @@ int main(int argc, char* argv[])
 	if (!strcmp(cmd, "unrestrict_proc")) {
 		if (argc != 3) return 1;
 		int pid = atoi(argv[2]);
-		bool suc = jbdUnrestrictProc(pid);
+		bool suc = jbdEntitleProc(getpid());
+		if (suc) {
+			suc = jbdProcSetDebugged(getpid());
+		}
 		if (suc) {
 			printf("Successfully unrestricted proc of %d\n", pid);
 		}

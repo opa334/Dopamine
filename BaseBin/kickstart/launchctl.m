@@ -1,13 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <xpc/xpc.h>
 
-extern xpc_object_t xpc_array_create_empty(void);
-extern xpc_object_t xpc_dictionary_create_empty(void);
-
-extern int xpc_pipe_routine_with_flags(xpc_object_t xpc_pipe, xpc_object_t inDict, xpc_object_t *reply, uint32_t flags);
-extern char *xpc_strerror (int);
 #define ROUTINE_LOAD 800
-
 #define OS_ALLOC_ONCE_KEY_MAX    100
 
 struct _os_alloc_once_s {

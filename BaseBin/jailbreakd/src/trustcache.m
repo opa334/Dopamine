@@ -106,7 +106,7 @@ void startTrustCacheFileListener(void)
 	dispatch_once (&onceToken, ^{
 		tcPagesRecover();
 		rebuildTrustCache();
-		if (!bootInfo_getUInt64(@"launchd_hook_active")) {
+		if (!bootInfo_getUInt64(@"launchdInitialized")) {
 			// if launchd hook is not active, we want to load launch daemons now as the trustcache should be up now
 			spawn(@"/var/jb/usr/bin/launchctl", @[@"bootstrap", @"system", @"/var/jb/Library/LaunchDaemons"]);
 		}
