@@ -5,6 +5,7 @@
 @class JBDTCPage;
 
 extern NSMutableArray<JBDTCPage *> *gTCPages;
+extern dispatch_queue_t gTCAccessQueue;
 BOOL tcPagesRecover(void);
 void tcPagesChanged(void);
 
@@ -20,7 +21,7 @@ void tcPagesChanged(void);
 - (instancetype)initWithKernelAddress:(uint64_t)kaddr;
 - (instancetype)initAllocateAndLink;
 
-- (void)mapIn;
+- (BOOL)mapIn;
 - (void)mapOut;
 
 - (void)sort;

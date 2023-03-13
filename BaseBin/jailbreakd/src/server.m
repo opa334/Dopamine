@@ -230,6 +230,7 @@ int main(int argc, char* argv[])
 		gIsJailbreakd = YES;
 
 		gTCPages = [NSMutableArray new];
+		gTCAccessQueue = dispatch_queue_create("com.opa334.jailbreakd.tcAccessQueue", DISPATCH_QUEUE_SERIAL);
 
 		mach_port_t machPort = 0;
 		kern_return_t kr = bootstrap_check_in(bootstrap_port, "com.opa334.jailbreakd", &machPort);
