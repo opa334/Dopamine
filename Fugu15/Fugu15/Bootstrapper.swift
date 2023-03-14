@@ -16,6 +16,12 @@ class Bootstrapper {
         return execCmd(args: [tarBinary, "-xpkf", tarPath, "-C", target]);
     }
 
+    static func getBootManifestHash() -> String {
+        let registryEntry = IORegistryEntryFromPath(kIOMainPortDefault, "IODeviceTree:/chosen")
+        let bootManifestHash = IORegistryEntryCreateCFProperty(registryEntry, "boot-manifest-hash" as CFString, kCFAllocatorDefault, 0).takeRetainedValue() as! Data
+        return bootManifestHash.map { String(format: "%02X", $0) }.joined()
+    }
+
 	static func generateFakeRootPath() -> String {
 		let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 		var result = ""
@@ -24,11 +30,11 @@ class Bootstrapper {
 			let randomCharacter = letters[letters.index(letters.startIndex, offsetBy: randomIndex)]
 			result += String(randomCharacter)
 		}
-		return "/private/preboot/jb-" + result
+		return "/private/preboot/" + getBootManifestHash() + "/jb-" + result
 	}
 
 	static func locateExistingFakeRoot() -> String? {
-        let ppURL = URL(fileURLWithPath: "/private/preboot")
+        let ppURL = URL(fileURLWithPath: "/private/preboot/" + getBootManifestHash())
         guard let candidateURLs = try? FileManager.default.contentsOfDirectory(at: ppURL , includingPropertiesForKeys: nil, options: []) else { return nil }
 		for candidateURL in candidateURLs {
 			if candidateURL.lastPathComponent.hasPrefix("jb-") {
@@ -80,7 +86,6 @@ class Bootstrapper {
             if !FileManager.default.fileExists(atPath: installedPath) {
                 NSLog("Wiping existing bootstrap because installed file not found")
                 do {
-                    chflags(fakeRootPath, UInt32(0))
                     try FileManager.default.removeItem(atPath: procursusPath)
                 } catch let error as NSError {
                     NSLog("Failed to delete existing Procursus directory: \(error)")
@@ -99,10 +104,6 @@ class Bootstrapper {
             
             bootstrapNeedsExtract = true
         }
-        
-        // Protect /private/preboot/jb-<UUID> from being deleted when searching for software updates
-        // This unfortunately also prevents creating any other file in that folder, so we do it after creating the procursus folder
-        chflags(fakeRootPath, UInt32(SF_IMMUTABLE))
         
         // Update basebin (should be done every rejailbreak)
         
@@ -189,7 +190,6 @@ class Bootstrapper {
         
         // Delete fake root
         let fakeRootPath = locateExistingFakeRoot()
-        chflags(fakeRootPath, 0)
         if fakeRootPath != nil {
             do {
                 try FileManager.default.removeItem(atPath: fakeRootPath!)
