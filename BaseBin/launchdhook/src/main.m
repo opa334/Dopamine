@@ -18,10 +18,9 @@ __attribute__((constructor)) static void initializer(void)
 			recoverPACPrimitives();
 			bootInfo_setObject(@"launchdInitialized", @1);
 		}
-		
-		entitle_proc(getpid());
-		proc_set_debugged(getpid());
 
+		proc_set_debugged(getpid());
+	
 		initBoomerangHooks();
 		initXPCHooks();
 	});

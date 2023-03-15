@@ -48,7 +48,7 @@ void *_patchfind_in_region(vm_address_t startAddr, vm_offset_t regionLength, uns
 		if (foundPtr == NULL) {
 			break;
 		}
-		
+
 		vm_address_t foundAddr = (vm_address_t)foundPtr;
 
 		// correct foundPtr in respect of firstByteIndex

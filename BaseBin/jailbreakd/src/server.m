@@ -156,39 +156,43 @@ void mach_port_callback(mach_port_t machPort)
 
 
 			case JBD_MSG_REBUILD_TRUSTCACHE: {
+				int64_t result = 0;
 				if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 					rebuildTrustCache();
 				}
 				else {
-					xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
+					result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
 				}
-				break;
-			}
-			
-			case JBD_MSG_ENTITLE_VNODE: {
-				//TODO
+				xpc_dictionary_set_int64(reply, "result", result);
 				break;
 			}
 
-			case JBD_MSG_ENTITLE_PROC: {
+			case JBD_MSG_PROCESS_BINARY: {
+				int64_t result = 0;
 				if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
-					pid_t pid = xpc_dictionary_get_int64(message, "pid");
-					xpc_dictionary_set_bool(reply, "success", entitle_proc(pid));
+					const char* filePath = xpc_dictionary_get_string(message, "filePath");
+					if (filePath) {
+						NSString *nsFilePath = [NSString stringWithUTF8String:filePath];
+						result = process_binary(nsFilePath);
+					}
 				}
 				else {
-					xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
+					result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
 				}
+				xpc_dictionary_set_int64(reply, "result", result);
 				break;
 			}
 
 			case JBD_MSG_PROC_SET_DEBUGGED: {
+				int64_t result = 0;
 				if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 					pid_t pid = xpc_dictionary_get_int64(message, "pid");
-					xpc_dictionary_set_bool(reply, "success", proc_set_debugged(pid));
+					proc_set_debugged(pid);
 				}
 				else {
-					xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
+					result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
 				}
+				xpc_dictionary_set_int64(reply, "result", result);
 				break;
 			}
 		}

@@ -13,8 +13,8 @@ typedef enum {
 	JBD_MSG_REMOTELOG = 15,
 
 	JBD_MSG_REBUILD_TRUSTCACHE = 20,
-	JBD_MSG_ENTITLE_VNODE = 21,
-	JBD_MSG_ENTITLE_PROC = 22,
+	
+	JBD_MSG_PROCESS_BINARY = 22,
 	JBD_MSG_PROC_SET_DEBUGGED = 23,
 } JBD_MESSAGE_ID;
 
@@ -42,7 +42,6 @@ uint64_t jbdKcall(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t
 
 void jbdRemoteLog(uint64_t verbosity, NSString *fString, ...);
 
-void jbdRebuildTrustCache(void);
-bool jbdEntitleVnode(pid_t pid, int fd);
-bool jbdEntitleProc(pid_t pid);
-bool jbdProcSetDebugged(pid_t pid);
+int64_t jbdRebuildTrustCache(void);
+int64_t jbdProcessBinary(NSString *filePath);
+int64_t jbdProcSetDebugged(pid_t pid);

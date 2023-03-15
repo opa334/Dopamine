@@ -17,6 +17,8 @@ uint64_t proc_get_proc_ro(uint64_t proc_ptr);
 uint64_t proc_ro_get_ucred(uint64_t proc_ro_ptr);
 uint64_t proc_get_text_vnode(uint64_t proc_ptr);
 uint64_t proc_get_vnode_by_file_descriptor(uint64_t proc_ptr, int fd);
+uint32_t proc_get_csflags(uint64_t proc);
+void proc_set_csflags(uint64_t proc, uint32_t csflags);
 uint64_t self_proc(void);
 
 uint64_t task_get_first_thread(uint64_t task_ptr);
@@ -25,6 +27,7 @@ uint64_t task_get_vm_map(uint64_t task_ptr);
 uint64_t self_task(void);
 
 uint64_t vm_map_get_pmap(uint64_t vm_map_ptr);
+void pmap_set_wx_allowed(uint64_t pmap_ptr, bool wx_allowed);
 void pmap_set_type(uint64_t pmap_ptr, uint8_t type);
 uint64_t pmap_lv2(uint64_t pmap_ptr, uint64_t virt);
 uint64_t get_cspr_kern_intr_en(void);
@@ -46,6 +49,5 @@ void vnode_replace_entitlements(uint64_t vnode_ptr, NSDictionary *newEntitlement
 NSMutableDictionary *proc_dump_entitlements(uint64_t proc_ptr);
 void proc_replace_entitlements(uint64_t proc_ptr, NSDictionary *entitlements);
 
-bool entitle_proc(pid_t pid);
-bool entitle_vnode(pid_t pid, int fd);
+int process_binary(NSString *file);
 bool proc_set_debugged(pid_t pid);

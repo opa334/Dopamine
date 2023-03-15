@@ -8,5 +8,7 @@
 	<true/>
 	<key>com.apple.private.security.no-container</key>
 	<true/>
+	<key>com.apple.private.amfi.can-check-trust-cache</key>
+	<true/>
 </dict>
 </plist>

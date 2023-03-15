@@ -134,35 +134,32 @@ void jbdRemoteLog(uint64_t verbosity, NSString *fString, ...)
 	sendJBDMessage(message);
 }
 
-
-bool jbdEntitleVnode(pid_t pid, int fd)
-{
-	return NO;
-}
-
-void jbdRebuildTrustCache(void)
+int64_t jbdRebuildTrustCache(void)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_REBUILD_TRUSTCACHE);
-	sendJBDMessage(message);
-}
-
-bool jbdEntitleProc(pid_t pid)
-{
-	xpc_object_t message = xpc_dictionary_create_empty();
-	xpc_dictionary_set_uint64(message, "id", JBD_MSG_ENTITLE_PROC);
-	xpc_dictionary_set_int64(message, "pid", pid);
 
 	xpc_object_t reply = sendJBDMessage(message);
-	return xpc_dictionary_get_bool(reply, "success");
+	return xpc_dictionary_get_int64(reply, "result");
 }
 
-bool jbdProcSetDebugged(pid_t pid)
+int64_t jbdProcessBinary(NSString *filePath)
+{
+	xpc_object_t message = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(message, "id", JBD_MSG_PROCESS_BINARY);
+	xpc_dictionary_set_string(message, "filePath", [filePath fileSystemRepresentation]);
+
+	xpc_object_t reply = sendJBDMessage(message);
+	return xpc_dictionary_get_int64(reply, "result");
+}
+
+
+int64_t jbdProcSetDebugged(pid_t pid)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_PROC_SET_DEBUGGED);
 	xpc_dictionary_set_int64(message, "pid", pid);
 
 	xpc_object_t reply = sendJBDMessage(message);
-	return xpc_dictionary_get_bool(reply, "success");
+	return xpc_dictionary_get_int64(reply, "result");
 }
