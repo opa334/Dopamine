@@ -8,5 +8,4 @@ NSData* bootInfo_getData(NSString* name);
 extern uint64_t gSelfProc;
 extern uint64_t gSelfTask;
 
-void PPLInitializedCallback(void);
-void PACInitializedCallback(void);
+void primitivesInitializedCallback(void);

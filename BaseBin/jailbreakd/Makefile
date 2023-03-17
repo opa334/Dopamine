@@ -8,7 +8,7 @@ LDFLAGS = -L../libjailbreak -ljailbreak -lbsm
 sign: $(TARGET)
 	@ldid -Sentitlements.plist $<
 
-$(TARGET): $(wildcard src/*.m src/*.S src/machoparse/*.c src/fileobserve/*.m)
+$(TARGET): $(wildcard src/*.m src/*.S src/machoparse/*.c)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 clean:

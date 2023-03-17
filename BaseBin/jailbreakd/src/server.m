@@ -6,6 +6,7 @@
 #import <libjailbreak/handoff.h>
 #import <libjailbreak/boot_info.h>
 #import <libjailbreak/launchd.h>
+#import <libjailbreak/signatures.h>
 #import "trustcache.h"
 #import <kern_memorystatus.h>
 #import <libproc.h>
@@ -14,6 +15,7 @@
 #import <xpc/xpc.h>
 #import <bsm/libbsm.h>
 #import <libproc.h>
+#import "spawn_wrapper.h"
 
 
 kern_return_t bootstrap_check_in(mach_port_t bootstrap_port, const char *service, mach_port_t *server_port);
@@ -38,14 +40,65 @@ NSString *procPath(pid_t pid)
 	return [NSString stringWithUTF8String:pathbuf];
 }
 
-void PPLInitializedCallback(void)
+int processBinary(NSString *binaryPath)
 {
-	//recoverPACPrimitivesIfPossible();
+	uint64_t selfproc = self_proc();
+
+	int fd = open(binaryPath.fileSystemRepresentation, O_RDONLY);
+	if (fd <= 0) return 1;
+
+	bool isMacho = NO;
+	bool isLibrary = NO;
+	machoGetInfo(fd, &isMacho, &isLibrary);
+	if (!isMacho) return 2;
+
+	NSMutableArray *nonTrustCachedCDHashes = [NSMutableArray new];
+
+	void (^tcCheckBlock)(NSString *) = ^(NSString *dependencyPath) {
+		NSData *cdHash = nil;
+		BOOL isAdhocSigned = NO;
+		evaluateSignature(binaryPath, &cdHash, &isAdhocSigned);
+		if (isAdhocSigned) {
+			if (!isCdHashInTrustCache(cdHash)) {
+				[nonTrustCachedCDHashes addObject:cdHash];
+			}
+		}
+	};
+
+	tcCheckBlock(binaryPath);
+	
+	FILE *machoFile = fdopen(fd, "rb");
+	machoEnumerateDependencies(machoFile, binaryPath, tcCheckBlock);
+	fclose(machoFile);
+
+	trustCacheUploadCDHashesFromArray(nonTrustCachedCDHashes);
+
+	// Add entitlements for anything that's not a library
+	if (!isLibrary) {
+		int fcntlRet = loadSignature(fd);
+		NSLog(@"fcntlRet: %d", fcntlRet); 
+		//TODO: check if we can use the fcntlRet here somehow (performance improvements???)
+
+		uint64_t vnode = proc_get_vnode_by_file_descriptor(selfproc, fd);
+		NSMutableDictionary *vnodeEntitlements = vnode_dump_entitlements(vnode);
+		if (vnodeEntitlements[@"get-task-allow"] != (__bridge id)kCFBooleanTrue) {
+			vnodeEntitlements[@"get-task-allow"] = (__bridge id)kCFBooleanTrue;
+			vnode_replace_entitlements(vnode, vnodeEntitlements);
+		}
+	}
+
+	close(fd);
+	return 0;
 }
 
-void PACInitializedCallback(void)
+void primitivesInitializedCallback(void)
 {
-	startTrustCacheFileListener();
+	tcPagesRecover();
+	rebuildTrustCache();
+	if (!bootInfo_getUInt64(@"launchdInitialized")) {
+		// if launchd hook is not active, we want to load launch daemons now as the trustcache should be up now
+		spawn(@"/var/jb/usr/bin/launchctl", @[@"bootstrap", @"system", @"/var/jb/Library/LaunchDaemons"]);
+	}
 }
 
 void mach_port_callback(mach_port_t machPort)
@@ -84,7 +137,6 @@ void mach_port_callback(mach_port_t machPort)
 					uint64_t magicPage = xpc_dictionary_get_uint64(message, "magicPage");
 					if (magicPage) {
 						initPPLPrimitives(magicPage);
-						PPLInitializedCallback();
 					}
 				}
 				break;
@@ -104,7 +156,7 @@ void mach_port_callback(mach_port_t machPort)
 			case JBD_MSG_PAC_FINALIZE: {
 				if (gKCallStatus == kKcallStatusPrepared && gPPLRWStatus == kPPLRWStatusInitialized) {
 					finalizePACPrimitives();
-					PACInitializedCallback();
+					primitivesInitializedCallback();
 				}
 				break;
 			}
@@ -173,7 +225,7 @@ void mach_port_callback(mach_port_t machPort)
 					const char* filePath = xpc_dictionary_get_string(message, "filePath");
 					if (filePath) {
 						NSString *nsFilePath = [NSString stringWithUTF8String:filePath];
-						result = process_binary(nsFilePath);
+						result = processBinary(nsFilePath);
 					}
 				}
 				else {
@@ -247,10 +299,9 @@ int main(int argc, char* argv[])
 			NSLog(@"launchd already initialized, recovering primitives...");
 			int err = launchdInitPPLRW();
 			if (err == 0) {
-				PPLInitializedCallback();
 				err = recoverPACPrimitives();
 				if (err == 0) {
-					PACInitializedCallback();
+					primitivesInitializedCallback();
 				}
 				else {
 					NSLog(@"error recovering PAC primitives: %d", err);

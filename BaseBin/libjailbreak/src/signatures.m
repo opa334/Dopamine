@@ -21,8 +21,8 @@ CF_ENUM(uint32_t) {
 	kSecCSRequirementInformation = 1 << 2,
 	kSecCSDynamicInformation = 1 << 3,
 	kSecCSContentInformation = 1 << 4,
-    kSecCSSkipResourceDirectory = 1 << 5,
-    kSecCSCalculateCMSDigest = 1 << 6,
+	kSecCSSkipResourceDirectory = 1 << 5,
+	kSecCSCalculateCMSDigest = 1 << 6,
 };
 
 #define AMFI_IS_CD_HASH_IN_TRUST_CACHE 6
@@ -33,125 +33,313 @@ extern OSStatus SecCodeCopySigningInformation(SecStaticCodeRef code, uint32_t fl
 #define SWAP32(x) ((((x) & 0xff000000) >> 24) | (((x) & 0xff0000) >> 8) | (((x) & 0xff00) << 8) | (((x) & 0xff) << 24))
 uint32_t s32(uint32_t toSwap, BOOL shouldSwap)
 {
-    return shouldSwap ? SWAP32(toSwap) : toSwap;
+	return shouldSwap ? SWAP32(toSwap) : toSwap;
+}
+
+bool isMachoOrFAT(uint32_t magic)
+{
+	return magic == FAT_MAGIC || magic == FAT_CIGAM || magic == MH_MAGIC_64 || magic == MH_CIGAM_64;
+}
+
+void machoGetInfo(int fd, bool *isMachoOut, bool *isLibraryOut)
+{
+	lseek(fd, 0, SEEK_SET);
+	struct mach_header_64 header;
+	read(fd, &header, sizeof(header));
+
+	bool isMacho = isMachoOrFAT(header.magic);
+	bool isLibrary = NO;
+	if (isMacho) {
+		isLibrary = header.filetype == MH_DYLIB || header.filetype == MH_DYLIB_STUB;
+	}
+
+	if (isMacho) *isMachoOut = isMacho;
+	if (isLibrary) *isLibraryOut = isLibrary;
+	lseek(fd, 0, SEEK_SET);
+}
+
+int64_t machoFindArch(FILE *machoFile, struct mach_header_64 header, uint32_t typeToSearch)
+{
+	if(header.magic == FAT_MAGIC || header.magic == FAT_CIGAM)
+	{
+		fseek(machoFile,0,SEEK_SET);
+
+		struct fat_header fatHeader;
+		fread(&fatHeader,sizeof(fatHeader),1,machoFile);
+
+		BOOL swpFat = fatHeader.magic == FAT_CIGAM;
+
+		for(int i = 0; i < s32(fatHeader.nfat_arch, swpFat); i++)
+		{
+			struct fat_arch fatArch;
+			fseek(machoFile,sizeof(fatHeader) + sizeof(fatArch) * i,SEEK_SET);
+			fread(&fatArch,sizeof(fatArch),1,machoFile);
+
+			uint32_t maskedSubtype = s32(fatArch.cputype, swpFat) & ~0x80000000;
+
+			if(maskedSubtype != typeToSearch)
+			{
+				continue;
+			}
+
+			return s32(fatArch.offset, swpFat);
+		}
+	}
+	else if (header.magic == MH_MAGIC_64 || header.magic == MH_CIGAM_64) {
+		BOOL swpMh = header.magic == MH_CIGAM_64;
+		uint32_t maskedSubtype = s32(header.cpusubtype, swpMh) & ~0x80000000;
+		if (maskedSubtype == typeToSearch) return 0;
+	}
+
+	return -1;
 }
 
 void getCSBlobOffsetAndSize(int fd, uint32_t* outOffset, uint32_t* outSize)
 {
-    FILE* binaryFile = fdopen(fd, "rb");
-    struct mach_header_64 header;
-    fread(&header,sizeof(header),1,binaryFile);
+	FILE* machoFile = fdopen(fd, "rb");
+	struct mach_header_64 header;
+	fread(&header,sizeof(header),1,machoFile);
+
+	if (!isMachoOrFAT(header.magic)) return;
 
 #if __arm64e__
-    uint32_t subtypeToSearch = CPU_SUBTYPE_ARM64E;
+	int64_t archOffsetCandidate = machoFindArch(machoFile, header, CPU_SUBTYPE_ARM64E);
+	if (archOffsetCandidate < 0) {
+		int64_t archOffsetCandidate = machoFindArch(machoFile, header, CPU_SUBTYPE_ARM64_ALL);
+		if (archOffsetCandidate < 0) {
+			// arch not found, abort
+			return;
+		}
+	}
 #else
-    uint32_t subtypeToSearch = CPU_SUBTYPE_ARM64_ALL;
+	int64_t archOffsetCandidate = machoFindArch(machoFile, header, CPU_SUBTYPE_ARM64_ALL);
+	if (archOffsetCandidate < 0) {
+		// arch not found, abort
+		return;
+	}
 #endif
 
-    // get arch offset
-    uint32_t archOffset = 0;
-    if(header.magic == FAT_MAGIC || header.magic == FAT_CIGAM)
-    {
-        fseek(binaryFile,0,SEEK_SET);
+	uint32_t archOffset = (uint32_t)archOffsetCandidate;
 
-        struct fat_header fatHeader;
-        fread(&fatHeader,sizeof(fatHeader),1,binaryFile);
+	if (archOffset) {
+		fseek(machoFile,archOffset,SEEK_SET);
+		fread(&header,sizeof(header),1,machoFile);
+	}
 
-        BOOL swpFat = fatHeader.magic == FAT_CIGAM;
+	BOOL swp = header.magic == MH_CIGAM_64;
 
-        for(int i = 0; i < s32(fatHeader.nfat_arch, swpFat); i++)
-        {
-            struct fat_arch fatArch;
-            fseek(binaryFile,sizeof(fatHeader) + sizeof(fatArch) * i,SEEK_SET);
-            fread(&fatArch,sizeof(fatArch),1,binaryFile);
+	uint32_t offset = archOffset + sizeof(header);
+	for(int c = 0; c < s32(header.ncmds, swp); c++)
+	{
+		fseek(machoFile,offset,SEEK_SET);
+		struct load_command cmd;
+		fread(&cmd,sizeof(cmd),1,machoFile);
+		uint32_t normalizedCmd = s32(cmd.cmd,swp);
+		if(normalizedCmd == LC_CODE_SIGNATURE)
+		{
+			struct linkedit_data_command codeSignCommand;
+			fseek(machoFile,offset,SEEK_SET);
+			fread(&codeSignCommand,sizeof(codeSignCommand),1,machoFile);
+			if(outOffset) *outOffset = archOffset + codeSignCommand.dataoff;
+			if(outSize) *outSize = archOffset + codeSignCommand.datasize;
+			break;
+		}
 
-            uint32_t maskedSubtype = s32(fatArch.cputype, swpFat) & ~CPU_SUBTYPE_ARM64_PTR_AUTH_MASK;
+		offset += cmd.cmdsize;
+	}
+	
+	fclose(machoFile);
+}
 
-            if(maskedSubtype != subtypeToSearch)
-            {
-                continue;
-            }
+NSString *processRpaths(NSString *path, NSString *tokenName, NSArray *rpaths)
+{
+	if ([path containsString:tokenName]) {
+		for (NSString *rpath in rpaths) {
+			NSString *testPath = [path stringByReplacingOccurrencesOfString:tokenName withString:rpath];
+			if ([[NSFileManager defaultManager] fileExistsAtPath:testPath]) {
+				return testPath;
+			}
+		}
+	}
+	return path;
+}
 
-            archOffset = s32(fatArch.offset, swpFat);
-            break;
-        }
-    }
+NSString *resolveLoadPath(NSString *loadPath, NSString *machoPath, NSString *sourceExecutablePath, NSArray *rpaths)
+{
+	if (!loadPath || !machoPath) return nil;
 
-    // get blob offset
-    fseek(binaryFile,archOffset,SEEK_SET);
-    fread(&header,sizeof(header),1,binaryFile);
+	NSString *processedPath = processRpaths(loadPath, @"@rpath", rpaths);
+	processedPath = processRpaths(processedPath, @"@executable_path", rpaths);
+	processedPath = processRpaths(processedPath, @"@loader_path", rpaths);
+	processedPath = [processedPath stringByReplacingOccurrencesOfString:@"@executable_path" withString:[sourceExecutablePath stringByDeletingLastPathComponent]];
+	processedPath = [processedPath stringByReplacingOccurrencesOfString:@"@loader_path" withString:[machoPath stringByDeletingLastPathComponent]];
 
-    BOOL swp = header.magic == MH_CIGAM_64;
+	return processedPath;
+}
 
-    uint32_t offset = archOffset + sizeof(header);
-    for(int c = 0; c < s32(header.ncmds, swp); c++)
-    {
-        fseek(binaryFile,offset,SEEK_SET);
-        struct load_command cmd;
-        fread(&cmd,sizeof(cmd),1,binaryFile);
-        uint32_t normalizedCmd = s32(cmd.cmd,swp);
-        if(normalizedCmd == LC_CODE_SIGNATURE)
-        {
-            struct linkedit_data_command codeSignCommand;
-            fseek(binaryFile,offset,SEEK_SET);
-            fread(&codeSignCommand,sizeof(codeSignCommand),1,binaryFile);
-            if(outOffset) *outOffset = archOffset + codeSignCommand.dataoff;
-            if(outSize) *outSize = archOffset + codeSignCommand.datasize;
-            break;
-        }
+void _machoEnumerateDependencies(FILE *machoFile, NSString *machoPath, NSString *sourceExecutablePath, NSMutableSet *enumeratedCache, void (^enumerateBlock)(NSString *dependencyPath))
+{
+	if (!enumeratedCache) enumeratedCache = [NSMutableSet new];
 
-        offset += cmd.cmdsize;
-    }
-    
-    fclose(binaryFile);
+	struct mach_header_64 header;
+	fread(&header,sizeof(header),1,machoFile);
+
+	if (!isMachoOrFAT(header.magic)) return;
+
+#if __arm64e__
+	int64_t archOffsetCandidate = machoFindArch(machoFile, header, CPU_SUBTYPE_ARM64E);
+	if (archOffsetCandidate < 0) {
+		archOffsetCandidate = machoFindArch(machoFile, header, CPU_SUBTYPE_ARM64_ALL);
+		if (archOffsetCandidate < 0) {
+			// arch not found, abort
+			return;
+		}
+	}
+#else
+	int64_t archOffsetCandidate = machoFindArch(machoFile, header, CPU_SUBTYPE_ARM64_ALL);
+	if (archOffsetCandidate < 0) {
+		// arch not found, abort
+		return;
+	}
+#endif
+
+	uint32_t archOffset = (uint32_t)archOffsetCandidate;
+
+	if (archOffset) {
+		fseek(machoFile,archOffset,SEEK_SET);
+		fread(&header,sizeof(header),1,machoFile);
+	}
+
+	BOOL swp = header.magic == MH_CIGAM_64;
+
+	// First iteration: Collect rpaths
+	NSMutableArray* rpaths = [NSMutableArray new];
+	uint32_t offset = archOffset + sizeof(header);
+	while(offset < archOffset + s32(header.sizeofcmds,swp))
+	{
+		fseek(machoFile,offset,SEEK_SET);
+		struct load_command cmd;
+		fread(&cmd,sizeof(cmd),1,machoFile);
+		uint32_t cmdId = s32(cmd.cmd,swp);
+		if(cmdId == LC_RPATH)
+		{
+			fseek(machoFile,offset,SEEK_SET);
+			struct rpath_command rpathCommand;
+			fread(&rpathCommand,sizeof(rpathCommand),1,machoFile);
+			size_t stringLength = s32(rpathCommand.cmdsize,swp) - sizeof(rpathCommand);
+			fseek(machoFile,offset + s32(rpathCommand.path.offset,swp),SEEK_SET);
+			char* rpathC = malloc(stringLength);
+			fread(rpathC,stringLength,1,machoFile);
+			NSString* rpath = [NSString stringWithUTF8String:rpathC];
+			[rpaths addObject:rpath];
+			free(rpathC);
+		}
+
+		offset += s32(cmd.cmdsize,swp);
+	}
+
+	// Second iteration: Find dependencies
+	offset = archOffset + sizeof(header);
+	while(offset < archOffset + s32(header.sizeofcmds,swp))
+	{
+		fseek(machoFile,offset,SEEK_SET);
+		struct load_command cmd;
+		fread(&cmd,sizeof(cmd),1,machoFile);
+		uint32_t cmdId = s32(cmd.cmd,swp);
+		if(cmdId == LC_LOAD_DYLIB || cmdId == LC_LOAD_WEAK_DYLIB || cmdId == LC_REEXPORT_DYLIB)
+		{
+			fseek(machoFile,offset,SEEK_SET);
+			struct dylib_command dylibCommand;
+			fread(&dylibCommand,sizeof(dylibCommand),1,machoFile);
+			size_t stringLength = s32(dylibCommand.cmdsize,swp) - sizeof(dylibCommand);
+			fseek(machoFile,offset + s32(dylibCommand.dylib.name.offset,swp),SEEK_SET);
+			char *imagePathC = malloc(stringLength);
+	
+			fread(imagePathC,stringLength,1,machoFile);
+			NSString *imagePath = [NSString stringWithUTF8String:imagePathC];
+			free(imagePathC);
+	
+			BOOL inDSC = _dyld_shared_cache_contains_path(imagePath.fileSystemRepresentation);
+			if (!inDSC) {
+				NSString *resolvedPath = resolveLoadPath(imagePath, machoPath, sourceExecutablePath, rpaths);
+				resolvedPath = [[resolvedPath stringByResolvingSymlinksInPath] stringByStandardizingPath];
+				if (![enumeratedCache containsObject:resolvedPath] && [[NSFileManager defaultManager] fileExistsAtPath:resolvedPath]) {
+					[enumeratedCache addObject:resolvedPath];
+					enumerateBlock(resolvedPath);
+
+					FILE *nextFile = fopen(resolvedPath.fileSystemRepresentation, "rb");
+					_machoEnumerateDependencies(nextFile, imagePath, sourceExecutablePath, enumeratedCache, enumerateBlock);
+					fclose(nextFile);
+				}
+				else {
+					if (![[NSFileManager defaultManager] fileExistsAtPath:resolvedPath]) {
+						//NSLog(@"skipped %@, non existant", resolvedPath);
+					}
+					else {
+						//NSLog(@"skipped %@, in cache", resolvedPath);
+					}
+				}
+			}
+			else {
+				//NSLog(@"skipped %@, in DSC", imagePath);
+			}
+		}
+
+		offset += s32(cmd.cmdsize,swp);
+	}
+}
+
+void machoEnumerateDependencies(FILE *machoFile, NSString *machoPath, void (^enumerateBlock)(NSString *dependencyPath))
+{
+	_machoEnumerateDependencies(machoFile, machoPath, machoPath, nil, enumerateBlock);
 }
 
 int loadSignature(int fd)
 {
-    uint32_t offset = 0, size = 0;
-    
-    getCSBlobOffsetAndSize(fd, &offset, &size);
-    
-    struct fsignatures fsig;
-    fsig.fs_file_start = 0;
-    fsig.fs_blob_start = (void*)(uint64_t)offset;
-    fsig.fs_blob_size = size;
-    
-    int ret = fcntl(fd, F_ADDFILESIGS, fsig);
-    return ret;
+	uint32_t offset = 0, size = 0;
+	
+	getCSBlobOffsetAndSize(fd, &offset, &size);
+	
+	struct fsignatures fsig;
+	fsig.fs_file_start = 0;
+	fsig.fs_blob_start = (void*)(uint64_t)offset;
+	fsig.fs_blob_size = size;
+	
+	int ret = fcntl(fd, F_ADDFILESIGS, fsig);
+	return ret;
 }
 
 void evaluateSignature(NSString* filePath, NSData **cdHashOut, BOOL *isAdhocSignedOut)
 {
-    if(![[NSFileManager defaultManager] fileExistsAtPath:filePath]) return;
+	if(![[NSFileManager defaultManager] fileExistsAtPath:filePath]) return;
 
-    SecStaticCodeRef staticCode = NULL;
-    OSStatus status = SecStaticCodeCreateWithPathAndAttributes((__bridge CFURLRef)[NSURL fileURLWithPath:filePath], 0, NULL, &staticCode);
-    if (status == noErr) {
-        CFDictionaryRef codeInfoDict;
+	SecStaticCodeRef staticCode = NULL;
+	OSStatus status = SecStaticCodeCreateWithPathAndAttributes((__bridge CFURLRef)[NSURL fileURLWithPath:filePath], 0, NULL, &staticCode);
+	if (status == noErr) {
+		CFDictionaryRef codeInfoDict;
 
-        uint32_t flags = 0;
-        if (cdHashOut) flags |= kSecCSInternalInformation | kSecCSCalculateCMSDigest;
-        if (isAdhocSignedOut) flags |= kSecCSSigningInformation;
+		uint32_t flags = 0;
+		if (cdHashOut) flags |= kSecCSInternalInformation | kSecCSCalculateCMSDigest;
+		if (isAdhocSignedOut) flags |= kSecCSSigningInformation;
 
-        SecCodeCopySigningInformation(staticCode, flags, &codeInfoDict);
-        if (codeInfoDict) {
-            // Get the signing info dictionary
-            NSDictionary *signingInfoDict = (__bridge NSDictionary *)codeInfoDict;
+		SecCodeCopySigningInformation(staticCode, flags, &codeInfoDict);
+		if (codeInfoDict) {
+			// Get the signing info dictionary
+			NSDictionary *signingInfoDict = (__bridge NSDictionary *)codeInfoDict;
 
-            if (isAdhocSignedOut) {
-                NSData *cms = signingInfoDict[@"cms"];
-                *isAdhocSignedOut = cms.length == 0;
-            }
+			if (isAdhocSignedOut) {
+				NSData *cms = signingInfoDict[@"cms"];
+				*isAdhocSignedOut = cms.length == 0;
+			}
 
-            if (cdHashOut) {
-                *cdHashOut = signingInfoDict[@"unique"];
-            }
+			if (cdHashOut) {
+				*cdHashOut = signingInfoDict[@"unique"];
+			}
 
-            CFRelease(codeInfoDict);
-        }
-        CFRelease(staticCode);
-    }
+			CFRelease(codeInfoDict);
+		}
+		CFRelease(staticCode);
+	}
 }
 
 BOOL isCdHashInTrustCache(NSData *cdHash)

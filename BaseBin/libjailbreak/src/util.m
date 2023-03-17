@@ -501,38 +501,6 @@ NSMutableDictionary *proc_dump_entitlements(uint64_t proc_ptr)
 	//cr_label_replace_entitlements(cr_label_ptr, newEntitlements, vnode_get_csblob(text_vnode));
 }*/
 
-int process_binary(NSString *file)
-{
-	uint64_t selfproc = self_proc();
-
-	int fd = open(file.fileSystemRepresentation, O_RDONLY);
-	if (fd <= 0) return false;
-
-	NSData *cdHash = nil;
-	BOOL isAdhocSigned = NO;
-	evaluateSignature(file, &cdHash, &isAdhocSigned);
-
-	// TODO: do same check for all dependencies of binary that are not in dyld shared cache
-	if (isAdhocSigned) {
-		if (!isCdHashInTrustCache(cdHash)) {
-			//TODO: Add to trustcache
-		}
-	}
-
-	int fcntlRet = loadSignature(fd);
-	NSLog(@"fcntlRet: %d", fcntlRet); //TODO: check if we can use the ret here somehow
-
-	uint64_t vnode = proc_get_vnode_by_file_descriptor(selfproc, fd);
-	NSMutableDictionary *vnodeEntitlements = vnode_dump_entitlements(vnode);
-	if (vnodeEntitlements[@"get-task-allow"] != (__bridge id)kCFBooleanTrue) {
-		vnodeEntitlements[@"get-task-allow"] = (__bridge id)kCFBooleanTrue;
-		vnode_replace_entitlements(vnode, vnodeEntitlements);
-	}
-
-	close(fd);
-	return 0;
-}
-
 bool proc_set_debugged(pid_t pid)
 {
 	if (pid > 0) {

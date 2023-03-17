@@ -4,15 +4,10 @@
 #import <libjailbreak/kcall.h>
 #import <sys/stat.h>
 #import <unistd.h>
-#import <fileobserve/OPFileTree.h>
-#import "JBDFileLeaf.h"
-#import "JBDFileTree.h"
 #import <libjailbreak/boot_info.h>
 #import "trustcache_structs.h"
 #import "JBDTCPage.h"
 #import "spawn_wrapper.h"
-
-OPFileTree *gFileTree = nil;
 
 NSString* normalizePath(NSString* path)
 {
@@ -36,37 +31,6 @@ JBDTCPage *trustCacheMapInFreePage(void)
 	return newPage;
 }
 
-void uploadTrustCache(void)
-{
-	__block JBDTCPage *mappedInPage = nil;
-
-	[gFileTree enumerateLeafs:^(JBDFileLeaf *leaf, BOOL *stop) {
-		[leaf ensureLoaded];
-		for (uint64_t i = 0; i < leaf.hashCount; i++)
-		{
-			@autoreleasepool {
-				if (!mappedInPage || mappedInPage.amountOfSlotsLeft == 0) {
-					// If there is still a page mapped, map it out now
-					if (mappedInPage) {
-						[mappedInPage sort];
-						[mappedInPage mapOut];
-					}
-
-					mappedInPage = trustCacheMapInFreePage();
-				}
-
-				NSLog(@"[TC] Adding entry %llu for %@ (Initial Run)", i, leaf.fullPath);
-				[mappedInPage addEntry:[leaf entryForHashIndex:i]];
-			}
-		}
-	}];
-
-	if (mappedInPage) {
-		[mappedInPage sort];
-		[mappedInPage mapOut];
-	}
-}
-
 void trustCacheAddEntry(trustcache_entry entry)
 {
 	JBDTCPage *freePage = trustCacheMapInFreePage();
@@ -83,32 +47,113 @@ void trustCacheRemoveEntry(trustcache_entry entry)
 	}
 }
 
+void fileEnumerateTrustCacheEntries(const char *filePath, void (^enumerateBlock)(trustcache_entry entry)) {
+	struct cdhashes cdh = { 0 };
+	struct stat sb;
+	stat(filePath, &sb);
+	find_cdhash(filePath, &sb, &cdh);
+
+	for (int i = 0; i < cdh.count; i++) {
+		trustcache_entry entry;
+		memcpy(&entry.hash, &cdh.h[i].cdhash[0], CS_CDHASH_LEN);
+		entry.hash_type = 0x2;
+		entry.flags = 0x0;
+		enumerateBlock(entry);
+	}
+
+	if (cdh.h) {
+		free(cdh.h);
+	}
+}
+
+void trustCacheUploadFile(const char *filePath)
+{
+	fileEnumerateTrustCacheEntries(filePath, ^(trustcache_entry entry) {
+		trustCacheAddEntry(entry);
+	});
+}
+
+void trustCacheUploadCDHashFromData(NSData *cdHash)
+{
+	if (cdHash.length != CS_CDHASH_LEN) return;
+
+	trustcache_entry entry;
+	memcpy(&entry.hash, cdHash.bytes, CS_CDHASH_LEN);
+	entry.hash_type = 0x2;
+	entry.flags = 0x0;
+	trustCacheAddEntry(entry);
+}
+
+void trustCacheUploadCDHashesFromArray(NSArray *cdHashArray)
+{
+	__block JBDTCPage *mappedInPage = nil;
+	for (NSData *cdHash in cdHashArray) {
+		if (!mappedInPage || mappedInPage.amountOfSlotsLeft == 0) {
+			// If there is still a page mapped, map it out now
+			if (mappedInPage) {
+				[mappedInPage sort];
+				[mappedInPage mapOut];
+			}
+
+			mappedInPage = trustCacheMapInFreePage();
+		}
+
+		trustcache_entry entry;
+		memcpy(&entry.hash, cdHash.bytes, CS_CDHASH_LEN);
+		entry.hash_type = 0x2;
+		entry.flags = 0x0;
+		[mappedInPage addEntry:entry];
+	}
+
+	if (mappedInPage) {
+		[mappedInPage sort];
+		[mappedInPage mapOut];
+	}
+}
+
+void trustCacheUploadDirectory(NSString *directoryPath)
+{
+	NSString *resolvedPath = [[directoryPath stringByResolvingSymlinksInPath] stringByStandardizingPath];
+	NSDirectoryEnumerator<NSURL *> *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtURL:[NSURL fileURLWithPath:resolvedPath isDirectory:YES] 
+																			   includingPropertiesForKeys:@[NSURLIsSymbolicLinkKey]
+																								  options:0
+																							 errorHandler:nil];
+	__block JBDTCPage *mappedInPage = nil;
+	for (NSURL *enumURL in directoryEnumerator) {
+		NSNumber *isSymlink;
+		[enumURL getResourceValue:&isSymlink forKey:NSURLIsSymbolicLinkKey error:nil];
+		if (isSymlink && ![isSymlink boolValue]) {
+			fileEnumerateTrustCacheEntries(enumURL.fileSystemRepresentation, ^(trustcache_entry entry) {
+				if (!mappedInPage || mappedInPage.amountOfSlotsLeft == 0) {
+					// If there is still a page mapped, map it out now
+					if (mappedInPage) {
+						[mappedInPage sort];
+						[mappedInPage mapOut];
+					}
+
+					mappedInPage = trustCacheMapInFreePage();
+				}
+
+				NSLog(@"[TC %@] Adding entry for %@ (Initial Run)", directoryPath, enumURL.path);
+				[mappedInPage addEntry:entry];
+			});
+		}
+	}
+
+	if (mappedInPage) {
+		[mappedInPage sort];
+		[mappedInPage mapOut];
+	}
+}
+
 void rebuildTrustCache(void)
 {
+	// nuke existing
 	for (JBDTCPage *page in [gTCPages reverseObjectEnumerator]) {
 		[page unlinkAndFree];
 	}
 
-	NSLog(@"About to open file tree...");
-	gFileTree = [[JBDFileTree alloc] initWithPath:normalizePath(@"/var/jb")];
-	gFileTree.leafClass = [JBDFileLeaf class];
-	[gFileTree openTree];
-	NSLog(@"Opened file tree!");
-
 	NSLog(@"Triggering initial trustcache upload...");
-	uploadTrustCache();
+	trustCacheUploadDirectory(@"/var/jb");
 	NSLog(@"Initial TrustCache upload done!");
-}
-
-void startTrustCacheFileListener(void)
-{
-	static dispatch_once_t onceToken;
-	dispatch_once (&onceToken, ^{
-		tcPagesRecover();
-		rebuildTrustCache();
-		if (!bootInfo_getUInt64(@"launchdInitialized")) {
-			// if launchd hook is not active, we want to load launch daemons now as the trustcache should be up now
-			spawn(@"/var/jb/usr/bin/launchctl", @[@"bootstrap", @"system", @"/var/jb/Library/LaunchDaemons"]);
-		}
-	});
 }
