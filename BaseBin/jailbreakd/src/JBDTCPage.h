@@ -14,6 +14,7 @@ void tcPagesChanged(void);
 {
 	trustcache_page* _mappedInPage;
 	void *_mappedInPageCtx;
+	uint32_t _mapRefCount;
 }
 
 @property (nonatomic,readonly) uint64_t kaddr;

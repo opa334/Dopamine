@@ -132,14 +132,14 @@ PPLWindow* getConcurrentWindows(uint32_t count)
 {
 	[gLock lock];
 
-	uint32_t curUnusedCount;
+	uint32_t curUnusedCount = 0;
 
 	for (int i = 1; i < 2048; i++) {
 		if (gMagicPage[i] == PTE_UNUSED) {
 			curUnusedCount++;
 			if (curUnusedCount >= count) {
 				PPLWindow* output = malloc(count * sizeof(PPLWindow));
-				int fmi = i - count;
+				int fmi = i - (count - 1);
 				for (int k = 0; k < count; k++) {
 					//NSLog(@"[batch] reserving page %d", fmi+k);
 					gMagicPage[fmi+k] = PTE_RESERVED;

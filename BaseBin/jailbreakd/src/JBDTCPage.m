@@ -34,6 +34,7 @@ void tcPagesChanged(void)
 	if (self) {
 		_mappedInPage = NULL;
 		_kaddr = kaddr;
+		_mapRefCount = 0;
 	}
 	return self;
 }
@@ -52,28 +53,33 @@ void tcPagesChanged(void)
 - (BOOL)mapIn
 {
 	if (!_kaddr) return NO;
-	if (_mappedInPage) return YES;
-	_mappedInPageCtx = mapInRange(_kaddr, 1, (uint8_t**)&_mappedInPage);
+	if (_mapRefCount == 0) {
+		_mappedInPageCtx = mapInRange(_kaddr, 1, (uint8_t**)&_mappedInPage);
+		//NSLog(@"mapped in page %p", _mappedInPage);
+	};
+	_mapRefCount++;
 	return YES;
 }
 
 - (void)mapOut
 {
-	if (!_mappedInPage) return;
-
-	mappingDestroy(_mappedInPageCtx);
-	_mappedInPage = NULL;
-	_mappedInPageCtx = NULL;
+	if (_mapRefCount == 0) {
+		NSLog(@"attempted to map out a map with a ref count of 0");
+		abort();
+	}
+	_mapRefCount--;
+	
+	if (_mapRefCount == 0) {
+		//NSLog(@"mapping out page %p", _mappedInPage);
+		mappingDestroy(_mappedInPageCtx);
+		_mappedInPage = NULL;
+		_mappedInPageCtx = NULL;
+	}
 }
 
 - (void)ensureMappedInAndPerform:(void (^)(void))block
 {
-	BOOL alreadyMappedIn = _mappedInPage != NULL;
-	if (!alreadyMappedIn)
-	{
-		if (![self mapIn]) return;
-	}
-
+	[self mapIn];
 	const char *curLabel = dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL);
 	if (!strcmp(curLabel, "com.opa334.jailbreakd.tcAccessQueue")) {
 		block();
@@ -81,11 +87,7 @@ void tcPagesChanged(void)
 	else {
 		dispatch_sync(gTCAccessQueue, block);
 	}
-
-	if (!alreadyMappedIn)
-	{
-		[self mapOut];
-	}
+	[self mapOut];
 }
 
 - (BOOL)allocateInKernel
@@ -160,8 +162,9 @@ void tcPagesChanged(void)
 	if (_kaddr == 0) return;
 
 	kfree(_kaddr, 0x4000);
-	_kaddr = 0;
 	NSLog(@"freed trust cache page at 0x%llX", _kaddr);
+	_kaddr = 0;
+	
 	[gTCPages removeObject:self];
 	tcPagesChanged();
 }
