@@ -32,7 +32,7 @@ __attribute__((constructor)) static void initializer(void)
 	}
 	else
 	{
-		// in opainject thread, we need to shit async, otherwise it's unstable
+		// in opainject thread, we need to do stuff async, otherwise it's unstable
 		dispatch_async(dispatch_get_main_queue(), ^(void){
 			go();
 		});

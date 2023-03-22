@@ -9,6 +9,7 @@ typedef enum {
 
 	JBD_MSG_HANDOFF_PPL = 10,
 	JBD_MSG_DO_KCALL = 11,
+	JBD_MSG_DO_KCALL_THREADSTATE = 12,
 
 	JBD_MSG_REMOTELOG = 15,
 
@@ -16,11 +17,19 @@ typedef enum {
 	
 	JBD_MSG_PROCESS_BINARY = 22,
 	JBD_MSG_PROC_SET_DEBUGGED = 23,
+	JBD_MSG_DEBUG_ME = 24
 } JBD_MESSAGE_ID;
 
 typedef enum {
 	JBD_ERR_PRIMITIVE_NOT_INITIALIZED = 0,
 } JBD_ERR_ID;
+
+typedef struct {
+	uint64_t x[29];
+	uint64_t lr;
+	uint64_t sp;
+	uint64_t pc;
+} KcallThreadState;
 
 extern bool gIsJailbreakd;
 
@@ -38,7 +47,9 @@ void jbdFinalizeKcall(void);
 
 uint64_t jbdGetPPLRWPage(int64_t* errOut);
 int jbdInitPPLRW(void);
-uint64_t jbdKcall(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8);
+uint64_t jbdKcallThreadState(KcallThreadState *threadState, bool raw);
+uint64_t jbdKcall(uint64_t func, uint64_t argc, uint64_t *argv);
+uint64_t jbdKcall8(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8);
 
 void jbdRemoteLog(uint64_t verbosity, NSString *fString, ...);
 

@@ -10,5 +10,9 @@
 	<true/>
 	<key>com.apple.private.amfi.can-check-trust-cache</key>
 	<true/>
+	<key>com.apple.security.exception.iokit-user-client-class</key>
+	<array>
+		<string>AppleMobileFileIntegrityUserClient</string>
+	</array>
 </dict>
 </plist>

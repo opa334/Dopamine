@@ -84,45 +84,43 @@ uint64_t getUserReturnThreadContext(void) {
 	return returnThreadACTContext;
 }
 
-uint64_t Fugu14Kcall_onThread(Fugu14KcallThread *callThread, uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8)
+// This prepares the thread state for an ordinary Fugu14 like kcall
+// It is possible to bypass this by just calling kcall_with_raw_thread_state with any thread state you want
+void Fugu14Kcall_prepareThreadState(Fugu14KcallThread *callThread, KcallThreadState *threadState)
+{
+	// Set pc to the function, lr to str x0, [x19]; ldr x??, [x20]; gadget
+	threadState->lr = bootInfo_getSlidUInt64(@"str_x0_x19_ldr_x20");
+
+	// New state
+	// x19 -> Where to store return value
+	threadState->x[19] = callThread->scratchMemory;
+	
+	// x20 -> NULL (to force data abort)
+	threadState->x[20] = 0;
+	
+	// x22 -> exceptionReturn
+	threadState->x[22] = bootInfo_getSlidUInt64(@"exception_return");
+	
+	// Exception return expects a signed state in x21
+	threadState->x[21] = getUserReturnThreadContext(); // Guaranteed to not fail at this point
+	
+	// Also need to set sp
+	threadState->sp = callThread->kernelStack;
+}
+
+uint64_t Fugu14Kcall_withThreadState(Fugu14KcallThread *callThread, KcallThreadState *threadState)
 {
 	// Restore signed state first
 	kwritebuf(callThread->actContext, &callThread->signedState, sizeof(kRegisterState));
 	
-	// Set pc to the function, lr to str x0, [x19]; ldr x??, [x20]; gadget
-	uint64_t str_x0_x19_ldr_x20 = bootInfo_getSlidUInt64(@"str_x0_x19_ldr_x20");
-	
-	// x1 -> new pc
-	// x3 -> new lr
-	kwrite64(callThread->actContext + offsetof(kRegisterState, x[1]), func);
-	kwrite64(callThread->actContext + offsetof(kRegisterState, x[3]), str_x0_x19_ldr_x20);
-	
-	// New state
-	// x19 -> Where to store return value
-	callThread->mappedState->x[19] = callThread->scratchMemory;
-	
-	// x20 -> NULL (to force data abort)
-	callThread->mappedState->x[20] = 0;
-	
-	// x22 -> exceptionReturn
-	callThread->mappedState->x[22] = bootInfo_getSlidUInt64(@"exception_return");
-	
-	// Exception return expects a signed state in x21
-	callThread->mappedState->x[21] = getUserReturnThreadContext(); // Guaranteed to not fail at this point
-	
-	// Also need to set sp
-	callThread->mappedState->sp = callThread->kernelStack;
-	
-	// Set args
-	callThread->mappedState->x[0] = a1;
-	callThread->mappedState->x[1] = a2;
-	callThread->mappedState->x[2] = a3;
-	callThread->mappedState->x[3] = a4;
-	callThread->mappedState->x[4] = a5;
-	callThread->mappedState->x[5] = a6;
-	callThread->mappedState->x[6] = a7;
-	callThread->mappedState->x[7] = a8;
-	
+	// Set all registers based on passed threadState
+	kwrite64(callThread->actContext + offsetof(kRegisterState, x[1]), threadState->pc); // x1 -> new pc
+	kwrite64(callThread->actContext + offsetof(kRegisterState, x[3]), threadState->lr); // x3 -> new lr
+	for (int i = 0; i < 29; i++) {
+		callThread->mappedState->x[i] = threadState->x[i];
+	}
+	callThread->mappedState->sp = threadState->sp;
+
 	// Reset flag
 	gUserReturnDidHappen = 0;
 	
@@ -148,13 +146,73 @@ uint64_t Fugu14Kcall_onThread(Fugu14KcallThread *callThread, uint64_t func, uint
 	return callThread->scratchMemoryMapped[0];
 }
 
-uint64_t kcall(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8)
+uint64_t Fugu14Kcall_withArguments(Fugu14KcallThread *callThread, uint64_t func, uint64_t argc, uint64_t *argv)
+{
+	if (argc >= 19) argc = 19;
+
+	KcallThreadState threadState = { 0 };
+	Fugu14Kcall_prepareThreadState(&gFugu14KcallThread, &threadState);
+	threadState.pc = func;
+
+	uint64_t regArgc = 0;
+	uint64_t stackArgc = 0;
+	if (argc >= 8) {
+		regArgc = 8;
+		stackArgc = argc - 8;
+	}
+	else {
+		regArgc = argc;
+	}
+
+	// Set register args (x0 - x8)
+	for (uint64_t i = 0; i < regArgc; i++)
+	{
+		threadState.x[i] = argv[i];
+	}
+
+	// Set stack args
+	for (uint64_t i = 0; i < stackArgc; i++)
+	{
+		uint64_t argKaddr = (threadState.sp + i * 0x8);
+		kwrite64(argKaddr, argv[8+i]);
+	}
+
+	return Fugu14Kcall_withThreadState(callThread, &threadState);
+}
+
+uint64_t kcall(uint64_t func, uint64_t argc, uint64_t *argv)
 {
 	if (gKCallStatus != kKcallStatusFinalized) {
 		if (gIsJailbreakd) return 0;
-		return jbdKcall(func, a1, a2, a3, a4, a5, a6, a7, a8);
+		return jbdKcall(func, argc, argv);
 	}
-	return Fugu14Kcall_onThread(&gFugu14KcallThread, func, a1, a2, a3, a4, a5, a6, a7, a8);
+	return Fugu14Kcall_withArguments(&gFugu14KcallThread, func, argc, argv);
+}
+
+uint64_t kcall8(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8)
+{
+	uint64_t argv[8] = {a1, a2, a3, a4, a5, a6, a7, a8};
+	return kcall(func, 8, argv);
+}
+
+uint64_t kcall_with_raw_thread_state(KcallThreadState threadState)
+{
+	if (gKCallStatus != kKcallStatusFinalized) {
+		if (gIsJailbreakd) return 0;
+		return jbdKcallThreadState(&threadState, true);
+	}
+	return Fugu14Kcall_withThreadState(&gFugu14KcallThread, &threadState);
+}
+
+uint64_t kcall_with_thread_state(KcallThreadState threadState)
+{
+	if (gKCallStatus != kKcallStatusFinalized) {
+		if (gIsJailbreakd) return 0;
+		return jbdKcallThreadState(&threadState, false);
+	}
+
+	Fugu14Kcall_prepareThreadState(&gFugu14KcallThread, &threadState);
+	return kcall_with_raw_thread_state(threadState);
 }
 
 uint64_t initPACPrimitives(uint64_t kernelAllocation)
@@ -313,7 +371,7 @@ int signState(uint64_t actContext)
 	kreadbuf(actContext, &state, sizeof(state));
 
 	uint64_t signThreadStateFunc = bootInfo_getSlidUInt64(@"ml_sign_thread_state");
-	kcall(signThreadStateFunc, actContext, state.pc, state.cpsr, state.lr, state.x[16], state.x[17], 0, 0);
+	kcall8(signThreadStateFunc, actContext, state.pc, state.cpsr, state.lr, state.x[16], state.x[17], 0, 0);
 	return 0;
 }
 

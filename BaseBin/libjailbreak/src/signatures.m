@@ -41,11 +41,13 @@ bool isMachoOrFAT(uint32_t magic)
 	return magic == FAT_MAGIC || magic == FAT_CIGAM || magic == MH_MAGIC_64 || magic == MH_CIGAM_64;
 }
 
-void machoGetInfo(int fd, bool *isMachoOut, bool *isLibraryOut)
+void machoGetInfo(FILE* candidateFile, bool *isMachoOut, bool *isLibraryOut)
 {
-	lseek(fd, 0, SEEK_SET);
+	if (!candidateFile) return;
+
+	fseek(candidateFile,0,SEEK_SET);
 	struct mach_header_64 header;
-	read(fd, &header, sizeof(header));
+	fread(&header,sizeof(header),1,candidateFile);
 
 	bool isMacho = isMachoOrFAT(header.magic);
 	bool isLibrary = NO;
@@ -53,9 +55,8 @@ void machoGetInfo(int fd, bool *isMachoOut, bool *isLibraryOut)
 		isLibrary = header.filetype == MH_DYLIB || header.filetype == MH_DYLIB_STUB;
 	}
 
-	if (isMacho) *isMachoOut = isMacho;
-	if (isLibrary) *isLibraryOut = isLibrary;
-	lseek(fd, 0, SEEK_SET);
+	if (isMachoOut) *isMachoOut = isMacho;
+	if (isLibraryOut) *isLibraryOut = isLibrary;
 }
 
 int64_t machoFindArch(FILE *machoFile, struct mach_header_64 header, uint32_t typeToSearch)
@@ -94,13 +95,13 @@ int64_t machoFindArch(FILE *machoFile, struct mach_header_64 header, uint32_t ty
 	return -1;
 }
 
-void getCSBlobOffsetAndSize(int fd, uint32_t* outOffset, uint32_t* outSize)
+int getCSBlobOffsetAndSize(FILE* machoFile, uint32_t* outOffset, uint32_t* outSize)
 {
-	FILE* machoFile = fdopen(fd, "rb");
+	fseek(machoFile,0,SEEK_SET);
 	struct mach_header_64 header;
 	fread(&header,sizeof(header),1,machoFile);
 
-	if (!isMachoOrFAT(header.magic)) return;
+	if (!isMachoOrFAT(header.magic)) return 2;
 
 #if __arm64e__
 	int64_t archOffsetCandidate = machoFindArch(machoFile, header, CPU_SUBTYPE_ARM64E);
@@ -108,14 +109,14 @@ void getCSBlobOffsetAndSize(int fd, uint32_t* outOffset, uint32_t* outSize)
 		int64_t archOffsetCandidate = machoFindArch(machoFile, header, CPU_SUBTYPE_ARM64_ALL);
 		if (archOffsetCandidate < 0) {
 			// arch not found, abort
-			return;
+			return 3;
 		}
 	}
 #else
 	int64_t archOffsetCandidate = machoFindArch(machoFile, header, CPU_SUBTYPE_ARM64_ALL);
 	if (archOffsetCandidate < 0) {
 		// arch not found, abort
-		return;
+		return 3;
 	}
 #endif
 
@@ -148,7 +149,7 @@ void getCSBlobOffsetAndSize(int fd, uint32_t* outOffset, uint32_t* outSize)
 		offset += cmd.cmdsize;
 	}
 	
-	fclose(machoFile);
+	return 0;
 }
 
 NSString *processRpaths(NSString *path, NSString *tokenName, NSArray *rpaths)
@@ -181,6 +182,7 @@ void _machoEnumerateDependencies(FILE *machoFile, NSString *machoPath, NSString 
 {
 	if (!enumeratedCache) enumeratedCache = [NSMutableSet new];
 
+	fseek(machoFile,0,SEEK_SET);
 	struct mach_header_64 header;
 	fread(&header,sizeof(header),1,machoFile);
 
@@ -294,27 +296,46 @@ void machoEnumerateDependencies(FILE *machoFile, NSString *machoPath, void (^enu
 	_machoEnumerateDependencies(machoFile, machoPath, machoPath, nil, enumerateBlock);
 }
 
-int loadSignature(int fd)
+int loadEmbeddedSignature(FILE *file)
 {
 	uint32_t offset = 0, size = 0;
 	
-	getCSBlobOffsetAndSize(fd, &offset, &size);
+	int ret = getCSBlobOffsetAndSize(file, &offset, &size);
+	if (ret == 0) {
+		struct fsignatures fsig;
+		fsig.fs_file_start = 0;
+		fsig.fs_blob_start = (void*)(uint64_t)offset;
+		fsig.fs_blob_size = size;
+		ret = fcntl(fileno(file), F_ADDFILESIGS, fsig);
+	}
 	
-	struct fsignatures fsig;
-	fsig.fs_file_start = 0;
-	fsig.fs_blob_start = (void*)(uint64_t)offset;
-	fsig.fs_blob_size = size;
-	
-	int ret = fcntl(fd, F_ADDFILESIGS, fsig);
 	return ret;
 }
 
-void evaluateSignature(NSString* filePath, NSData **cdHashOut, BOOL *isAdhocSignedOut)
+int loadDetachedSignature(int fd, NSData *detachedSignature)
 {
-	if(![[NSFileManager defaultManager] fileExistsAtPath:filePath]) return;
+	struct fsignatures fsig;
+    fsig.fs_file_start = 0;
+    fsig.fs_blob_start = (void*)[detachedSignature bytes];
+    fsig.fs_blob_size = [detachedSignature length];
+    return fcntl(fd, F_ADDSIGS, fsig);
+}
+
+void evaluateSignature(NSURL* fileURL, NSData **cdHashOut, BOOL *isAdhocSignedOut)
+{
+	if(![fileURL checkResourceIsReachableAndReturnError:nil]) return;
+
+	FILE *machoTestFile = fopen(fileURL.fileSystemRepresentation, "rb");
+	if (!machoTestFile) return;
+
+	BOOL isMacho = NO;
+	machoGetInfo(machoTestFile, &isMacho, NULL);
+	fclose(machoTestFile);
+
+	if (!isMacho) return;
 
 	SecStaticCodeRef staticCode = NULL;
-	OSStatus status = SecStaticCodeCreateWithPathAndAttributes((__bridge CFURLRef)[NSURL fileURLWithPath:filePath], 0, NULL, &staticCode);
+	OSStatus status = SecStaticCodeCreateWithPathAndAttributes((__bridge CFURLRef)fileURL, 0, NULL, &staticCode);
 	if (status == noErr) {
 		CFDictionaryRef codeInfoDict;
 
@@ -358,7 +379,8 @@ BOOL isCdHashInTrustCache(NSData *cdHash)
 			return -2;
 		}
 
-		kr = IOConnectCallMethod(connect, AMFI_IS_CD_HASH_IN_TRUST_CACHE, NULL, 0, CFDataGetBytePtr((__bridge CFDataRef)cdHash), CFDataGetLength((__bridge CFDataRef)cdHash), 0, 0, 0, 0);
+		uint64_t includeLoadedTC = YES;
+		kr = IOConnectCallMethod(connect, AMFI_IS_CD_HASH_IN_TRUST_CACHE, &includeLoadedTC, 1, CFDataGetBytePtr((__bridge CFDataRef)cdHash), CFDataGetLength((__bridge CFDataRef)cdHash), 0, 0, 0, 0);
 		NSLog(@"amfi returned %d, %s", kr, mach_error_string(kr));
 
 		IOServiceClose(connect);

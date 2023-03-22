@@ -5,6 +5,7 @@
 #import <sys/stat.h>
 #import <unistd.h>
 #import <libjailbreak/boot_info.h>
+#import <libjailbreak/signatures.h>
 #import "trustcache_structs.h"
 #import "JBDTCPage.h"
 #import "spawn_wrapper.h"
@@ -47,28 +48,25 @@ void trustCacheRemoveEntry(trustcache_entry entry)
 	}
 }
 
-void fileEnumerateTrustCacheEntries(const char *filePath, void (^enumerateBlock)(trustcache_entry entry)) {
-	struct cdhashes cdh = { 0 };
-	struct stat sb;
-	stat(filePath, &sb);
-	find_cdhash(filePath, &sb, &cdh);
+void fileEnumerateTrustCacheEntries(NSURL *fileURL, void (^enumerateBlock)(trustcache_entry entry)) {
+	NSData *cdHash = nil;
+	BOOL isAdhocSigned = NO;
+	evaluateSignature(fileURL, &cdHash, &isAdhocSigned);
 
-	for (int i = 0; i < cdh.count; i++) {
-		trustcache_entry entry;
-		memcpy(&entry.hash, &cdh.h[i].cdhash[0], CS_CDHASH_LEN);
-		entry.hash_type = 0x2;
-		entry.flags = 0x0;
-		enumerateBlock(entry);
-	}
-
-	if (cdh.h) {
-		free(cdh.h);
+	if (isAdhocSigned) {
+		if ([cdHash length] == CS_CDHASH_LEN) {
+			trustcache_entry entry;
+			memcpy(&entry.hash, [cdHash bytes], CS_CDHASH_LEN);
+			entry.hash_type = 0x2;
+			entry.flags = 0x0;
+			enumerateBlock(entry);
+		}
 	}
 }
 
-void trustCacheUploadFile(const char *filePath)
+void trustCacheUploadFile(NSURL *fileURL)
 {
-	fileEnumerateTrustCacheEntries(filePath, ^(trustcache_entry entry) {
+	fileEnumerateTrustCacheEntries(fileURL, ^(trustcache_entry entry) {
 		trustCacheAddEntry(entry);
 	});
 }
@@ -102,6 +100,7 @@ void trustCacheUploadCDHashesFromArray(NSArray *cdHashArray)
 		memcpy(&entry.hash, cdHash.bytes, CS_CDHASH_LEN);
 		entry.hash_type = 0x2;
 		entry.flags = 0x0;
+		NSLog(@"[trustCacheUploadCDHashesFromArray] uploading %@", cdHash);
 		[mappedInPage addEntry:entry];
 	}
 
@@ -113,6 +112,7 @@ void trustCacheUploadCDHashesFromArray(NSArray *cdHashArray)
 
 void trustCacheUploadDirectory(NSString *directoryPath)
 {
+	NSString *basebinPath = [[@"/var/jb/basebin" stringByResolvingSymlinksInPath] stringByStandardizingPath];
 	NSString *resolvedPath = [[directoryPath stringByResolvingSymlinksInPath] stringByStandardizingPath];
 	NSDirectoryEnumerator<NSURL *> *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtURL:[NSURL fileURLWithPath:resolvedPath isDirectory:YES] 
 																			   includingPropertiesForKeys:@[NSURLIsSymbolicLinkKey]
@@ -123,7 +123,9 @@ void trustCacheUploadDirectory(NSString *directoryPath)
 		NSNumber *isSymlink;
 		[enumURL getResourceValue:&isSymlink forKey:NSURLIsSymbolicLinkKey error:nil];
 		if (isSymlink && ![isSymlink boolValue]) {
-			fileEnumerateTrustCacheEntries(enumURL.fileSystemRepresentation, ^(trustcache_entry entry) {
+			// never inject basebin binaries here
+			if ([[[enumURL.path stringByResolvingSymlinksInPath] stringByStandardizingPath] hasPrefix:basebinPath]) continue;
+			fileEnumerateTrustCacheEntries(enumURL, ^(trustcache_entry entry) {
 				if (!mappedInPage || mappedInPage.amountOfSlotsLeft == 0) {
 					// If there is still a page mapped, map it out now
 					if (mappedInPage) {
@@ -134,7 +136,7 @@ void trustCacheUploadDirectory(NSString *directoryPath)
 					mappedInPage = trustCacheMapInFreePage();
 				}
 
-				NSLog(@"[TC %@] Adding entry for %@ (Initial Run)", directoryPath, enumURL.path);
+				NSLog(@"[trustCacheUploadDirectory %@] Uploading cdhash of %@", directoryPath, enumURL.path);
 				[mappedInPage addEntry:entry];
 			});
 		}

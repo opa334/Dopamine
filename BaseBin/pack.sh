@@ -56,6 +56,13 @@ make
 cd -
 cp "./launchdhook/launchdhook.dylib" ".tmp/basebin/launchdhook.dylib"
 
+# systemhook
+cd "systemhook"
+make
+cd -
+cp "./systemhook/systemhook.dylib" ".tmp/basebin/systemhook.dylib"
+
+
 # external
 cp -r ./_external/* .tmp/basebin/
 

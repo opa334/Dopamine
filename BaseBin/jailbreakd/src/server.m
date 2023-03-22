@@ -44,38 +44,41 @@ int processBinary(NSString *binaryPath)
 {
 	uint64_t selfproc = self_proc();
 
-	int fd = open(binaryPath.fileSystemRepresentation, O_RDONLY);
+	FILE *machoFile = fopen(binaryPath.fileSystemRepresentation, "rb");
+	if (!machoFile) return 1;
+	int fd = fileno(machoFile);
 	if (fd <= 0) return 1;
 
 	bool isMacho = NO;
 	bool isLibrary = NO;
-	machoGetInfo(fd, &isMacho, &isLibrary);
+	machoGetInfo(machoFile, &isMacho, &isLibrary);
 	if (!isMacho) return 2;
 
 	NSMutableArray *nonTrustCachedCDHashes = [NSMutableArray new];
 
 	void (^tcCheckBlock)(NSString *) = ^(NSString *dependencyPath) {
-		NSData *cdHash = nil;
-		BOOL isAdhocSigned = NO;
-		evaluateSignature(binaryPath, &cdHash, &isAdhocSigned);
-		if (isAdhocSigned) {
-			if (!isCdHashInTrustCache(cdHash)) {
-				[nonTrustCachedCDHashes addObject:cdHash];
+		if (dependencyPath) {
+			NSURL *dependencyURL = [NSURL fileURLWithPath:dependencyPath];
+			NSData *cdHash = nil;
+			BOOL isAdhocSigned = NO;
+			evaluateSignature(dependencyURL, &cdHash, &isAdhocSigned);
+			if (isAdhocSigned) {
+				if (!isCdHashInTrustCache(cdHash)) {
+					[nonTrustCachedCDHashes addObject:cdHash];
+				}
 			}
 		}
 	};
 
 	tcCheckBlock(binaryPath);
 	
-	FILE *machoFile = fdopen(fd, "rb");
 	machoEnumerateDependencies(machoFile, binaryPath, tcCheckBlock);
-	fclose(machoFile);
 
 	trustCacheUploadCDHashesFromArray(nonTrustCachedCDHashes);
 
 	// Add entitlements for anything that's not a library
 	if (!isLibrary) {
-		int fcntlRet = loadSignature(fd);
+		int fcntlRet = loadEmbeddedSignature(machoFile);
 		NSLog(@"fcntlRet: %d", fcntlRet); 
 		//TODO: check if we can use the fcntlRet here somehow (performance improvements???)
 
@@ -87,7 +90,7 @@ int processBinary(NSString *binaryPath)
 		}
 	}
 
-	close(fd);
+	fclose(machoFile);
 	return 0;
 }
 
@@ -101,7 +104,7 @@ void primitivesInitializedCallback(void)
 	}
 }
 
-void mach_port_callback(mach_port_t machPort)
+void jailbreakd_received_message(mach_port_t machPort)
 {
 	xpc_object_t message = nil;
     int err = xpc_pipe_receive(machPort, &message);
@@ -181,15 +184,43 @@ void mach_port_callback(mach_port_t machPort)
 			case JBD_MSG_DO_KCALL: {
 				if (gKCallStatus == kKcallStatusFinalized) {
 					uint64_t func = xpc_dictionary_get_uint64(message, "func");
-					uint64_t a1 = xpc_dictionary_get_uint64(message, "a1");
-					uint64_t a2 = xpc_dictionary_get_uint64(message, "a2");
-					uint64_t a3 = xpc_dictionary_get_uint64(message, "a3");
-					uint64_t a4 = xpc_dictionary_get_uint64(message, "a4");
-					uint64_t a5 = xpc_dictionary_get_uint64(message, "a5");
-					uint64_t a6 = xpc_dictionary_get_uint64(message, "a6");
-					uint64_t a7 = xpc_dictionary_get_uint64(message, "a7");
-					uint64_t a8 = xpc_dictionary_get_uint64(message, "a8");
-					uint64_t ret = kcall(func, a1, a2, a3, a4, a5, a6, a7, a8);
+					xpc_object_t args = xpc_dictionary_get_value(message, "args");
+					uint64_t argc = xpc_array_get_count(args);
+					uint64_t argv[argc];
+					for (uint64_t i = 0; i < argc; i++) {
+						argv[i] = xpc_array_get_uint64(args, i);
+					}
+					uint64_t ret = kcall(func, argc, argv);
+					xpc_dictionary_set_uint64(reply, "ret", ret);
+				}
+				else {
+					xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
+				}
+				break;
+			}
+
+			case JBD_MSG_DO_KCALL_THREADSTATE: {
+				if (gKCallStatus == kKcallStatusFinalized) {
+
+					KcallThreadState threadState = { 0 };
+					threadState.lr = xpc_dictionary_get_uint64(message, "lr");
+					threadState.sp = xpc_dictionary_get_uint64(message, "sp");
+					threadState.pc = xpc_dictionary_get_uint64(message, "pc");
+					xpc_object_t xXpcArr = xpc_dictionary_get_value(message, "x");
+					uint64_t xXpcCount = xpc_array_get_count(xXpcArr);
+					if (xXpcCount > 29) xXpcCount = 29;
+					for (uint64_t i = 0; i < xXpcCount; i++) {
+						threadState.x[i] = xpc_array_get_uint64(xXpcArr, i);
+					}
+
+					bool raw = xpc_dictionary_get_bool(message, "raw");
+					uint64_t ret = 0;
+					if (raw) {
+						ret = kcall_with_raw_thread_state(threadState);
+					}
+					else {
+						ret = kcall_with_thread_state(threadState);
+					}
 					xpc_dictionary_set_uint64(reply, "ret", ret);
 				}
 				else {
@@ -247,6 +278,18 @@ void mach_port_callback(mach_port_t machPort)
 				xpc_dictionary_set_int64(reply, "result", result);
 				break;
 			}
+
+			case JBD_MSG_DEBUG_ME: {
+				int64_t result = 0;
+				if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+					proc_set_debugged(clientPid);
+				}
+				else {
+					result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+				}
+				xpc_dictionary_set_int64(reply, "result", result);
+				break;
+			}
 		}
 	}
 
@@ -254,6 +297,71 @@ void mach_port_callback(mach_port_t machPort)
 		if (msgId != JBD_MSG_REMOTELOG) {
 			NSLog(@"responding to message %d with %s", msgId, xpc_copy_description(reply));
 		}
+		err = xpc_pipe_routine_reply(reply);
+		if (err != 0) {
+			NSLog(@"Error %d sending response", err);
+		}
+	}
+}
+
+void jailbreakd_received_sw_message(mach_port_t machPort)
+{
+	xpc_object_t message = nil;
+    int err = xpc_pipe_receive(machPort, &message);
+    if (err != 0) {
+		NSLog(@"xpc_pipe_receive error %d", err);
+        return;
+    }
+
+	xpc_object_t reply = xpc_dictionary_create_reply(message);
+	xpc_type_t messageType = xpc_get_type(message);
+	JBD_MESSAGE_ID msgId = -1;
+	if (messageType == XPC_TYPE_DICTIONARY) {
+		audit_token_t auditToken = {};
+		xpc_dictionary_get_audit_token(message, &auditToken);
+		uid_t clientUid = audit_token_to_euid(auditToken);
+		pid_t clientPid = audit_token_to_pid(auditToken);
+
+		msgId = xpc_dictionary_get_uint64(message, "id");
+
+		if (msgId != JBD_MSG_REMOTELOG) {
+			NSLog(@"received system wide message %d with dictionary: %s", msgId, xpc_copy_description(message));
+		}
+
+		switch (msgId) {
+			case JBD_MSG_PROCESS_BINARY: {
+				int64_t result = 0;
+				if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+					const char* filePath = xpc_dictionary_get_string(message, "filePath");
+					if (filePath) {
+						NSString *nsFilePath = [NSString stringWithUTF8String:filePath];
+						result = processBinary(nsFilePath);
+					}
+				}
+				else {
+					result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+				}
+				xpc_dictionary_set_int64(reply, "result", result);
+				break;
+			}
+			case JBD_MSG_DEBUG_ME: {
+				int64_t result = 0;
+				if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+					proc_set_debugged(clientPid);
+				}
+				else {
+					result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+				}
+				xpc_dictionary_set_int64(reply, "result", result);
+				break;
+			}
+			default:
+				break;
+		}
+	}
+
+	if (reply) {
+		NSLog(@"responding to system wide message %d with %s", msgId, xpc_copy_description(reply));
 		err = xpc_pipe_routine_reply(reply);
 		if (err != 0) {
 			NSLog(@"Error %d sending response", err);
@@ -291,7 +399,14 @@ int main(int argc, char* argv[])
 		mach_port_t machPort = 0;
 		kern_return_t kr = bootstrap_check_in(bootstrap_port, "com.opa334.jailbreakd", &machPort);
 		if (kr != KERN_SUCCESS) {
-			NSLog(@"Failed bootstrap check in: %d (%s)", kr, mach_error_string(kr));
+			NSLog(@"Failed com.opa334.jailbreakd bootstrap check in: %d (%s)", kr, mach_error_string(kr));
+			return 1;
+		}
+
+		mach_port_t machPortSystemWide = 0;
+		kr = bootstrap_check_in(bootstrap_port, "com.opa334.jailbreakd.systemwide", &machPortSystemWide);
+		if (kr != KERN_SUCCESS) {
+			NSLog(@"Failed com.opa334.jailbreakd.systemwide bootstrap check in: %d (%s)", kr, mach_error_string(kr));
 			return 1;
 		}
 
@@ -313,11 +428,18 @@ int main(int argc, char* argv[])
 		}
 
 		dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_MACH_RECV, (uintptr_t)machPort, 0, dispatch_get_main_queue());
-        dispatch_source_set_event_handler(source, ^{
-			mach_port_t machPort = (mach_port_t)dispatch_source_get_handle(source);
-			mach_port_callback(machPort);
+		dispatch_source_set_event_handler(source, ^{
+			mach_port_t lMachPort = (mach_port_t)dispatch_source_get_handle(source);
+			jailbreakd_received_message(lMachPort);
         });
         dispatch_resume(source);
+
+		dispatch_source_t sourceSystemWide = dispatch_source_create(DISPATCH_SOURCE_TYPE_MACH_RECV, (uintptr_t)machPortSystemWide, 0, dispatch_get_main_queue());
+		dispatch_source_set_event_handler(sourceSystemWide, ^{
+			mach_port_t lMachPort = (mach_port_t)dispatch_source_get_handle(sourceSystemWide);
+			jailbreakd_received_sw_message(lMachPort);
+        });
+        dispatch_resume(sourceSystemWide);
 
 		dispatch_main();
 		return 0;

@@ -11,13 +11,13 @@ extern size_t der_sizeof_plist(CFPropertyListRef pl, CFErrorRef *error);
 uint64_t kalloc(uint64_t size)
 {
 	uint64_t kalloc_data_external = bootInfo_getSlidUInt64(@"kalloc_data_external");
-	return kcall(kalloc_data_external, size, 1, 0, 0, 0, 0, 0, 0);
+	return kcall(kalloc_data_external, 2, (uint64_t[]){size, 1});
 }
 
 uint64_t kfree(uint64_t addr, uint64_t size)
 {
 	uint64_t kfree_data_external = bootInfo_getSlidUInt64(@"kfree_data_external");
-	return kcall(kfree_data_external, addr, size, 0, 0, 0, 0, 0, 0);
+	return kcall(kfree_data_external, 3, (uint64_t[]){addr, size});
 }
 
 uint64_t stringKalloc(const char *string)
@@ -36,13 +36,50 @@ void stringKFree(const char *string, uint64_t kmem)
 bool cs_allow_invalid(uint64_t proc_ptr)
 {
 	uint64_t cs_allow_invalid = bootInfo_getSlidUInt64(@"cs_allow_invalid");
-	return (bool)kcall(cs_allow_invalid, proc_ptr, 0, 0, 0, 0, 0, 0, 0);
+	return (bool)kcall(cs_allow_invalid, 1, (uint64_t[]){proc_ptr});
 }
 
 uint64_t ptrauth_utils_sign_blob_generic(uint64_t ptr, uint64_t len_bytes, uint64_t salt, uint64_t flags)
 {
 	uint64_t ptrauth_utils_sign_blob_generic = bootInfo_getSlidUInt64(@"ptrauth_utils_sign_blob_generic");
-	return kcall(ptrauth_utils_sign_blob_generic, ptr, len_bytes, salt, flags, 0, 0, 0, 0);
+	return kcall(ptrauth_utils_sign_blob_generic, 4, (uint64_t[]){ptr, len_bytes, salt, flags});
+}
+
+/*
+Uses some super simple PACDA signing gadget I found by accident
+Something ipc related
+
+__TEXT_EXEC:__text:FFFFFFF007AD0724                 PACDA           X0, X8
+__TEXT_EXEC:__text:FFFFFFF007AD0728                 STR             X0, [X1,#0x68]
+__TEXT_EXEC:__text:FFFFFFF007AD072C                 RET
+
+In iPad 8 15.4.1 kernel
+*/
+uint64_t kpacda(uint64_t pointer, uint64_t modifier)
+{
+	uint64_t kernelslide = bootInfo_getUInt64(@"kernelslide");
+
+	uint64_t outputAllocation = kalloc(0x8);
+	KcallThreadState threadState = { 0 };
+	threadState.pc = kernelslide + 0xFFFFFFF007AD0724;
+	threadState.x[0] = pointer;
+	threadState.x[1] = outputAllocation-0x68;
+	threadState.x[8] = modifier;
+	uint64_t sign = kcall_with_thread_state(threadState);
+	kfree(outputAllocation, 0x8);
+	return sign;
+}
+
+uint64_t kptr_sign(uint64_t kaddr, uint64_t pointer, uint16_t salt)
+{
+	extern uint64_t xpaci(uint64_t a);
+	uint64_t modifier = (kaddr & 0xffffffffffff) | ((uint64_t)salt << 48);
+	return kpacda(xpaci(pointer), modifier);
+}
+
+void kwrite_ptr(uint64_t kaddr, uint64_t pointer, uint16_t salt)
+{
+	kwrite64(kaddr, kptr_sign(kaddr, pointer, salt));
 }
 
 uint64_t proc_get_task(uint64_t proc_ptr)
@@ -115,7 +152,7 @@ uint64_t proc_get_text_vnode(uint64_t proc_ptr)
 	}
 }
 
-uint64_t proc_get_vnode_by_file_descriptor(uint64_t proc_ptr, int fd)
+uint64_t proc_get_file_glob_by_file_descriptor(uint64_t proc_ptr, int fd)
 {
 	uint64_t proc_fd = 0;
 	if (@available(iOS 15.2, *)) {
@@ -128,7 +165,12 @@ uint64_t proc_get_vnode_by_file_descriptor(uint64_t proc_ptr, int fd)
 	if (!ofiles_start) return 0;
 	uint64_t file_proc_ptr = kread_ptr(ofiles_start + (fd * 8));
 	if (!file_proc_ptr) return 0;
-	uint64_t file_glob_ptr = kread_ptr(file_proc_ptr + 0x10);
+	return kread_ptr(file_proc_ptr + 0x10);
+}
+
+uint64_t proc_get_vnode_by_file_descriptor(uint64_t proc_ptr, int fd)
+{
+	uint64_t file_glob_ptr = proc_get_file_glob_by_file_descriptor(proc_ptr, fd);
 	if (!file_glob_ptr) return 0;
 	return kread_ptr(file_glob_ptr + 0x38);
 }
@@ -267,6 +309,46 @@ uint64_t csblob_get_pmap_cs_entry(uint64_t csblob_ptr)
 	}
 }
 
+NSMutableDictionary *DEREntitlementsDecode(uint8_t *start, uint8_t *end)
+{
+	if (!start || !end) return nil;
+	if (start == end) return nil;
+
+	CFTypeRef plist = NULL;
+	CFErrorRef err;
+	der_decode_plist(NULL, &plist, &err, start, end);
+
+	if (plist) {
+		if (CFGetTypeID(plist) == CFDictionaryGetTypeID()) {
+			NSMutableDictionary *plistDict = (__bridge_transfer id)plist;
+			return plistDict;
+		}
+		else if (CFGetTypeID(plist) == CFDataGetTypeID()) {
+			// This code path is probably never used, but I decided to implement it anyways
+			// Because I saw in disassembly that there is a possibility for this to return data
+			NSData *plistData = (__bridge_transfer id)plist;
+			NSPropertyListFormat format;
+			NSError *decodeError;
+			NSMutableDictionary *result = ((NSDictionary *)[NSPropertyListSerialization propertyListWithData:plistData options:0 format:&format error:&decodeError]).mutableCopy;
+			if (!result) {
+				NSLog(@"decode error: %@", decodeError);
+			}
+			return result;
+		}
+	}
+	return nil;
+}
+
+void DEREntitlementsEncode(NSDictionary *entitlements, uint8_t **startOut, uint8_t **endOut)
+{
+	size_t der_size = der_sizeof_plist((__bridge CFDictionaryRef)entitlements, NULL);
+	uint8_t *der_start = malloc(der_size);
+	uint8_t *der_end = der_start + der_size;
+	der_encode_plist((__bridge CFDictionaryRef)entitlements, NULL, der_start, der_end);
+	if (startOut) *startOut = der_start;
+	if (endOut) *endOut = der_end;
+}
+
 uint64_t ucred_get_cr_label(uint64_t ucred_ptr)
 {
 	return kread_ptr(ucred_ptr + 0x78);
@@ -295,33 +377,9 @@ NSMutableDictionary *CEQueryContext_dump_entitlements(uint64_t CEQueryContext_pt
 	kreadbuf(der_start, us_der_start, der_len);
 	uint8_t *us_der_end = us_der_start + der_len;
 
-	CFTypeRef plist = NULL;
-	CFErrorRef err;
-	der_decode_plist(NULL, &plist, &err, us_der_start, us_der_end);
+	NSMutableDictionary *entitlements = DEREntitlementsDecode(us_der_start, us_der_end);
 	free(us_der_start);
-
-	if (plist) {
-		if (CFGetTypeID(plist) == CFDictionaryGetTypeID()) {
-			NSMutableDictionary *plistDict = (__bridge_transfer id)plist;
-			return plistDict;
-		}
-		else if (CFGetTypeID(plist) == CFDataGetTypeID()) {
-			// This code path is probably never used, but I decided to implement it anyways
-			// Because I saw in disassembly that there is a possibility for this to return data
-			NSData *plistData = (__bridge_transfer id)plist;
-			NSPropertyListFormat format;
-			NSError *decodeError;
-			NSMutableDictionary *result = ((NSDictionary *)[NSPropertyListSerialization propertyListWithData:plistData options:0 format:&format error:&decodeError]).mutableCopy;
-			if (result) {
-				return result;
-			}
-			else {
-				NSLog(@"decode error: %@\n", decodeError);
-			}
-		}
-	}
-
-	return nil;
+	return entitlements;
 }
 
 NSMutableDictionary *OSEntitlements_dump_entitlements(uint64_t OSEntitlements_ptr)
@@ -332,10 +390,9 @@ NSMutableDictionary *OSEntitlements_dump_entitlements(uint64_t OSEntitlements_pt
 
 void copyEntitlementsToKernelMemory(NSDictionary *entitlements, uint64_t *out_kern_der_start, uint64_t *out_kern_der_end)
 {
-	size_t der_size = der_sizeof_plist((__bridge CFDictionaryRef)entitlements, NULL);
-	uint8_t *der_start = malloc(der_size);
-	uint8_t *der_end = der_start + der_size;
-	der_encode_plist((__bridge CFDictionaryRef)entitlements, NULL, der_start, der_end);
+	uint8_t *der_start = NULL, *der_end = NULL;
+	DEREntitlementsEncode(entitlements, &der_start, &der_end);
+	uint64_t der_size = der_end - der_start;
 
 	uint64_t kern_der_start = kalloc(der_size); // XXX: use proper zone for this allocation
 	uint64_t kern_der_end = kern_der_start + der_size;
@@ -477,6 +534,31 @@ uint64_t vnode_get_csblob(uint64_t vnode_ptr)
 		retCsblob = csblob;
 	});
 	return retCsblob;
+}
+
+uint64_t vnode_get_data(uint64_t vnode_ptr)
+{
+	return kread64(vnode_ptr + 0xE0);
+}
+
+void vnode_set_data(uint64_t vnode_ptr, uint64_t data)
+{
+	kwrite64(vnode_ptr + 0xE0, data);
+}
+
+uint16_t vnode_get_type(uint64_t vnode_ptr)
+{
+	return kread16(vnode_ptr + 0x70);
+}
+
+uint32_t vnode_get_id(uint64_t vnode_ptr)
+{
+	return kread32(vnode_ptr + 0x74);
+}
+
+uint64_t vnode_get_mount(uint64_t vnode_ptr)
+{
+	return kread64(vnode_ptr + 0xD8);
 }
 
 NSMutableDictionary *proc_dump_entitlements(uint64_t proc_ptr)

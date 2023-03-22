@@ -13,6 +13,8 @@
 			<key>HostSpecialPort</key>
 			<integer>16</integer>
 		</dict>
+		<key>com.opa334.jailbreakd.systemwide</key>
+		<true/>
 	</dict>
 	<key>ProgramArguments</key>
 	<array>

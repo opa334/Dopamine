@@ -101,22 +101,46 @@ int jbdInitPPLRW(void)
 	return 0;
 }
 
-uint64_t jbdKcall(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8)
+
+uint64_t jbdKcall(uint64_t func, uint64_t argc, uint64_t *argv)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_DO_KCALL);
 	xpc_dictionary_set_uint64(message, "func", func);
-	xpc_dictionary_set_uint64(message, "a1", a1);
-	xpc_dictionary_set_uint64(message, "a2", a2);
-	xpc_dictionary_set_uint64(message, "a3", a3);
-	xpc_dictionary_set_uint64(message, "a4", a4);
-	xpc_dictionary_set_uint64(message, "a5", a5);
-	xpc_dictionary_set_uint64(message, "a6", a6);
-	xpc_dictionary_set_uint64(message, "a7", a7);
-	xpc_dictionary_set_uint64(message, "a8", a8);
+
+	xpc_object_t args = xpc_array_create_empty();
+	for (uint64_t i = 0; i < argc; i++) {
+		xpc_array_set_uint64(args, XPC_ARRAY_APPEND, argv[i]);
+	}
+	xpc_dictionary_set_value(message, "args", args);
 
 	xpc_object_t reply = sendJBDMessage(message);
 	return xpc_dictionary_get_uint64(reply, "ret");
+}
+
+uint64_t jbdKcallThreadState(KcallThreadState *threadState, bool raw)
+{
+	xpc_object_t message = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(message, "id", JBD_MSG_DO_KCALL_THREADSTATE);
+
+	xpc_dictionary_set_uint64(message, "lr", threadState->lr);
+	xpc_dictionary_set_uint64(message, "sp", threadState->sp);
+	xpc_dictionary_set_uint64(message, "pc", threadState->pc);
+
+	xpc_object_t registers = xpc_array_create_empty();
+	for (uint64_t i = 0; i < 29; i++) {
+		xpc_array_set_uint64(registers, XPC_ARRAY_APPEND, threadState->x[i]);
+	}
+	xpc_dictionary_set_value(message, "x", registers);
+	xpc_dictionary_set_bool(message, "raw", raw);
+
+	xpc_object_t reply = sendJBDMessage(message);
+	return xpc_dictionary_get_uint64(reply, "ret");
+}
+
+uint64_t jbdKcall8(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8)
+{
+	return jbdKcall(func, 8, (uint64_t[]){a1, a2, a3, a4, a5, a6, a7, a8});
 }
 
 void jbdRemoteLog(uint64_t verbosity, NSString *fString, ...)
