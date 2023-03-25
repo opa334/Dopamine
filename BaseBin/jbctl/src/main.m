@@ -18,6 +18,8 @@ int main(int argc, char* argv[])
 	}
 	else if (!strcmp(cmd, "rebuild_trustcache")) {
 		jbdRebuildTrustCache();
+	} else if (!strcmp(cmd, "init_environment")) {
+		jbdInitEnvironment(nil);
 	}
 
 	return 0;

@@ -44,6 +44,23 @@ class Bootstrapper {
 		return nil
 	}
 
+    static func deleteIfSymlink(atPath path: String) {
+        let fileManager = FileManager.default
+        
+        do {
+            let attributes = try fileManager.attributesOfItem(atPath: path)
+            
+            if let fileType = attributes[.type] as? FileAttributeType, fileType == .typeSymbolicLink {
+                try fileManager.removeItem(atPath: path)
+                NSLog("[Xina Cleanup] Deleted symlink at \(path)")
+            } else {
+                NSLog("[Xina Cleanup] \(path) is not a symlink")
+            }
+        } catch {
+            NSLog("[Xina Cleanup] Error: \(error)")
+        }
+    }
+
     static func doBootstrap() {
         let jbPath = "/var/jb"
 
@@ -51,7 +68,7 @@ class Bootstrapper {
             NSLog("Failed to remount /private/preboot partition as writable")
             return
         }
-        
+
         // Remove existing /var/jb symlink if it exists (will be recreated later)
         
         do {
@@ -61,6 +78,53 @@ class Bootstrapper {
         } catch let error as NSError {
             NSLog("Failed to delete existing /var/jb symlink: \(error)")
             return
+        }
+
+        // If xina was used before, clean the mess it creates in /var
+        // Xina will recreate them on the next jb through it so there is no loss here
+        let xinaInstalled = FileManager.default.fileExists(atPath: "/var/LIY")
+        NSLog("xinaInstalled: \(xinaInstalled)")
+        if xinaInstalled {
+            let xinaVarSymlinks = [
+                "alternatives",
+                "ap",
+                "apt",
+                "bin",
+                "bzip2",
+                "cache",
+                "dpkg",
+                "etc",
+                "gzip",
+                "lib",
+                "Lib",
+                "libexec",
+                "Library",
+                "LIY",
+                "Liy",
+                "local",
+                "newuser",
+                "profile",
+                "sbin",
+                "suid_profile",
+                "sh",
+                "sy",
+                "share",
+                "ssh",
+                "sudo_logsrvd.conf",
+                "suid_profile",
+                "sy",
+                "usr",
+                "zlogin",
+                "zlogout",
+                "zprofile",
+                "zshenv",
+                "zshrc"
+            ]
+
+            for xinaVarSymlink in xinaVarSymlinks {
+                let symlinkPathToWipe = "/var/" + xinaVarSymlink
+                deleteIfSymlink(atPath: symlinkPathToWipe)
+            }
         }
         
         // Ensure fake root directory inside /private/preboot exists

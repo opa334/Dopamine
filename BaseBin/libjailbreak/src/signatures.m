@@ -76,7 +76,7 @@ int64_t machoFindArch(FILE *machoFile, struct mach_header_64 header, uint32_t ty
 			fseek(machoFile,sizeof(fatHeader) + sizeof(fatArch) * i,SEEK_SET);
 			fread(&fatArch,sizeof(fatArch),1,machoFile);
 
-			uint32_t maskedSubtype = s32(fatArch.cputype, swpFat) & ~0x80000000;
+			uint32_t maskedSubtype = s32(fatArch.cpusubtype, swpFat) & ~0x80000000;
 
 			if(maskedSubtype != typeToSearch)
 			{

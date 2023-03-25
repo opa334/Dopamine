@@ -15,7 +15,9 @@ mach_port_t jbdMachPort(void)
 	mach_port_t outPort = -1;
 
 	if (getpid() == 1) {
-		host_get_special_port(mach_host_self(), HOST_LOCAL_NODE, 16, &outPort);
+		mach_port_t self_host = mach_host_self();
+		host_get_special_port(self_host, HOST_LOCAL_NODE, 16, &outPort);
+		mach_port_deallocate(mach_task_self(), self_host);
 	}
 	else {
 		bootstrap_look_up(bootstrap_port, "com.opa334.jailbreakd", &outPort);
@@ -31,6 +33,7 @@ xpc_object_t sendJBDMessage(xpc_object_t message)
 
 	xpc_object_t reply = nil;
 	int err = xpc_pipe_routine(pipe, message, &reply);
+	mach_port_deallocate(mach_task_self(), jbdPort);
 	if (err != 0) {
 		NSLog(@"xpc_pipe_routine error on sending message to jailbreakd: %d", err);
 		return nil;
@@ -101,23 +104,6 @@ int jbdInitPPLRW(void)
 	return 0;
 }
 
-
-uint64_t jbdKcall(uint64_t func, uint64_t argc, uint64_t *argv)
-{
-	xpc_object_t message = xpc_dictionary_create_empty();
-	xpc_dictionary_set_uint64(message, "id", JBD_MSG_DO_KCALL);
-	xpc_dictionary_set_uint64(message, "func", func);
-
-	xpc_object_t args = xpc_array_create_empty();
-	for (uint64_t i = 0; i < argc; i++) {
-		xpc_array_set_uint64(args, XPC_ARRAY_APPEND, argv[i]);
-	}
-	xpc_dictionary_set_value(message, "args", args);
-
-	xpc_object_t reply = sendJBDMessage(message);
-	return xpc_dictionary_get_uint64(reply, "ret");
-}
-
 uint64_t jbdKcallThreadState(KcallThreadState *threadState, bool raw)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
@@ -138,9 +124,38 @@ uint64_t jbdKcallThreadState(KcallThreadState *threadState, bool raw)
 	return xpc_dictionary_get_uint64(reply, "ret");
 }
 
+uint64_t jbdKcall(uint64_t func, uint64_t argc, uint64_t *argv)
+{
+	xpc_object_t message = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(message, "id", JBD_MSG_DO_KCALL);
+	xpc_dictionary_set_uint64(message, "func", func);
+
+	xpc_object_t args = xpc_array_create_empty();
+	for (uint64_t i = 0; i < argc; i++) {
+		xpc_array_set_uint64(args, XPC_ARRAY_APPEND, argv[i]);
+	}
+	xpc_dictionary_set_value(message, "args", args);
+
+	xpc_object_t reply = sendJBDMessage(message);
+	return xpc_dictionary_get_uint64(reply, "ret");
+}
+
 uint64_t jbdKcall8(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8)
 {
 	return jbdKcall(func, 8, (uint64_t[]){a1, a2, a3, a4, a5, a6, a7, a8});
+}
+
+uint64_t jbdInitEnvironment(NSDictionary *settings)
+{
+	xpc_object_t message = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(message, "id", JBD_MSG_INIT_ENVIRONMENT);
+
+	// TODO: pass settings
+	//xpc_dictionary_set_string(message, "source", source);
+	//xpc_dictionary_set_string(message, "target", target);
+
+	xpc_object_t reply = sendJBDMessage(message);
+	return xpc_dictionary_get_uint64(reply, "result");
 }
 
 void jbdRemoteLog(uint64_t verbosity, NSString *fString, ...)

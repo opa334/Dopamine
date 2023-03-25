@@ -1,10 +1,10 @@
 #import <Foundation/Foundation.h>
 #import <libjailbreak/libjailbreak.h>
 #import "boomerang.h"
+#import "spawn_hook.h"
 #import "xpc.h"
 
-
-void go(void)
+__attribute__((constructor)) static void initializer(void)
 {
 	if (bootInfo_getUInt64(@"launchdInitialized")) {
 		// Launchd was already initialized before, we are coming from a userspace reboot... recover primitives
@@ -22,19 +22,6 @@ void go(void)
 	proc_set_debugged(getpid());
 	
 	initBoomerangHooks();
+	initSpawnHooks();
 	initXPCHooks();
-}
-
-__attribute__((constructor)) static void initializer(void)
-{
-	if (bootInfo_getUInt64(@"launchdInitialized")) {
-		go();
-	}
-	else
-	{
-		// in opainject thread, we need to do stuff async, otherwise it's unstable
-		dispatch_async(dispatch_get_main_queue(), ^(void){
-			go();
-		});
-	}
 }

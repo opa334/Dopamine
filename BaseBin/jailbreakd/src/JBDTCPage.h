@@ -2,6 +2,9 @@
 
 #import "trustcache_structs.h"
 
+// 743 cdhashes fit into one page
+#define TC_ENTRY_COUNT_PER_PAGE 743
+
 @class JBDTCPage;
 
 extern NSMutableArray<JBDTCPage *> *gTCPages;

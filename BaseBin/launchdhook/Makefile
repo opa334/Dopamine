@@ -7,7 +7,7 @@ LDFLAGS = -dynamiclib -L../libjailbreak -L../_shared -ljailbreak -lellekit -lbsm
 sign: $(TARGET)
 	@ldid -S $^
 
-$(TARGET): $(wildcard src/*.m)
+$(TARGET): $(wildcard src/*.m ../systemhook/src/common.c)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 clean:

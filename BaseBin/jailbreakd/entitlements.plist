@@ -14,5 +14,11 @@
 	<array>
 		<string>AppleMobileFileIntegrityUserClient</string>
 	</array>
+	<key>com.apple.security.exception.iokit-user-client-class</key>
+	<array>
+		<string>AppleMobileFileIntegrityUserClient</string>
+	</array>
+	<key>com.apple.private.bindfs-allow</key>
+	<true/>
 </dict>
 </plist>

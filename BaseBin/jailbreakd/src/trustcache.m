@@ -2,6 +2,7 @@
 
 #import <libjailbreak/pplrw.h>
 #import <libjailbreak/kcall.h>
+#import <libjailbreak/util.h>
 #import <sys/stat.h>
 #import <unistd.h>
 #import <libjailbreak/boot_info.h>
@@ -13,6 +14,13 @@
 NSString* normalizePath(NSString* path)
 {
 	return [[path stringByResolvingSymlinksInPath] stringByStandardizingPath];
+}
+
+int tcentryComparator(const void * vp1, const void * vp2)
+{
+	trustcache_entry* tc1 = (trustcache_entry*)vp1;
+	trustcache_entry* tc2 = (trustcache_entry*)vp2;
+	return memcmp(tc1->hash, tc2->hash, CS_CDHASH_LEN);
 }
 
 JBDTCPage *trustCacheMapInFreePage(void)
@@ -32,7 +40,7 @@ JBDTCPage *trustCacheMapInFreePage(void)
 	return newPage;
 }
 
-void trustCacheAddEntry(trustcache_entry entry)
+void dynamicTrustCacheAddEntry(trustcache_entry entry)
 {
 	JBDTCPage *freePage = trustCacheMapInFreePage();
 	[freePage addEntry:entry];
@@ -40,7 +48,7 @@ void trustCacheAddEntry(trustcache_entry entry)
 	[freePage mapOut];
 }
 
-void trustCacheRemoveEntry(trustcache_entry entry)
+void dynamicTrustCacheRemoveEntry(trustcache_entry entry)
 {
 	for (JBDTCPage *page in gTCPages) {
 		BOOL removed = [page removeEntry:entry];
@@ -64,14 +72,14 @@ void fileEnumerateTrustCacheEntries(NSURL *fileURL, void (^enumerateBlock)(trust
 	}
 }
 
-void trustCacheUploadFile(NSURL *fileURL)
+void dynamicTrustCacheUploadFile(NSURL *fileURL)
 {
 	fileEnumerateTrustCacheEntries(fileURL, ^(trustcache_entry entry) {
-		trustCacheAddEntry(entry);
+		dynamicTrustCacheAddEntry(entry);
 	});
 }
 
-void trustCacheUploadCDHashFromData(NSData *cdHash)
+void dynamicTrustCacheUploadCDHashFromData(NSData *cdHash)
 {
 	if (cdHash.length != CS_CDHASH_LEN) return;
 
@@ -79,10 +87,10 @@ void trustCacheUploadCDHashFromData(NSData *cdHash)
 	memcpy(&entry.hash, cdHash.bytes, CS_CDHASH_LEN);
 	entry.hash_type = 0x2;
 	entry.flags = 0x0;
-	trustCacheAddEntry(entry);
+	dynamicTrustCacheAddEntry(entry);
 }
 
-void trustCacheUploadCDHashesFromArray(NSArray *cdHashArray)
+void dynamicTrustCacheUploadCDHashesFromArray(NSArray *cdHashArray)
 {
 	__block JBDTCPage *mappedInPage = nil;
 	for (NSData *cdHash in cdHashArray) {
@@ -100,7 +108,7 @@ void trustCacheUploadCDHashesFromArray(NSArray *cdHashArray)
 		memcpy(&entry.hash, cdHash.bytes, CS_CDHASH_LEN);
 		entry.hash_type = 0x2;
 		entry.flags = 0x0;
-		NSLog(@"[trustCacheUploadCDHashesFromArray] uploading %@", cdHash);
+		NSLog(@"[dynamicTrustCacheUploadCDHashesFromArray] uploading %@", cdHash);
 		[mappedInPage addEntry:entry];
 	}
 
@@ -110,7 +118,7 @@ void trustCacheUploadCDHashesFromArray(NSArray *cdHashArray)
 	}
 }
 
-void trustCacheUploadDirectory(NSString *directoryPath)
+void dynamicTrustCacheUploadDirectory(NSString *directoryPath)
 {
 	NSString *basebinPath = [[@"/var/jb/basebin" stringByResolvingSymlinksInPath] stringByStandardizingPath];
 	NSString *resolvedPath = [[directoryPath stringByResolvingSymlinksInPath] stringByStandardizingPath];
@@ -136,7 +144,7 @@ void trustCacheUploadDirectory(NSString *directoryPath)
 					mappedInPage = trustCacheMapInFreePage();
 				}
 
-				NSLog(@"[trustCacheUploadDirectory %@] Uploading cdhash of %@", directoryPath, enumURL.path);
+				NSLog(@"[dynamicTrustCacheUploadDirectory %@] Uploading cdhash of %@", directoryPath, enumURL.path);
 				[mappedInPage addEntry:entry];
 			});
 		}
@@ -148,7 +156,7 @@ void trustCacheUploadDirectory(NSString *directoryPath)
 	}
 }
 
-void rebuildTrustCache(void)
+void rebuildDynamicTrustCache(void)
 {
 	// nuke existing
 	for (JBDTCPage *page in [gTCPages reverseObjectEnumerator]) {
@@ -156,6 +164,126 @@ void rebuildTrustCache(void)
 	}
 
 	NSLog(@"Triggering initial trustcache upload...");
-	trustCacheUploadDirectory(@"/var/jb");
+	dynamicTrustCacheUploadDirectory(@"/var/jb");
 	NSLog(@"Initial TrustCache upload done!");
+}
+
+BOOL trustCacheListAdd(uint64_t trustCacheKaddr)
+{
+	if (!trustCacheKaddr) return NO;
+
+	uint64_t pmap_image4_trust_caches = bootInfo_getSlidUInt64(@"pmap_image4_trust_caches");
+	uint64_t curTc = kread64(pmap_image4_trust_caches);
+	if(curTc == 0) {
+		kwrite64(pmap_image4_trust_caches, trustCacheKaddr);
+	}
+	else {
+		uint64_t prevTc = 0;
+		while (curTc != 0)
+		{
+			prevTc = curTc;
+			curTc = kread64(curTc);
+		}
+		kwrite64(prevTc, trustCacheKaddr);
+	}
+
+	return YES;
+}
+
+BOOL trustCacheListRemove(uint64_t trustCacheKaddr)
+{
+	if (!trustCacheKaddr) return NO;
+
+	uint64_t nextPtr = kread64(trustCacheKaddr + offsetof(trustcache_page, nextPtr));
+
+	uint64_t pmap_image4_trust_caches = bootInfo_getSlidUInt64(@"pmap_image4_trust_caches");
+	uint64_t curTc = kread64(pmap_image4_trust_caches);
+	if (curTc == 0) {
+		NSLog(@"WARNING: Tried to unlink trust cache page 0x%llX but pmap_image4_trust_caches points to 0x0", trustCacheKaddr);
+		return NO;
+	}
+	else if (curTc == trustCacheKaddr) {
+		kwrite64(pmap_image4_trust_caches, nextPtr);
+	}
+	else {
+		uint64_t prevTc = 0;
+		while (curTc != trustCacheKaddr)
+		{
+			if (curTc == 0) {
+				NSLog(@"WARNING: Hit end of trust cache chain while trying to unlink trust cache page 0x%llX", trustCacheKaddr);
+				return NO;
+			}
+			prevTc = curTc;
+			curTc = kread64(curTc);
+		}
+		kwrite64(prevTc, nextPtr);
+	}
+	return YES;
+}
+
+// These functions make new allocations and add them to the trustcache list
+
+uint64_t staticTrustCacheUploadFile(trustcache_file *fileToUpload, size_t fileSize, size_t *outMapSize)
+{
+	if (fileSize < sizeof(trustcache_file)) {
+		NSLog(@"attempted to load a trustcache file that's too small.");
+		return 0;
+	}
+
+	size_t expectedSize = sizeof(trustcache_file) + fileToUpload->length * sizeof(trustcache_entry);
+	if (expectedSize != fileSize) {
+		NSLog(@"attempted to load a trustcache file with an invalid size (0x%zX vs 0x%zX)", expectedSize, fileSize);
+		return 0;
+	}
+
+	uint64_t mapSize = sizeof(trustcache_page) + fileSize;
+
+	uint64_t mapKaddr = kalloc(mapSize);
+	if (!mapKaddr) {
+		NSLog(@"failed to allocate memory for trust cache file with size %zX", fileSize);
+		return 0;
+	}
+
+	if (outMapSize) *outMapSize = mapSize;
+
+	uint64_t mapSelfPtrPtr = mapKaddr + offsetof(trustcache_page, selfPtr);
+	uint64_t mapSelfPtr = mapKaddr + offsetof(trustcache_page, file);
+
+	kwrite64(mapSelfPtrPtr, mapSelfPtr);
+	kwritebuf(mapSelfPtr, fileToUpload, fileSize);
+	trustCacheListAdd(mapKaddr);
+	return mapKaddr;
+}
+
+uint64_t staticTrustCacheUploadCDHashesFromArray(NSArray *cdHashArray, size_t *outMapSize)
+{
+	size_t fileSize = sizeof(trustcache_file) + cdHashArray.count * sizeof(trustcache_entry);
+	trustcache_file *fileToUpload = malloc(fileSize);
+
+	uuid_generate(fileToUpload->uuid);
+	fileToUpload->version = 1;
+	fileToUpload->length = cdHashArray.count;
+
+	[cdHashArray enumerateObjectsUsingBlock:^(NSData *cdHash, NSUInteger idx, BOOL *stop) {
+		if (![cdHash isKindOfClass:[NSData class]]) return;
+		if (cdHash.length != CS_CDHASH_LEN) return;
+
+		memcpy(&fileToUpload->entries[idx].hash, cdHash.bytes, cdHash.length);
+		fileToUpload->entries[idx].hash_type = 0x2;
+		fileToUpload->entries[idx].flags = 0x0;
+	}];
+
+	qsort(fileToUpload->entries, cdHashArray.count, sizeof(trustcache_entry), tcentryComparator);
+
+	uint64_t mapKaddr = staticTrustCacheUploadFile(fileToUpload, fileSize, outMapSize);
+	free(fileToUpload);
+	return mapKaddr;
+}
+
+uint64_t staticTrustCacheUploadFileAtPath(NSString *filePath, size_t *outMapSize)
+{
+	if (!filePath) return 0;
+	NSData *tcData = [NSData dataWithContentsOfFile:filePath];
+	if (!tcData) return 0;
+	return staticTrustCacheUploadFile((trustcache_file *)tcData.bytes, tcData.length, outMapSize);
 }

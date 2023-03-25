@@ -7,6 +7,10 @@
 NSMutableArray<JBDTCPage *> *gTCPages = nil;
 dispatch_queue_t gTCAccessQueue;
 
+extern void trustCacheListAdd(uint64_t trustCacheKaddr);
+extern void trustCacheListRemove(uint64_t trustCacheKaddr);
+extern int tcentryComparator(const void * vp1, const void * vp2);
+
 BOOL tcPagesRecover(void)
 {
 	NSArray *existingTCAllocations = bootInfo_getArray(@"trustcache_allocations");
@@ -110,51 +114,12 @@ void tcPagesChanged(void)
 
 - (void)linkInKernel
 {
-	uint64_t pmap_image4_trust_caches = bootInfo_getSlidUInt64(@"pmap_image4_trust_caches");
-	uint64_t curTc = kread64(pmap_image4_trust_caches);
-	if(curTc == 0) {
-		kwrite64(pmap_image4_trust_caches, _kaddr);
-	}
-	else {
-		uint64_t prevTc = 0;
-		while (curTc != 0)
-		{
-			prevTc = curTc;
-			curTc = kread64(curTc);
-		}
-		kwrite64(prevTc, _kaddr);
-	}
+	trustCacheListAdd(_kaddr);
 }
 
 - (void)unlinkInKernel
 {
-	__block uint64_t ourNextPtr = 0;
-	[self ensureMappedInAndPerform:^{
-		ourNextPtr = _mappedInPage->nextPtr;
-	}];
-
-	uint64_t pmap_image4_trust_caches = bootInfo_getSlidUInt64(@"pmap_image4_trust_caches");
-	uint64_t curTc = kread64(pmap_image4_trust_caches);
-	if (curTc == 0) {
-		NSLog(@"WARNING: Tried to unlink trust cache page 0x%llX but pmap_image4_trust_caches points to 0x0", _kaddr);
-		return;
-	}
-	else if (curTc == _kaddr) {
-		kwrite64(pmap_image4_trust_caches, ourNextPtr);
-	}
-	else {
-		uint64_t prevTc = 0;
-		while (curTc != _kaddr)
-		{
-			if (curTc == 0) {
-				NSLog(@"WARNING: Hit end of trust cache chain while trying to unlink trust cache page 0x%llX", _kaddr);
-				return;
-			}
-			prevTc = curTc;
-			curTc = kread64(curTc);
-		}
-		kwrite64(prevTc, ourNextPtr);
-	}
+	trustCacheListRemove(_kaddr);
 }
 
 - (void)freeInKernel
@@ -177,18 +142,11 @@ void tcPagesChanged(void)
 	});
 }
 
-int entry_cmp(const void * vp1, const void * vp2)
-{
-	trustcache_entry* tc1 = (trustcache_entry*)vp1;
-	trustcache_entry* tc2 = (trustcache_entry*)vp2;
-	return memcmp(tc1->hash, tc2->hash, CS_CDHASH_LEN);
-}
-
 - (void)sort
 {
 	[self ensureMappedInAndPerform:^{
 		uint32_t length = _mappedInPage->file.length;
-		qsort(_mappedInPage->file.entries, length, sizeof(trustcache_entry), entry_cmp);
+		qsort(_mappedInPage->file.entries, length, sizeof(trustcache_entry), tcentryComparator);
 	}];
 }
 

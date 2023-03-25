@@ -2,9 +2,6 @@
 #import <CoreFoundation/CoreFoundation.h>
 #define CS_CDHASH_LEN 20
 
-// 743 cdhashes fit into one page
-#define TC_ENTRY_COUNT_PER_PAGE 743
-
 typedef struct sTrustcache_entry
 {
 	uint8_t hash[CS_CDHASH_LEN];
@@ -17,7 +14,7 @@ typedef struct sTrustcache_file
 	uint32_t version;
 	uuid_t uuid;
 	uint32_t length;
-	trustcache_entry entries[TC_ENTRY_COUNT_PER_PAGE];
+	trustcache_entry entries[];
 } __attribute__((__packed__)) trustcache_file;
 
 typedef struct sTrustcache_page
