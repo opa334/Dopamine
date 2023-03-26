@@ -427,11 +427,11 @@ int recoverPACPrimitives()
 	}
 	else if ([processName isEqualToString:@"launchd"])
 	{
-		bool launchdInitialized = (bool)bootInfo_getUInt64(@"launchdInitialized");
+		bool environmentInitialized = (bool)bootInfo_getUInt64(@"environmentInitialized");
 	
 		// When launchd was already initialized once, we want to get primitives from boomerang
 		// (As we are coming from a userspace reboot)
-		if (launchdInitialized) {
+		if (environmentInitialized) {
 			signStatus = signStateOverBoomerang(actContextKptr);
 		}
 		// Otherwise we want to get them from jailbreakd,

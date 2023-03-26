@@ -67,7 +67,8 @@ cp "./systemhook/systemhook.dylib" ".tmp/basebin/systemhook.dylib"
 cp -r ./_external/* .tmp/basebin/
 
 # Create TrustCache, for basebinaries
-trustcache create "./.tmp/basebin/basebin.tc" "./.tmp/basebin"
+rm -rf "./basebin.tc"
+trustcache create "./basebin.tc" "./.tmp/basebin"
 
 # Tar /tmp to basebin.tar
 cd ".tmp"

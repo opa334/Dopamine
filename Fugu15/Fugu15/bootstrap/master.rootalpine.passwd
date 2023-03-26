@@ -1,0 +1,36 @@
+##
+# User Database
+# 
+# This file is the authoritative user database.
+##
+nobody:*:-2:-2::0:0:Unprivileged User:/var/jb/var/empty:/var/jb/usr/bin/false
+root:$6$V7qMYJaNbVKOeh4P$iybXGZgLR3X57uggElv.cYndy9mDF0fKvu6NB57tb3Krbo/eE6/tP7.Vvf04JZ2Ni2/0x1Wwy0NaUrrEYZPpz0:0:0::0:0:System Administrator:/var/jb/var/root:/var/jb/usr/bin/zsh
+mobile:$6$V7qMYJaNbVKOeh4P$xQp2CMaSTOyWUDw1tjlXcPL6xW5BZk45JjUW9NDMHoxLYgaC2tSSH171B/QDHyRJnfIkFYHwGS.j7CKtwqOgR0:501:501::0:0:Mobile User:/var/jb/var/mobile:/var/jb/usr/bin/zsh
+daemon:*:1:1::0:0:System Services:/var/root:/var/jb/usr/bin/false
+_ftp:*:98:-2::0:0:FTP Daemon:/var/jb/var/empty:/var/jb/usr/bin/false
+_networkd:*:24:24::0:0:Network Services:/var/networkd:/var/jb/usr/bin/false
+_wireless:*:25:25::0:0:Wireless Services:/var/wireless:/var/jb/usr/bin/false
+_installd:*:33:33::0:0:Install Daemon:/var/installd:/var/jb/usr/bin/false
+_neagent:*:34:34::0:0:NEAgent:/var/jb/var/empty:/var/jb/usr/bin/false
+_ifccd:*:35:35::0:0:ifccd:/var/jb/var/empty:/var/jb/usr/bin/false
+_securityd:*:64:64::0:0:securityd:/var/jb/var/empty:/var/jb/usr/bin/false
+_mdnsresponder:*:65:65::0:0:mDNSResponder:/var/jb/var/empty:/var/jb/usr/bin/false
+_sshd:*:75:75::0:0:sshd Privilege separation:/var/jb/var/empty:/var/jb/usr/bin/false
+_unknown:*:99:99::0:0:Unknown User:/var/jb/var/empty:/var/jb/usr/bin/false
+_distnote:*:241:241::0:0:Distributed Notifications:/var/jb/var/empty:/var/jb/usr/bin/false
+_astris:*:245:245::0:0:Astris Services:/var/db/astris:/var/jb/usr/bin/false
+_ondemand:*:249:249::0:0:On Demand Resource Daemon:/var/db/ondemand:/var/jb/usr/bin/false
+_findmydevice:*:254:254::0:0:Find My Device Daemon:/var/db/findmydevice:/var/jb/usr/bin/false
+_datadetectors:*:257:257::0:0:DataDetectors:/var/db/datadetectors:/var/jb/usr/bin/false
+_captiveagent:*:258:258::0:0:captiveagent:/var/jb/var/empty:/var/jb/usr/bin/false
+_analyticsd:*:263:263::0:0:Analytics Daemon:/var/db/analyticsd:/var/jb/usr/bin/false
+_timed:*:266:266::0:0:Time Sync Daemon:/var/db/timed:/var/jb/usr/bin/false
+_gpsd:*:267:267::0:0:GPS Daemon:/var/db/gpsd:/var/jb/usr/bin/false
+_reportmemoryexception:*:269:269::0:0:ReportMemoryException:/var/jb/var/empty:/var/jb/usr/bin/false
+_diskimagesiod:*:271:271::0:0:DiskImages IO Daemon:/var/db/diskimagesiod:/var/jb/usr/bin/false
+_logd:*:272:272::0:0:Log Daemon:/var/db/diagnostics:/var/jb/usr/bin/false
+_iconservices:*:276:276::0:0:Icon services:/var/jb/var/empty:/var/jb/usr/bin/false
+_fud:*:278:278::0:0:Firmware Update Daemon:/var/db/fud:/var/jb/usr/bin/false
+_knowledgegraphd:*:279:279::0:0:Knowledge Graph Daemon:/var/db/knowledgegraphd:/var/jb/usr/bin/false
+_coreml:*:280:280::0:0:CoreML Services:/var/jb/var/empty:/var/jb/usr/bin/false
+_apt:*:1001:4294967295::0:0:User &:/var/jb/var/empty:/var/jb/usr/sbin/nologin

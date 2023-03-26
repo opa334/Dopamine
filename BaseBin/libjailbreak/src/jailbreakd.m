@@ -145,7 +145,7 @@ uint64_t jbdKcall8(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_
 	return jbdKcall(func, 8, (uint64_t[]){a1, a2, a3, a4, a5, a6, a7, a8});
 }
 
-uint64_t jbdInitEnvironment(NSDictionary *settings)
+int64_t jbdInitEnvironment(NSDictionary *settings)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_INIT_ENVIRONMENT);
@@ -155,7 +155,7 @@ uint64_t jbdInitEnvironment(NSDictionary *settings)
 	//xpc_dictionary_set_string(message, "target", target);
 
 	xpc_object_t reply = sendJBDMessage(message);
-	return xpc_dictionary_get_uint64(reply, "result");
+	return xpc_dictionary_get_int64(reply, "result");
 }
 
 void jbdRemoteLog(uint64_t verbosity, NSString *fString, ...)

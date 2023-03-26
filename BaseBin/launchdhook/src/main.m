@@ -6,7 +6,7 @@
 
 __attribute__((constructor)) static void initializer(void)
 {
-	if (bootInfo_getUInt64(@"launchdInitialized")) {
+	if (bootInfo_getUInt64(@"environmentInitialized")) {
 		// Launchd was already initialized before, we are coming from a userspace reboot... recover primitives
 		// TODO
 	}
@@ -16,7 +16,6 @@ __attribute__((constructor)) static void initializer(void)
 		jbdInitPPLRW();
 		//jbdRemoteLog(3, @"getting PAC primitives from jbd...");
 		recoverPACPrimitives();
-		bootInfo_setObject(@"launchdInitialized", @1);
 	}
 
 	proc_set_debugged(getpid());
@@ -24,4 +23,6 @@ __attribute__((constructor)) static void initializer(void)
 	initBoomerangHooks();
 	initSpawnHooks();
 	initXPCHooks();
+
+	bootInfo_setObject(@"environmentInitialized", @1);
 }

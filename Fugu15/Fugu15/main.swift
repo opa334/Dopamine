@@ -42,10 +42,6 @@ func execCmd(args: [String], fileActions: posix_spawn_file_actions_t? = nil) -> 
 
 if CommandLine.arguments.count > 1 {
     switch CommandLine.arguments[1] {
-    case "do-bootstrap":
-        Bootstrapper.doBootstrap();
-        exit(0)
-
     case "removeFuguInstallPlist":
         let path = Bundle.main.bundleURL
         

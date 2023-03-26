@@ -90,7 +90,7 @@ struct JailbreakView: View {
                 .font(.footnote)
                 .opacity(0.4)
         }.alert(isPresented: $showSuccessMsg) {
-            Alert(title: Text("Success"), message: Text("All exploits succeded and iDownload is now running on port 1337!"), dismissButton: .default(Text("OK")))
+            Alert(title: Text("Success"), message: Text("Post environment started successfully, system wide injection will only affect newly spawned processes for now!"), dismissButton: .default(Text("OK")))
         }
     }
     
@@ -107,9 +107,6 @@ struct JailbreakView: View {
     
     func launchExploit() {
         do {
-            statusUpdate("Status: Bootstrapping")
-            _ = execCmd(args: [CommandLine.arguments[0], "do-bootstrap"])
-
             statusUpdate("Status: Launching kexploitd")
             
             try Fugu15.launchKernelExploit(oobPCI: Bundle.main.bundleURL.appendingPathComponent("oobPCI")) { msg in
@@ -124,7 +121,8 @@ struct JailbreakView: View {
                 }
             }
             
-            try Fugu15.launch_iDownload()
+            try Fugu15.startEnvironment()
+            //try Fugu15.launch_iDownload()
             
             DispatchQueue.main.async {
                 statusUpdate("Status: Done!")

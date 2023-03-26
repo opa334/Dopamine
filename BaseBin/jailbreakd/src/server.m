@@ -86,10 +86,6 @@ void primitivesInitializedCallback(void)
 {
 	tcPagesRecover();
 	rebuildDynamicTrustCache();
-	if (!bootInfo_getUInt64(@"launchdInitialized")) {
-		// if launchd hook is not active, we want to load launch daemons now as the trustcache should be up now
-		spawn(@"/var/jb/usr/bin/launchctl", @[@"bootstrap", @"system", @"/var/jb/Library/LaunchDaemons"]);
-	}
 }
 
 uint64_t kernel_mount(const char* fstype, uint64_t pvp, uint64_t vp, const char *mountPath, uint64_t data, size_t datalen, int syscall_flags, uint32_t kern_flags)
@@ -191,7 +187,7 @@ void generateSystemWideSandboxExtensions(NSString *targetPath)
 	NSLog(@"rc %d", rc);
 }*/
 
-int initEnvironment(NSDictionary *settings)
+int64_t initEnvironment(NSDictionary *settings)
 {
 	NSString *fakeLibPath = @"/var/jb/basebin/.fakelib";
 	NSString *libPath = @"/usr/lib";
@@ -369,13 +365,14 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 				}
 
 				case JBD_MSG_INIT_ENVIRONMENT: {
+					int64_t result = 0;
 					if (gKCallStatus == kKcallStatusFinalized) {
-						uint64_t ret = initEnvironment(nil);
-						xpc_dictionary_set_uint64(reply, "result", ret);
+						result = initEnvironment(nil);
 					}
 					else {
-						xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
+						result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
 					}
+					xpc_dictionary_set_int64(reply, "result", result);
 					break;
 				}
 
@@ -496,7 +493,7 @@ int main(int argc, char* argv[])
 			return 1;
 		}
 
-		if (bootInfo_getUInt64(@"launchdInitialized")) {
+		if (bootInfo_getUInt64(@"environmentInitialized")) {
 			NSLog(@"launchd already initialized, recovering primitives...");
 			int err = launchdInitPPLRW();
 			if (err == 0) {

@@ -21,10 +21,13 @@
 		151CAFB52894070300B2A6BA /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151CAFB42894070300B2A6BA /* AboutView.swift */; };
 		15372EA228DDF5EF00514A73 /* TrustCache in Resources */ = {isa = PBXBuildFile; fileRef = 15372E9F28DDF5EF00514A73 /* TrustCache */; };
 		15372EA328DDF5EF00514A73 /* bootstrap.tar in Resources */ = {isa = PBXBuildFile; fileRef = 15372EA028DDF5EF00514A73 /* bootstrap.tar */; };
-		15372EA428DDF5EF00514A73 /* tar in Resources */ = {isa = PBXBuildFile; fileRef = 15372EA128DDF5EF00514A73 /* tar */; };
 		15372EA628DDFF9000514A73 /* sileo.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 15372EA528DDFF9000514A73 /* sileo.deb */; };
 		15372EA728DDFF9A00514A73 /* sileo.deb in Resources */ = {isa = PBXBuildFile; fileRef = 15372EA528DDFF9000514A73 /* sileo.deb */; };
-		8C887E0229A16BA3005A7337 /* Bootstrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C887E0129A16BA3005A7337 /* Bootstrapper.swift */; };
+		8C8D955B29D04B4C00A482A8 /* tar in Resources */ = {isa = PBXBuildFile; fileRef = 8C8D955A29D04B4C00A482A8 /* tar */; };
+		8C8D955E29D04C4D00A482A8 /* zebra.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C8D955D29D04C4D00A482A8 /* zebra.deb */; };
+		8C8D955F29D04CD100A482A8 /* zebra.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C8D955D29D04C4D00A482A8 /* zebra.deb */; };
+		8C8D956029D04CD400A482A8 /* basebin.tc in Resources */ = {isa = PBXBuildFile; fileRef = 8C8D955C29D04C1800A482A8 /* basebin.tc */; };
+		8C8D956229D0B27100A482A8 /* master.rootalpine.passwd in Resources */ = {isa = PBXBuildFile; fileRef = 8C8D956129D0B27100A482A8 /* master.rootalpine.passwd */; };
 		8CFE512F29971E640004360A /* basebin.tar in Resources */ = {isa = PBXBuildFile; fileRef = 8CFE512E29971E640004360A /* basebin.tar */; };
 /* End PBXBuildFile section */
 
@@ -53,9 +56,11 @@
 		151CAFB42894070300B2A6BA /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		15372E9F28DDF5EF00514A73 /* TrustCache */ = {isa = PBXFileReference; lastKnownFileType = file; path = TrustCache; sourceTree = "<group>"; };
 		15372EA028DDF5EF00514A73 /* bootstrap.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = bootstrap.tar; sourceTree = "<group>"; };
-		15372EA128DDF5EF00514A73 /* tar */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = tar; sourceTree = "<group>"; };
 		15372EA528DDFF9000514A73 /* sileo.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = sileo.deb; sourceTree = "<group>"; };
-		8C887E0129A16BA3005A7337 /* Bootstrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bootstrapper.swift; sourceTree = "<group>"; };
+		8C8D955A29D04B4C00A482A8 /* tar */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = tar; path = ../../../BaseBin/_external/tar; sourceTree = "<group>"; };
+		8C8D955C29D04C1800A482A8 /* basebin.tc */ = {isa = PBXFileReference; lastKnownFileType = file; name = basebin.tc; path = ../../../BaseBin/basebin.tc; sourceTree = "<group>"; };
+		8C8D955D29D04C4D00A482A8 /* zebra.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = zebra.deb; sourceTree = "<group>"; };
+		8C8D956129D0B27100A482A8 /* master.rootalpine.passwd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = master.rootalpine.passwd; sourceTree = "<group>"; };
 		8CFE512E29971E640004360A /* basebin.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = basebin.tar; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,6 +71,7 @@
 			files = (
 				1502A4242891BD800011CB6E /* Fugu15KernelExploit in Frameworks */,
 				15372EA628DDFF9000514A73 /* sileo.deb in Frameworks */,
+				8C8D955E29D04C4D00A482A8 /* zebra.deb in Frameworks */,
 				151CAFAD2893645C00B2A6BA /* CoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -99,7 +105,6 @@
 				15372E9E28DDF5D300514A73 /* bootstrap */,
 				1502A41B2891B0980011CB6E /* Info.plist */,
 				1502A40B2891B03F0011CB6E /* Fugu15App.swift */,
-				8C887E0129A16BA3005A7337 /* Bootstrapper.swift */,
 				1502A40D2891B03F0011CB6E /* ContentView.swift */,
 				151CAFAE28936D4B00B2A6BA /* JailbreakView.swift */,
 				151CAFB028936DE800B2A6BA /* LogView.swift */,
@@ -147,10 +152,13 @@
 			isa = PBXGroup;
 			children = (
 				15372EA528DDFF9000514A73 /* sileo.deb */,
+				8C8D955D29D04C4D00A482A8 /* zebra.deb */,
 				15372EA028DDF5EF00514A73 /* bootstrap.tar */,
 				8CFE512E29971E640004360A /* basebin.tar */,
-				15372EA128DDF5EF00514A73 /* tar */,
+				8C8D955A29D04B4C00A482A8 /* tar */,
+				8C8D955C29D04C1800A482A8 /* basebin.tc */,
 				15372E9F28DDF5EF00514A73 /* TrustCache */,
+				8C8D956129D0B27100A482A8 /* master.rootalpine.passwd */,
 			);
 			path = bootstrap;
 			sourceTree = "<group>";
@@ -217,8 +225,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C8D956029D04CD400A482A8 /* basebin.tc in Resources */,
+				8C8D956229D0B27100A482A8 /* master.rootalpine.passwd in Resources */,
+				8C8D955F29D04CD100A482A8 /* zebra.deb in Resources */,
+				8C8D955B29D04B4C00A482A8 /* tar in Resources */,
 				15372EA728DDFF9A00514A73 /* sileo.deb in Resources */,
-				15372EA428DDF5EF00514A73 /* tar in Resources */,
 				15372EA228DDF5EF00514A73 /* TrustCache in Resources */,
 				1502A4262891BE320011CB6E /* oobPCI in Resources */,
 				8CFE512F29971E640004360A /* basebin.tar in Resources */,
@@ -237,7 +248,6 @@
 			files = (
 				151CAFB52894070300B2A6BA /* AboutView.swift in Sources */,
 				1502A40E2891B03F0011CB6E /* ContentView.swift in Sources */,
-				8C887E0229A16BA3005A7337 /* Bootstrapper.swift in Sources */,
 				151CAFB32894041D00B2A6BA /* main.swift in Sources */,
 				151CAFB128936DE800B2A6BA /* LogView.swift in Sources */,
 				1502A40C2891B03F0011CB6E /* Fugu15App.swift in Sources */,
