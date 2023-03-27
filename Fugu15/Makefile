@@ -4,6 +4,7 @@ all: Fugu15.tipa
 
 Fugu15.tipa: build/Build/Products/Debug-iphoneos/Fugu15.app
 	@echo Ad-Hoc signing Fugu15
+	xattr -rc build/Build/Products/Debug-iphoneos/Fugu15.app
 	codesign -s - --entitlements Fugu15/Fugu15.entitlements build/Build/Products/Debug-iphoneos/Fugu15.app
 	@echo Fake-signing Fugu15
 	../Tools/fastPathSign/fastPathSign build/Build/Products/Debug-iphoneos/Fugu15.app
