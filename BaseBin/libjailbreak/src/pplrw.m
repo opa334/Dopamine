@@ -177,9 +177,7 @@ void windowPerform(PPLWindow* window, uint64_t pa, void (^block)(uint8_t* addres
 	if (*window->pteAddress != newEntry) {
 		*window->pteAddress = newEntry;
 		LJB_DEBUGLOG(@"mapping page %ld to physical page 0x%llX", window->pteAddress - gMagicPage, pa);
-		if (window->used) {
-			tlbFlush();
-		}
+		tlbFlush();
 	}
 
 	window->used = YES;
