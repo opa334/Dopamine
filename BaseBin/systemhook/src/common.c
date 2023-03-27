@@ -1,5 +1,6 @@
 #import "common.h"
 #include <xpc/xpc.h>
+#import <mach-o/dyld.h>
 
 #define HOOK_DYLIB_PATH "/usr/lib/systemhook.dylib"
 #define JBD_MSG_PROCESS_BINARY 22
@@ -57,6 +58,12 @@ int64_t jbdProcessBinary(const char *filePath)
 	return result;
 }
 
+int64_t jbdProcessLibrary(const char *filePath)
+{
+	if (_dyld_shared_cache_contains_path(filePath)) return 0;
+	return jbdProcessBinary(filePath);
+}
+
 int64_t jbdDebugMe(void)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
@@ -72,7 +79,7 @@ int64_t jbdDebugMe(void)
 }
 
 
-char *resolve_path(const char *file, const char *searchPath)
+char *resolvePath(const char *file, const char *searchPath)
 {
 	if (!file) return NULL;
 
@@ -99,6 +106,22 @@ char *resolve_path(const char *file, const char *searchPath)
 	return NULL;
 }
 
+// I don't like the idea of blacklisting certain processes
+// But for some it seems neccessary
+bool processIsBlacklisted(const char* path)
+{
+	const char *processBlacklist[] = {
+		"/System/Library/Frameworks/GSS.framework/Helpers/GSSCred"
+	};
+
+	size_t blacklistCount = sizeof(processBlacklist) / sizeof(processBlacklist[0]);
+	for (size_t i = 0; i < blacklistCount; i++)
+	{
+		if (!strcmp(processBlacklist[i], path)) return true;
+	}
+	return false;
+}
+
 // Make sure the about to be spawned binary and all of it's dependencies are trust cached
 // Insert "DYLD_INSERT_LIBRARIES=/usr/lib/systemhook.dylib" into all binaries spawned
 
@@ -114,7 +137,11 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 		return pspawn_orig(pid, path, file_actions, attrp, argv, envp);
 	}
 
-	// Jailbreakd: Trustcache binary and give it entitlements
+	if (processIsBlacklisted(path)) {
+		return pspawn_orig(pid, path, file_actions, attrp, argv, envp);
+	}
+
+	// jailbreakd: Make sure binary is in trustcache
 	jbdProcessBinary(path);
 
 	// Determine length envp passed
@@ -124,12 +151,53 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 		while (ogEnv[ogEnvCount++] != NULL);
 	}
 
-	// Check if we can find an existing "DYLD_INSERT_LIBRARIES" env variable
-	int existingLibraryInsert = -1;
-	const char *insertEnv = "DYLD_INSERT_LIBRARIES=";
+	// Check if we can find a _SafeMode or _MSSafeMode variable
+	// In this case we do not want to inject anything
+	// But we also want to remove the variables before spawning the process
+	int existingSafeMode = -1;
+	const char *safeModeVar = "_SafeMode=1";
 	if (ogEnvCount > 0) {
 		for (int i = 0; i < ogEnvCount-1; i++) {
-			if(strncmp(ogEnv[i], insertEnv, strlen(insertEnv)) == 0) {
+			if(strncmp(ogEnv[i], safeModeVar, strlen(safeModeVar)) == 0) {
+				existingSafeMode = i;
+				break;
+			}
+		}
+	}
+	int existingMSSafeMode = -1;
+	const char *msSafeModeVar = "_MSSafeMode=1";
+	if (ogEnvCount > 0) {
+		for (int i = 0; i < ogEnvCount-1; i++) {
+			if(strncmp(ogEnv[i], msSafeModeVar, strlen(msSafeModeVar)) == 0) {
+				existingMSSafeMode = i;
+				break;
+			}
+		}
+	}
+	if (existingSafeMode != -1 || existingMSSafeMode != -1) {
+		size_t noSafeModeEnvCount = ogEnvCount - (existingSafeMode != -1) - (existingMSSafeMode != -1);
+		char **noSafeModeEnv = malloc(noSafeModeEnvCount * sizeof(char *));
+		int ci = 0;
+		for (int i = 0; i < ogEnvCount; i++) {
+			if (existingSafeMode != -1) {
+				if (i == existingSafeMode) continue;
+			}
+			if (existingMSSafeMode != -1) {
+				if (i == existingMSSafeMode) continue;
+			}
+			noSafeModeEnv[ci++] = ogEnv[i];
+		}
+		int ret = pspawn_orig(pid, path, file_actions, attrp, argv, noSafeModeEnv);
+		free(noSafeModeEnv);
+		return ret;
+	}
+
+	// Check if we can find an existing "DYLD_INSERT_LIBRARIES" env variable
+	int existingLibraryInsert = -1;
+	const char *insertVarPrefix = "DYLD_INSERT_LIBRARIES=";
+	if (ogEnvCount > 0) {
+		for (int i = 0; i < ogEnvCount-1; i++) {
+			if(strncmp(ogEnv[i], insertVarPrefix, strlen(insertVarPrefix)) == 0) {
 				existingLibraryInsert = i;
 				break;
 			}
@@ -189,11 +257,11 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 		size_t hookDylibInsertLen = strlen(hookDylibInsert);
 		char *newInsertVar = malloc(strlen(existingEnv) + hookDylibInsertLen + 1);
 
-		size_t insertEnvLen = strlen(insertEnv);
-		char *const existingEnvPrefix = &existingEnv[strlen(insertEnv)];
+		size_t insertEnvLen = strlen(insertVarPrefix);
+		char *const existingEnvPrefix = &existingEnv[strlen(insertVarPrefix)];
 		size_t existingEnvPrefixLen = strlen(existingEnvPrefix);
 
-		strncpy(&newInsertVar[0], insertEnv, insertEnvLen);
+		strncpy(&newInsertVar[0], insertVarPrefix, insertEnvLen);
 		strncpy(&newInsertVar[insertEnvLen], hookDylibInsert, hookDylibInsertLen);
 		strncpy(&newInsertVar[insertEnvLen+hookDylibInsertLen], &existingEnv[insertEnvLen], existingEnvPrefixLen+1);
 

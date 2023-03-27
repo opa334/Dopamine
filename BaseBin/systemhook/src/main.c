@@ -27,7 +27,7 @@ int posix_spawnp_hook(pid_t *restrict pid, const char *restrict file,
 					   char *const argv[restrict],
 					   char *const envp[restrict])
 {
-	return spawn_hook_common(pid, resolve_path(file, NULL), file_actions, attrp, argv, envp, (void *)posix_spawn);
+	return spawn_hook_common(pid, resolvePath(file, NULL), file_actions, attrp, argv, envp, (void *)posix_spawn);
 }
 
 
@@ -91,7 +91,7 @@ int execlp_hook(const char *file, const char *arg0, ... /*, (char *)0 */)
 	}
 	argv[arg_count] = NULL;
 
-	return execve_hook(resolve_path(file, NULL), argv, NULL);
+	return execve_hook(resolvePath(file, NULL), argv, NULL);
 }
 
 int execl_hook(const char *path, const char *arg0, ... /*, (char *)0 */)
@@ -125,19 +125,19 @@ int execv_hook(const char *path, char *const argv[])
 
 int execvp_hook(const char *file, char *const argv[])
 {
-	return execve_hook(resolve_path(file, NULL), argv, NULL);
+	return execve_hook(resolvePath(file, NULL), argv, NULL);
 }
 
 int execvP_hook(const char *file, const char *search_path, char *const argv[])
 {
-	return execve_hook(resolve_path(file, search_path), argv, NULL);
+	return execve_hook(resolvePath(file, search_path), argv, NULL);
 }
 
 
 void* dlopen_hook(const char* path, int mode)
 {
 	if (path) {
-		jbdProcessBinary(path);
+		jbdProcessLibrary(path);
 	}
 	return dlopen(path, mode);
 }
@@ -145,7 +145,7 @@ void* dlopen_hook(const char* path, int mode)
 void* dlopen_from_hook(const char* path, int mode, void* addressInCaller)
 {
 	if (path) {
-		jbdProcessBinary(path);
+		jbdProcessLibrary(path);
 	}
 	return dlopen_from(path, mode, addressInCaller);
 }
@@ -153,7 +153,7 @@ void* dlopen_from_hook(const char* path, int mode, void* addressInCaller)
 void* dlopen_audited_hook(const char* path, int mode)
 {
 	if (path) {
-		jbdProcessBinary(path);
+		jbdProcessLibrary(path);
 	}
 	return dlopen_audited(path, mode);
 }
@@ -161,7 +161,7 @@ void* dlopen_audited_hook(const char* path, int mode)
 bool dlopen_preflight_hook(const char* path)
 {
 	if (path) {
-		jbdProcessBinary(path);
+		jbdProcessLibrary(path);
 	}
 	return dlopen_preflight(path);
 }

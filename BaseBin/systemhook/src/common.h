@@ -2,9 +2,10 @@
 #include <spawn.h>
 
 int64_t jbdProcessBinary(const char *filePath);
+int64_t jbdProcessLibrary(const char *filePath);
 int64_t jbdDebugMe(void);
 
-char *resolve_path(const char *file, const char *searchPath);
+char *resolvePath(const char *file, const char *searchPath);
 int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 					   const posix_spawn_file_actions_t *restrict file_actions,
 					   const posix_spawnattr_t *restrict attrp,
