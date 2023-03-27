@@ -57,7 +57,7 @@ uint64_t xpaci(uint64_t a)
 
 uint64_t walkPageTable(uint64_t table, uint64_t virt, bool *err)
 {
-	LJB_DEBUGLOG(@"walkPageTable (table:0x%llX, virt:0x%llX)", table, virt);
+	LJB_DEBUGLOG(@"walkPageTable(table:0x%llX, virt:0x%llX)", table, virt);
 	uint64_t table1Off = (virt >> 36ULL) & 0x7ULL;
 	uint64_t table1Entry = physread64(table + (8ULL * table1Off));
 	if ((table1Entry & 0x3) != 3) {
@@ -65,13 +65,10 @@ uint64_t walkPageTable(uint64_t table, uint64_t virt, bool *err)
 		if (err) *err = true;
 		return 0;
 	}
-	LJB_DEBUGLOG(@"[walkPageTable] table1Off: 0x%llX, table1Entry: 0x%llX", table1Off, table1Entry);
 	
 	uint64_t table2 = table1Entry & 0xFFFFFFFFC000ULL;
 	uint64_t table2Off = (virt >> 25ULL) & 0x7FFULL;
-	LJB_DEBUGLOG(@"[walkPageTable] table2: 0x%llX, table2Off: 0x%llX", table2, table2Off);
 	uint64_t table2Entry = physread64(table2 + (8ULL * table2Off));
-	LJB_DEBUGLOG(@"[walkPageTable] table2Entry: 0x%llX", table2Entry);
 	switch (table2Entry & 0x3) {
 		case 1:
 			// Easy, this is a block
