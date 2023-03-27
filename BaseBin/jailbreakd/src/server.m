@@ -1,8 +1,5 @@
 #import <Foundation/Foundation.h>
-#import <libjailbreak/pplrw.h>
-#import <libjailbreak/kcall.h>
-#import <libjailbreak/util.h>
-#import <libjailbreak/jailbreakd.h>
+#import <libjailbreak/libjailbreak.h>
 #import <libjailbreak/handoff.h>
 #import <libjailbreak/boot_info.h>
 #import <libjailbreak/launchd.h>
@@ -118,13 +115,13 @@ uint64_t bindMount(const char *source, const char *target)
 
     int fd = open(sourcePath.fileSystemRepresentation, O_RDONLY);
     uint64_t vnode = proc_get_vnode_by_file_descriptor(self_proc(), fd);
-    NSLog(@"Got vnode 0x%llX for path \"%s\"", vnode, sourcePath.fileSystemRepresentation);
+    JBLogDebug(@"Got vnode 0x%llX for path \"%s\"", vnode, sourcePath.fileSystemRepresentation);
 
     uint64_t parent_vnode = kread_ptr(vnode + 0xC0);
-    NSLog(@"Got parent vnode: 0x%llX", parent_vnode);
+    JBLogDebug(@"Got parent vnode: 0x%llX", parent_vnode);
 
     uint64_t mount_ret = kernel_mount("bindfs", parent_vnode, vnode, targetPath.fileSystemRepresentation, (uint64_t)targetPath.fileSystemRepresentation, 8, MNT_RDONLY, KERNEL_MOUNT_NOAUTH);
-    NSLog(@"kernel_mount returned %lld (%s)", mount_ret, strerror(mount_ret));
+    JBLogDebug(@"kernel_mount returned %lld (%s)", mount_ret, strerror(mount_ret));
 	return mount_ret;
 }
 
@@ -196,7 +193,7 @@ int64_t initEnvironment(NSDictionary *settings)
 	if (!copySuc) {
 		return 1;
 	}
-	NSLog(@"copied %@ to %@", libPath, fakeLibPath);
+	JBLogDebug(@"copied %@ to %@", libPath, fakeLibPath);
 
 	int dyldRet = applyDyldPatches(@"/var/jb/basebin/.fakelib/dyld");
 	if (dyldRet != 0) {
@@ -209,7 +206,7 @@ int64_t initEnvironment(NSDictionary *settings)
 		return 5;
 	}
 
-	NSLog(@"got dyld cd hash %@", dyldCDHash);
+	JBLogDebug(@"got dyld cd hash %@", dyldCDHash);
 
 	size_t dyldTCSize = 0;
 	uint64_t dyldTCKaddr = staticTrustCacheUploadCDHashesFromArray(@[dyldCDHash], &dyldTCSize);
@@ -219,16 +216,16 @@ int64_t initEnvironment(NSDictionary *settings)
 	bootInfo_setObject(@"dyld_trustcache_kaddr", @(dyldTCKaddr));
 	bootInfo_setObject(@"dyld_trustcache_size", @(dyldTCSize));
 
-	NSLog(@"dyld trust cache allocated to %llX (size: %zX)", dyldTCKaddr, dyldTCSize);
+	JBLogDebug(@"dyld trust cache allocated to %llX (size: %zX)", dyldTCKaddr, dyldTCSize);
 
 	copySuc = [[NSFileManager defaultManager] copyItemAtPath:@"/var/jb/basebin/systemhook.dylib" toPath:@"/var/jb/basebin/.fakelib/systemhook.dylib" error:nil];
 	if (!copySuc) {
 		return 7;
 	}
-	NSLog(@"copied systemhook");
+	JBLogDebug(@"copied systemhook");
 
 	generateSystemWideSandboxExtensions(@"/var/jb/basebin/.fakelib/sandbox.plist");
-	NSLog(@"generated sandbox extensions");
+	JBLogDebug(@"generated sandbox extensions");
 
 	uint64_t bindMountRet = bindMount(libPath.fileSystemRepresentation, fakeLibPath.fileSystemRepresentation);
 	if (bindMountRet != 0) {
@@ -259,7 +256,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 		msgId = xpc_dictionary_get_uint64(message, "id");
 
 		if (msgId != JBD_MSG_REMOTELOG) {
-			NSLog(@"received %s message %d with dictionary: %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(message));
+			JBLogDebug(@"received %s message %d with dictionary: %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(message));
 		}
 
 		if (!systemwide || msgId == JBD_MSG_PROCESS_BINARY || msgId == JBD_MSG_DEBUG_ME) {
@@ -443,7 +440,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 
 	if (reply) {
 		if (msgId != JBD_MSG_REMOTELOG) {
-			NSLog(@"responding to %s message %d with %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(reply));
+			JBLogDebug(@"responding to %s message %d with %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(reply));
 		}
 		err = xpc_pipe_routine_reply(reply);
 		if (err != 0) {
@@ -473,7 +470,7 @@ int launchdInitPPLRW(void)
 int main(int argc, char* argv[])
 {
 	@autoreleasepool {
-		NSLog(@"Hello from the other side!");
+		JBLogDebug(@"Hello from the other side!");
 		gIsJailbreakd = YES;
 
 		gTCPages = [NSMutableArray new];
@@ -494,7 +491,7 @@ int main(int argc, char* argv[])
 		}
 
 		if (bootInfo_getUInt64(@"environmentInitialized")) {
-			NSLog(@"launchd already initialized, recovering primitives...");
+			JBLogDebug(@"launchd already initialized, recovering primitives...");
 			int err = launchdInitPPLRW();
 			if (err == 0) {
 				err = recoverPACPrimitives();

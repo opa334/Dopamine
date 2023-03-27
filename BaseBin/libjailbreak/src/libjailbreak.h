@@ -9,7 +9,7 @@
 //#define DEBUG_LOGS 1
 
 #ifdef DEBUG_LOGS
-#define LJB_DEBUGLOG(args ...) NSLog(args)
+#define JBLogDebug(args ...) NSLog(args)
 #else
-#define LJB_DEBUGLOG(args ...)
+#define JBLogDebug(args ...)
 #endif

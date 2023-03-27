@@ -30,7 +30,7 @@ typedef struct MappingContext
 
 void tlbFlush(void)
 {
-	//LJB_DEBUGLOG(@"doing tlb flush");
+	//JBLogDebug(@"doing tlb flush");
 	usleep(70);
 	usleep(70);
 	__asm("dmb sy");
@@ -57,7 +57,7 @@ uint64_t xpaci(uint64_t a)
 
 uint64_t walkPageTable(uint64_t table, uint64_t virt, bool *err)
 {
-	LJB_DEBUGLOG(@"walkPageTable(table:0x%llX, virt:0x%llX)", table, virt);
+	JBLogDebug(@"walkPageTable(table:0x%llX, virt:0x%llX)", table, virt);
 	uint64_t table1Off = (virt >> 36ULL) & 0x7ULL;
 	uint64_t table1Entry = physread64(table + (8ULL * table1Off));
 	if ((table1Entry & 0x3) != 3) {
@@ -72,29 +72,29 @@ uint64_t walkPageTable(uint64_t table, uint64_t virt, bool *err)
 	switch (table2Entry & 0x3) {
 		case 1:
 			// Easy, this is a block
-			LJB_DEBUGLOG(@"[walkPageTable] translated [tbl2] 0x%llX to 0x%llX", virt, (table2Entry & 0xFFFFFE000000ULL) | (virt & 0x1FFFFFFULL));
+			JBLogDebug(@"[walkPageTable] translated [tbl2] 0x%llX to 0x%llX", virt, (table2Entry & 0xFFFFFE000000ULL) | (virt & 0x1FFFFFFULL));
 			if (err) *err = true;
 			return (table2Entry & 0xFFFFFE000000ULL) | (virt & 0x1FFFFFFULL);
 			
 		case 3: {
 			uint64_t table3 = table2Entry & 0xFFFFFFFFC000ULL;
 			uint64_t table3Off = (virt >> 14ULL) & 0x7FFULL;
-			LJB_DEBUGLOG(@"[walkPageTable] table3: 0x%llX, table3Off: 0x%llX", table3, table3Off);
+			JBLogDebug(@"[walkPageTable] table3: 0x%llX, table3Off: 0x%llX", table3, table3Off);
 			uint64_t table3Entry = physread64(table3 + (8ULL * table3Off));
-			LJB_DEBUGLOG(@"[walkPageTable] table3Entry: 0x%llX", table3Entry);
+			JBLogDebug(@"[walkPageTable] table3Entry: 0x%llX", table3Entry);
 			
 			if ((table3Entry & 0x3) != 3) {
-				LJB_DEBUGLOG(@"[walkPageTable] table3 lookup failure, table:0x%llX virt:0x%llX", table3, virt); usleep(1000);
+				JBLogDebug(@"[walkPageTable] table3 lookup failure, table:0x%llX virt:0x%llX", table3, virt); usleep(1000);
 				if (err) *err = true;
 				return 0;
 			}
 			
-			LJB_DEBUGLOG(@"[walkPageTable] translated [tbl3] 0x%llX to 0x%llX", virt, (table3Entry & 0xFFFFFFFFC000ULL) | (virt & 0x3FFFULL));
+			JBLogDebug(@"[walkPageTable] translated [tbl3] 0x%llX to 0x%llX", virt, (table3Entry & 0xFFFFFFFFC000ULL) | (virt & 0x3FFFULL));
 			return (table3Entry & 0xFFFFFFFFC000ULL) | (virt & 0x3FFFULL);
 		}
 
 		default:
-			LJB_DEBUGLOG(@"[walkPageTable] table2 lookup failure, table:0x%llX virt:0x%llX", table2, virt); usleep(1000);
+			JBLogDebug(@"[walkPageTable] table2 lookup failure, table:0x%llX virt:0x%llX", table2, virt); usleep(1000);
 			return 0;
 	}
 }
@@ -117,7 +117,7 @@ PPLWindow getWindow()
 
 	for (int i = 1; i < 2048; i++) {
 		if (gMagicPage[i] == PTE_UNUSED) {
-			LJB_DEBUGLOG(@"reserving page %d", i);
+			JBLogDebug(@"reserving page %d", i);
 			gMagicPage[i] = PTE_RESERVED;
 			[gLock unlock];
 			uint64_t* mapped = (uint64_t*)(((uint64_t)gMagicPage) + (i << 14));
@@ -146,7 +146,7 @@ PPLWindow* getConcurrentWindows(uint32_t count)
 				PPLWindow* output = malloc(count * sizeof(PPLWindow));
 				int fmi = i - (count - 1);
 				for (int k = 0; k < count; k++) {
-					LJB_DEBUGLOG(@"[batch] reserving page %d", fmi+k);
+					JBLogDebug(@"[batch] reserving page %d", fmi+k);
 					gMagicPage[fmi+k] = PTE_RESERVED;
 				}
 				[gLock unlock];
@@ -176,7 +176,7 @@ void windowPerform(PPLWindow* window, uint64_t pa, void (^block)(uint8_t* addres
 	uint64_t newEntry = pa | KRW_URW_PERM | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY;
 	if (*window->pteAddress != newEntry) {
 		*window->pteAddress = newEntry;
-		LJB_DEBUGLOG(@"mapping page %ld to physical page 0x%llX", window->pteAddress - gMagicPage, pa);
+		JBLogDebug(@"mapping page %ld to physical page 0x%llX", window->pteAddress - gMagicPage, pa);
 		tlbFlush();
 	}
 
@@ -188,7 +188,7 @@ void windowPerform(PPLWindow* window, uint64_t pa, void (^block)(uint8_t* addres
 
 void windowDestroy(PPLWindow* window)
 {
-	LJB_DEBUGLOG(@"unmapping previously %@ page %ld (previously mapped to: 0x%llX)", window->used ? @"used" : @"unused", window->pteAddress - gMagicPage, *window->pteAddress & ~(KRW_URW_PERM | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY));
+	JBLogDebug(@"unmapping previously %@ page %ld (previously mapped to: 0x%llX)", window->used ? @"used" : @"unused", window->pteAddress - gMagicPage, *window->pteAddress & ~(KRW_URW_PERM | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY));
 	if (window->used) {
 		*window->pteAddress = PTE_REUSEABLE;
 	}
@@ -264,7 +264,7 @@ void physreadbuf(uint64_t physaddr, void* output, size_t size)
 		return;
 	}
 
-	LJB_DEBUGLOG(@"before physread of 0x%llX (size: %zd)", physaddr, size);
+	JBLogDebug(@"before physread of 0x%llX (size: %zd)", physaddr, size);
 
 	uint64_t pa = physaddr;
 	uint8_t *data = output;
@@ -285,7 +285,7 @@ void physreadbuf(uint64_t physaddr, void* output, size_t size)
 		sizeLeft -= readSize;
 	}
 
-	LJB_DEBUGLOG(@"after physread of 0x%llX", physaddr);
+	JBLogDebug(@"after physread of 0x%llX", physaddr);
 }
 
 void physwritebuf(uint64_t physaddr, const void* input, size_t size)
@@ -294,7 +294,7 @@ void physwritebuf(uint64_t physaddr, const void* input, size_t size)
 		return;
 	}
 
-	LJB_DEBUGLOG(@"before physwrite at 0x%llX (size: %zd)", physaddr, size);
+	JBLogDebug(@"before physwrite at 0x%llX (size: %zd)", physaddr, size);
 
 	uint64_t pa = physaddr;
 	const uint8_t *data = input;
@@ -315,7 +315,7 @@ void physwritebuf(uint64_t physaddr, const void* input, size_t size)
 		sizeLeft -= writeSize;
 	}
 
-	LJB_DEBUGLOG(@"after physwrite at 0x%llX", physaddr);
+	JBLogDebug(@"after physwrite at 0x%llX", physaddr);
 }
 
 // Virtual read / write
@@ -327,7 +327,7 @@ void kreadbuf(uint64_t kaddr, void* output, size_t size)
 		return;
 	}
 
-	LJB_DEBUGLOG(@"before virtread of 0x%llX (size: %zd)", kaddr, size);
+	JBLogDebug(@"before virtread of 0x%llX (size: %zd)", kaddr, size);
 
 	uint64_t va = kaddr;
 	uint8_t *data = output;
@@ -356,7 +356,7 @@ void kreadbuf(uint64_t kaddr, void* output, size_t size)
 		sizeLeft -= readSize;
 	}
 
-	LJB_DEBUGLOG(@"after virtread of 0x%llX", kaddr);
+	JBLogDebug(@"after virtread of 0x%llX", kaddr);
 }
 
 void kwritebuf(uint64_t kaddr, const void* input, size_t size)
@@ -365,7 +365,7 @@ void kwritebuf(uint64_t kaddr, const void* input, size_t size)
 		return;
 	}
 
-	LJB_DEBUGLOG(@"before virtwrite at 0x%llX (size: %zd)", kaddr, size);
+	JBLogDebug(@"before virtwrite at 0x%llX (size: %zd)", kaddr, size);
 
 	uint64_t va = kaddr;
 	const uint8_t *data = input;
@@ -394,7 +394,7 @@ void kwritebuf(uint64_t kaddr, const void* input, size_t size)
 		sizeLeft -= writeSize;
 	}
 
-	LJB_DEBUGLOG(@"after virtwrite at 0x%llX", kaddr);
+	JBLogDebug(@"after virtwrite at 0x%llX", kaddr);
 }
 
 
@@ -522,7 +522,7 @@ void initPPLPrimitives(uint64_t magicPage)
 
 		gPPLRWStatus = kPPLRWStatusInitialized;
 
-		LJB_DEBUGLOG(@"Initialized PPL primitives with magic page: 0x%llX", magicPage);
+		JBLogDebug(@"Initialized PPL primitives with magic page: 0x%llX", magicPage);
 
 		//PPLInitializedCallback();
 	}
