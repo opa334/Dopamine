@@ -1,6 +1,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <spawn.h>
 
+int64_t jbdFixSetuid(void);
 int64_t jbdProcessBinary(const char *filePath);
 int64_t jbdProcessLibrary(const char *filePath);
 int64_t jbdDebugMe(void);

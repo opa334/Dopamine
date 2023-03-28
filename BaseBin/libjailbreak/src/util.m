@@ -208,6 +208,23 @@ uint64_t self_proc(void)
 	return gSelfProc;
 }
 
+uint32_t ucred_get_svuid(uint64_t ucred_ptr)
+{
+	uint64_t cr_posix_ptr = ucred_ptr + 0x18;
+	return kread32(cr_posix_ptr + 0x8);
+}
+
+void ucred_set_svuid(uint64_t ucred_ptr, uint32_t svuid)
+{
+	uint64_t cr_posix_ptr = ucred_ptr + 0x18;
+	return kwrite32(cr_posix_ptr + 0x8, svuid);
+}
+
+uint64_t ucred_get_cr_label(uint64_t ucred_ptr)
+{
+	return kread_ptr(ucred_ptr + 0x78);
+}
+
 uint64_t task_get_first_thread(uint64_t task_ptr)
 {
 	return kread_ptr(task_ptr + 0x60);
@@ -347,11 +364,6 @@ void DEREntitlementsEncode(NSDictionary *entitlements, uint8_t **startOut, uint8
 	der_encode_plist((__bridge CFDictionaryRef)entitlements, NULL, der_start, der_end);
 	if (startOut) *startOut = der_start;
 	if (endOut) *endOut = der_end;
-}
-
-uint64_t ucred_get_cr_label(uint64_t ucred_ptr)
-{
-	return kread_ptr(ucred_ptr + 0x78);
 }
 
 uint64_t cr_label_get_OSEntitlements(uint64_t cr_label_ptr)

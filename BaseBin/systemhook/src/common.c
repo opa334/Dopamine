@@ -3,6 +3,7 @@
 #import <mach-o/dyld.h>
 
 #define HOOK_DYLIB_PATH "/usr/lib/systemhook.dylib"
+#define JBD_MSG_SETUID_FIX 21
 #define JBD_MSG_PROCESS_BINARY 22
 #define JBD_MSG_DEBUG_ME 24
 
@@ -41,6 +42,19 @@ xpc_object_t sendJBDMessageSystemWide(xpc_object_t message)
 	}
 
 	return reply;
+}
+
+int64_t jbdFixSetuid(void)
+{
+	xpc_object_t message = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(message, "id", JBD_MSG_SETUID_FIX);
+	xpc_object_t reply = sendJBDMessageSystemWide(message);
+	int64_t result = -1;
+	if (reply) {
+		result  = xpc_dictionary_get_int64(reply, "result");
+		xpc_release(reply);
+	}
+	return result;
 }
 
 int64_t jbdProcessBinary(const char *filePath)

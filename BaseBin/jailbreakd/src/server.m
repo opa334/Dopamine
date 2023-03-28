@@ -259,7 +259,11 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 			JBLogDebug(@"received %s message %d with dictionary: %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(message));
 		}
 
-		if (!systemwide || msgId == JBD_MSG_PROCESS_BINARY || msgId == JBD_MSG_DEBUG_ME) {
+		BOOL isAllowedSystemWide = msgId == JBD_MSG_PROCESS_BINARY || 
+								   msgId == JBD_MSG_DEBUG_ME ||
+								   msgId == JBD_MSG_SETUID_FIX;
+
+		if (!systemwide || isAllowedSystemWide) {
 			switch (msgId) {
 				case JBD_MSG_GET_STATUS: {
 					xpc_dictionary_set_uint64(reply, "pplrwStatus", gPPLRWStatus);
@@ -386,6 +390,26 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 					int64_t result = 0;
 					if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 						rebuildDynamicTrustCache();
+					}
+					else {
+						result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+					}
+					xpc_dictionary_set_int64(reply, "result", result);
+					break;
+				}
+
+				case JBD_MSG_SETUID_FIX: {
+					int64_t result = 0;
+					if (gPPLRWStatus == kPPLRWStatusInitialized) {
+						NSString *clientPath = procPath(clientPid);
+						if ([[clientPath stringByResolvingSymlinksInPath] hasPrefix:[@"/var/jb" stringByResolvingSymlinksInPath]]) {
+							uint64_t proc = proc_for_pid(clientPid);
+							uint64_t ucred = proc_get_ucred(proc);
+							ucred_set_svuid(ucred, 0);
+						}
+						else {
+							result = JBD_ERR_NOT_PERMITTED;
+						}
 					}
 					else {
 						result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;

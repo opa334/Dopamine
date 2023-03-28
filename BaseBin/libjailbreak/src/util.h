@@ -25,6 +25,10 @@ uint32_t proc_get_csflags(uint64_t proc);
 void proc_set_csflags(uint64_t proc, uint32_t csflags);
 uint64_t self_proc(void);
 
+uint32_t ucred_get_svuid(uint64_t ucred_ptr);
+void ucred_set_svuid(uint64_t ucred_ptr, uint32_t svuid);
+uint64_t ucred_get_cr_label(uint64_t ucred_ptr);
+
 uint64_t task_get_first_thread(uint64_t task_ptr);
 uint64_t thread_get_act_context(uint64_t thread_ptr);
 uint64_t task_get_vm_map(uint64_t task_ptr);
@@ -52,7 +56,6 @@ NSMutableDictionary *DEREntitlementsDecode(uint8_t *start, uint8_t *end);
 void DEREntitlementsEncode(NSDictionary *entitlements, uint8_t **startOut, uint8_t **endOut);
 
 void OSEntitlements_resign(uint64_t OSEntitlements_ptr);
-uint64_t ucred_get_cr_label(uint64_t ucred_ptr);
 uint64_t cr_label_get_OSEntitlements(uint64_t cr_label_ptr);
 NSData *OSEntitlements_get_cdhash(uint64_t OSEntitlements_ptr);
 
