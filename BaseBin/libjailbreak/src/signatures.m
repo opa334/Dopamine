@@ -233,7 +233,7 @@ void _machoEnumerateDependencies(FILE *machoFile, NSString *machoPath, NSString 
 			char* rpathC = malloc(stringLength);
 			fread(rpathC,stringLength,1,machoFile);
 			NSString* rpath = [NSString stringWithUTF8String:rpathC];
-			[rpaths addObject:rpath];
+			[rpaths addObject:resolveLoadPath(rpath, machoPath, sourceExecutablePath, nil)];
 			free(rpathC);
 		}
 
