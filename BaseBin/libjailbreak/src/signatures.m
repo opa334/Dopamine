@@ -154,6 +154,8 @@ int getCSBlobOffsetAndSize(FILE* machoFile, uint32_t* outOffset, uint32_t* outSi
 
 NSString *processRpaths(NSString *path, NSString *tokenName, NSArray *rpaths)
 {
+	if (!rpaths) return path;
+
 	if ([path containsString:tokenName]) {
 		for (NSString *rpath in rpaths) {
 			NSString *testPath = [path stringByReplacingOccurrencesOfString:tokenName withString:rpath];
@@ -232,8 +234,11 @@ void _machoEnumerateDependencies(FILE *machoFile, NSString *machoPath, NSString 
 			fseek(machoFile,offset + s32(rpathCommand.path.offset,swp),SEEK_SET);
 			char* rpathC = malloc(stringLength);
 			fread(rpathC,stringLength,1,machoFile);
-			NSString* rpath = [NSString stringWithUTF8String:rpathC];
-			[rpaths addObject:resolveLoadPath(rpath, machoPath, sourceExecutablePath, nil)];
+			NSString *rpath = [NSString stringWithUTF8String:rpathC];
+			NSString *resolvedRpath = resolveLoadPath(rpath, machoPath, sourceExecutablePath, nil);
+			if (resolvedRpath) {
+				[rpaths addObject:resolvedRpath];
+			}
 			free(rpathC);
 		}
 
