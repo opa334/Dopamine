@@ -16,16 +16,19 @@ static void unsandbox(void) {
     if(fd < 0)
     {
 //        printf("systemhook: %s: fd < 0\n", __func__);
+        close(fd);
         return;
     }
     if(fstat(fd, &s) != 0) {
 //        printf("systemhook: %s: fstat(fd, &s) != 0\n", __func__);
+        close(fd);
         return;
     }
     len = s.st_size;
     addr = mmap(NULL, len, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0);
     if(addr == MAP_FAILED) {
 //        printf("systemhook: %s: addr == MAP_FAILED\n", __func__);
+        close(fd);
         return;
     }
     xpc_object_t xobj = xpc_create_from_plist(addr, len);
@@ -40,6 +43,7 @@ static void unsandbox(void) {
                         if (extensionToken) {
                             sandbox_extension_consume(extensionToken);
                         } else {
+                            close(fd);
                             xpc_release(xobj);
 //                            printf("systemhook: %s: if (extensionToken) {\n", __func__);
                             return;
@@ -47,21 +51,25 @@ static void unsandbox(void) {
                     }
                 } else {
 //                    printf("systemhook: %s: xpc_get_type(obj) == &_xpc_type_array\n", __func__);
+                    close(fd);
                     xpc_release(xobj);
                     return;
                 }
             } else {
 //                printf("systemhook: %s: if(obj) {\n", __func__);
+                close(fd);
                 xpc_release(xobj);
                 return;
             }
         } else {
 //            printf("systemhook: %s: xpc_get_type(xobj) == &_xpc_type_dictionary\n", __func__);
+            close(fd);
             xpc_release(xobj);
             return;
         }
     }
 //    printf("systemhook: %s: end\n", __func__);
+    close(fd);
     xpc_release(xobj);
 }
 
