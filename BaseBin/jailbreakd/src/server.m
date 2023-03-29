@@ -189,8 +189,17 @@ int64_t initEnvironment(NSDictionary *settings)
 	NSString *fakeLibPath = @"/var/jb/basebin/.fakelib";
 	NSString *libPath = @"/usr/lib";
 
+	NSString *fakeFontsPath = @"/var/jb/basebin/.fakefonts";
+	NSString *fontsPath = @"/System/Library/Fonts";
+
+
 	BOOL copySuc = [[NSFileManager defaultManager] copyItemAtPath:libPath toPath:fakeLibPath error:nil];
 	if (!copySuc) {
+		return 1;
+	}
+	
+	BOOL copySucB = [[NSFileManager defaultManager] copyItemAtPath:fontsPath toPath:fakeFontsPath error:nil];
+	if (!copySucB) {
 		return 1;
 	}
 	JBLogDebug(@"copied %@ to %@", libPath, fakeLibPath);
@@ -231,6 +240,12 @@ int64_t initEnvironment(NSDictionary *settings)
 	if (bindMountRet != 0) {
 		return 8;
 	}
+
+	uint64_t bindMountRetB = bindMount(fontsPath.fileSystemRepresentation, fakeFontsPath.fileSystemRepresentation);
+	if (bindMountRetB != 0) {
+		return 8;
+	}
+	
 
 	return 0;
 }
