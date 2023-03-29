@@ -2,6 +2,10 @@
 
 set -e
 
+PREV_DIR=$(pwd)
+PACK_DIR=$(dirname -- "$0")
+cd "$PACK_DIR"
+
 # jailbreakd
 cd "jailbreakd"
 make clean
