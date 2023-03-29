@@ -1,1 +1,1 @@
-void initBoomerangHooks(void);
+void boomerang_userspaceRebootIncoming();

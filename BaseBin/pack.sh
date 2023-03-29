@@ -22,29 +22,39 @@ cd "libjailbreak"
 make
 cd -
 cp "./libjailbreak/libjailbreak.dylib" ".tmp/basebin/libjailbreak.dylib"
-
-# copy headers
 rm -rf "./_shared/libjailbreak"
 mkdir -p "./_shared/libjailbreak"
 cp ./libjailbreak/src/*.h ./_shared/libjailbreak
 
-# jailbreakd
+# libfilecom
+cd "libfilecom"
+make
+cd -
+cp "./libfilecom/libfilecom.dylib" ".tmp/basebin/libfilecom.dylib"
+rm -rf "./_shared/libfilecom"
+mkdir -p "./_shared/libfilecom"
+cp ./libfilecom/src/*.h ./_shared/libfilecom
 
+# jailbreakd
 cd "jailbreakd"
 make
 cd -
 cp "./jailbreakd/jailbreakd" ".tmp/basebin/jailbreakd"
 cp "./jailbreakd/daemon.plist" ".tmp/basebin/jailbreakd.plist"
 
-# kickstart
+# boomerang
+cd "boomerang"
+make
+cd -
+cp "./boomerang/boomerang" ".tmp/basebin/boomerang"
 
+# kickstart
 cd "kickstart"
 make
 cd -
 cp "./kickstart/kickstart" ".tmp/basebin/kickstart"
 
 # jbctl
-
 cd "jbctl"
 make
 cd -

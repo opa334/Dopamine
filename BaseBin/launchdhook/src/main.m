@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
 #import <libjailbreak/libjailbreak.h>
-#import "boomerang.h"
 #import "spawn_hook.h"
 #import "xpc.h"
 
@@ -17,10 +16,13 @@ __attribute__((constructor)) static void initializer(void)
 		//jbdRemoteLog(3, @"getting PAC primitives from jbd...");
 		recoverPACPrimitives();
 	}
+	
+	// This will ensure launchdhook is always reinjected after userspace reboots
+	// As this launchd will pass envp to the next launchd...
+	setenv("DYLD_INSERT_LIBRARIES", "/var/jb/basebin/launchdhook.dylib", 1);
 
 	proc_set_debugged(getpid());
-	
-	initBoomerangHooks();
+
 	initSpawnHooks();
 	initXPCHooks();
 
