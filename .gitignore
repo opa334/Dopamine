@@ -5,8 +5,10 @@ xcuserdata/
 DerivedData/
 .swiftpm/xcode/
 /Package.resolved
-
 /Fugu15_Developer.ipa
 /Server/orig.ipa
 /Server/serverCert/fullchain.cer
 /Server/serverCert/server.key
+Fugu15/Fugu15/bootstrap/tmp/
+.idea
+Tools/fastPathSign/.build_*

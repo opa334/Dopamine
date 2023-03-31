@@ -41,6 +41,9 @@ NSString *procPath(pid_t pid)
 
 int processBinary(NSString *binaryPath)
 {
+	if (!binaryPath) return 0;
+	if (![[NSFileManager defaultManager] fileExistsAtPath:binaryPath]) return 0;
+
 	uint64_t selfproc = self_proc();
 
 	FILE *machoFile = fopen(binaryPath.fileSystemRepresentation, "rb");
