@@ -2,8 +2,8 @@
 
 #import "trustcache_structs.h"
 
-// 743 cdhashes fit into one page
-#define TC_ENTRY_COUNT_PER_PAGE 743
+// 742 cdhashes fit into one page
+#define TC_ENTRY_COUNT_PER_PAGE 742
 
 @class JBDTCPage;
 
