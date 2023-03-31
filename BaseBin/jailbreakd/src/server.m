@@ -539,6 +539,13 @@ int main(int argc, char* argv[])
 			}
 		}
 
+		if (bootInfo_getUInt64(@"jailbreakdLoadDaemons"))
+		{
+			spawn(@"/var/jb/usr/bin/launchctl", @[@"bootstrap", @"system", @"/var/jb/Library/LaunchDaemons"]);
+			spawn(@"/var/jb/usr/bin/uicache", @[@"-a"]);
+			bootInfo_setObject(@"jailbreakdLoadDaemons", nil);
+		}
+
 		dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_MACH_RECV, (uintptr_t)machPort, 0, dispatch_get_main_queue());
 		dispatch_source_set_event_handler(source, ^{
 			mach_port_t lMachPort = (mach_port_t)dispatch_source_get_handle(source);

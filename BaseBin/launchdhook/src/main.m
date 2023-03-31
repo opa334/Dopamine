@@ -35,6 +35,7 @@ __attribute__((constructor)) static void initializer(void)
 		recoverPACPrimitives();
 		[handler sendMessage:@{ @"id" : @"primitivesInitialized" }];
 		[[NSFileManager defaultManager] removeItemAtPath:@"/var/jb/basebin/.communication" error:nil];
+		bootInfo_setObject(@"jailbreakdLoadDaemons", @1);
 	}
 	else {
 		// Launchd hook loaded for first time, get primitives from jailbreakd
@@ -50,27 +51,12 @@ __attribute__((constructor)) static void initializer(void)
 	}
 
 	proc_set_debugged(getpid());
-	initSpawnHooks();
 	initXPCHooks();
 	if (comingFromUserspaceReboot) {
 		initBootTaskHooks();
 	}
-
-	if (comingFromUserspaceReboot) {
-		/*dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-			while (1) {
-				extern int (*posix_spawn_orig)(pid_t *restrict, const char *restrict, const posix_spawn_file_actions_t *restrict, const posix_spawnattr_t *restrict, char *const[restrict], char *const[restrict]);
-				pid_t task_pid;
-				int status = -200;
-				char *argv[] = {"reinit", NULL};
-				int spawnError = posix_spawn_orig(&task_pid, "/var/jb/basebin/jbinit", NULL, NULL, argv, NULL);
-				do {
-					if (waitpid(task_pid, &status, 0) == -1) {
-						return;
-					}
-				} while (!WIFEXITED(status) && !WIFSIGNALED(status));
-			}
-		});*/
+	else {
+		initSpawnHooks();
 	}
 
 	// This will ensure launchdhook is always reinjected after userspace reboots

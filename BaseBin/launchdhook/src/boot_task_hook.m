@@ -6,7 +6,7 @@
 #import <libjailbreak/patchfind.h>
 #import <mach-o/dyld.h>
 
-/*extern xpc_object_t xpc_create_from_plist(const void *buf, size_t len);
+extern xpc_object_t xpc_create_from_plist(const void *buf, size_t len);
 
 void addLaunchDaemon(xpc_object_t xdict, const char *path)
 {
@@ -27,13 +27,13 @@ void addLaunchDaemon(xpc_object_t xdict, const char *path)
 		}
 		close(ldFd);
 	}
-}*/
+}
 
-/*xpc_object_t (*xpc_dictionary_get_value_orig)(xpc_object_t xdict, const char *key);
+xpc_object_t (*xpc_dictionary_get_value_orig)(xpc_object_t xdict, const char *key);
 xpc_object_t xpc_dictionary_get_value_hook(xpc_object_t xdict, const char *key)
 {
 	xpc_object_t orgValue = xpc_dictionary_get_value_orig(xdict, key);
-	if (!strcmp(key, "Boot")) {
+	/*if (!strcmp(key, "Boot")) {
 		xpc_object_t jbinitBootTaskDict = xpc_dictionary_create_empty();
 		xpc_object_t jbinitProgramArguments = xpc_array_create_empty();
     	xpc_array_set_string(jbinitProgramArguments, XPC_ARRAY_APPEND, "/var/jb/basebin/jbinit");
@@ -43,15 +43,49 @@ xpc_object_t xpc_dictionary_get_value_hook(xpc_object_t xdict, const char *key)
 		//xpc_dictionary_set_bool(jbinitBootTaskDict, "RequireRun", true);
 		xpc_dictionary_set_value(orgValue, "jbinit", jbinitBootTaskDict);
 	}
-	else if (!strcmp(key, "LaunchDaemons")) {
-		addLaunchDaemon(orgValue, "/var/jb/basebin/jailbreakd.plist");
+	else */if (!strcmp(key, "LaunchDaemons")) {
+		//addLaunchDaemon(orgValue, "/var/jb/basebin/jailbreakd.plist");
+		//addLaunchDaemon(orgValue, "/var/jb/Library/LaunchDaemons/com.openssh.sshd.plist");
+		addLaunchDaemon(orgValue, "/var/jb/Library/LaunchDaemons/com.opa334.jailbreakd.plist");
 	}
 	else if (!strcmp(key, "Paths")) {
 		xpc_array_set_string(orgValue, XPC_ARRAY_APPEND, "/var/jb/Library/LaunchDaemons");
-		xpc_array_set_string(orgValue, XPC_ARRAY_APPEND, "/var/jb/basebin");
+		//xpc_array_set_string(orgValue, XPC_ARRAY_APPEND, "/var/jb/basebin");
 	}
 	return orgValue;
+}
+
+/*bool (*isPathInPathArray_orig)(xpc_object_t xarr, const char *path);
+bool isPathInPathArray_hook(xpc_object_t xarr, const char *path)
+{
+	bool orig = isPathInPathArray_orig(xarr, path);
+
+	if (xarr && path) {
+		FILE *f = fopen("/var/mobile/patharr.log", "a");
+		fprintf(f, "isPathInPathArray(%s, %s) => %d\n", xpc_copy_description(xarr), path, orig);
+		fclose(f);
+	}
+	
+	return orig;
 }*/
+
+// sub_100014BD4
+//bool (*pathValid_orig)(const char *path);
+//bool pathValid_hook(const char *path)
+//{
+	/*bool valid = pathValid_orig(path);
+
+	if (path) {
+		FILE *f = fopen("/var/mobile/pathvalid.txt", "a");
+		fprintf(f, "pathValid(%s) => %d\n", path, valid);
+		fclose(f);
+	}
+
+	return valid;*/
+//	return pathValid_orig(path);
+	//return true;
+//}
+
 
 /*void *(*performBootTask_orig)(char *, void *, void *);
 void *performBootTask_hook(char *key, void *a2, void *a3)
@@ -93,7 +127,7 @@ bool stringStartsWith_hook(char *s1, char *s2)
     return strcmp(str + str_len - suffix_len, suffix) == 0;
 }*/
 
-extern int stringEndsWith(const char* str, const char* suffix);
+/*extern int stringEndsWith(const char* str, const char* suffix);
 
 void (*sub_100012B44_orig)(uint8_t *);
 void sub_100012B44_hook(uint8_t *someStruct)
@@ -111,7 +145,7 @@ void sub_100012B44_hook(uint8_t *someStruct)
 	}
 
 	sub_100012B44_orig(someStruct);
-}
+}*/
 
 void initBootTaskHooks(void)
 {
@@ -132,8 +166,15 @@ void initBootTaskHooks(void)
 	/*void *stringStartsWithPtr = (void *)(_dyld_get_image_vmaddr_slide(gLaunchdImageIndex) + 0x100011A40);
 	MSHookFunction(stringStartsWithPtr, (void *)stringStartsWith_hook, (void **)&stringStartsWith_orig);*/
 	
-	//MSHookFunction(&xpc_dictionary_get_value, (void *)xpc_dictionary_get_value_hook, (void **)&xpc_dictionary_get_value_orig);
+	MSHookFunction(&xpc_dictionary_get_value, (void *)xpc_dictionary_get_value_hook, (void **)&xpc_dictionary_get_value_orig);
 
-	void *sub_100012B44 = (void*)_dyld_get_image_vmaddr_slide(gLaunchdImageIndex) + 0x100012B44;
-	MSHookFunction(sub_100012B44, (void *)sub_100012B44_hook, (void **)&sub_100012B44_orig);
+
+	/*void *isPathInPathArrayAddr = (void*)_dyld_get_image_vmaddr_slide(gLaunchdImageIndex) + 0x1000154F4;
+	MSHookFunction(isPathInPathArrayAddr, (void *)isPathInPathArray_hook, (void **)&isPathInPathArray_orig);*/
+
+	/*void *pathValidAddr = (void*)_dyld_get_image_vmaddr_slide(gLaunchdImageIndex) + 0x100014BD4;
+	MSHookFunction(pathValidAddr, (void *)pathValid_hook, (void **)&pathValid_orig);*/
+
+	/*void *sub_100012B44 = (void*)_dyld_get_image_vmaddr_slide(gLaunchdImageIndex) + 0x100012B44;
+	MSHookFunction(sub_100012B44, (void *)sub_100012B44_hook, (void **)&sub_100012B44_orig);*/
 }
