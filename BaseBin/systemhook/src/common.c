@@ -124,21 +124,60 @@ char *resolvePath(const char *file, const char *searchPath)
 	return NULL;
 }
 
+bool stringEndsWith(const char* str, const char* suffix)
+{
+    size_t str_len = strlen(str);
+    size_t suffix_len = strlen(suffix);
+
+    if (str_len < suffix_len) {
+        return 0;
+    }
+
+    return !strcmp(str + str_len - suffix_len, suffix);
+}
+
 // I don't like the idea of blacklisting certain processes
 // But for some it seems neccessary
-bool processIsBlacklisted(const char* path)
-{
-	const char *processBlacklist[] = {
-		"/System/Library/Frameworks/GSS.framework/Helpers/GSSCred",
-		"/var/jb/basebin/jailbreakd" // stay tf out of jbd to prevent system freeze
-	};
 
+typedef enum 
+{
+	kBinaryConfigDontInject = 1 << 0,
+	kBinaryConfigDontProcess = 1 << 1
+} kBinaryConfig;
+
+kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
+{
+	// Don't do anything for jailbreakd because this wanting to launch implies it's not running currently
+	if (stringEndsWith(path, "/jailbreakd")) {
+		return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
+	}
+
+	// Don't do anything for xpcproxy if it's called on jailbreakd because this also implies jbd is not running currently
+	if (!strcmp(path, "/usr/libexec/xpcproxy")) {
+		if (argv)
+		{
+			if (argv[0]) {
+				if (argv[1]) {
+					if (!strcmp(argv[1], "com.opa334.jailbreakd")) {
+						return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
+					}
+				}
+			}
+		}
+	}
+
+	// Blacklist to ensure general system stability
+	// I don't like this but it seems neccessary
+	const char *processBlacklist[] = {
+		"/System/Library/Frameworks/GSS.framework/Helpers/GSSCred"
+	};
 	size_t blacklistCount = sizeof(processBlacklist) / sizeof(processBlacklist[0]);
 	for (size_t i = 0; i < blacklistCount; i++)
 	{
-		if (!strcmp(processBlacklist[i], path)) return true;
+		if (!strcmp(processBlacklist[i], path)) return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
 	}
-	return false;
+
+	return 0;
 }
 
 // Make sure the about to be spawned binary and all of it's dependencies are trust cached
@@ -156,12 +195,16 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 		return pspawn_orig(pid, path, file_actions, attrp, argv, envp);
 	}
 
-	if (processIsBlacklisted(path)) {
-		return pspawn_orig(pid, path, file_actions, attrp, argv, envp);
+	kBinaryConfig binaryConfig = configForBinary(path, argv);
+
+	if (!(binaryConfig & kBinaryConfigDontProcess)) {
+		// jailbreakd: Make sure binary is in trustcache
+		jbdProcessBinary(path);
 	}
 
-	// jailbreakd: Make sure binary is in trustcache
-	jbdProcessBinary(path);
+	if (binaryConfig & kBinaryConfigDontInject) {
+		return pspawn_orig(pid, path, file_actions, attrp, argv, envp);
+	}
 
 	// Determine length envp passed
 	char **ogEnv = (char **)envp;
