@@ -13,38 +13,33 @@ static void unsandbox(void) {
 	struct stat s = {};
 	int fd = 0;
 	fd = open("/usr/lib/sandbox.plist", O_RDONLY);
-	if(fd < 0)
-	{
-		return;
-	}
+	if(fd < 0) return;
 	if(fstat(fd, &s) != 0) {
 		close(fd);
 		return;
 	}
 	len = s.st_size;
 	addr = mmap(NULL, len, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0);
-	if(addr == MAP_FAILED) {
-		close(fd);
-		return;
-	}
-	xpc_object_t xplist = xpc_create_from_plist(addr, len);
-	if(xplist) {
-		if(xpc_get_type(xplist) == &_xpc_type_dictionary) {
-			xpc_object_t xextensions = xpc_dictionary_get_value(xplist, "extensions");
-			if(xextensions) {
-				if(xpc_get_type(xextensions) == &_xpc_type_array) {
-					size_t count = xpc_array_get_count(xextensions);
-					for(int i = 0; i < count; i++) {
-						const char *extensionToken = xpc_array_get_string(xextensions, i);
-						if (extensionToken) {
-							sandbox_extension_consume(extensionToken);
+	if(addr != MAP_FAILED) {
+		xpc_object_t xplist = xpc_create_from_plist(addr, len);
+		if(xplist) {
+			if(xpc_get_type(xplist) == &_xpc_type_dictionary) {
+				xpc_object_t xextensions = xpc_dictionary_get_value(xplist, "extensions");
+				if(xextensions) {
+					if(xpc_get_type(xextensions) == &_xpc_type_array) {
+						size_t count = xpc_array_get_count(xextensions);
+						for(int i = 0; i < count; i++) {
+							const char *extensionToken = xpc_array_get_string(xextensions, i);
+							if (extensionToken) {
+								sandbox_extension_consume(extensionToken);
+							}
 						}
 					}
+					xpc_release(xextensions);
 				}
-				xpc_release(xextensions);
 			}
+			xpc_release(xplist);
 		}
-		xpc_release(xplist);
 	}
 	close(fd);
 }
