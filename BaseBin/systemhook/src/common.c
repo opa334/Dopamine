@@ -15,22 +15,26 @@ kern_return_t bootstrap_look_up(mach_port_t port, const char *service, mach_port
 mach_port_t jbdSystemWideMachPort(void)
 {
 	mach_port_t outPort = -1;
+	kern_return_t kr = KERN_SUCCESS;
 
 	if (getpid() == 1) {
 		mach_port_t self_host = mach_host_self();
-		host_get_special_port(self_host, HOST_LOCAL_NODE, 16, &outPort);
+		kr = host_get_special_port(self_host, HOST_LOCAL_NODE, 16, &outPort);
 		mach_port_deallocate(mach_task_self(), self_host);
 	}
 	else {
-		bootstrap_look_up(bootstrap_port, "com.opa334.jailbreakd.systemwide", &outPort);
+		kr = bootstrap_look_up(bootstrap_port, "com.opa334.jailbreakd.systemwide", &outPort);
 	}
 
+	if (kr != KERN_SUCCESS) return -1;
 	return outPort;
 }
 
 xpc_object_t sendJBDMessageSystemWide(xpc_object_t message)
 {
 	mach_port_t jbdPort = jbdSystemWideMachPort();
+	if (jbdPort == -1) return nil;
+
 	xpc_object_t pipe = xpc_pipe_create_from_port(jbdPort, 0);
 
 	xpc_object_t reply = nil;
@@ -125,7 +129,8 @@ char *resolvePath(const char *file, const char *searchPath)
 bool processIsBlacklisted(const char* path)
 {
 	const char *processBlacklist[] = {
-		"/System/Library/Frameworks/GSS.framework/Helpers/GSSCred"
+		"/System/Library/Frameworks/GSS.framework/Helpers/GSSCred",
+		"/var/jb/basebin/jailbreakd" // stay tf out of jbd to prevent system freeze
 	};
 
 	size_t blacklistCount = sizeof(processBlacklist) / sizeof(processBlacklist[0]);
