@@ -114,14 +114,19 @@ uint64_t bindMount(const char *source, const char *target)
     NSString *targetPath = [[NSString stringWithUTF8String:target] stringByResolvingSymlinksInPath];
 
     int fd = open(sourcePath.fileSystemRepresentation, O_RDONLY);
+	if (fd < 0) {
+		NSLog(@"Bind mount: Failed to open %@", sourcePath);
+		return 1;
+	}
+
     uint64_t vnode = proc_get_vnode_by_file_descriptor(self_proc(), fd);
-    JBLogDebug(@"Got vnode 0x%llX for path \"%s\"", vnode, sourcePath.fileSystemRepresentation);
+    JBLogDebug(@"Bind mount: Got vnode 0x%llX for path \"%s\"", vnode, sourcePath.fileSystemRepresentation);
 
     uint64_t parent_vnode = kread_ptr(vnode + 0xC0);
-    JBLogDebug(@"Got parent vnode: 0x%llX", parent_vnode);
+    JBLogDebug(@"Bind mount: Got parent vnode: 0x%llX", parent_vnode);
 
     uint64_t mount_ret = kernel_mount("bindfs", parent_vnode, vnode, targetPath.fileSystemRepresentation, (uint64_t)targetPath.fileSystemRepresentation, 8, MNT_RDONLY, KERNEL_MOUNT_NOAUTH);
-    JBLogDebug(@"kernel_mount returned %lld (%s)", mount_ret, strerror(mount_ret));
+    JBLogDebug(@"Bind mount: kernel_mount returned %lld (%s)", mount_ret, strerror(mount_ret));
 	return mount_ret;
 }
 

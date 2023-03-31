@@ -4,6 +4,7 @@
 #import <stdbool.h>
 #import <mach/mach.h>
 #import <mach-o/dyld.h>
+#import <libfilecom/FCHandler.h>
 #import "pplrw.h"
 #import "util.h"
 #import "jailbreakd.h"
@@ -395,11 +396,26 @@ int signStateOverLaunchd(uint64_t actContext)
 	return xpc_dictionary_get_int64(reply, "error");
 }
 
-// boomerang -> launchd (using libfilecom)
-int signStateOverBoomerang(uint64_t actContext)
+// boomerang <-> launchd (using libfilecom)
+int signStateLibFileCom(uint64_t actContext, NSString *from, NSString *to)
 {
-	// TODO
-	return -1;
+	NSString *fromPath = [NSString stringWithFormat:@"/var/jb/basebin/.communication/%@_to_%@", from, to];
+	NSString *toPath = [NSString stringWithFormat:@"/var/jb/basebin/.communication/%@_to_%@", to, from];
+	dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+	FCHandler *handler = [[FCHandler alloc] initWithReceiveFilePath:fromPath sendFilePath:toPath];
+	handler.receiveHandler = ^(NSDictionary *message) {
+		NSString *identifier = message[@"id"];
+		if (identifier) {
+			if ([identifier isEqualToString:@"signedThreadState"])
+			{
+				dispatch_semaphore_signal(sema);
+			}
+		}
+	};
+	[handler sendMessage:@{ @"id" : @"signThreadState", @"actContext" : @(actContext) }];
+	dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+
+	return 0;
 }
 
 int recoverPACPrimitives()
@@ -422,8 +438,11 @@ int recoverPACPrimitives()
 	int signStatus = 0;
 
 	// Sign context using suitable method based on process and system state
-	if ([processName isEqualToString:@"boomerang"] || [processName isEqualToString:@"jailbreakd"]) {
+	if ([processName isEqualToString:@"jailbreakd"]) {
 		signStatus = signStateOverLaunchd(actContextKptr);
+	}
+	else if ([processName isEqualToString:@"boomerang"]) {
+		signStatus = signStateLibFileCom(actContextKptr, @"launchd", @"boomerang");
 	}
 	else if ([processName isEqualToString:@"launchd"])
 	{
@@ -432,7 +451,7 @@ int recoverPACPrimitives()
 		// When launchd was already initialized once, we want to get primitives from boomerang
 		// (As we are coming from a userspace reboot)
 		if (environmentInitialized) {
-			signStatus = signStateOverBoomerang(actContextKptr);
+			signStatus = signStateLibFileCom(actContextKptr, @"boomerang", @"launchd");
 		}
 		// Otherwise we want to get them from jailbreakd,
 		// (As we are coming from a fresh jailbreak)

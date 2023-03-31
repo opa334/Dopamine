@@ -1,9 +1,9 @@
 #import <spawn.h>
 #import "../systemhook/src/common.h"
-#import "substrate.h"
 #import "boomerang.h"
+#import "substrate.h"
 #import <mach-o/dyld.h>
-
+#import <Foundation/Foundation.h>
 
 int posix_spawnattr_setjetsam(posix_spawnattr_t *attr, short flags, int priority, int memlimit);
 int posix_spawnattr_setjetsam_ext(posix_spawnattr_t *attr, short flags, int priority, int memlimit_active, int memlimit_inactive);
@@ -18,7 +18,17 @@ int posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
 					   char *const argv[restrict],
 					   char *const envp[restrict])
 {
+	FILE *f = fopen("/var/mobile/launchd_log.log", "a");
 	if (path) {
+		const char *firstArg = "<none>";
+		if (argv[0]) {
+			if (argv[1]) {
+				firstArg = argv[1];
+			}
+		}
+		fprintf(f, "posix_spawn %s %s\n%s\nposix_spawn end\n", path, firstArg, NSThread.callStackSymbols.description.UTF8String);
+		fclose(f);
+
 		char executablePath[1024];
 		uint32_t bufsize = sizeof(executablePath);
 		_NSGetExecutablePath(&executablePath[0], &bufsize);

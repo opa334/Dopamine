@@ -17,15 +17,6 @@ if [ -d ".tmp/basebin" ]; then
 fi
 mkdir -p ".tmp/basebin"
 
-# libjailbreak
-cd "libjailbreak"
-make
-cd -
-cp "./libjailbreak/libjailbreak.dylib" ".tmp/basebin/libjailbreak.dylib"
-rm -rf "./_shared/libjailbreak"
-mkdir -p "./_shared/libjailbreak"
-cp ./libjailbreak/src/*.h ./_shared/libjailbreak
-
 # libfilecom
 cd "libfilecom"
 make
@@ -34,6 +25,15 @@ cp "./libfilecom/libfilecom.dylib" ".tmp/basebin/libfilecom.dylib"
 rm -rf "./_shared/libfilecom"
 mkdir -p "./_shared/libfilecom"
 cp ./libfilecom/src/*.h ./_shared/libfilecom
+
+# libjailbreak
+cd "libjailbreak"
+make
+cd -
+cp "./libjailbreak/libjailbreak.dylib" ".tmp/basebin/libjailbreak.dylib"
+rm -rf "./_shared/libjailbreak"
+mkdir -p "./_shared/libjailbreak"
+cp ./libjailbreak/src/*.h ./_shared/libjailbreak
 
 # jailbreakd
 cd "jailbreakd"
@@ -48,11 +48,11 @@ make
 cd -
 cp "./boomerang/boomerang" ".tmp/basebin/boomerang"
 
-# kickstart
-cd "kickstart"
+# jbinit
+cd "jbinit"
 make
 cd -
-cp "./kickstart/kickstart" ".tmp/basebin/kickstart"
+cp "./jbinit/jbinit" ".tmp/basebin/jbinit"
 
 # jbctl
 cd "jbctl"

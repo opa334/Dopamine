@@ -7,8 +7,8 @@ cd "jailbreakd"
 make clean
 cd -
 
-# kickstart
-cd "kickstart"
+# jbinit
+cd "jbinit"
 make clean
 cd -
 

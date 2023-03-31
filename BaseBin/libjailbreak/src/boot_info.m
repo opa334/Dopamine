@@ -6,7 +6,12 @@ void bootInfo_setObject(NSString *name, __kindof NSObject *object)
 {
 	NSURL *bootInfoURL = [NSURL fileURLWithPath:BOOT_INFO_PATH isDirectory:NO];
 	NSMutableDictionary *bootInfo = [NSDictionary dictionaryWithContentsOfURL:bootInfoURL error:nil].mutableCopy ?: [NSMutableDictionary new];
-	bootInfo[name] = object;
+	if (object) {
+		bootInfo[name] = object;
+	}
+	else {
+		[bootInfo removeObjectForKey:name];
+	}
 	[bootInfo writeToURL:bootInfoURL atomically:YES];
 }
 

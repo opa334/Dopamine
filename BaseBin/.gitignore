@@ -1,7 +1,7 @@
 basebin.tc
 libjailbreak/libjailbreak.dylib
 jailbreakd/jailbreakd
-kickstart/kickstart
+jbinit/jbinit
 jbctl/jbctl
 launchdhook/launchdhook.dylib
 systemhook/systemhook.dylib

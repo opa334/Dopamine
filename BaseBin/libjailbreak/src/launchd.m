@@ -33,6 +33,7 @@ xpc_object_t launchd_xpc_send_message(xpc_object_t xdict)
 	else
 	{
 		pipePtr = _os_alloc_once(&_os_alloc_once_table[1], 472, NULL);
+		if (!pipePtr) _os_alloc_once_table[1].once = -1;
 	}
 
 	struct xpc_global_data* globalData = pipePtr;

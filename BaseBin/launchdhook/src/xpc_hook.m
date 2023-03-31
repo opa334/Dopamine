@@ -18,7 +18,7 @@ NSString *procPath(pid_t pid)
 
 // Server routine to make jailbreakd able to get back primitives when it restarts
 void (*xpc_handler_orig)(uint64_t a1, uint64_t a2, xpc_object_t xdict);
-void xpc_handler_replacement(uint64_t a1, uint64_t a2, xpc_object_t xdict)
+void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 {
 	if (xdict) {
 		if (xpc_get_type(xdict) == XPC_TYPE_DICTIONARY) {
@@ -70,23 +70,16 @@ void xpc_handler_replacement(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 	xpc_handler_orig(a1, a2, xdict);
 }
 
+
 void initXPCHooks(void)
 {
-	int launchdIndex = -1;
-	for (int i = 0; i < _dyld_image_count(); i++) {
-		if(!strcmp(_dyld_get_image_name(i), "/sbin/launchd")) {
-			launchdIndex = i;
-			break;
-		}
-	}
-
-	if (launchdIndex == -1) return;
+	extern int gLaunchdImageIndex;
 
 	// Credits to Cryptic for the patchfinding metrics
 	unsigned char xpcHandlerBytes[] = "\xE0\x03\x00\xAA\xE0\x03\x00\xAA\xE0\x03\x00\xAA\x00\x00\x80\x52\x00\x00\x00\x39";
 	unsigned char xpcHandlerBytesMask[] = "\xE0\xFF\xE0\xFF\xE0\xFF\xE0\xFF\xE0\xFF\xE0\xFF\x00\xFF\xE0\xFF\x00\x00\x00\xFF";
 	
-	void *xpcHandlerMid = patchfind_find(launchdIndex, (unsigned char*)xpcHandlerBytes, (unsigned char*)xpcHandlerBytesMask, sizeof(xpcHandlerBytes));
+	void *xpcHandlerMid = patchfind_find(gLaunchdImageIndex, (unsigned char*)xpcHandlerBytes, (unsigned char*)xpcHandlerBytesMask, sizeof(xpcHandlerBytes));
 	jbdRemoteLog(3, @"Launchd patchfinder found mid 0x%llX", xpcHandlerMid);
 
 	void *xpcHandlerPtr = patchfind_seek_back(xpcHandlerMid, 0xD503237F, 0xFFFFFFFF, 50 * 4);
@@ -94,16 +87,6 @@ void initXPCHooks(void)
 	jbdRemoteLog(3, @"Launchd patchfinder found 0x%llX", xpcHandlerPtr);
 	if (xpcHandlerPtr)
 	{
-		MSHookFunction(xpcHandlerPtr, (void *)xpc_handler_replacement, (void **)&xpc_handler_orig);
+		MSHookFunction(xpcHandlerPtr, (void *)xpc_handler_hook, (void **)&xpc_handler_orig);
 	}
 }
-
-
-
-
-/*
-
-XPC HANDLER:
-sub_10003ABD4
-
-*/
