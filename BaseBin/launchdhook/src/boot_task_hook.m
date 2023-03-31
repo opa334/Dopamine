@@ -82,7 +82,7 @@ bool stringStartsWith_hook(char *s1, char *s2)
 	return starts;
 }*/
 
-int stringEndsWith(const char* str, const char* suffix) {
+/*int stringEndsWith(const char* str, const char* suffix) {
     size_t str_len = strlen(str);
     size_t suffix_len = strlen(suffix);
 
@@ -91,7 +91,9 @@ int stringEndsWith(const char* str, const char* suffix) {
     }
 
     return strcmp(str + str_len - suffix_len, suffix) == 0;
-}
+}*/
+
+extern int stringEndsWith(const char* str, const char* suffix);
 
 void (*sub_100012B44_orig)(uint8_t *);
 void sub_100012B44_hook(uint8_t *someStruct)
