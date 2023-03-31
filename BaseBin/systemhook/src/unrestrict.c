@@ -23,10 +23,10 @@ static void unsandbox(void) {
 	if(addr != MAP_FAILED) {
 		xpc_object_t xplist = xpc_create_from_plist(addr, len);
 		if(xplist) {
-			if(xpc_get_type(xplist) == &_xpc_type_dictionary) {
+			if(xpc_get_type(xplist) == XPC_TYPE_DICTIONARY) {
 				xpc_object_t xextensions = xpc_dictionary_get_value(xplist, "extensions");
 				if(xextensions) {
-					if(xpc_get_type(xextensions) == &_xpc_type_array) {
+					if(xpc_get_type(xextensions) == XPC_TYPE_ARRAY) {
 						size_t count = xpc_array_get_count(xextensions);
 						for(int i = 0; i < count; i++) {
 							const char *extensionToken = xpc_array_get_string(xextensions, i);
@@ -35,7 +35,6 @@ static void unsandbox(void) {
 							}
 						}
 					}
-					xpc_release(xextensions);
 				}
 			}
 			xpc_release(xplist);
