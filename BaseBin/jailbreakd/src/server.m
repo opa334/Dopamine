@@ -4,6 +4,7 @@
 #import <libjailbreak/boot_info.h>
 #import <libjailbreak/launchd.h>
 #import <libjailbreak/signatures.h>
+#import <libjailbreak/macho.h>
 #import "trustcache.h"
 #import <kern_memorystatus.h>
 #import <libproc.h>
@@ -59,27 +60,34 @@ int processBinary(NSString *binaryPath)
 		machoGetInfo(machoFile, &isMacho, &isLibrary);
 
 		if (isMacho) {
-			NSMutableArray *nonTrustCachedCDHashes = [NSMutableArray new];
+			int64_t bestArchCandidate = machoFindBestArch(machoFile);
+			if (bestArchCandidate >= 0) {
+				uint32_t bestArch = bestArchCandidate;
+				NSMutableArray *nonTrustCachedCDHashes = [NSMutableArray new];
 
-			void (^tcCheckBlock)(NSString *) = ^(NSString *dependencyPath) {
-				if (dependencyPath) {
-					NSURL *dependencyURL = [NSURL fileURLWithPath:dependencyPath];
-					NSData *cdHash = nil;
-					BOOL isAdhocSigned = NO;
-					evaluateSignature(dependencyURL, &cdHash, &isAdhocSigned);
-					if (isAdhocSigned) {
-						if (!isCdHashInTrustCache(cdHash)) {
-							[nonTrustCachedCDHashes addObject:cdHash];
+				void (^tcCheckBlock)(NSString *) = ^(NSString *dependencyPath) {
+					if (dependencyPath) {
+						NSURL *dependencyURL = [NSURL fileURLWithPath:dependencyPath];
+						NSData *cdHash = nil;
+						BOOL isAdhocSigned = NO;
+						evaluateSignature(dependencyURL, &cdHash, &isAdhocSigned);
+						if (isAdhocSigned) {
+							if (!isCdHashInTrustCache(cdHash)) {
+								[nonTrustCachedCDHashes addObject:cdHash];
+							}
 						}
 					}
-				}
-			};
+				};
 
-			tcCheckBlock(binaryPath);
-			
-			machoEnumerateDependencies(machoFile, binaryPath, tcCheckBlock);
+				tcCheckBlock(binaryPath);
+				
+				machoEnumerateDependencies(machoFile, bestArch, binaryPath, tcCheckBlock);
 
-			dynamicTrustCacheUploadCDHashesFromArray(nonTrustCachedCDHashes);
+				dynamicTrustCacheUploadCDHashesFromArray(nonTrustCachedCDHashes);
+			}
+			else {
+				ret = 3;
+			}
 		}
 		else {
 			ret = 2;
@@ -91,12 +99,6 @@ int processBinary(NSString *binaryPath)
 	}
 
 	return ret;
-}
-
-void primitivesInitializedCallback(void)
-{
-	tcPagesRecover();
-	rebuildDynamicTrustCache();
 }
 
 uint64_t kernel_mount(const char* fstype, uint64_t pvp, uint64_t vp, const char *mountPath, uint64_t data, size_t datalen, int syscall_flags, uint32_t kern_flags)
@@ -256,6 +258,8 @@ int64_t initEnvironment(NSDictionary *settings)
 
 void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 {
+	FILE *jbdLogFile = fopen("/var/mobile/jbd.log", "a");
+
 	xpc_object_t message = nil;
 	int err = xpc_pipe_receive(machPort, &message);
 	if (err != 0) {
@@ -276,6 +280,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 
 		if (msgId != JBD_MSG_REMOTELOG) {
 			JBLogDebug(@"received %s message %d with dictionary: %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(message));
+			fprintf(jbdLogFile, "received %s message %d with dictionary: %s\n", systemwide ? "systemwide" : "", msgId, xpc_copy_description(message)); fflush(jbdLogFile);
 		}
 
 		BOOL isAllowedSystemWide = msgId == JBD_MSG_PROCESS_BINARY || 
@@ -314,7 +319,6 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 				case JBD_MSG_PAC_FINALIZE: {
 					if (gKCallStatus == kKcallStatusPrepared && gPPLRWStatus == kPPLRWStatusInitialized) {
 						finalizePACPrimitives();
-						primitivesInitializedCallback();
 					}
 					break;
 				}
@@ -443,7 +447,9 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						const char* filePath = xpc_dictionary_get_string(message, "filePath");
 						if (filePath) {
 							NSString *nsFilePath = [NSString stringWithUTF8String:filePath];
+							fprintf(jbdLogFile, "before processBinary\n"); fflush(jbdLogFile);
 							result = processBinary(nsFilePath);
+							fprintf(jbdLogFile, "after processBinary\n"); fflush(jbdLogFile);
 						}
 					}
 					else {
@@ -483,6 +489,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 
 	if (reply) {
 		if (msgId != JBD_MSG_REMOTELOG) {
+			fprintf(jbdLogFile, "responding to %s message %d with %s\n", systemwide ? "systemwide" : "", msgId, xpc_copy_description(reply)); fflush(jbdLogFile);
 			JBLogDebug(@"responding to %s message %d with %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(reply));
 		}
 		err = xpc_pipe_routine_reply(reply);
@@ -490,6 +497,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 			JBLogError(@"Error %d sending response", err);
 		}
 	}
+	fclose(jbdLogFile);
 }
 
 int launchdInitPPLRW(void)
@@ -539,7 +547,7 @@ int main(int argc, char* argv[])
 			if (err == 0) {
 				err = recoverPACPrimitives();
 				if (err == 0) {
-					primitivesInitializedCallback();
+					tcPagesRecover();
 				}
 				else {
 					JBLogError(@"error recovering PAC primitives: %d", err);
@@ -550,11 +558,12 @@ int main(int argc, char* argv[])
 			}
 		}
 
-		if (bootInfo_getUInt64(@"jbdIconCacheNeedsRefresh"))
-		{
-			spawn(@"/var/jb/usr/bin/uicache", @[@"-a"]);
-			bootInfo_setObject(@"jbdIconCacheNeedsRefresh", nil);
-		}
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+			if (bootInfo_getUInt64(@"jbdIconCacheNeedsRefresh")) {
+				spawn(@"/var/jb/usr/bin/uicache", @[@"-a"]);
+				bootInfo_setObject(@"jbdIconCacheNeedsRefresh", nil);
+			}
+		});
 
 		dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_MACH_RECV, (uintptr_t)machPort, 0, dispatch_get_main_queue());
 		dispatch_source_set_event_handler(source, ^{
