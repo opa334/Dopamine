@@ -57,5 +57,4 @@ int64_t jbdInitEnvironment(NSDictionary *settings);
 void jbdRemoteLog(uint64_t verbosity, NSString *fString, ...);
 
 int64_t jbdRebuildTrustCache(void);
-int64_t jbdProcessBinary(NSString *filePath);
 int64_t jbdProcSetDebugged(pid_t pid);

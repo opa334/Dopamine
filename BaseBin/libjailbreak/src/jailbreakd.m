@@ -4,6 +4,7 @@
 #import <unistd.h>
 #import <xpc/xpc.h>
 #import <bsm/libbsm.h>
+#import "log.h"
 #import "pplrw.h"
 
 bool gIsJailbreakd = false;
@@ -35,7 +36,7 @@ xpc_object_t sendJBDMessage(xpc_object_t message)
 	int err = xpc_pipe_routine(pipe, message, &reply);
 	mach_port_deallocate(mach_task_self(), jbdPort);
 	if (err != 0) {
-		NSLog(@"xpc_pipe_routine error on sending message to jailbreakd: %d", err);
+		JBLogError(@"xpc_pipe_routine error on sending message to jailbreakd: %d", err);
 		return nil;
 	}
 
@@ -181,17 +182,6 @@ int64_t jbdRebuildTrustCache(void)
 	xpc_object_t reply = sendJBDMessage(message);
 	return xpc_dictionary_get_int64(reply, "result");
 }
-
-int64_t jbdProcessBinary(NSString *filePath)
-{
-	xpc_object_t message = xpc_dictionary_create_empty();
-	xpc_dictionary_set_uint64(message, "id", JBD_MSG_PROCESS_BINARY);
-	xpc_dictionary_set_string(message, "filePath", [filePath fileSystemRepresentation]);
-
-	xpc_object_t reply = sendJBDMessage(message);
-	return xpc_dictionary_get_int64(reply, "result");
-}
-
 
 int64_t jbdProcSetDebugged(pid_t pid)
 {

@@ -11,6 +11,7 @@
 #import <mach-o/dyld_images.h>
 #import <mach-o/fat.h>
 #import <IOKit/IOKitLib.h>
+#import "log.h"
 
 #define SecStaticCodeRef CFDictionaryRef
 extern const CFStringRef kSecCodeInfoUnique;
@@ -280,15 +281,15 @@ void _machoEnumerateDependencies(FILE *machoFile, NSString *machoPath, NSString 
 				}
 				else {
 					if (![[NSFileManager defaultManager] fileExistsAtPath:resolvedPath]) {
-						//NSLog(@"skipped %@, non existant", resolvedPath);
+						//JBLogDebug(@"skipped %@, non existant", resolvedPath);
 					}
 					else {
-						//NSLog(@"skipped %@, in cache", resolvedPath);
+						//JBLogDebug(@"skipped %@, in cache", resolvedPath);
 					}
 				}
 			}
 			else {
-				//NSLog(@"skipped %@, in DSC", imagePath);
+				//JBLogDebug(@"skipped %@, in DSC", imagePath);
 			}
 		}
 
@@ -380,13 +381,13 @@ BOOL isCdHashInTrustCache(NSData *cdHash)
 		kr = IOServiceOpen(amfiService, mach_task_self(), 0, &connect);
 		if(kr != KERN_SUCCESS)
 		{
-			NSLog(@"Failed to open amfi service %d %s", kr, mach_error_string(kr));
+			JBLogError(@"Failed to open amfi service %d %s", kr, mach_error_string(kr));
 			return -2;
 		}
 
 		uint64_t includeLoadedTC = YES;
 		kr = IOConnectCallMethod(connect, AMFI_IS_CD_HASH_IN_TRUST_CACHE, &includeLoadedTC, 1, CFDataGetBytePtr((__bridge CFDataRef)cdHash), CFDataGetLength((__bridge CFDataRef)cdHash), 0, 0, 0, 0);
-		NSLog(@"amfi returned %d, %s", kr, mach_error_string(kr));
+		JBLogDebug(@"Is %@ in TrustCache? %@", cdHash, kr == 0 ? @"Yes" : @"No");
 
 		IOServiceClose(connect);
 		return kr == 0;

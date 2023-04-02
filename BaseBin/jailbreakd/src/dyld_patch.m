@@ -1,6 +1,7 @@
 #import <CoreSymbolication.h>
 #import "codesign.h"
 #import <dlfcn.h>
+#import <libjailbreak/libjailbreak.h>
 
 int applyDyldPatches(NSString *dyldPath)
 {
@@ -26,13 +27,13 @@ int applyDyldPatches(NSString *dyldPath)
 	};
 	fwrite(patchInstr, sizeof(patchInstr), 1, dyldFile); 
 	fclose(dyldFile);
-	NSLog(@"patched dyld");
+	JBLogDebug(@"patched dyld");
 
 	int csRet = resignFile(dyldPath, true);
 	if (csRet != 0) {
 		return 3;
 	}
-	NSLog(@"resigned dyld");
+	JBLogDebug(@"resigned dyld");
 
 	return 0;
 }

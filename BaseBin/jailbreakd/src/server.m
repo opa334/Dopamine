@@ -44,42 +44,53 @@ int processBinary(NSString *binaryPath)
 	if (!binaryPath) return 0;
 	if (![[NSFileManager defaultManager] fileExistsAtPath:binaryPath]) return 0;
 
+	int ret = 0;
+
 	uint64_t selfproc = self_proc();
 
 	FILE *machoFile = fopen(binaryPath.fileSystemRepresentation, "rb");
 	if (!machoFile) return 1;
-	int fd = fileno(machoFile);
-	if (fd <= 0) return 1;
 
-	bool isMacho = NO;
-	bool isLibrary = NO;
-	machoGetInfo(machoFile, &isMacho, &isLibrary);
-	if (!isMacho) return 2;
+	if (machoFile) {
+		int fd = fileno(machoFile);
 
-	NSMutableArray *nonTrustCachedCDHashes = [NSMutableArray new];
+		bool isMacho = NO;
+		bool isLibrary = NO;
+		machoGetInfo(machoFile, &isMacho, &isLibrary);
 
-	void (^tcCheckBlock)(NSString *) = ^(NSString *dependencyPath) {
-		if (dependencyPath) {
-			NSURL *dependencyURL = [NSURL fileURLWithPath:dependencyPath];
-			NSData *cdHash = nil;
-			BOOL isAdhocSigned = NO;
-			evaluateSignature(dependencyURL, &cdHash, &isAdhocSigned);
-			if (isAdhocSigned) {
-				if (!isCdHashInTrustCache(cdHash)) {
-					[nonTrustCachedCDHashes addObject:cdHash];
+		if (isMacho) {
+			NSMutableArray *nonTrustCachedCDHashes = [NSMutableArray new];
+
+			void (^tcCheckBlock)(NSString *) = ^(NSString *dependencyPath) {
+				if (dependencyPath) {
+					NSURL *dependencyURL = [NSURL fileURLWithPath:dependencyPath];
+					NSData *cdHash = nil;
+					BOOL isAdhocSigned = NO;
+					evaluateSignature(dependencyURL, &cdHash, &isAdhocSigned);
+					if (isAdhocSigned) {
+						if (!isCdHashInTrustCache(cdHash)) {
+							[nonTrustCachedCDHashes addObject:cdHash];
+						}
+					}
 				}
-			}
+			};
+
+			tcCheckBlock(binaryPath);
+			
+			machoEnumerateDependencies(machoFile, binaryPath, tcCheckBlock);
+
+			dynamicTrustCacheUploadCDHashesFromArray(nonTrustCachedCDHashes);
 		}
-	};
+		else {
+			ret = 2;
+		}
+		fclose(machoFile);
+	}
+	else {
+		ret = 1;
+	}
 
-	tcCheckBlock(binaryPath);
-	
-	machoEnumerateDependencies(machoFile, binaryPath, tcCheckBlock);
-
-	dynamicTrustCacheUploadCDHashesFromArray(nonTrustCachedCDHashes);
-
-	fclose(machoFile);
-	return 0;
+	return ret;
 }
 
 void primitivesInitializedCallback(void)
@@ -90,22 +101,22 @@ void primitivesInitializedCallback(void)
 
 uint64_t kernel_mount(const char* fstype, uint64_t pvp, uint64_t vp, const char *mountPath, uint64_t data, size_t datalen, int syscall_flags, uint32_t kern_flags)
 {
-    size_t fstype_len = strlen(fstype) + 1;
-    uint64_t kern_fstype = kalloc(fstype_len);
-    kwritebuf(kern_fstype, fstype, fstype_len);
+	size_t fstype_len = strlen(fstype) + 1;
+	uint64_t kern_fstype = kalloc(fstype_len);
+	kwritebuf(kern_fstype, fstype, fstype_len);
 
-    size_t mountPath_len = strlen(mountPath) + 1;
-    uint64_t kern_mountPath = kalloc(mountPath_len);
-    kwritebuf(kern_mountPath, mountPath, mountPath_len);
+	size_t mountPath_len = strlen(mountPath) + 1;
+	uint64_t kern_mountPath = kalloc(mountPath_len);
+	kwritebuf(kern_mountPath, mountPath, mountPath_len);
 
-    uint64_t kernel_mount_kaddr = bootInfo_getSlidUInt64(@"kernel_mount");
-    uint64_t kerncontext_kaddr = bootInfo_getSlidUInt64(@"kerncontext");
+	uint64_t kernel_mount_kaddr = bootInfo_getSlidUInt64(@"kernel_mount");
+	uint64_t kerncontext_kaddr = bootInfo_getSlidUInt64(@"kerncontext");
 
-    uint64_t ret = kcall(kernel_mount_kaddr, 9, (uint64_t[]){kern_fstype, pvp, vp, kern_mountPath, data, datalen, syscall_flags, kern_flags, kerncontext_kaddr});
-    kfree(kern_fstype, fstype_len);
-    kfree(kern_mountPath, mountPath_len);
+	uint64_t ret = kcall(kernel_mount_kaddr, 9, (uint64_t[]){kern_fstype, pvp, vp, kern_mountPath, data, datalen, syscall_flags, kern_flags, kerncontext_kaddr});
+	kfree(kern_fstype, fstype_len);
+	kfree(kern_mountPath, mountPath_len);
 
-    return ret;
+	return ret;
 }
 
 #define KERNEL_MOUNT_NOAUTH             0x01 /* Don't check the UID of the directory we are mounting on */
@@ -113,23 +124,23 @@ uint64_t kernel_mount(const char* fstype, uint64_t pvp, uint64_t vp, const char 
 
 uint64_t bindMount(const char *source, const char *target)
 {
-    NSString *sourcePath = [[NSString stringWithUTF8String:source] stringByResolvingSymlinksInPath];
-    NSString *targetPath = [[NSString stringWithUTF8String:target] stringByResolvingSymlinksInPath];
+	NSString *sourcePath = [[NSString stringWithUTF8String:source] stringByResolvingSymlinksInPath];
+	NSString *targetPath = [[NSString stringWithUTF8String:target] stringByResolvingSymlinksInPath];
 
-    int fd = open(sourcePath.fileSystemRepresentation, O_RDONLY);
+	int fd = open(sourcePath.fileSystemRepresentation, O_RDONLY);
 	if (fd < 0) {
-		NSLog(@"Bind mount: Failed to open %@", sourcePath);
+		JBLogError(@"Bind mount: Failed to open %@", sourcePath);
 		return 1;
 	}
 
-    uint64_t vnode = proc_get_vnode_by_file_descriptor(self_proc(), fd);
-    JBLogDebug(@"Bind mount: Got vnode 0x%llX for path \"%s\"", vnode, sourcePath.fileSystemRepresentation);
+	uint64_t vnode = proc_get_vnode_by_file_descriptor(self_proc(), fd);
+	JBLogDebug(@"Bind mount: Got vnode 0x%llX for path \"%s\"", vnode, sourcePath.fileSystemRepresentation);
 
-    uint64_t parent_vnode = kread_ptr(vnode + 0xC0);
-    JBLogDebug(@"Bind mount: Got parent vnode: 0x%llX", parent_vnode);
+	uint64_t parent_vnode = kread_ptr(vnode + 0xC0);
+	JBLogDebug(@"Bind mount: Got parent vnode: 0x%llX", parent_vnode);
 
-    uint64_t mount_ret = kernel_mount("bindfs", parent_vnode, vnode, targetPath.fileSystemRepresentation, (uint64_t)targetPath.fileSystemRepresentation, 8, MNT_RDONLY, KERNEL_MOUNT_NOAUTH);
-    JBLogDebug(@"Bind mount: kernel_mount returned %lld (%s)", mount_ret, strerror(mount_ret));
+	uint64_t mount_ret = kernel_mount("bindfs", parent_vnode, vnode, targetPath.fileSystemRepresentation, (uint64_t)targetPath.fileSystemRepresentation, 8, MNT_RDONLY, KERNEL_MOUNT_NOAUTH);
+	JBLogDebug(@"Bind mount: kernel_mount returned %lld (%s)", mount_ret, strerror(mount_ret));
 	return mount_ret;
 }
 
@@ -163,7 +174,7 @@ void generateSystemWideSandboxExtensions(NSString *targetPath)
 	memorystatus_memlimit_properties2_t mmprops;
 	memorystatus_control(MEMORYSTATUS_CMD_GET_MEMLIMIT_PROPERTIES, pid, 0, &mmprops, sizeof(mmprops));
 
-	NSLog(@"JETSAM %d previous limit (%u/%u)", pid, mmprops.v1.memlimit_active, mmprops.v1.memlimit_inactive);
+	JBLogDebug(@"JETSAM %d previous limit (%u/%u)", pid, mmprops.v1.memlimit_active, mmprops.v1.memlimit_inactive);
 
 	//mmprops.v1.memlimit_active = mmprops.v1.memlimit_active * 10;
 	//mmprops.v1.memlimit_inactive = mmprops.v1.memlimit_inactive * 10;
@@ -177,19 +188,19 @@ void generateSystemWideSandboxExtensions(NSString *targetPath)
 
 	memorystatus_control(MEMORYSTATUS_CMD_GET_MEMLIMIT_PROPERTIES, pid, 0, &mmprops, sizeof(mmprops));
 
-	NSLog(@"JETSAM %d new limit (%u/%u)", pid, mmprops.v1.memlimit_active, mmprops.v1.memlimit_inactive);
+	JBLogDebug(@"JETSAM %d new limit (%u/%u)", pid, mmprops.v1.memlimit_active, mmprops.v1.memlimit_inactive);
 
 	int rc; memorystatus_priority_properties_t props = {JETSAM_PRIORITY_CRITICAL, 0};
 	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PRIORITY_PROPERTIES, pid, 0, &props, sizeof(props));
-	NSLog(@"rc %d", rc);
+	JBLogDebug(@"rc %d", rc);
 	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_JETSAM_HIGH_WATER_MARK, pid, -1, NULL, 0);
-	NSLog(@"rc %d", rc);
+	JBLogDebug(@"rc %d", rc);
 	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PROCESS_IS_MANAGED, pid, 0, NULL, 0);
-	NSLog(@"rc %d", rc);
+	JBLogDebug(@"rc %d", rc);
 	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PROCESS_IS_FREEZABLE, pid, 0, NULL, 0);
-	NSLog(@"rc %d", rc);
+	JBLogDebug(@"rc %d", rc);
 	rc = proc_track_dirty(pid, 0);
-	NSLog(@"rc %d", rc);
+	JBLogDebug(@"rc %d", rc);
 }*/
 
 int64_t initEnvironment(NSDictionary *settings)
@@ -246,11 +257,11 @@ int64_t initEnvironment(NSDictionary *settings)
 void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 {
 	xpc_object_t message = nil;
-    int err = xpc_pipe_receive(machPort, &message);
-    if (err != 0) {
-		NSLog(@"xpc_pipe_receive error %d", err);
-        return;
-    }
+	int err = xpc_pipe_receive(machPort, &message);
+	if (err != 0) {
+		JBLogError(@"xpc_pipe_receive error %d", err);
+		return;
+	}
 
 	xpc_object_t reply = xpc_dictionary_create_reply(message);
 	xpc_type_t messageType = xpc_get_type(message);
@@ -476,7 +487,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 		}
 		err = xpc_pipe_routine_reply(reply);
 		if (err != 0) {
-			NSLog(@"Error %d sending response", err);
+			JBLogError(@"Error %d sending response", err);
 		}
 	}
 }
@@ -511,14 +522,14 @@ int main(int argc, char* argv[])
 		mach_port_t machPort = 0;
 		kern_return_t kr = bootstrap_check_in(bootstrap_port, "com.opa334.jailbreakd", &machPort);
 		if (kr != KERN_SUCCESS) {
-			NSLog(@"Failed com.opa334.jailbreakd bootstrap check in: %d (%s)", kr, mach_error_string(kr));
+			JBLogError(@"Failed com.opa334.jailbreakd bootstrap check in: %d (%s)", kr, mach_error_string(kr));
 			return 1;
 		}
 
 		mach_port_t machPortSystemWide = 0;
 		kr = bootstrap_check_in(bootstrap_port, "com.opa334.jailbreakd.systemwide", &machPortSystemWide);
 		if (kr != KERN_SUCCESS) {
-			NSLog(@"Failed com.opa334.jailbreakd.systemwide bootstrap check in: %d (%s)", kr, mach_error_string(kr));
+			JBLogError(@"Failed com.opa334.jailbreakd.systemwide bootstrap check in: %d (%s)", kr, mach_error_string(kr));
 			return 1;
 		}
 
@@ -531,34 +542,33 @@ int main(int argc, char* argv[])
 					primitivesInitializedCallback();
 				}
 				else {
-					NSLog(@"error recovering PAC primitives: %d", err);
+					JBLogError(@"error recovering PAC primitives: %d", err);
 				}
 			}
 			else {
-				NSLog(@"error recovering PPL primitives: %d", err);
+				JBLogError(@"error recovering PPL primitives: %d", err);
 			}
 		}
 
-		if (bootInfo_getUInt64(@"jailbreakdLoadDaemons"))
+		if (bootInfo_getUInt64(@"jbdIconCacheNeedsRefresh"))
 		{
-			spawn(@"/var/jb/usr/bin/launchctl", @[@"bootstrap", @"system", @"/var/jb/Library/LaunchDaemons"]);
 			spawn(@"/var/jb/usr/bin/uicache", @[@"-a"]);
-			bootInfo_setObject(@"jailbreakdLoadDaemons", nil);
+			bootInfo_setObject(@"jbdIconCacheNeedsRefresh", nil);
 		}
 
 		dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_MACH_RECV, (uintptr_t)machPort, 0, dispatch_get_main_queue());
 		dispatch_source_set_event_handler(source, ^{
 			mach_port_t lMachPort = (mach_port_t)dispatch_source_get_handle(source);
 			jailbreakd_received_message(lMachPort, false);
-        });
-        dispatch_resume(source);
+		});
+		dispatch_resume(source);
 
 		dispatch_source_t sourceSystemWide = dispatch_source_create(DISPATCH_SOURCE_TYPE_MACH_RECV, (uintptr_t)machPortSystemWide, 0, dispatch_get_main_queue());
 		dispatch_source_set_event_handler(sourceSystemWide, ^{
 			mach_port_t lMachPort = (mach_port_t)dispatch_source_get_handle(sourceSystemWide);
 			jailbreakd_received_message(lMachPort, true);
-        });
-        dispatch_resume(sourceSystemWide);
+		});
+		dispatch_resume(sourceSystemWide);
 
 		dispatch_main();
 		return 0;

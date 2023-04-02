@@ -3,6 +3,7 @@
 #import "kcall.h"
 #import "boot_info.h"
 #import "signatures.h"
+#import "log.h"
 
 extern const uint8_t *der_decode_plist(CFAllocatorRef allocator, CFTypeRef* output, CFErrorRef *error, const uint8_t *der_start, const uint8_t *der_end);
 extern const uint8_t *der_encode_plist(CFTypeRef input, CFErrorRef *error, const uint8_t *der_start, const uint8_t *der_end);
@@ -348,7 +349,7 @@ NSMutableDictionary *DEREntitlementsDecode(uint8_t *start, uint8_t *end)
 			NSError *decodeError;
 			NSMutableDictionary *result = ((NSDictionary *)[NSPropertyListSerialization propertyListWithData:plistData options:0 format:&format error:&decodeError]).mutableCopy;
 			if (!result) {
-				NSLog(@"decode error: %@", decodeError);
+				JBLogError(@"Error decoding DER: %@", decodeError);
 			}
 			return result;
 		}
@@ -444,8 +445,8 @@ void cr_label_replace_entitlements(uint64_t cr_label_ptr, NSDictionary *newEntit
 	kwrite64(fakeCERValidationResult + 0x00, 2); // version
 	kwrite64(fakeCERValidationResult + 0x08, kern_der_start+0x8); // blob_start
 	kwrite64(fakeCERValidationResult + 0x10, kern_der_end); // blob_end
-	NSLog(@"kern_der_start: 0x%llX, kern_der_end: 0x%llX", kern_der_start, kern_der_end);
-	NSLog(@"fakeCERValidationResult: 0x%llX", fakeCERValidationResult);
+	JBLogDebug(@"kern_der_start: 0x%llX, kern_der_end: 0x%llX", kern_der_start, kern_der_end);
+	JBLogDebug(@"fakeCERValidationResult: 0x%llX", fakeCERValidationResult);
 
 	// Get current OSEntitlements object
 	uint64_t OSEntitlements_ptr = kread64(cr_label_ptr + 0x8);
@@ -454,20 +455,20 @@ void cr_label_replace_entitlements(uint64_t cr_label_ptr, NSDictionary *newEntit
 	//uint64_t OSEntitlements_newPtr = kcall(bootInfo_getSlidUInt64(@"OSEntitlements_MetaClass_alloc"), 0, 0, 0, 0, 0, 0, 0, 0);
 
 	uint64_t kslide = bootInfo_getUInt64(@"kernelslide");
-	/*NSLog(@"initWithValidationResult(0x%llX, 0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345CF8, OSEntitlements_newPtr, fakeCERValidationResult, csblob, true);
+	/*JBLogDebug(@"initWithValidationResult(0x%llX, 0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345CF8, OSEntitlements_newPtr, fakeCERValidationResult, csblob, true);
 	sleep(5);
 	uint64_t ret = kcall(kslide + 0xFFFFFFF008345CF8, OSEntitlements_newPtr, fakeCERValidationResult, csblob, true, 0, 0, 0, 0);
-	NSLog(@"initWithValidationResult => 0x%llX", ret);*/
+	JBLogDebug(@"initWithValidationResult => 0x%llX", ret);*/
 
-	/*NSLog(@"withValidationResult(0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345C24, fakeCERValidationResult, csblob, false);
+	/*JBLogDebug(@"withValidationResult(0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345C24, fakeCERValidationResult, csblob, false);
 	sleep(3);
 	return;
 	uint64_t OSEntitlements_newPtr = kcall(kslide + 0xFFFFFFF008345C24, fakeCERValidationResult, csblob, false, 0, 0, 0, 0, 0);*/
 
-	/*NSLog(@"initWithValidationResult(0x%llX, 0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345CF8, OSEntitlements_ptr, fakeCERValidationResult, csblob, true);
+	/*JBLogDebug(@"initWithValidationResult(0x%llX, 0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345CF8, OSEntitlements_ptr, fakeCERValidationResult, csblob, true);
 	sleep(3);
 	uint64_t ret = kcall(kslide + 0xFFFFFFF008345CF8, OSEntitlements_ptr, fakeCERValidationResult, csblob, true, 0, 0, 0, 0);
-	NSLog(@"initWithValidationResult => 0x%llX", ret);*/
+	JBLogDebug(@"initWithValidationResult => 0x%llX", ret);*/
 
 	// Copy existing properties from old object ot new object
 	/*uint8_t *buf = malloc(0x88);

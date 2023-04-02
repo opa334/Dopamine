@@ -1,6 +1,8 @@
-#import "common.h"
+#include "common.h"
 #include <xpc/xpc.h>
-#import <mach-o/dyld.h>
+#include <mach-o/dyld.h>
+#include <sys/param.h>
+#include <sys/mount.h>
 
 #define HOOK_DYLIB_PATH "/usr/lib/systemhook.dylib"
 #define JBD_MSG_SETUID_FIX 21
@@ -8,13 +10,14 @@
 #define JBD_MSG_DEBUG_ME 24
 
 #define JETSAM_MULTIPLIER 3
+#define XPC_TIMEOUT 0.1 * NSEC_PER_SEC
 
 extern char **environ;
 kern_return_t bootstrap_look_up(mach_port_t port, const char *service, mach_port_t *server_port);
 
 mach_port_t jbdSystemWideMachPort(void)
 {
-	mach_port_t outPort = -1;
+	mach_port_t outPort = MACH_PORT_NULL;
 	kern_return_t kr = KERN_SUCCESS;
 
 	if (getpid() == 1) {
@@ -26,29 +29,52 @@ mach_port_t jbdSystemWideMachPort(void)
 		kr = bootstrap_look_up(bootstrap_port, "com.opa334.jailbreakd.systemwide", &outPort);
 	}
 
-	if (kr != KERN_SUCCESS) return -1;
+	if (kr != KERN_SUCCESS) return MACH_PORT_NULL;
 	return outPort;
 }
 
 xpc_object_t sendJBDMessageSystemWide(xpc_object_t message)
 {
 	mach_port_t jbdPort = jbdSystemWideMachPort();
-	if (jbdPort == -1) return nil;
+	if (jbdPort == MACH_PORT_NULL) return nil;
+
+	__block int xpcError = 0;
+	__block xpc_object_t reply = nil;
 
 	xpc_object_t pipe = xpc_pipe_create_from_port(jbdPort, 0);
+	if (pipe) {
+		kern_return_t kr = KERN_SUCCESS;
 
-	xpc_object_t reply = nil;
-	int err = xpc_pipe_routine(pipe, message, &reply);
-	xpc_release(pipe);
-	mach_port_deallocate(mach_task_self(), jbdPort);
-	if (err != 0) {
-		return nil;
+		mach_port_t replyPort = MACH_PORT_NULL;
+		kr = mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &replyPort);
+		if (kr != KERN_SUCCESS) return nil;
+
+		kr = mach_port_insert_right(mach_task_self(), replyPort, replyPort, MACH_MSG_TYPE_MAKE_SEND);
+		if (kr == KERN_SUCCESS) {
+			xpc_pipe_routine_async(pipe, message, replyPort);
+			dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+
+			dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_MACH_RECV, (uintptr_t)replyPort, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+			dispatch_source_set_event_handler(source, ^{
+				xpcError = xpc_pipe_receive(replyPort, &reply);
+				dispatch_semaphore_signal(sema);
+			});
+
+			dispatch_resume(source);
+			dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, XPC_TIMEOUT));
+			dispatch_suspend(source);
+		}
+		xpc_release(pipe);
+		mach_port_deallocate(mach_task_self(), replyPort);
 	}
+	mach_port_deallocate(mach_task_self(), jbdPort);
+
+	if (xpcError != 0) return nil;
 
 	return reply;
 }
 
-int64_t jbdFixSetuid(void)
+int64_t jbdswFixSetuid(void)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_SETUID_FIX);
@@ -61,11 +87,26 @@ int64_t jbdFixSetuid(void)
 	return result;
 }
 
-int64_t jbdProcessBinary(const char *filePath)
+int64_t jbdswProcessBinary(const char *filePath)
 {
+	// if file doesn't exist, bail out
+	if (access(filePath, X_OK) != 0) return 0;
+
+	// if file is on rootfs mount point, it doesn't need to be
+	// processed as it's guaranteed to be in static trust cache
+	// same goes for our /usr/lib bind mount
+	struct statfs fs;
+	int sfsret = statfs(filePath, &fs);
+	if (sfsret == 0) {
+		if (!strcmp(fs.f_mntonname, "/") || !strcmp(fs.f_mntonname, "/usr/lib")) return -1;
+	}
+
+	char absolutePath[PATH_MAX];
+	if (realpath(filePath, absolutePath) == NULL) return -1;
+
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_PROCESS_BINARY);
-	xpc_dictionary_set_string(message, "filePath", filePath);
+	xpc_dictionary_set_string(message, "filePath", absolutePath);
 
 	xpc_object_t reply = sendJBDMessageSystemWide(message);
 	int64_t result = -1;
@@ -76,13 +117,13 @@ int64_t jbdProcessBinary(const char *filePath)
 	return result;
 }
 
-int64_t jbdProcessLibrary(const char *filePath)
+int64_t jbdswProcessLibrary(const char *filePath)
 {
 	if (_dyld_shared_cache_contains_path(filePath)) return 0;
-	return jbdProcessBinary(filePath);
+	return jbdswProcessBinary(filePath);
 }
 
-int64_t jbdDebugMe(void)
+int64_t jbdswDebugMe(void)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_DEBUG_ME);
@@ -198,8 +239,8 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 	kBinaryConfig binaryConfig = configForBinary(path, argv);
 
 	if (!(binaryConfig & kBinaryConfigDontProcess)) {
-		// jailbreakd: Make sure binary is in trustcache
-		jbdProcessBinary(path);
+		// jailbreakd: Upload binary to trustcache if needed
+		jbdswProcessBinary(path);
 	}
 
 	if (binaryConfig & kBinaryConfigDontInject) {

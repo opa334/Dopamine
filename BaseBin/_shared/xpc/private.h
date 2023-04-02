@@ -6,4 +6,5 @@ xpc_object_t xpc_array_create_empty(void);
 xpc_object_t xpc_pipe_create_from_port(mach_port_t port, uint32_t flags);
 int xpc_pipe_routine(xpc_object_t pipe, xpc_object_t request, xpc_object_t* reply);
 int xpc_pipe_routine_with_flags(xpc_object_t xpc_pipe, xpc_object_t inDict, xpc_object_t *reply, uint32_t flags);
+kern_return_t xpc_pipe_routine_async(xpc_object_t pipe, xpc_object_t request, mach_port_t reply_port);
 char *xpc_strerror (int);

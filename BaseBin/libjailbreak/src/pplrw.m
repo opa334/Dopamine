@@ -61,7 +61,7 @@ uint64_t walkPageTable(uint64_t table, uint64_t virt, bool *err)
 	uint64_t table1Off = (virt >> 36ULL) & 0x7ULL;
 	uint64_t table1Entry = physread64(table + (8ULL * table1Off));
 	if ((table1Entry & 0x3) != 3) {
-		NSLog(@"[walkPageTable] table1 lookup failure, table:0x%llX virt:0x%llX", table, virt); usleep(1000);
+		JBLogError(@"[walkPageTable] table1 lookup failure, table:0x%llX virt:0x%llX", table, virt); usleep(1000);
 		if (err) *err = true;
 		return 0;
 	}
@@ -214,7 +214,7 @@ void *mapIn(uint64_t pageVirt, PPLWindow* window)
 	uint64_t pagePhys = walkPageTable(gCpuTTEP, pageVirt, &error);
 	if (error)
 	{
-		NSLog(@"[mapIn] lookup failure when trying to resolve address 0x%llX", pageVirt);
+		JBLogError(@"[mapIn] lookup failure when trying to resolve address 0x%llX", pageVirt);
 		return NULL;
 	}
 	return mapInPhysical(pagePhys, window);
@@ -233,7 +233,7 @@ void *mapInRange(uint64_t pageStart, uint32_t pageCount, uint8_t** mappingStart)
 		uint8_t *localAddr = mapIn(virtPageStart, &windows[i]);
 		if (localAddr == 0)
 		{
-			NSLog(@"[mapInRange] fatal error, aborting");
+			JBLogError(@"[mapInRange] fatal error, aborting");
 			return NULL;
 		}
 		if (i == 0 && mappingStart) *mappingStart = localAddr;
@@ -342,7 +342,7 @@ void kreadbuf(uint64_t kaddr, void* output, size_t size)
 		uint64_t pa = walkPageTable(gCpuTTEP, page, &failure);
 		if (failure)
 		{
-			NSLog(@"[kreadbuf] Lookup failure when trying to read %zu bytes at 0x%llX, aborting", size, kaddr);
+			JBLogError(@"[kreadbuf] Lookup failure when trying to read %zu bytes at 0x%llX, aborting", size, kaddr);
 			return;
 		}
 
@@ -380,7 +380,7 @@ void kwritebuf(uint64_t kaddr, const void* input, size_t size)
 		uint64_t pa = walkPageTable(gCpuTTEP, page, &failure);
 		if (failure)
 		{
-			NSLog(@"[kwritebuf] Lookup failure when trying to write %zu bytes to 0x%llX, aborting", size, kaddr);
+			JBLogError(@"[kwritebuf] Lookup failure when trying to write %zu bytes to 0x%llX, aborting", size, kaddr);
 			return;
 		}
 

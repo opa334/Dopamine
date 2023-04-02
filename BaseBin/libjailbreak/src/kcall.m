@@ -10,6 +10,7 @@
 #import "jailbreakd.h"
 #import "launchd.h"
 #import "boot_info.h"
+#import "log.h"
 
 typedef struct {
 	bool inited;
@@ -62,7 +63,7 @@ uint64_t getUserReturnThreadContext(void) {
 	thread_t chThread = 0;
 	kern_return_t kr = thread_create_running(mach_task_self_, ARM_THREAD_STATE64, (thread_state_t)&state, ARM_THREAD_STATE64_COUNT, &chThread);
 	if (kr != KERN_SUCCESS) {
-		NSLog(@"[-] getUserReturnThreadContext: Failed to create return thread!");
+		JBLogError(@"[-] getUserReturnThreadContext: Failed to create return thread!");
 		return 0;
 	}
 	
@@ -70,13 +71,13 @@ uint64_t getUserReturnThreadContext(void) {
 	
 	uint64_t returnThreadPtr = task_get_first_thread(self_task());
 	if (returnThreadPtr == 0) {
-		NSLog(@"[-] getUserReturnThreadContext: Failed to find return thread!");
+		JBLogError(@"[-] getUserReturnThreadContext: Failed to find return thread!");
 		return 0;
 	}
 	
 	uint64_t returnThreadACTContext = thread_get_act_context(returnThreadPtr);
 	if (returnThreadACTContext == 0) {
-		NSLog(@"[-] getUserReturnThreadContext: Return thread has no ACT_CONTEXT?!");
+		JBLogError(@"[-] getUserReturnThreadContext: Return thread has no ACT_CONTEXT?!");
 		return 0;
 	}
 	
@@ -225,21 +226,21 @@ uint64_t initPACPrimitives(uint64_t kernelAllocation)
 	thread_t thread = 0;
 	kern_return_t kr = thread_create(mach_task_self_, &thread);
 	if (kr != KERN_SUCCESS) {
-		NSLog(@"[-] setupFugu14Kcall: thread_create failed!");
+		JBLogError(@"[-] setupFugu14Kcall: thread_create failed!");
 		return false;
 	}
 	
 	// Find the thread
 	uint64_t threadPtr = task_get_first_thread(self_task());
 	if (threadPtr == 0) {
-		NSLog(@"[-] setupFugu14Kcall: Failed to find thread!");
+		JBLogError(@"[-] setupFugu14Kcall: Failed to find thread!");
 		return false;
 	}
 
 	// Get it's state pointer
 	uint64_t actContext = thread_get_act_context(threadPtr);
 	if (threadPtr == 0) {
-		NSLog(@"[-] setupFugu14Kcall: Failed to get thread ACT_CONTEXT!");
+		JBLogError(@"[-] setupFugu14Kcall: Failed to get thread ACT_CONTEXT!");
 		return false;
 	}
 
@@ -247,7 +248,7 @@ uint64_t initPACPrimitives(uint64_t kernelAllocation)
 	gThreadMapContext = mapInRange(kernelAllocation, 4, &gThreadMapStart);
 	if (!gThreadMapContext)
 	{
-		NSLog(@"ERROR: gThreadMapContext lookup failure");
+		JBLogError(@"ERROR: gThreadMapContext lookup failure");
 	}
 
 	// stack is at middle of allocation

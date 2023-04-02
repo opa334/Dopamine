@@ -5,7 +5,7 @@
 #import <libfilecom/FCHandler.h>
 #import "spawn_hook.h"
 #import "xpc_hook.h"
-#import "boot_task_hook.h"
+#import "daemon_hook.h"
 #import <mach-o/dyld.h>
 #import <spawn.h>
 
@@ -35,7 +35,7 @@ __attribute__((constructor)) static void initializer(void)
 		recoverPACPrimitives();
 		[handler sendMessage:@{ @"id" : @"primitivesInitialized" }];
 		[[NSFileManager defaultManager] removeItemAtPath:@"/var/jb/basebin/.communication" error:nil];
-		bootInfo_setObject(@"jailbreakdLoadDaemons", @1);
+		bootInfo_setObject(@"jbdIconCacheNeedsRefresh", @1);
 	}
 	else {
 		// Launchd hook loaded for first time, get primitives from jailbreakd
@@ -52,12 +52,11 @@ __attribute__((constructor)) static void initializer(void)
 
 	proc_set_debugged(getpid());
 	initXPCHooks();
-	if (comingFromUserspaceReboot) {
-		initBootTaskHooks();
-	}
-	else {
-		initSpawnHooks();
-	}
+	initDaemonHooks();
+	initSpawnHooks();
+	/*if (!comingFromUserspaceReboot) {
+		
+	}*/
 
 	// This will ensure launchdhook is always reinjected after userspace reboots
 	// As this launchd will pass environ to the next launchd...
@@ -65,3 +64,12 @@ __attribute__((constructor)) static void initializer(void)
 
 	bootInfo_setObject(@"environmentInitialized", @1);
 }
+
+/*
+
+TODO: Register for host get special port 10 in launchd
+then recover primitives from jailbreakd over that
+should be more stable and less prone to lockups
+do this on background thread
+
+*/

@@ -5,11 +5,4 @@
 #import "pte.h"
 #import "kcall.h"
 #import "util.h"
-
-//#define DEBUG_LOGS 1
-
-#ifdef DEBUG_LOGS
-#define JBLogDebug(args ...) NSLog(args)
-#else
-#define JBLogDebug(args ...)
-#endif
+#import "log.h"

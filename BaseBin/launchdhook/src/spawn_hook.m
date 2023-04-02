@@ -18,8 +18,8 @@ int posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
 					   char *const argv[restrict],
 					   char *const envp[restrict])
 {
-	FILE *f = fopen("/var/mobile/launchd_log.log", "a");
 	if (path) {
+		FILE *f = fopen("/var/mobile/launchd_log.log", "a");
 		const char *firstArg = "<none>";
 		if (argv[0]) {
 			if (argv[1]) {

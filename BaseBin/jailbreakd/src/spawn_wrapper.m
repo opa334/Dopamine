@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <spawn.h>
 #import "spawn_wrapper.h"
+#import <libjailbreak/libjailbreak.h>
 
 int spawn(NSString* path, NSArray* args)
 {
@@ -28,7 +29,7 @@ int spawn(NSString* path, NSArray* args)
 	do
 	{
 		if (waitpid(task_pid, &status, 0) != -1) {
-			NSLog(@"Child status %d", WEXITSTATUS(status));
+			JBLogDebug(@"Child status %d", WEXITSTATUS(status));
 		} else
 		{
 			perror("waitpid");

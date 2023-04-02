@@ -1,7 +1,9 @@
 #import "common.h"
-#import "unrestrict.h"
+#import "unsandbox.h"
 
+#include <mach-o/dyld.h>
 #include <dlfcn.h>
+
 void* dlopen_from(const char* path, int mode, void* addressInCaller);
 void* dlopen_audited(const char* path, int mode);
 bool dlopen_preflight(const char* path);
@@ -27,7 +29,10 @@ int posix_spawnp_hook(pid_t *restrict pid, const char *restrict file,
 					   char *const argv[restrict],
 					   char *const envp[restrict])
 {
-	return spawn_hook_common(pid, resolvePath(file, NULL), file_actions, attrp, argv, envp, (void *)posix_spawn);
+	char *resolvedPath = resolvePath(file, NULL);
+	int ret = spawn_hook_common(pid, resolvedPath, file_actions, attrp, argv, envp, (void *)posix_spawn);
+	if (resolvedPath) free(resolvedPath);
+	return ret;
 }
 
 
@@ -91,7 +96,10 @@ int execlp_hook(const char *file, const char *arg0, ... /*, (char *)0 */)
 	}
 	argv[arg_count] = NULL;
 
-	return execve_hook(resolvePath(file, NULL), argv, NULL);
+	char *resolvedPath = resolvePath(file, NULL);
+	int ret = execve_hook(resolvedPath, argv, NULL);
+	if (resolvedPath) free(resolvedPath);
+	return ret;
 }
 
 int execl_hook(const char *path, const char *arg0, ... /*, (char *)0 */)
@@ -125,19 +133,25 @@ int execv_hook(const char *path, char *const argv[])
 
 int execvp_hook(const char *file, char *const argv[])
 {
-	return execve_hook(resolvePath(file, NULL), argv, NULL);
+	char *resolvedPath = resolvePath(file, NULL);
+	int ret = execve_hook(resolvedPath, argv, NULL);
+	if (resolvedPath) free(resolvedPath);
+	return ret;
 }
 
 int execvP_hook(const char *file, const char *search_path, char *const argv[])
 {
-	return execve_hook(resolvePath(file, search_path), argv, NULL);
+	char *resolvedPath = resolvePath(file, search_path);
+	int ret = execve_hook(resolvedPath, argv, NULL);
+	if (resolvedPath) free(resolvedPath);
+	return ret;
 }
 
 
 void* dlopen_hook(const char* path, int mode)
 {
 	if (path) {
-		jbdProcessLibrary(path);
+		jbdswProcessLibrary(path);
 	}
 	return dlopen(path, mode);
 }
@@ -145,7 +159,7 @@ void* dlopen_hook(const char* path, int mode)
 void* dlopen_from_hook(const char* path, int mode, void* addressInCaller)
 {
 	if (path) {
-		jbdProcessLibrary(path);
+		jbdswProcessLibrary(path);
 	}
 	return dlopen_from(path, mode, addressInCaller);
 }
@@ -153,7 +167,7 @@ void* dlopen_from_hook(const char* path, int mode, void* addressInCaller)
 void* dlopen_audited_hook(const char* path, int mode)
 {
 	if (path) {
-		jbdProcessLibrary(path);
+		jbdswProcessLibrary(path);
 	}
 	return dlopen_audited(path, mode);
 }
@@ -161,7 +175,7 @@ void* dlopen_audited_hook(const char* path, int mode)
 bool dlopen_preflight_hook(const char* path)
 {
 	if (path) {
-		jbdProcessLibrary(path);
+		jbdswProcessLibrary(path);
 	}
 	return dlopen_preflight(path);
 }
@@ -180,20 +194,57 @@ int posix_spawnattr_setjetsam_ext_hook(posix_spawnattr_t *attr, short flags, int
 int setuid_hook(uid_t uid)
 {
 	if (uid == 0) {
-		jbdFixSetuid();
+		jbdswFixSetuid();
 		setuid(uid);
 		return setuid(uid);
 	}
 	return setuid(uid);
 }
 
+bool shouldEnableTweaks()
+{
+	bool tweaksEnabled = true;
+
+	uint32_t bufsize = 0;
+	_NSGetExecutablePath(NULL, &bufsize);
+	char *executablePath = malloc(bufsize);
+	_NSGetExecutablePath(executablePath, &bufsize);
+	if (!strcmp(executablePath, "/usr/libexec/xpcproxy")) {
+		tweaksEnabled = false;
+	}
+	free(executablePath);
+
+	return tweaksEnabled;
+}
+
+bool gListenForImageLoads = false;
+void imageLoadListener(const struct mach_header *header, intptr_t slide)
+{
+    if (!gListenForImageLoads) return;
+
+    Dl_info dlInfo;
+    dladdr(header, &dlInfo);
+    
+    void *imageHandle = dlopen(dlInfo.dli_fname, RTLD_NOLOAD);
+
+	// If something with the ability to hook C functions is loaded into the process
+	// Make the process get CS_DEBUGGED through XPC with jailbreakd
+	if (dlsym(imageHandle, "MSHookFunction") || dlsym(imageHandle, "SubHookFunctions") || dlsym(imageHandle, "LHHookFunctions")) {
+		jbdswDebugMe();
+		gListenForImageLoads = false;
+	}
+}
+
 __attribute__((constructor)) static void initializer(void)
 {
-	//printf("systemhook init (%d)\n", getpid());
-	unrestrict();
-	if(access("/var/jb/usr/lib/TweakLoader.dylib", F_OK) != -1)
-	{
-		dlopen_hook("/var/jb/usr/lib/TweakLoader.dylib", RTLD_NOW);
+	unsandbox();
+	if (shouldEnableTweaks()) {
+		_dyld_register_func_for_add_image(imageLoadListener);
+		gListenForImageLoads = true;
+		if(access("/var/jb/usr/lib/TweakLoader.dylib", F_OK) != -1)
+		{
+			dlopen_hook("/var/jb/usr/lib/TweakLoader.dylib", RTLD_NOW);
+		}
 	}
 }
 
