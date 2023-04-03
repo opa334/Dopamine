@@ -607,10 +607,12 @@ bool proc_set_debugged(pid_t pid)
 
 			pmap_set_wx_allowed(pmap, true);
 
-			uint32_t csflags = proc_get_csflags(proc);
+			// cs_flags, not needed, wx_allowed is enough
+			/*uint32_t csflags = proc_get_csflags(proc);
 			uint32_t new_csflags = ((csflags & ~0x703b10) | 0x10000024);
-			proc_set_csflags(proc, new_csflags);
+			proc_set_csflags(proc, new_csflags);*/
 
+			// some vm map crap, not needed
 			/*uint32_t f1 = kread32(vm_map + 0x94);
 			uint32_t f2 = kread32(vm_map + 0x98);
 			printf("before f1: %X, f2: %X\n", f1, f2);

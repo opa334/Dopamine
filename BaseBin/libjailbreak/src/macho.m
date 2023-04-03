@@ -68,7 +68,7 @@ int64_t machoFindArch(FILE *machoFile, uint32_t subtypeToSearch)
 		struct mach_header_64 mh;
 		fseek(machoFile, archOffset, SEEK_SET);
 		fread(&mh, sizeof(mh), 1, machoFile);
-		uint32_t maskedSubtype = OSSwapBigToHostInt32(mh.cpusubtype) & ~0x80000000;
+		uint32_t maskedSubtype = OSSwapLittleToHostInt32(mh.cpusubtype) & ~0x80000000;
 		if (maskedSubtype == subtypeToSearch) {
 			outArchOffset = archOffset;
 			*stop = YES;

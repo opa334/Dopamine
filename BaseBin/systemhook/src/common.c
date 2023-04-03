@@ -90,7 +90,7 @@ int64_t jbdswFixSetuid(void)
 int64_t jbdswProcessBinary(const char *filePath)
 {
 	// if file doesn't exist, bail out
-	if (access(filePath, X_OK) != 0) return 0;
+	if (access(filePath, F_OK) != 0) return 0;
 
 	// if file is on rootfs mount point, it doesn't need to be
 	// processed as it's guaranteed to be in static trust cache
