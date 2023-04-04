@@ -36,40 +36,17 @@ mach_port_t jbdSystemWideMachPort(void)
 xpc_object_t sendJBDMessageSystemWide(xpc_object_t message)
 {
 	mach_port_t jbdPort = jbdSystemWideMachPort();
-	if (jbdPort == MACH_PORT_NULL) return nil;
-
-	__block int xpcError = 0;
-	__block xpc_object_t reply = nil;
+	if (jbdPort == -1) return nil;
 
 	xpc_object_t pipe = xpc_pipe_create_from_port(jbdPort, 0);
-	if (pipe) {
-		kern_return_t kr = KERN_SUCCESS;
 
-		mach_port_t replyPort = MACH_PORT_NULL;
-		kr = mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &replyPort);
-		if (kr != KERN_SUCCESS) return nil;
-
-		kr = mach_port_insert_right(mach_task_self(), replyPort, replyPort, MACH_MSG_TYPE_MAKE_SEND);
-		if (kr == KERN_SUCCESS) {
-			xpc_pipe_routine_async(pipe, message, replyPort);
-			dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-
-			dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_MACH_RECV, (uintptr_t)replyPort, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
-			dispatch_source_set_event_handler(source, ^{
-				xpcError = xpc_pipe_receive(replyPort, &reply);
-				dispatch_semaphore_signal(sema);
-			});
-
-			dispatch_resume(source);
-			dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, XPC_TIMEOUT));
-			dispatch_suspend(source);
-		}
-		xpc_release(pipe);
-		mach_port_deallocate(mach_task_self(), replyPort);
-	}
+	xpc_object_t reply = nil;
+	int err = xpc_pipe_routine(pipe, message, &reply);
+	xpc_release(pipe);
 	mach_port_deallocate(mach_task_self(), jbdPort);
-
-	if (xpcError != 0) return nil;
+	if (err != 0) {
+		return nil;
+	}
 
 	return reply;
 }
