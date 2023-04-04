@@ -62,7 +62,7 @@ void sendPrimitives(void)
 			if ([identifier isEqualToString:@"getPPLRW"]) {
 				uint64_t magicPage = 0;
 				int ret = handoffPPLPrimitives(1, &magicPage);
-				[gHandler sendMessage:@{@"id" : @"receivePPLRW", @"magicPage" : @(magicPage), @"errorCode" : @(ret)}];
+				[gHandler sendMessage:@{@"id" : @"receivePPLRW", @"magicPage" : @(magicPage), @"errorCode" : @(ret), @"boomerangPid" : @(getpid())}];
 			}
 			else if ([identifier isEqualToString:@"signThreadState"]) {
 				uint64_t actContextKptr = [(NSNumber*)message[@"actContext"] unsignedLongLongValue];

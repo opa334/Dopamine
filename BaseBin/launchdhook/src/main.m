@@ -17,6 +17,7 @@ __attribute__((constructor)) static void initializer(void)
 	if (comingFromUserspaceReboot) {
 		// Launchd was already initialized before, we are coming from a userspace reboot... recover primitives
 		// First get PPLRW primitives
+		__block pid_t boomerangPid = 0;
 		dispatch_semaphore_t sema = dispatch_semaphore_create(0);
 		FCHandler *handler = [[FCHandler alloc] initWithReceiveFilePath:@"/var/jb/basebin/.communication/boomerang_to_launchd" sendFilePath:@"/var/jb/basebin/.communication/launchd_to_boomerang"];
 		handler.receiveHandler = ^(NSDictionary *message) {
@@ -25,6 +26,7 @@ __attribute__((constructor)) static void initializer(void)
 				if ([identifier isEqualToString:@"receivePPLRW"])
 				{
 					uint64_t magicPage = [(NSNumber*)message[@"magicPage"] unsignedLongLongValue];
+					boomerangPid = [(NSNumber*)message[@"boomerangPid"] intValue];
 					initPPLPrimitives(magicPage);
 					dispatch_semaphore_signal(sema);
 				}
@@ -35,6 +37,11 @@ __attribute__((constructor)) static void initializer(void)
 		recoverPACPrimitives();
 		[handler sendMessage:@{ @"id" : @"primitivesInitialized" }];
 		[[NSFileManager defaultManager] removeItemAtPath:@"/var/jb/basebin/.communication" error:nil];
+		if (boomerangPid != 0) {
+			int status;
+			waitpid(boomerangPid, &status, WEXITED);
+			waitpid(boomerangPid, &status, 0);
+		}
 		bootInfo_setObject(@"jbdIconCacheNeedsRefresh", @1);
 	}
 	else {
@@ -54,9 +61,6 @@ __attribute__((constructor)) static void initializer(void)
 	initXPCHooks();
 	initDaemonHooks();
 	initSpawnHooks();
-	/*if (!comingFromUserspaceReboot) {
-		
-	}*/
 
 	// This will ensure launchdhook is always reinjected after userspace reboots
 	// As this launchd will pass environ to the next launchd...
