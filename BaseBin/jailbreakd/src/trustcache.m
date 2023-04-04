@@ -59,17 +59,21 @@ void dynamicTrustCacheRemoveEntry(trustcache_entry entry)
 
 void fileEnumerateTrustCacheEntries(NSURL *fileURL, void (^enumerateBlock)(trustcache_entry entry)) {
 	NSData *cdHash = nil;
-	BOOL isAdhocSigned = NO;
-	evaluateSignature(fileURL, &cdHash, &isAdhocSigned);
-
-	if (isAdhocSigned) {
-		if ([cdHash length] == CS_CDHASH_LEN) {
-			trustcache_entry entry;
-			memcpy(&entry.hash, [cdHash bytes], CS_CDHASH_LEN);
-			entry.hash_type = 0x2;
-			entry.flags = 0x0;
-			enumerateBlock(entry);
+	BOOL adhocSigned = NO;
+	int evalRet = evaluateSignature(fileURL, &cdHash, &adhocSigned);
+	if (evalRet == 0) {
+		JBLogDebug(@"%@ cdHash: %@, adhocSigned: %d", fileURL.path, cdHash, adhocSigned);
+		if (adhocSigned) {
+			if ([cdHash length] == CS_CDHASH_LEN) {
+				trustcache_entry entry;
+				memcpy(&entry.hash, [cdHash bytes], CS_CDHASH_LEN);
+				entry.hash_type = 0x2;
+				entry.flags = 0x0;
+				enumerateBlock(entry);
+			}
 		}
+	} else {
+		JBLogError(@"evaluateSignature failed with error %d", evalRet);
 	}
 }
 

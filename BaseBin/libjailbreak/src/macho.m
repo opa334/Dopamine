@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "macho.h"
-
+#import <CommonCrypto/CommonDigest.h>
 
 void machoEnumerateArchs(FILE* machoFile, void (^archEnumBlock)(struct fat_arch* arch, uint32_t archMetadataOffset, uint32_t archOffset, BOOL* stop))
 {
@@ -10,8 +10,8 @@ void machoEnumerateArchs(FILE* machoFile, void (^archEnumBlock)(struct fat_arch*
 	
 	if(mh.magic == FAT_MAGIC || mh.magic == FAT_CIGAM)
 	{
-		fseek(machoFile,0,SEEK_SET);
 		struct fat_header fh;
+		fseek(machoFile,0,SEEK_SET);
 		fread(&fh,sizeof(fh),1,machoFile);
 		
 		for(int i = 0; i < OSSwapBigToHostInt32(fh.nfat_arch); i++)
@@ -37,8 +37,8 @@ void machoGetInfo(FILE* candidateFile, bool *isMachoOut, bool *isLibraryOut)
 {
 	if (!candidateFile) return;
 
-	fseek(candidateFile,0,SEEK_SET);
 	struct mach_header_64 mh;
+	fseek(candidateFile,0,SEEK_SET);
 	fread(&mh,sizeof(mh),1,candidateFile);
 
 	bool isMacho = mh.magic == MH_MAGIC_64 || mh.magic == MH_CIGAM_64 || mh.magic == FAT_MAGIC || mh.magic == FAT_CIGAM;
@@ -98,22 +98,23 @@ void machoEnumerateLoadCommands(FILE *machoFile, uint32_t archOffset, void (^enu
 	fseek(machoFile, archOffset, SEEK_SET);
 	fread(&mh, sizeof(mh), 1, machoFile);
 
-	uint32_t offset = archOffset + sizeof(mh);
+	uint32_t offset = 0;
 	for (int i = 0; i < OSSwapLittleToHostInt32(mh.ncmds) && offset < OSSwapLittleToHostInt32(mh.sizeofcmds); i++) {
+		uint32_t absoluteOffset = archOffset + sizeof(mh) + offset;
 		struct load_command cmd;
-		fseek(machoFile, offset, SEEK_SET);
+		fseek(machoFile, absoluteOffset, SEEK_SET);
 		fread(&cmd, sizeof(cmd), 1, machoFile);
-		enumerateBlock(cmd, offset);
+		enumerateBlock(cmd, absoluteOffset);
 		offset += OSSwapLittleToHostInt32(cmd.cmdsize);
 	}
 }
 
-void machoFindCSBlob(FILE* machoFile, uint32_t archOffset, uint32_t* outOffset, uint32_t* outSize)
+void machoFindCSData(FILE* machoFile, uint32_t archOffset, uint32_t* outOffset, uint32_t* outSize)
 {
 	machoEnumerateLoadCommands(machoFile, archOffset, ^(struct load_command cmd, uint32_t cmdOffset) {
 		if (OSSwapLittleToHostInt32(cmd.cmd) == LC_CODE_SIGNATURE) {
-			fseek(machoFile, cmdOffset, SEEK_SET);
 			struct linkedit_data_command CSCommand;
+			fseek(machoFile, cmdOffset, SEEK_SET);
 			fread(&CSCommand, sizeof(CSCommand), 1, machoFile);
 			if(outOffset) *outOffset = archOffset + OSSwapLittleToHostInt32(CSCommand.dataoff);
 			if(outSize) *outSize = archOffset + OSSwapLittleToHostInt32(CSCommand.datasize);
@@ -157,13 +158,13 @@ void _machoEnumerateDependencies(FILE *machoFile, uint32_t archOffset, NSString 
 	NSMutableArray* rpaths = [NSMutableArray new];
 	machoEnumerateLoadCommands(machoFile, archOffset, ^(struct load_command cmd, uint32_t cmdOffset) {
 		if (OSSwapLittleToHostInt32(cmd.cmd) == LC_RPATH) {
-			fseek(machoFile, cmdOffset, SEEK_SET);
 			struct rpath_command rpathCommand;
+			fseek(machoFile, cmdOffset, SEEK_SET);
 			fread(&rpathCommand, sizeof(rpathCommand), 1, machoFile);
 
 			size_t stringLength = OSSwapLittleToHostInt32(rpathCommand.cmdsize) - sizeof(rpathCommand);
-			fseek(machoFile, cmdOffset + OSSwapLittleToHostInt32(rpathCommand.path.offset), SEEK_SET);
 			char* rpathC = malloc(stringLength);
+			fseek(machoFile, cmdOffset + OSSwapLittleToHostInt32(rpathCommand.path.offset), SEEK_SET);
 			fread(rpathC,stringLength,1,machoFile);
 			NSString *rpath = [NSString stringWithUTF8String:rpathC];
 			free(rpathC);
@@ -179,12 +180,12 @@ void _machoEnumerateDependencies(FILE *machoFile, uint32_t archOffset, NSString 
 	machoEnumerateLoadCommands(machoFile, archOffset, ^(struct load_command cmd, uint32_t cmdOffset) {
 		uint32_t cmdId = OSSwapLittleToHostInt32(cmd.cmd);
 		if (cmdId == LC_LOAD_DYLIB || cmdId == LC_LOAD_WEAK_DYLIB || cmdId == LC_REEXPORT_DYLIB) {
-			fseek(machoFile, cmdOffset, SEEK_SET);
 			struct dylib_command dylibCommand;
+			fseek(machoFile, cmdOffset, SEEK_SET);
 			fread(&dylibCommand,sizeof(dylibCommand),1,machoFile);
 			size_t stringLength = OSSwapLittleToHostInt32(dylibCommand.cmdsize) - sizeof(dylibCommand);
-			fseek(machoFile, cmdOffset + OSSwapLittleToHostInt32(dylibCommand.dylib.name.offset), SEEK_SET);
 			char *imagePathC = malloc(stringLength);
+			fseek(machoFile, cmdOffset + OSSwapLittleToHostInt32(dylibCommand.dylib.name.offset), SEEK_SET);
 			fread(imagePathC, stringLength, 1, machoFile);
 			NSString *imagePath = [NSString stringWithUTF8String:imagePathC];
 			free(imagePathC);
@@ -220,4 +221,162 @@ void _machoEnumerateDependencies(FILE *machoFile, uint32_t archOffset, NSString 
 void machoEnumerateDependencies(FILE *machoFile, uint32_t archOffset, NSString *machoPath, void (^enumerateBlock)(NSString *dependencyPath))
 {
 	_machoEnumerateDependencies(machoFile, archOffset, machoPath, machoPath, nil, enumerateBlock);
+}
+
+unsigned CSCodeDirectoryRank(CS_CodeDirectory *cd) {
+	// The supported hash types, ranked from least to most preferred. From XNU's
+	// bsd/kern/ubc_subr.c.
+	static uint32_t rankedHashTypes[] = {
+		CS_HASHTYPE_SHA160_160,
+		CS_HASHTYPE_SHA256_160,
+		CS_HASHTYPE_SHA256_256,
+		CS_HASHTYPE_SHA384_384,
+	};
+	// Define the rank of the code directory as its index in the array plus one.
+	for (unsigned i = 0; i < sizeof(rankedHashTypes) / sizeof(rankedHashTypes[0]); i++) {
+		if (rankedHashTypes[i] == cd->hashType) {
+			return (i + 1);
+		}
+	}
+	return 0;
+}
+
+void machoCSDataEnumerateBlobs(FILE *machoFile, uint32_t CSDataStart, uint32_t CSDataSize, void (^enumerateBlock)(struct CSBlob blobDescriptor, uint32_t blobDescriptorOffset, BOOL *stop))
+{
+	struct CSSuperBlob superBlob;
+	fseek(machoFile, CSDataStart, SEEK_SET);
+	fread(&superBlob, sizeof(superBlob), 1, machoFile);
+
+	uint32_t blobLength = OSSwapBigToHostInt32(superBlob.length);
+	uint32_t blobCount = OSSwapBigToHostInt32(superBlob.count);
+
+	if ((CSDataStart + blobLength) > (CSDataStart + CSDataSize)) return;
+	if ((sizeof(struct CSSuperBlob) + blobCount * sizeof(struct CSBlob)) > blobLength) return;
+
+	for (int i = 0; i < blobCount; i++) {
+		uint32_t blobDescriptorOffset = CSDataStart + sizeof(struct CSSuperBlob) + (i * sizeof(struct CSBlob));
+		struct CSBlob blobDescriptor;
+		fseek(machoFile, blobDescriptorOffset, SEEK_SET);
+		fread(&blobDescriptor, sizeof(blobDescriptor), 1, machoFile);
+
+		BOOL stop = NO;
+		enumerateBlock(blobDescriptor, blobDescriptorOffset, &stop);
+		if (stop) return;
+	}
+}
+
+NSData *codeDirectoryCalculateCDHash(CS_CodeDirectory *cd, void *data, size_t size)
+{
+	uint8_t cdHashC[CS_CDHASH_LEN];
+
+	switch (cd->hashType) {
+		case CS_HASHTYPE_SHA160_160: {
+			CC_SHA1(data, (CC_LONG)size, cdHashC);
+			break;
+		}
+		
+		case CS_HASHTYPE_SHA256_256:
+		case CS_HASHTYPE_SHA256_160: {
+			uint8_t fullHash[CC_SHA256_DIGEST_LENGTH];
+			CC_SHA256(data, (CC_LONG)size, fullHash);
+			memcpy(cdHashC, fullHash, CS_CDHASH_LEN);
+			break;
+		}
+
+		case CS_HASHTYPE_SHA384_384: {
+			uint8_t fullHash[CC_SHA384_DIGEST_LENGTH];
+			CC_SHA256(data, (CC_LONG)size, fullHash);
+			memcpy(cdHashC, fullHash, CS_CDHASH_LEN);
+			break;
+		}
+
+		default:
+		return nil;
+	}
+
+	return [NSData dataWithBytes:cdHashC length:CS_CDHASH_LEN];
+}
+
+NSData *machoCSDataCalculateCDHash(FILE *machoFile, uint32_t CSDataStart, uint32_t CSDataSize)
+{
+	__block CS_CodeDirectory bestCd = { 0 };
+	__block unsigned bestCdRank = 0;
+	__block uint32_t cdOffset = 0;
+
+	machoCSDataEnumerateBlobs(machoFile, CSDataStart, CSDataSize, ^(struct CSBlob blobDescriptor, uint32_t blobDescriptorOffset, BOOL *stop) {
+		uint32_t blobType = OSSwapBigToHostInt32(blobDescriptor.type);
+		if (blobType == CSSLOT_CODEDIRECTORY || ((CSSLOT_ALTERNATE_CODEDIRECTORIES <= blobType && blobType < CSSLOT_ALTERNATE_CODEDIRECTORY_LIMIT))) {
+			uint32_t blobDataOffset = OSSwapBigToHostInt32(blobDescriptor.offset);
+			uint32_t blobMagic = 0;
+
+			if ((blobDataOffset + sizeof(CS_CodeDirectory)) > CSDataSize) {
+				// file corrupted, abort
+				*stop = YES;
+				return;
+			}
+
+			fseek(machoFile, CSDataStart + blobDataOffset, SEEK_SET);
+			fread(&blobMagic, sizeof(blobMagic), 1, machoFile);
+			if (OSSwapBigToHostInt32(blobMagic) == CS_MAGIC_CODEDIRECTORY) {
+				CS_CodeDirectory cd;
+				fseek(machoFile, CSDataStart + blobDataOffset, SEEK_SET);
+				fread(&cd, sizeof(cd), 1, machoFile);
+
+				unsigned codeDirectoryRank = CSCodeDirectoryRank(&cd);
+				if (codeDirectoryRank > bestCdRank) {
+					bestCdRank = codeDirectoryRank;
+					bestCd = cd;
+					cdOffset = OSSwapBigToHostInt32(blobDescriptor.offset);
+				}
+			}
+		}
+	});
+
+	if (!cdOffset) return nil;
+
+	uint32_t cdDataLength = OSSwapBigToHostInt32(bestCd.length);
+	if (((cdOffset + cdDataLength) > CSDataSize) || cdDataLength == 0) {
+		// file corrupted, abort
+		return nil;
+	}
+
+	uint8_t *cdData = malloc(cdDataLength);
+	if (!cdData) return nil;
+
+	fseek(machoFile, CSDataStart + cdOffset, SEEK_SET);
+	fread(cdData, cdDataLength, 1, machoFile);	
+
+	NSData *cdHash = codeDirectoryCalculateCDHash(&bestCd, cdData, cdDataLength);
+	free(cdData);
+	return cdHash;
+}
+
+bool machoCSDataIsAdHocSigned(FILE *machoFile, uint32_t CSDataStart, uint32_t CSDataSize)
+{
+	__block bool blobWrapperFound = false;
+
+	machoCSDataEnumerateBlobs(machoFile, CSDataStart, CSDataSize, ^(struct CSBlob blobDescriptor, uint32_t blobDescriptorOffset, BOOL *stop) {
+		uint32_t blobType = OSSwapBigToHostInt32(blobDescriptor.type);
+		if (blobType == CSSLOT_SIGNATURESLOT) {
+			uint32_t blobDataOffset = OSSwapBigToHostInt32(blobDescriptor.offset);
+
+			if ((blobDataOffset + sizeof(CS_BlobWrapper)) > CSDataSize) {
+				// file corrupted, abort
+				*stop = YES;
+				return;
+			}
+
+			CS_BlobWrapper blobWrapper;
+			fseek(machoFile, CSDataStart + blobDataOffset, SEEK_SET);
+			fread(&blobWrapper, sizeof(blobWrapper), 1, machoFile);
+			if (OSSwapBigToHostInt32(blobWrapper.magic) == CS_MAGIC_BLOB_WRAPPER) {
+				if (OSSwapBigToHostInt32(blobWrapper.length) > 8) {
+					blobWrapperFound = true;
+					*stop = YES;
+				}
+			}
+		}
+	});
+
+	return !blobWrapperFound;
 }

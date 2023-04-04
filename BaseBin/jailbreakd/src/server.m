@@ -260,243 +260,245 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 {
 	FILE *jbdLogFile = fopen("/var/mobile/jbd.log", "a");
 
-	xpc_object_t message = nil;
-	int err = xpc_pipe_receive(machPort, &message);
-	if (err != 0) {
-		JBLogError(@"xpc_pipe_receive error %d", err);
-		return;
-	}
-
-	xpc_object_t reply = xpc_dictionary_create_reply(message);
-	xpc_type_t messageType = xpc_get_type(message);
-	JBD_MESSAGE_ID msgId = -1;
-	if (messageType == XPC_TYPE_DICTIONARY) {
-		audit_token_t auditToken = {};
-		xpc_dictionary_get_audit_token(message, &auditToken);
-		uid_t clientUid = audit_token_to_euid(auditToken);
-		pid_t clientPid = audit_token_to_pid(auditToken);
-
-		msgId = xpc_dictionary_get_uint64(message, "id");
-
-		if (msgId != JBD_MSG_REMOTELOG) {
-			JBLogDebug(@"received %s message %d with dictionary: %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(message));
-			fprintf(jbdLogFile, "received %s message %d with dictionary: %s\n", systemwide ? "systemwide" : "", msgId, xpc_copy_description(message)); fflush(jbdLogFile);
+	@autoreleasepool {
+		xpc_object_t message = nil;
+		int err = xpc_pipe_receive(machPort, &message);
+		if (err != 0) {
+			JBLogError(@"xpc_pipe_receive error %d", err);
+			return;
 		}
 
-		BOOL isAllowedSystemWide = msgId == JBD_MSG_PROCESS_BINARY || 
-								   msgId == JBD_MSG_DEBUG_ME ||
-								   msgId == JBD_MSG_SETUID_FIX;
+		xpc_object_t reply = xpc_dictionary_create_reply(message);
+		xpc_type_t messageType = xpc_get_type(message);
+		JBD_MESSAGE_ID msgId = -1;
+		if (messageType == XPC_TYPE_DICTIONARY) {
+			audit_token_t auditToken = {};
+			xpc_dictionary_get_audit_token(message, &auditToken);
+			uid_t clientUid = audit_token_to_euid(auditToken);
+			pid_t clientPid = audit_token_to_pid(auditToken);
 
-		if (!systemwide || isAllowedSystemWide) {
-			switch (msgId) {
-				case JBD_MSG_GET_STATUS: {
-					xpc_dictionary_set_uint64(reply, "pplrwStatus", gPPLRWStatus);
-					xpc_dictionary_set_uint64(reply, "kcallStatus", gKCallStatus);
-					break;
-				}
-				
-				case JBD_MSG_PPL_INIT: {
-					if (gPPLRWStatus == kPPLRWStatusNotInitialized) {
-						uint64_t magicPage = xpc_dictionary_get_uint64(message, "magicPage");
-						if (magicPage) {
-							initPPLPrimitives(magicPage);
-						}
+			msgId = xpc_dictionary_get_uint64(message, "id");
+
+			if (msgId != JBD_MSG_REMOTELOG) {
+				JBLogDebug(@"received %s message %d with dictionary: %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(message));
+				fprintf(jbdLogFile, "received %s message %d with dictionary: %s\n", systemwide ? "systemwide" : "", msgId, xpc_copy_description(message)); fflush(jbdLogFile);
+			}
+
+			BOOL isAllowedSystemWide = msgId == JBD_MSG_PROCESS_BINARY || 
+									msgId == JBD_MSG_DEBUG_ME ||
+									msgId == JBD_MSG_SETUID_FIX;
+
+			if (!systemwide || isAllowedSystemWide) {
+				switch (msgId) {
+					case JBD_MSG_GET_STATUS: {
+						xpc_dictionary_set_uint64(reply, "pplrwStatus", gPPLRWStatus);
+						xpc_dictionary_set_uint64(reply, "kcallStatus", gKCallStatus);
+						break;
 					}
-					break;
-				}
-				
-				case JBD_MSG_PAC_INIT: {
-					if (gKCallStatus == kKcallStatusNotInitialized && gPPLRWStatus == kPPLRWStatusInitialized) {
-						uint64_t kernelAllocation = bootInfo_getUInt64(@"jailbreakd_pac_allocation");
-						if (kernelAllocation) {
-							uint64_t arcContext = initPACPrimitives(kernelAllocation);
-							xpc_dictionary_set_uint64(reply, "arcContext", arcContext);
+					
+					case JBD_MSG_PPL_INIT: {
+						if (gPPLRWStatus == kPPLRWStatusNotInitialized) {
+							uint64_t magicPage = xpc_dictionary_get_uint64(message, "magicPage");
+							if (magicPage) {
+								initPPLPrimitives(magicPage);
+							}
 						}
 						break;
 					}
-				}
-				
-				case JBD_MSG_PAC_FINALIZE: {
-					if (gKCallStatus == kKcallStatusPrepared && gPPLRWStatus == kPPLRWStatusInitialized) {
-						finalizePACPrimitives();
+					
+					case JBD_MSG_PAC_INIT: {
+						if (gKCallStatus == kKcallStatusNotInitialized && gPPLRWStatus == kPPLRWStatusInitialized) {
+							uint64_t kernelAllocation = bootInfo_getUInt64(@"jailbreakd_pac_allocation");
+							if (kernelAllocation) {
+								uint64_t arcContext = initPACPrimitives(kernelAllocation);
+								xpc_dictionary_set_uint64(reply, "arcContext", arcContext);
+							}
+							break;
+						}
 					}
-					break;
-				}
-				
-				case JBD_MSG_HANDOFF_PPL: {
-					if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
-						uint64_t magicPage = 0;
-						int r = handoffPPLPrimitives(clientPid, &magicPage);
-						if (r == 0) {
-							xpc_dictionary_set_uint64(reply, "magicPage", magicPage);
+					
+					case JBD_MSG_PAC_FINALIZE: {
+						if (gKCallStatus == kKcallStatusPrepared && gPPLRWStatus == kPPLRWStatusInitialized) {
+							finalizePACPrimitives();
+						}
+						break;
+					}
+					
+					case JBD_MSG_HANDOFF_PPL: {
+						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+							uint64_t magicPage = 0;
+							int r = handoffPPLPrimitives(clientPid, &magicPage);
+							if (r == 0) {
+								xpc_dictionary_set_uint64(reply, "magicPage", magicPage);
+							}
+							else {
+								xpc_dictionary_set_uint64(reply, "errorCode", r);
+							}
 						}
 						else {
-							xpc_dictionary_set_uint64(reply, "errorCode", r);
+							xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
 						}
+						break;
 					}
-					else {
-						xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
-					}
-					break;
-				}
-				
-				case JBD_MSG_DO_KCALL: {
-					if (gKCallStatus == kKcallStatusFinalized) {
-						uint64_t func = xpc_dictionary_get_uint64(message, "func");
-						xpc_object_t args = xpc_dictionary_get_value(message, "args");
-						uint64_t argc = xpc_array_get_count(args);
-						uint64_t argv[argc];
-						for (uint64_t i = 0; i < argc; i++) {
-							argv[i] = xpc_array_get_uint64(args, i);
-						}
-						uint64_t ret = kcall(func, argc, argv);
-						xpc_dictionary_set_uint64(reply, "ret", ret);
-					}
-					else {
-						xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
-					}
-					break;
-				}
-
-				case JBD_MSG_DO_KCALL_THREADSTATE: {
-					if (gKCallStatus == kKcallStatusFinalized) {
-
-						KcallThreadState threadState = { 0 };
-						threadState.lr = xpc_dictionary_get_uint64(message, "lr");
-						threadState.sp = xpc_dictionary_get_uint64(message, "sp");
-						threadState.pc = xpc_dictionary_get_uint64(message, "pc");
-						xpc_object_t xXpcArr = xpc_dictionary_get_value(message, "x");
-						uint64_t xXpcCount = xpc_array_get_count(xXpcArr);
-						if (xXpcCount > 29) xXpcCount = 29;
-						for (uint64_t i = 0; i < xXpcCount; i++) {
-							threadState.x[i] = xpc_array_get_uint64(xXpcArr, i);
-						}
-
-						bool raw = xpc_dictionary_get_bool(message, "raw");
-						uint64_t ret = 0;
-						if (raw) {
-							ret = kcall_with_raw_thread_state(threadState);
+					
+					case JBD_MSG_DO_KCALL: {
+						if (gKCallStatus == kKcallStatusFinalized) {
+							uint64_t func = xpc_dictionary_get_uint64(message, "func");
+							xpc_object_t args = xpc_dictionary_get_value(message, "args");
+							uint64_t argc = xpc_array_get_count(args);
+							uint64_t argv[argc];
+							for (uint64_t i = 0; i < argc; i++) {
+								argv[i] = xpc_array_get_uint64(args, i);
+							}
+							uint64_t ret = kcall(func, argc, argv);
+							xpc_dictionary_set_uint64(reply, "ret", ret);
 						}
 						else {
-							ret = kcall_with_thread_state(threadState);
+							xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
 						}
-						xpc_dictionary_set_uint64(reply, "ret", ret);
+						break;
 					}
-					else {
-						xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
-					}
-					break;
-				}
 
-				case JBD_MSG_INIT_ENVIRONMENT: {
-					int64_t result = 0;
-					if (gKCallStatus == kKcallStatusFinalized) {
-						result = initEnvironment(nil);
-					}
-					else {
-						result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
-					}
-					xpc_dictionary_set_int64(reply, "result", result);
-					break;
-				}
+					case JBD_MSG_DO_KCALL_THREADSTATE: {
+						if (gKCallStatus == kKcallStatusFinalized) {
 
+							KcallThreadState threadState = { 0 };
+							threadState.lr = xpc_dictionary_get_uint64(message, "lr");
+							threadState.sp = xpc_dictionary_get_uint64(message, "sp");
+							threadState.pc = xpc_dictionary_get_uint64(message, "pc");
+							xpc_object_t xXpcArr = xpc_dictionary_get_value(message, "x");
+							uint64_t xXpcCount = xpc_array_get_count(xXpcArr);
+							if (xXpcCount > 29) xXpcCount = 29;
+							for (uint64_t i = 0; i < xXpcCount; i++) {
+								threadState.x[i] = xpc_array_get_uint64(xXpcArr, i);
+							}
 
-				case JBD_MSG_REMOTELOG: {
-					uint64_t verbosity = xpc_dictionary_get_uint64(message, "verbosity");
-					const char *log = xpc_dictionary_get_string(message, "log");
-					NSLog(@"[%@(%d)/%s] %s", procPath(clientPid).lastPathComponent, clientPid, verbosityString(verbosity), log);
-					break;
-				}
-
-
-				case JBD_MSG_REBUILD_TRUSTCACHE: {
-					int64_t result = 0;
-					if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
-						rebuildDynamicTrustCache();
-					}
-					else {
-						result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
-					}
-					xpc_dictionary_set_int64(reply, "result", result);
-					break;
-				}
-
-				case JBD_MSG_SETUID_FIX: {
-					int64_t result = 0;
-					if (gPPLRWStatus == kPPLRWStatusInitialized) {
-						NSString *clientPath = procPath(clientPid);
-						if ([[clientPath stringByResolvingSymlinksInPath] hasPrefix:[@"/var/jb" stringByResolvingSymlinksInPath]]) {
-							uint64_t proc = proc_for_pid(clientPid);
-							uint64_t ucred = proc_get_ucred(proc);
-							ucred_set_svuid(ucred, 0);
+							bool raw = xpc_dictionary_get_bool(message, "raw");
+							uint64_t ret = 0;
+							if (raw) {
+								ret = kcall_with_raw_thread_state(threadState);
+							}
+							else {
+								ret = kcall_with_thread_state(threadState);
+							}
+							xpc_dictionary_set_uint64(reply, "ret", ret);
 						}
 						else {
-							result = JBD_ERR_NOT_PERMITTED;
+							xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
 						}
+						break;
 					}
-					else {
-						result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
-					}
-					xpc_dictionary_set_int64(reply, "result", result);
-					break;
-				}
 
-				case JBD_MSG_PROCESS_BINARY: {
-					int64_t result = 0;
-					if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
-						const char* filePath = xpc_dictionary_get_string(message, "filePath");
-						if (filePath) {
-							NSString *nsFilePath = [NSString stringWithUTF8String:filePath];
-							fprintf(jbdLogFile, "before processBinary\n"); fflush(jbdLogFile);
-							result = processBinary(nsFilePath);
-							fprintf(jbdLogFile, "after processBinary\n"); fflush(jbdLogFile);
+					case JBD_MSG_INIT_ENVIRONMENT: {
+						int64_t result = 0;
+						if (gKCallStatus == kKcallStatusFinalized) {
+							result = initEnvironment(nil);
 						}
+						else {
+							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+						}
+						xpc_dictionary_set_int64(reply, "result", result);
+						break;
 					}
-					else {
-						result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
-					}
-					xpc_dictionary_set_int64(reply, "result", result);
-					break;
-				}
 
-				case JBD_MSG_PROC_SET_DEBUGGED: {
-					int64_t result = 0;
-					if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
-						pid_t pid = xpc_dictionary_get_int64(message, "pid");
-						proc_set_debugged(pid);
-					}
-					else {
-						result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
-					}
-					xpc_dictionary_set_int64(reply, "result", result);
-					break;
-				}
 
-				case JBD_MSG_DEBUG_ME: {
-					int64_t result = 0;
-					if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
-						proc_set_debugged(clientPid);
+					case JBD_MSG_REMOTELOG: {
+						uint64_t verbosity = xpc_dictionary_get_uint64(message, "verbosity");
+						const char *log = xpc_dictionary_get_string(message, "log");
+						NSLog(@"[%@(%d)/%s] %s", procPath(clientPid).lastPathComponent, clientPid, verbosityString(verbosity), log);
+						break;
 					}
-					else {
-						result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+
+
+					case JBD_MSG_REBUILD_TRUSTCACHE: {
+						int64_t result = 0;
+						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+							rebuildDynamicTrustCache();
+						}
+						else {
+							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+						}
+						xpc_dictionary_set_int64(reply, "result", result);
+						break;
 					}
-					xpc_dictionary_set_int64(reply, "result", result);
-					break;
+
+					case JBD_MSG_SETUID_FIX: {
+						int64_t result = 0;
+						if (gPPLRWStatus == kPPLRWStatusInitialized) {
+							NSString *clientPath = procPath(clientPid);
+							if ([[clientPath stringByResolvingSymlinksInPath] hasPrefix:[@"/var/jb" stringByResolvingSymlinksInPath]]) {
+								uint64_t proc = proc_for_pid(clientPid);
+								uint64_t ucred = proc_get_ucred(proc);
+								ucred_set_svuid(ucred, 0);
+							}
+							else {
+								result = JBD_ERR_NOT_PERMITTED;
+							}
+						}
+						else {
+							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+						}
+						xpc_dictionary_set_int64(reply, "result", result);
+						break;
+					}
+
+					case JBD_MSG_PROCESS_BINARY: {
+						int64_t result = 0;
+						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+							const char* filePath = xpc_dictionary_get_string(message, "filePath");
+							if (filePath) {
+								NSString *nsFilePath = [NSString stringWithUTF8String:filePath];
+								fprintf(jbdLogFile, "before processBinary\n"); fflush(jbdLogFile);
+								result = processBinary(nsFilePath);
+								fprintf(jbdLogFile, "after processBinary\n"); fflush(jbdLogFile);
+							}
+						}
+						else {
+							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+						}
+						xpc_dictionary_set_int64(reply, "result", result);
+						break;
+					}
+
+					case JBD_MSG_PROC_SET_DEBUGGED: {
+						int64_t result = 0;
+						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+							pid_t pid = xpc_dictionary_get_int64(message, "pid");
+							proc_set_debugged(pid);
+						}
+						else {
+							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+						}
+						xpc_dictionary_set_int64(reply, "result", result);
+						break;
+					}
+
+					case JBD_MSG_DEBUG_ME: {
+						int64_t result = 0;
+						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+							proc_set_debugged(clientPid);
+						}
+						else {
+							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+						}
+						xpc_dictionary_set_int64(reply, "result", result);
+						break;
+					}
 				}
+			}
+		}
+		if (reply) {
+			if (msgId != JBD_MSG_REMOTELOG) {
+				fprintf(jbdLogFile, "responding to %s message %d with %s\n", systemwide ? "systemwide" : "", msgId, xpc_copy_description(reply)); fflush(jbdLogFile);
+				JBLogDebug(@"responding to %s message %d with %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(reply));
+			}
+			err = xpc_pipe_routine_reply(reply);
+			if (err != 0) {
+				JBLogError(@"Error %d sending response", err);
 			}
 		}
 	}
 
-	if (reply) {
-		if (msgId != JBD_MSG_REMOTELOG) {
-			fprintf(jbdLogFile, "responding to %s message %d with %s\n", systemwide ? "systemwide" : "", msgId, xpc_copy_description(reply)); fflush(jbdLogFile);
-			JBLogDebug(@"responding to %s message %d with %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(reply));
-		}
-		err = xpc_pipe_routine_reply(reply);
-		if (err != 0) {
-			JBLogError(@"Error %d sending response", err);
-		}
-	}
 	fclose(jbdLogFile);
 }
 

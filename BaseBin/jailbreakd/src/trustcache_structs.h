@@ -1,6 +1,6 @@
 #import <uuid/uuid.h>
 #import <CoreFoundation/CoreFoundation.h>
-#define CS_CDHASH_LEN 20
+#import <libjailbreak/csblob.h>
 
 typedef struct sTrustcache_entry
 {
