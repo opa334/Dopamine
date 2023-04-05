@@ -4,6 +4,9 @@
 #include <sys/param.h>
 #include <sys/mount.h>
 
+#define POSIX_SPAWN_PROC_TYPE_DRIVER 0x700
+int posix_spawnattr_getprocesstype_np(const posix_spawnattr_t * __restrict, int * __restrict) __API_AVAILABLE(macos(10.8), ios(6.0));
+
 #define HOOK_DYLIB_PATH "/usr/lib/systemhook.dylib"
 #define JBD_MSG_SETUID_FIX 21
 #define JBD_MSG_PROCESS_BINARY 22
@@ -213,6 +216,15 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 		return pspawn_orig(pid, path, file_actions, attrp, argv, envp);
 	}
 
+	if (attrp) {
+		int proctype = 0;
+		posix_spawnattr_getprocesstype_np(attrp, &proctype);
+		if (proctype == POSIX_SPAWN_PROC_TYPE_DRIVER) {
+			// Do not inject hook into DriverKit drivers
+			return pspawn_orig(pid, path, file_actions, attrp, argv, envp);
+		}
+	}
+
 	kBinaryConfig binaryConfig = configForBinary(path, argv);
 
 	if (!(binaryConfig & kBinaryConfigDontProcess)) {
@@ -270,6 +282,11 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 		int ret = pspawn_orig(pid, path, file_actions, attrp, argv, noSafeModeEnv);
 		free(noSafeModeEnv);
 		return ret;
+	}
+
+	if (access(HOOK_DYLIB_PATH, F_OK) != 0) {
+		// If the hook dylib doesn't exist, don't add it to environment
+		return pspawn_orig(pid, path, file_actions, attrp, argv, envp);
 	}
 
 	// Check if we can find an existing "DYLD_INSERT_LIBRARIES" env variable
