@@ -3,6 +3,7 @@
 
 #include <mach-o/dyld.h>
 #include <dlfcn.h>
+#import <sys/sysctl.h>
 
 void* dlopen_from(const char* path, int mode, void* addressInCaller);
 void* dlopen_audited(const char* path, int mode);
@@ -13,6 +14,70 @@ int posix_spawnattr_setjetsam_ext(posix_spawnattr_t *attr, short flags, int prio
 #define DYLD_INTERPOSE(_replacement,_replacee) \
    __attribute__((used)) static struct{ const void* replacement; const void* replacee; } _interpose_##_replacee \
 			__attribute__ ((section ("__DATA,__interpose"))) = { (const void*)(unsigned long)&_replacement, (const void*)(unsigned long)&_replacee };
+
+static char *gExecutablePath = NULL;
+static void loadExecutablePath(void)
+{
+	uint32_t bufsize = 0;
+	_NSGetExecutablePath(NULL, &bufsize);
+	gExecutablePath = malloc(bufsize);
+	_NSGetExecutablePath(gExecutablePath, &bufsize);
+}
+static void freeExecutablePath(void)
+{
+	if (gExecutablePath) {
+		free(gExecutablePath);
+	}
+}
+
+void killall(const char *executablePathToKill, bool softly)
+{
+	static int maxArgumentSize = 0;
+	if (maxArgumentSize == 0) {
+		size_t size = sizeof(maxArgumentSize);
+		if (sysctl((int[]){ CTL_KERN, KERN_ARGMAX }, 2, &maxArgumentSize, &size, NULL, 0) == -1) {
+			perror("sysctl argument size");
+			maxArgumentSize = 4096; // Default
+		}
+	}
+	int mib[3] = { CTL_KERN, KERN_PROC, KERN_PROC_ALL};
+	struct kinfo_proc *info;
+	size_t length;
+	int count;
+	
+	if (sysctl(mib, 3, NULL, &length, NULL, 0) < 0)
+		return;
+	if (!(info = malloc(length)))
+		return;
+	if (sysctl(mib, 3, info, &length, NULL, 0) < 0) {
+		free(info);
+		return;
+	}
+	count = length / sizeof(struct kinfo_proc);
+	for (int i = 0; i < count; i++) {
+		pid_t pid = info[i].kp_proc.p_pid;
+		if (pid == 0) {
+			continue;
+		}
+		size_t size = maxArgumentSize;
+		char* buffer = (char *)malloc(length);
+		if (sysctl((int[]){ CTL_KERN, KERN_PROCARGS2, pid }, 3, buffer, &size, NULL, 0) == 0) {
+			char *executablePath = buffer + sizeof(int);
+			if (strcmp(executablePath, executablePathToKill) == 0) {
+				if(softly)
+				{
+					kill(pid, SIGTERM);
+				}
+				else
+				{
+					kill(pid, SIGKILL);
+				}
+			}
+		}
+		free(buffer);
+	}
+	free(info);
+}
 
 int posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
 					   const posix_spawn_file_actions_t *restrict file_actions,
@@ -201,20 +266,25 @@ int setuid_hook(uid_t uid)
 	return setuid(uid);
 }
 
-bool shouldEnableTweaks()
+bool shouldEnableTweaks(void)
 {
 	bool tweaksEnabled = true;
 
-	uint32_t bufsize = 0;
-	_NSGetExecutablePath(NULL, &bufsize);
-	char *executablePath = malloc(bufsize);
-	_NSGetExecutablePath(executablePath, &bufsize);
-	if (!strcmp(executablePath, "/usr/libexec/xpcproxy")) {
-		tweaksEnabled = false;
+	if (gExecutablePath) {
+		if (!strcmp(gExecutablePath, "/usr/libexec/xpcproxy")) {
+			tweaksEnabled = false;
+		}
 	}
-	free(executablePath);
 
 	return tweaksEnabled;
+}
+
+void applyKbdFix(void)
+{
+	// For whatever reason after backboardd has restarted, AutoFill and other stuff stops working
+	// The fix is to always also restart the kbd daemon alongside backboardd
+	// Seems to be something sandbox related where kbd doesn't have the right extensions until restarted
+	killall("/System/Library/TextInput/kbd", false);
 }
 
 bool gListenForImageLoads = false;
@@ -238,14 +308,23 @@ void imageLoadListener(const struct mach_header *header, intptr_t slide)
 __attribute__((constructor)) static void initializer(void)
 {
 	unsandbox();
+	loadExecutablePath();
+
+	if (gExecutablePath) {
+		if (strcmp(gExecutablePath, "/usr/libexec/backboardd") == 0) {
+			applyKbdFix();
+		}
+	}
+
 	if (shouldEnableTweaks()) {
 		_dyld_register_func_for_add_image(imageLoadListener);
 		gListenForImageLoads = true;
-		if(access("/var/jb/usr/lib/TweakLoader.dylib", F_OK) != -1)
+		if(access("/var/jb/usr/lib/TweakLoader.dylib", F_OK) == 0)
 		{
 			dlopen_hook("/var/jb/usr/lib/TweakLoader.dylib", RTLD_NOW);
 		}
 	}
+	freeExecutablePath();
 }
 
 DYLD_INTERPOSE(posix_spawn_hook, posix_spawn)
