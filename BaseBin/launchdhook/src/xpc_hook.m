@@ -22,7 +22,7 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 {
 	if (xdict) {
 		if (xpc_get_type(xdict) == XPC_TYPE_DICTIONARY) {
-			//jbdRemoteLog(3, @"launchd server got dictionary: %s", xpc_copy_description(xdict));
+			//JBLogDebug("launchd server got dictionary: %ss", xpc_copy_description(xdict));
 			bool jbRelated = xpc_dictionary_get_bool(xdict, "jailbreak");
 			if (jbRelated) {
 				audit_token_t auditToken = {};
@@ -30,7 +30,7 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 				pid_t clientPid = audit_token_to_pid(auditToken);
 				NSString *clientPath = [[procPath(clientPid) stringByResolvingSymlinksInPath] stringByStandardizingPath];
 				NSString *jailbreakdPath = [[@"/var/jb/basebin/jailbreakd" stringByResolvingSymlinksInPath] stringByStandardizingPath];
-				//jbdRemoteLog(3, @"jailbreak related message coming from binary: %@", clientPath);
+				JBLogDebug("jailbreak related message %s coming from binary: %s", xpc_copy_description(xdict), clientPath.UTF8String);
 				if ([clientPath isEqualToString:jailbreakdPath]) {
 					uint64_t jbAction = xpc_dictionary_get_uint64(xdict, "jailbreak-action");
 					xpc_object_t xreply = xpc_dictionary_create_reply(xdict);
@@ -80,11 +80,11 @@ void initXPCHooks(void)
 	unsigned char xpcHandlerBytesMask[] = "\xE0\xFF\xE0\xFF\xE0\xFF\xE0\xFF\xE0\xFF\xE0\xFF\x00\xFF\xE0\xFF\x00\x00\x00\xFF";
 	
 	void *xpcHandlerMid = patchfind_find(gLaunchdImageIndex, (unsigned char*)xpcHandlerBytes, (unsigned char*)xpcHandlerBytesMask, sizeof(xpcHandlerBytes));
-	jbdRemoteLog(3, @"Launchd patchfinder found mid 0x%llX", xpcHandlerMid);
+	JBLogDebug("Launchd patchfinder found mid 0x%llX", xpcHandlerMid);
 
 	void *xpcHandlerPtr = patchfind_seek_back(xpcHandlerMid, 0xD503237F, 0xFFFFFFFF, 50 * 4);
 
-	jbdRemoteLog(3, @"Launchd patchfinder found 0x%llX", xpcHandlerPtr);
+	JBLogDebug("Launchd patchfinder found 0x%llX", xpcHandlerPtr);
 	if (xpcHandlerPtr)
 	{
 		MSHookFunction(xpcHandlerPtr, (void *)xpc_handler_hook, (void **)&xpc_handler_orig);

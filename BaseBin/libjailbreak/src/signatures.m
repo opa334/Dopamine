@@ -100,13 +100,13 @@ BOOL isCdHashInTrustCache(NSData *cdHash)
 		kr = IOServiceOpen(amfiService, mach_task_self(), 0, &connect);
 		if(kr != KERN_SUCCESS)
 		{
-			JBLogError(@"Failed to open amfi service %d %s", kr, mach_error_string(kr));
+			JBLogError("Failed to open amfi service %d %s", kr, mach_error_string(kr));
 			return -2;
 		}
 
 		uint64_t includeLoadedTC = YES;
 		kr = IOConnectCallMethod(connect, AMFI_IS_CD_HASH_IN_TRUST_CACHE, &includeLoadedTC, 1, CFDataGetBytePtr((__bridge CFDataRef)cdHash), CFDataGetLength((__bridge CFDataRef)cdHash), 0, 0, 0, 0);
-		JBLogDebug(@"Is %@ in TrustCache? %@", cdHash, kr == 0 ? @"Yes" : @"No");
+		JBLogDebug("Is %s in TrustCache? %s", cdHash.description.UTF8String, kr == 0 ? "Yes" : "No");
 
 		IOServiceClose(connect);
 		return kr == 0;

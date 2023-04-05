@@ -131,18 +131,18 @@ uint64_t bindMount(const char *source, const char *target)
 
 	int fd = open(sourcePath.fileSystemRepresentation, O_RDONLY);
 	if (fd < 0) {
-		JBLogError(@"Bind mount: Failed to open %@", sourcePath);
+		JBLogError("Bind mount: Failed to open %s", sourcePath.UTF8String);
 		return 1;
 	}
 
 	uint64_t vnode = proc_get_vnode_by_file_descriptor(self_proc(), fd);
-	JBLogDebug(@"Bind mount: Got vnode 0x%llX for path \"%s\"", vnode, sourcePath.fileSystemRepresentation);
+	JBLogDebug("Bind mount: Got vnode 0x%llX for path \"%s\"", vnode, sourcePath.fileSystemRepresentation);
 
 	uint64_t parent_vnode = kread_ptr(vnode + 0xC0);
-	JBLogDebug(@"Bind mount: Got parent vnode: 0x%llX", parent_vnode);
+	JBLogDebug("Bind mount: Got parent vnode: 0x%llX", parent_vnode);
 
 	uint64_t mount_ret = kernel_mount("bindfs", parent_vnode, vnode, targetPath.fileSystemRepresentation, (uint64_t)targetPath.fileSystemRepresentation, 8, MNT_RDONLY, KERNEL_MOUNT_NOAUTH);
-	JBLogDebug(@"Bind mount: kernel_mount returned %lld (%s)", mount_ret, strerror(mount_ret));
+	JBLogDebug("Bind mount: kernel_mount returned %lld (%s)", mount_ret, strerror(mount_ret));
 	return mount_ret;
 }
 
@@ -176,7 +176,7 @@ void generateSystemWideSandboxExtensions(NSString *targetPath)
 	memorystatus_memlimit_properties2_t mmprops;
 	memorystatus_control(MEMORYSTATUS_CMD_GET_MEMLIMIT_PROPERTIES, pid, 0, &mmprops, sizeof(mmprops));
 
-	JBLogDebug(@"JETSAM %d previous limit (%u/%u)", pid, mmprops.v1.memlimit_active, mmprops.v1.memlimit_inactive);
+	JBLogDebug("JETSAM %d previous limit (%u/%u)", pid, mmprops.v1.memlimit_active, mmprops.v1.memlimit_inactive);
 
 	//mmprops.v1.memlimit_active = mmprops.v1.memlimit_active * 10;
 	//mmprops.v1.memlimit_inactive = mmprops.v1.memlimit_inactive * 10;
@@ -190,19 +190,19 @@ void generateSystemWideSandboxExtensions(NSString *targetPath)
 
 	memorystatus_control(MEMORYSTATUS_CMD_GET_MEMLIMIT_PROPERTIES, pid, 0, &mmprops, sizeof(mmprops));
 
-	JBLogDebug(@"JETSAM %d new limit (%u/%u)", pid, mmprops.v1.memlimit_active, mmprops.v1.memlimit_inactive);
+	JBLogDebug("JETSAM %d new limit (%u/%u)", pid, mmprops.v1.memlimit_active, mmprops.v1.memlimit_inactive);
 
 	int rc; memorystatus_priority_properties_t props = {JETSAM_PRIORITY_CRITICAL, 0};
 	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PRIORITY_PROPERTIES, pid, 0, &props, sizeof(props));
-	JBLogDebug(@"rc %d", rc);
+	JBLogDebug("rc %d", rc);
 	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_JETSAM_HIGH_WATER_MARK, pid, -1, NULL, 0);
-	JBLogDebug(@"rc %d", rc);
+	JBLogDebug("rc %d", rc);
 	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PROCESS_IS_MANAGED, pid, 0, NULL, 0);
-	JBLogDebug(@"rc %d", rc);
+	JBLogDebug("rc %d", rc);
 	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PROCESS_IS_FREEZABLE, pid, 0, NULL, 0);
-	JBLogDebug(@"rc %d", rc);
+	JBLogDebug("rc %d", rc);
 	rc = proc_track_dirty(pid, 0);
-	JBLogDebug(@"rc %d", rc);
+	JBLogDebug("rc %d", rc);
 }*/
 
 int64_t initEnvironment(NSDictionary *settings)
@@ -214,7 +214,7 @@ int64_t initEnvironment(NSDictionary *settings)
 	if (!copySuc) {
 		return 1;
 	}
-	JBLogDebug(@"copied %@ to %@", libPath, fakeLibPath);
+	JBLogDebug("copied %s to %s", libPath.UTF8String, fakeLibPath.UTF8String);
 
 	int dyldRet = applyDyldPatches(@"/var/jb/basebin/.fakelib/dyld");
 	if (dyldRet != 0) {
@@ -227,7 +227,7 @@ int64_t initEnvironment(NSDictionary *settings)
 		return 5;
 	}
 
-	JBLogDebug(@"got dyld cd hash %@", dyldCDHash);
+	JBLogDebug("got dyld cd hash %s", dyldCDHash.description.UTF8String);
 
 	size_t dyldTCSize = 0;
 	uint64_t dyldTCKaddr = staticTrustCacheUploadCDHashesFromArray(@[dyldCDHash], &dyldTCSize);
@@ -237,16 +237,16 @@ int64_t initEnvironment(NSDictionary *settings)
 	bootInfo_setObject(@"dyld_trustcache_kaddr", @(dyldTCKaddr));
 	bootInfo_setObject(@"dyld_trustcache_size", @(dyldTCSize));
 
-	JBLogDebug(@"dyld trust cache allocated to %llX (size: %zX)", dyldTCKaddr, dyldTCSize);
+	JBLogDebug("dyld trust cache allocated to %llX (size: %zX)", dyldTCKaddr, dyldTCSize);
 
 	copySuc = [[NSFileManager defaultManager] copyItemAtPath:@"/var/jb/basebin/systemhook.dylib" toPath:@"/var/jb/basebin/.fakelib/systemhook.dylib" error:nil];
 	if (!copySuc) {
 		return 7;
 	}
-	JBLogDebug(@"copied systemhook");
+	JBLogDebug("copied systemhook");
 
 	generateSystemWideSandboxExtensions(@"/var/jb/basebin/.fakelib/sandbox.plist");
-	JBLogDebug(@"generated sandbox extensions");
+	JBLogDebug("generated sandbox extensions");
 
 	uint64_t bindMountRet = bindMount(libPath.fileSystemRepresentation, fakeLibPath.fileSystemRepresentation);
 	if (bindMountRet != 0) {
@@ -258,13 +258,11 @@ int64_t initEnvironment(NSDictionary *settings)
 
 void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 {
-	FILE *jbdLogFile = fopen("/var/mobile/jbd.log", "a");
-
 	@autoreleasepool {
 		xpc_object_t message = nil;
 		int err = xpc_pipe_receive(machPort, &message);
 		if (err != 0) {
-			JBLogError(@"xpc_pipe_receive error %d", err);
+			JBLogError("xpc_pipe_receive error %d", err);
 			return;
 		}
 
@@ -279,10 +277,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 
 			msgId = xpc_dictionary_get_uint64(message, "id");
 
-			if (msgId != JBD_MSG_REMOTELOG) {
-				JBLogDebug(@"received %s message %d with dictionary: %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(message));
-				fprintf(jbdLogFile, "received %s message %d with dictionary: %s\n", systemwide ? "systemwide" : "", msgId, xpc_copy_description(message)); fflush(jbdLogFile);
-			}
+			JBLogDebug("received %s message %d with dictionary: %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(message));
 
 			BOOL isAllowedSystemWide = msgId == JBD_MSG_PROCESS_BINARY || 
 									msgId == JBD_MSG_DEBUG_ME ||
@@ -402,14 +397,6 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 					}
 
 
-					case JBD_MSG_REMOTELOG: {
-						uint64_t verbosity = xpc_dictionary_get_uint64(message, "verbosity");
-						const char *log = xpc_dictionary_get_string(message, "log");
-						NSLog(@"[%@(%d)/%s] %s", procPath(clientPid).lastPathComponent, clientPid, verbosityString(verbosity), log);
-						break;
-					}
-
-
 					case JBD_MSG_REBUILD_TRUSTCACHE: {
 						int64_t result = 0;
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
@@ -448,9 +435,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 							const char* filePath = xpc_dictionary_get_string(message, "filePath");
 							if (filePath) {
 								NSString *nsFilePath = [NSString stringWithUTF8String:filePath];
-								fprintf(jbdLogFile, "before processBinary\n"); fflush(jbdLogFile);
 								result = processBinary(nsFilePath);
-								fprintf(jbdLogFile, "after processBinary\n"); fflush(jbdLogFile);
 							}
 						}
 						else {
@@ -488,18 +473,13 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 			}
 		}
 		if (reply) {
-			if (msgId != JBD_MSG_REMOTELOG) {
-				fprintf(jbdLogFile, "responding to %s message %d with %s\n", systemwide ? "systemwide" : "", msgId, xpc_copy_description(reply)); fflush(jbdLogFile);
-				JBLogDebug(@"responding to %s message %d with %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(reply));
-			}
+			JBLogDebug("responding to %s message %d with %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(reply));
 			err = xpc_pipe_routine_reply(reply);
 			if (err != 0) {
-				JBLogError(@"Error %d sending response", err);
+				JBLogError("Error %d sending response", err);
 			}
 		}
 	}
-
-	fclose(jbdLogFile);
 }
 
 int launchdInitPPLRW(void)
@@ -523,7 +503,7 @@ int launchdInitPPLRW(void)
 int main(int argc, char* argv[])
 {
 	@autoreleasepool {
-		JBLogDebug(@"Hello from the other side!");
+		JBLogDebug("Hello from the other side!");
 		gIsJailbreakd = YES;
 
 		gTCPages = [NSMutableArray new];
@@ -532,19 +512,19 @@ int main(int argc, char* argv[])
 		mach_port_t machPort = 0;
 		kern_return_t kr = bootstrap_check_in(bootstrap_port, "com.opa334.jailbreakd", &machPort);
 		if (kr != KERN_SUCCESS) {
-			JBLogError(@"Failed com.opa334.jailbreakd bootstrap check in: %d (%s)", kr, mach_error_string(kr));
+			JBLogError("Failed com.opa334.jailbreakd bootstrap check in: %d (%s)", kr, mach_error_string(kr));
 			return 1;
 		}
 
 		mach_port_t machPortSystemWide = 0;
 		kr = bootstrap_check_in(bootstrap_port, "com.opa334.jailbreakd.systemwide", &machPortSystemWide);
 		if (kr != KERN_SUCCESS) {
-			JBLogError(@"Failed com.opa334.jailbreakd.systemwide bootstrap check in: %d (%s)", kr, mach_error_string(kr));
+			JBLogError("Failed com.opa334.jailbreakd.systemwide bootstrap check in: %d (%s)", kr, mach_error_string(kr));
 			return 1;
 		}
 
 		if (bootInfo_getUInt64(@"environmentInitialized")) {
-			JBLogDebug(@"launchd already initialized, recovering primitives...");
+			JBLogDebug("launchd already initialized, recovering primitives...");
 			int err = launchdInitPPLRW();
 			if (err == 0) {
 				err = recoverPACPrimitives();
@@ -552,11 +532,11 @@ int main(int argc, char* argv[])
 					tcPagesRecover();
 				}
 				else {
-					JBLogError(@"error recovering PAC primitives: %d", err);
+					JBLogError("error recovering PAC primitives: %d", err);
 				}
 			}
 			else {
-				JBLogError(@"error recovering PPL primitives: %d", err);
+				JBLogError("error recovering PPL primitives: %d", err);
 			}
 		}
 

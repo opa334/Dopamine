@@ -62,7 +62,7 @@ void fileEnumerateTrustCacheEntries(NSURL *fileURL, void (^enumerateBlock)(trust
 	BOOL adhocSigned = NO;
 	int evalRet = evaluateSignature(fileURL, &cdHash, &adhocSigned);
 	if (evalRet == 0) {
-		JBLogDebug(@"%@ cdHash: %@, adhocSigned: %d", fileURL.path, cdHash, adhocSigned);
+		JBLogDebug("%s cdHash: %s, adhocSigned: %d", fileURL.path.UTF8String, cdHash.description.UTF8String, adhocSigned);
 		if (adhocSigned) {
 			if ([cdHash length] == CS_CDHASH_LEN) {
 				trustcache_entry entry;
@@ -72,8 +72,8 @@ void fileEnumerateTrustCacheEntries(NSURL *fileURL, void (^enumerateBlock)(trust
 				enumerateBlock(entry);
 			}
 		}
-	} else {
-		JBLogError(@"evaluateSignature failed with error %d", evalRet);
+	} else if (evalRet != 4) {
+		JBLogError("evaluateSignature failed with error %d", evalRet);
 	}
 }
 
@@ -113,7 +113,7 @@ void dynamicTrustCacheUploadCDHashesFromArray(NSArray *cdHashArray)
 		memcpy(&entry.hash, cdHash.bytes, CS_CDHASH_LEN);
 		entry.hash_type = 0x2;
 		entry.flags = 0x0;
-		JBLogDebug(@"[dynamicTrustCacheUploadCDHashesFromArray] uploading %@", cdHash);
+		JBLogDebug("[dynamicTrustCacheUploadCDHashesFromArray] uploading %s", cdHash.description.UTF8String);
 		[mappedInPage addEntry:entry];
 	}
 
@@ -149,7 +149,7 @@ void dynamicTrustCacheUploadDirectory(NSString *directoryPath)
 					mappedInPage = trustCacheMapInFreePage();
 				}
 
-				JBLogDebug(@"[dynamicTrustCacheUploadDirectory %@] Uploading cdhash of %@", directoryPath, enumURL.path);
+				JBLogDebug("[dynamicTrustCacheUploadDirectory %s] Uploading cdhash of %s", directoryPath.UTF8String, enumURL.path.UTF8String);
 				[mappedInPage addEntry:entry];
 			});
 		}
@@ -168,9 +168,9 @@ void rebuildDynamicTrustCache(void)
 		[page unlinkAndFree];
 	}
 
-	JBLogDebug(@"Triggering initial trustcache upload...");
+	JBLogDebug("Triggering initial trustcache upload...");
 	dynamicTrustCacheUploadDirectory(@"/var/jb");
-	JBLogDebug(@"Initial TrustCache upload done!");
+	JBLogDebug("Initial TrustCache upload done!");
 }
 
 BOOL trustCacheListAdd(uint64_t trustCacheKaddr)
@@ -204,7 +204,7 @@ BOOL trustCacheListRemove(uint64_t trustCacheKaddr)
 	uint64_t pmap_image4_trust_caches = bootInfo_getSlidUInt64(@"pmap_image4_trust_caches");
 	uint64_t curTc = kread64(pmap_image4_trust_caches);
 	if (curTc == 0) {
-		JBLogError(@"WARNING: Tried to unlink trust cache page 0x%llX but pmap_image4_trust_caches points to 0x0", trustCacheKaddr);
+		JBLogError("WARNING: Tried to unlink trust cache page 0x%llX but pmap_image4_trust_caches points to 0x0", trustCacheKaddr);
 		return NO;
 	}
 	else if (curTc == trustCacheKaddr) {
@@ -215,7 +215,7 @@ BOOL trustCacheListRemove(uint64_t trustCacheKaddr)
 		while (curTc != trustCacheKaddr)
 		{
 			if (curTc == 0) {
-				JBLogError(@"WARNING: Hit end of trust cache chain while trying to unlink trust cache page 0x%llX", trustCacheKaddr);
+				JBLogError("WARNING: Hit end of trust cache chain while trying to unlink trust cache page 0x%llX", trustCacheKaddr);
 				return NO;
 			}
 			prevTc = curTc;
@@ -231,13 +231,13 @@ BOOL trustCacheListRemove(uint64_t trustCacheKaddr)
 uint64_t staticTrustCacheUploadFile(trustcache_file *fileToUpload, size_t fileSize, size_t *outMapSize)
 {
 	if (fileSize < sizeof(trustcache_file)) {
-		JBLogError(@"attempted to load a trustcache file that's too small.");
+		JBLogError("attempted to load a trustcache file that's too small.");
 		return 0;
 	}
 
 	size_t expectedSize = sizeof(trustcache_file) + fileToUpload->length * sizeof(trustcache_entry);
 	if (expectedSize != fileSize) {
-		JBLogError(@"attempted to load a trustcache file with an invalid size (0x%zX vs 0x%zX)", expectedSize, fileSize);
+		JBLogError("attempted to load a trustcache file with an invalid size (0x%zX vs 0x%zX)", expectedSize, fileSize);
 		return 0;
 	}
 
@@ -245,7 +245,7 @@ uint64_t staticTrustCacheUploadFile(trustcache_file *fileToUpload, size_t fileSi
 
 	uint64_t mapKaddr = kalloc(mapSize);
 	if (!mapKaddr) {
-		JBLogError(@"failed to allocate memory for trust cache file with size %zX", fileSize);
+		JBLogError("failed to allocate memory for trust cache file with size %zX", fileSize);
 		return 0;
 	}
 

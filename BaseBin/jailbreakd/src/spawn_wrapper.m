@@ -29,7 +29,7 @@ int spawn(NSString* path, NSArray* args)
 	do
 	{
 		if (waitpid(task_pid, &status, 0) != -1) {
-			JBLogDebug(@"Child status %d", WEXITSTATUS(status));
+			JBLogDebug("Child status %d", WEXITSTATUS(status));
 		} else
 		{
 			perror("waitpid");

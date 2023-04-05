@@ -204,15 +204,15 @@ void _machoEnumerateDependencies(FILE *machoFile, uint32_t archOffset, NSString 
 				}
 				else {
 					if (![[NSFileManager defaultManager] fileExistsAtPath:resolvedPath]) {
-						//JBLogDebug(@"skipped %@, non existant", resolvedPath);
+						//JBLogDebug("skipped %s, non existant", resolvedPath.UTF8String);
 					}
 					else {
-						//JBLogDebug(@"skipped %@, in cache", resolvedPath);
+						//JBLogDebug("skipped %s, in cache", resolvedPath.UTF8String);
 					}
 				}
 			}
 			else {
-				//JBLogDebug(@"skipped %@, in DSC", imagePath);
+				//JBLogDebug("skipped %s, in DSC", imagePath.UTF8String);
 			}
 		}
 	});

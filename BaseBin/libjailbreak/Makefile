@@ -8,7 +8,7 @@ LDFLAGS = -lbsm -L../libfilecom -lfilecom
 sign: $(TARGET)
 	@ldid -S $<
 
-$(TARGET): $(wildcard src/*.m src/*.S)
+$(TARGET): $(wildcard src/*.m src/*.c src/*.S)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 clean:

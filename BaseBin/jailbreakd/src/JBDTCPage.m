@@ -60,7 +60,7 @@ void tcPagesChanged(void)
 	if (!_kaddr) return NO;
 	if (_mapRefCount == 0) {
 		_mappedInPageCtx = mapInRange(_kaddr, 1, (uint8_t**)&_mappedInPage);
-		JBLogDebug(@"mapped in page %p", _mappedInPage);
+		JBLogDebug("mapped in page %p", _mappedInPage);
 	};
 	_mapRefCount++;
 	return YES;
@@ -69,13 +69,13 @@ void tcPagesChanged(void)
 - (void)mapOut
 {
 	if (_mapRefCount == 0) {
-		JBLogError(@"attempted to map out a map with a ref count of 0");
+		JBLogError("attempted to map out a map with a ref count of 0");
 		abort();
 	}
 	_mapRefCount--;
 	
 	if (_mapRefCount == 0) {
-		JBLogDebug(@"mapping out page %p", _mappedInPage);
+		JBLogDebug("mapping out page %p", _mappedInPage);
 		mappingDestroy(_mappedInPageCtx);
 		_mappedInPage = NULL;
 		_mappedInPageCtx = NULL;
@@ -100,7 +100,7 @@ void tcPagesChanged(void)
 	_kaddr = kalloc(0x4000);
 	if (_kaddr == 0) return NO;
 
-	JBLogDebug(@"allocated trust cache page at 0x%llX", _kaddr);
+	JBLogDebug("allocated trust cache page at 0x%llX", _kaddr);
 	
 	[self ensureMappedInAndPerform:^{
 		_mappedInPage->selfPtr = _kaddr + 0x10;
@@ -128,7 +128,7 @@ void tcPagesChanged(void)
 	if (_kaddr == 0) return;
 
 	kfree(_kaddr, 0x4000);
-	JBLogDebug(@"freed trust cache page at 0x%llX", _kaddr);
+	JBLogDebug("freed trust cache page at 0x%llX", _kaddr);
 	_kaddr = 0;
 	
 	[gTCPages removeObject:self];
@@ -200,7 +200,7 @@ uint32_t right = count - 1;
 register uint32_t mid, cmp, i;
 while (left <= right) {
 	mid = (left + right) >> 1;
-	JBLogDebug(@"left: %u, right: %u, mid: %u", left, right, mid);
+	JBLogDebug("left: %u, right: %u, mid: %u", left, right, mid);
 	cmp = entries[mid].hash[0] - entry.hash[0];
 	
 	if (cmp == 0) {

@@ -27,13 +27,13 @@ int applyDyldPatches(NSString *dyldPath)
 	};
 	fwrite(patchInstr, sizeof(patchInstr), 1, dyldFile); 
 	fclose(dyldFile);
-	JBLogDebug(@"patched dyld");
+	JBLogDebug("patched dyld");
 
 	int csRet = resignFile(dyldPath, true);
 	if (csRet != 0) {
 		return 3;
 	}
-	JBLogDebug(@"resigned dyld");
+	JBLogDebug("resigned dyld");
 
 	return 0;
 }

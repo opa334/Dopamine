@@ -36,7 +36,7 @@ xpc_object_t sendJBDMessage(xpc_object_t message)
 	int err = xpc_pipe_routine(pipe, message, &reply);
 	mach_port_deallocate(mach_task_self(), jbdPort);
 	if (err != 0) {
-		JBLogError(@"xpc_pipe_routine error on sending message to jailbreakd: %d", err);
+		JBLogError("xpc_pipe_routine error on sending message to jailbreakd: %d", err);
 		return nil;
 	}
 
@@ -157,21 +157,6 @@ int64_t jbdInitEnvironment(NSDictionary *settings)
 
 	xpc_object_t reply = sendJBDMessage(message);
 	return xpc_dictionary_get_int64(reply, "result");
-}
-
-void jbdRemoteLog(uint64_t verbosity, NSString *fString, ...)
-{
-	va_list va;
-	va_start(va, fString);
-	NSString* msg = [[NSString alloc] initWithFormat:fString arguments:va];
-	va_end(va);
-
-	xpc_object_t message = xpc_dictionary_create_empty();
-	xpc_dictionary_set_uint64(message, "id", JBD_MSG_REMOTELOG);
-	xpc_dictionary_set_uint64(message, "verbosity", verbosity);
-	xpc_dictionary_set_string(message, "log", [msg UTF8String]);
-
-	sendJBDMessage(message);
 }
 
 int64_t jbdRebuildTrustCache(void)
