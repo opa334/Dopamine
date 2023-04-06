@@ -281,8 +281,8 @@ bool shouldEnableTweaks(void)
 
 void applyKbdFix(void)
 {
-	// For whatever reason after backboardd has restarted, AutoFill and other stuff stops working
-	// The fix is to always also restart the kbd daemon alongside backboardd
+	// For whatever reason after SpringBoard has restarted, AutoFill and other stuff stops working
+	// The fix is to always also restart the kbd daemon alongside SpringBoard
 	// Seems to be something sandbox related where kbd doesn't have the right extensions until restarted
 	killall("/System/Library/TextInput/kbd", false);
 }
