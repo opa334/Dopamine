@@ -147,14 +147,14 @@ char *resolvePath(const char *file, const char *searchPath)
 
 bool stringEndsWith(const char* str, const char* suffix)
 {
-    size_t str_len = strlen(str);
-    size_t suffix_len = strlen(suffix);
+	size_t str_len = strlen(str);
+	size_t suffix_len = strlen(suffix);
 
-    if (str_len < suffix_len) {
-        return 0;
-    }
+	if (str_len < suffix_len) {
+		return 0;
+	}
 
-    return !strcmp(str + str_len - suffix_len, suffix);
+	return !strcmp(str + str_len - suffix_len, suffix);
 }
 
 // I don't like the idea of blacklisting certain processes
@@ -216,24 +216,11 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 		return pspawn_orig(pid, path, file_actions, attrp, argv, envp);
 	}
 
-	if (attrp) {
-		int proctype = 0;
-		posix_spawnattr_getprocesstype_np(attrp, &proctype);
-		if (proctype == POSIX_SPAWN_PROC_TYPE_DRIVER) {
-			// Do not inject hook into DriverKit drivers
-			return pspawn_orig(pid, path, file_actions, attrp, argv, envp);
-		}
-	}
-
 	kBinaryConfig binaryConfig = configForBinary(path, argv);
 
 	if (!(binaryConfig & kBinaryConfigDontProcess)) {
 		// jailbreakd: Upload binary to trustcache if needed
 		jbdswProcessBinary(path);
-	}
-
-	if (binaryConfig & kBinaryConfigDontInject) {
-		return pspawn_orig(pid, path, file_actions, attrp, argv, envp);
 	}
 
 	// Determine length envp passed
@@ -243,68 +230,74 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 		while (ogEnv[ogEnvCount++] != NULL);
 	}
 
-	// Check if we can find a _SafeMode or _MSSafeMode variable
-	// In this case we do not want to inject anything
-	// But we also want to remove the variables before spawning the process
-	int existingSafeMode = -1;
-	const char *safeModeVar = "_SafeMode=1";
-	if (ogEnvCount > 0) {
-		for (int i = 0; i < ogEnvCount-1; i++) {
-			if(strncmp(ogEnv[i], safeModeVar, strlen(safeModeVar)) == 0) {
-				existingSafeMode = i;
-				break;
-			}
-		}
-	}
-	int existingMSSafeMode = -1;
-	const char *msSafeModeVar = "_MSSafeMode=1";
-	if (ogEnvCount > 0) {
-		for (int i = 0; i < ogEnvCount-1; i++) {
-			if(strncmp(ogEnv[i], msSafeModeVar, strlen(msSafeModeVar)) == 0) {
-				existingMSSafeMode = i;
-				break;
-			}
-		}
-	}
-	if (existingSafeMode != -1 || existingMSSafeMode != -1) {
-		size_t noSafeModeEnvCount = ogEnvCount - (existingSafeMode != -1) - (existingMSSafeMode != -1);
-		char **noSafeModeEnv = malloc(noSafeModeEnvCount * sizeof(char *));
-		int ci = 0;
-		for (int i = 0; i < ogEnvCount; i++) {
-			if (existingSafeMode != -1) {
-				if (i == existingSafeMode) continue;
-			}
-			if (existingMSSafeMode != -1) {
-				if (i == existingMSSafeMode) continue;
-			}
-			noSafeModeEnv[ci++] = ogEnv[i];
-		}
-		int ret = pspawn_orig(pid, path, file_actions, attrp, argv, noSafeModeEnv);
-		free(noSafeModeEnv);
-		return ret;
-	}
+	bool shouldInject = true;
+	int existingSafeModeIndex = -1;
+	int existingMSSafeModeIndex = -1;
 
-	if (access(HOOK_DYLIB_PATH, F_OK) != 0) {
-		// If the hook dylib doesn't exist, don't add it to environment
-		return pspawn_orig(pid, path, file_actions, attrp, argv, envp);
+	if (shouldInject) {
+		// Check if we can find a _SafeMode or _MSSafeMode variable
+		// In this case we do not want to inject anything
+		// But we also want to remove the variables before spawning the process
+		
+		const char *safeModeVar = "_SafeMode=1";
+		if (ogEnvCount > 0) {
+			for (int i = 0; i < ogEnvCount-1; i++) {
+				if(strncmp(ogEnv[i], safeModeVar, strlen(safeModeVar)) == 0) {
+					shouldInject = false;
+					existingSafeModeIndex = i;
+					break;
+				}
+			}
+		}
+		
+		const char *msSafeModeVar = "_MSSafeMode=1";
+		if (ogEnvCount > 0) {
+			for (int i = 0; i < ogEnvCount-1; i++) {
+				if(strncmp(ogEnv[i], msSafeModeVar, strlen(msSafeModeVar)) == 0) {
+					shouldInject = false;
+					existingMSSafeModeIndex = i;
+					break;
+				}
+			}
+		}
+	}
+	
+	if (binaryConfig & kBinaryConfigDontInject) {
+		shouldInject = false;
+	}
+	
+	if (attrp) {
+		int proctype = 0;
+		posix_spawnattr_getprocesstype_np(attrp, &proctype);
+		if (proctype == POSIX_SPAWN_PROC_TYPE_DRIVER) {
+			// Do not inject hook into DriverKit drivers
+			shouldInject = false;
+		}
+	}
+	
+	if (shouldInject) {
+		if (access(HOOK_DYLIB_PATH, F_OK) != 0) {
+			// If the hook dylib doesn't exist, don't try to inject it (would crash the process)
+			shouldInject = false;
+		}
 	}
 
 	// Check if we can find an existing "DYLD_INSERT_LIBRARIES" env variable
-	int existingLibraryInsert = -1;
+	int existingLibraryInsertIndex = -1;
 	const char *insertVarPrefix = "DYLD_INSERT_LIBRARIES=";
 	if (ogEnvCount > 0) {
 		for (int i = 0; i < ogEnvCount-1; i++) {
 			if(strncmp(ogEnv[i], insertVarPrefix, strlen(insertVarPrefix)) == 0) {
-				existingLibraryInsert = i;
+				existingLibraryInsertIndex = i;
 				break;
 			}
 		}
 	}
 
 	// If we have found an existing DYLD_INSERT_LIBRARIES variable, check if the systemwide.dylib is already in there
-	bool isAlreadyAdded = false;
-	if (existingLibraryInsert != -1) {
-		char *const existingEnv = ogEnv[existingLibraryInsert];
+	bool isAlreadyInjected = false;
+	if (existingLibraryInsertIndex != -1) {
+		char *const existingEnv = ogEnv[existingLibraryInsertIndex];
 		char *existingStart = strstr(existingEnv, HOOK_DYLIB_PATH);
 		if (existingStart) {
 			char before = 0;
@@ -312,69 +305,141 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 				before = existingStart[-1];
 			}
 			char after = existingStart[strlen(HOOK_DYLIB_PATH)];
-			isAlreadyAdded = (before == '=' || before == ':') && (after == '\0' || after == ':');
+			isAlreadyInjected = (before == '=' || before == ':') && (after == '\0' || after == ':');
 		}
 	}
 
-	// If it's already in it, we can skip the rest of this hook and just call the original implementation
-	if (isAlreadyAdded) {
-		//printf("DYLD_INSERT_LIBRARIES with our dylib already exists, skipping...\n");
-		return pspawn_orig(pid, path, file_actions, attrp, argv, envp);;
-	}
-
-	// If not, continue to add it
-
-	// If we did not find an existing variable, new size is one bigger than the old size
-	size_t newEnvCount = ogEnvCount + (existingLibraryInsert == -1);
-	if (ogEnvCount == 0) newEnvCount = 2; // if og is 0, new needs to be 2 (our var + NULL)
-
-	// Create copy of environment to pass to posix_spawn
-	// Unlike the environment passed to here, this has to be deallocated later
-	char **newEnv = malloc(newEnvCount * sizeof(char *));
-	if (ogEnvCount > 0) {
-		for (int i = 0; i < ogEnvCount-1; i++) {
-			newEnv[i] = strdup(ogEnv[i]);
-		}
-	}
-	newEnv[newEnvCount-1] = NULL;
-
-	if (existingLibraryInsert == -1) {
-		//printf("No DYLD_INSERT_LIBRARIES exists, inserting...\n");
-		// No DYLD_INSERT_LIBRARIES exists, insert our own at position newEnvCount-2 as we have allocated extra space for it there
-		newEnv[newEnvCount-2] = strdup("DYLD_INSERT_LIBRARIES=" HOOK_DYLIB_PATH);
+	if (shouldInject == isAlreadyInjected && (existingSafeModeIndex == -1 && existingMSSafeModeIndex == -1)) {
+		// we already good, just call orig
+		return pspawn_orig(pid, path, file_actions, attrp, argv, envp);
 	}
 	else {
-		//printf("DYLD_INSERT_LIBRARIES already exists, replacing...\n");
-		// DYLD_INSERT_LIBRARIES already exists, append systemwide.dylib to existing one
-		char *const existingEnv = ogEnv[existingLibraryInsert];
-		//printf("Existing env variable: %s\n", existingEnv);
+		// the state we want is not the state we are in right now
 
-		free(newEnv[existingLibraryInsert]);
-		const char *hookDylibInsert = HOOK_DYLIB_PATH ":";
-		size_t hookDylibInsertLen = strlen(hookDylibInsert);
-		char *newInsertVar = malloc(strlen(existingEnv) + hookDylibInsertLen + 1);
+		if (shouldInject) {
+			// Add dylib insert environment variable
+			// If we did not find an existing variable, new size is one bigger than the old size
+			size_t newEnvCount = ogEnvCount + (existingLibraryInsertIndex == -1);
+			if (ogEnvCount == 0) newEnvCount = 2; // if og is 0, new needs to be 2 (our var + NULL)
 
-		size_t insertEnvLen = strlen(insertVarPrefix);
-		char *const existingEnvPrefix = &existingEnv[strlen(insertVarPrefix)];
-		size_t existingEnvPrefixLen = strlen(existingEnvPrefix);
+			// Create copy of environment to pass to posix_spawn
+			// Unlike the environment passed to here, this has to be deallocated later
+			char **newEnv = malloc(newEnvCount * sizeof(char *));
+			if (ogEnvCount > 0) {
+				for (int i = 0; i < ogEnvCount-1; i++) {
+					newEnv[i] = strdup(ogEnv[i]);
+				}
+			}
+			newEnv[newEnvCount-1] = NULL;
 
-		strncpy(&newInsertVar[0], insertVarPrefix, insertEnvLen);
-		strncpy(&newInsertVar[insertEnvLen], hookDylibInsert, hookDylibInsertLen);
-		strncpy(&newInsertVar[insertEnvLen+hookDylibInsertLen], &existingEnv[insertEnvLen], existingEnvPrefixLen+1);
+			if (existingLibraryInsertIndex == -1) {
+				//printf("No DYLD_INSERT_LIBRARIES exists, inserting...\n");
+				// No DYLD_INSERT_LIBRARIES exists, insert our own at position newEnvCount-2 as we have allocated extra space for it there
+				newEnv[newEnvCount-2] = strdup("DYLD_INSERT_LIBRARIES=" HOOK_DYLIB_PATH);
+			}
+			else {
+				//printf("DYLD_INSERT_LIBRARIES already exists, replacing...\n");
+				// DYLD_INSERT_LIBRARIES already exists, append systemwide.dylib to existing one
+				char *const existingEnv = ogEnv[existingLibraryInsertIndex];
+				//printf("Existing env variable: %s\n", existingEnv);
 
-		newEnv[existingLibraryInsert] = newInsertVar;
+				free(newEnv[existingLibraryInsertIndex]);
+				const char *hookDylibInsert = HOOK_DYLIB_PATH ":";
+				size_t hookDylibInsertLen = strlen(hookDylibInsert);
+				char *newInsertVar = malloc(strlen(existingEnv) + hookDylibInsertLen + 1);
+
+				size_t insertEnvLen = strlen(insertVarPrefix);
+				char *const existingEnvPrefix = &existingEnv[strlen(insertVarPrefix)];
+				size_t existingEnvPrefixLen = strlen(existingEnvPrefix);
+
+				strncpy(&newInsertVar[0], insertVarPrefix, insertEnvLen);
+				strncpy(&newInsertVar[insertEnvLen], hookDylibInsert, hookDylibInsertLen);
+				strncpy(&newInsertVar[insertEnvLen+hookDylibInsertLen], &existingEnv[insertEnvLen], existingEnvPrefixLen+1);
+
+				newEnv[existingLibraryInsertIndex] = newInsertVar;
+			}
+
+			// Call posix_spawn with new environment
+			int orgReturn = pspawn_orig(pid, path, file_actions, attrp, argv, newEnv);
+
+			// Free new environment
+			for (int i = 0; i < newEnvCount; i++) {
+				free(newEnv[i]);
+			}
+			free(newEnv);
+
+			return orgReturn;
+		}
+		else {
+			// Remove any existing modifications of environment
+			char *replacementLibraryInsertStr = NULL;
+			
+			if (existingLibraryInsertIndex != -1) {
+				
+				// If there is an existing DYLD_INSERT_LIBRARIES variable and there is other dylibs in it, just remove systemhook
+				// If there are no other dylibs in it, remove it entirely
+				
+				char *const existingLibraryInsertStr = ogEnv[existingLibraryInsertIndex];
+				char *existingLibraryStart = strstr(existingLibraryInsertStr, HOOK_DYLIB_PATH);
+				if (existingLibraryStart) {
+					size_t hookDylibLen = strlen(HOOK_DYLIB_PATH);
+					
+					char *afterStart = &existingLibraryStart[hookDylibLen+1];
+					
+					char charBefore = existingLibraryStart[-1];
+					char charAfter = afterStart[-1];
+					
+					bool hasPathBefore = charBefore == ':';
+					bool hasPathAfter = charAfter == ':';
+					
+					if (hasPathBefore || hasPathAfter) {
+						
+						size_t newVarSize = (strlen(existingLibraryInsertStr)+1) - (hookDylibLen+1);
+						replacementLibraryInsertStr = malloc(newVarSize);
+						
+						if (hasPathBefore && !hasPathAfter) {
+							strncpy(&replacementLibraryInsertStr[0], existingLibraryInsertStr, existingLibraryStart-existingLibraryInsertStr-1);
+							replacementLibraryInsertStr[existingLibraryStart-existingLibraryInsertStr-1] = '\0';
+						}
+						else {
+							strncpy(&replacementLibraryInsertStr[0], existingLibraryInsertStr, existingLibraryStart-existingLibraryInsertStr);
+							strncpy(&replacementLibraryInsertStr[strlen(replacementLibraryInsertStr)], afterStart, strlen(afterStart));
+						}
+					}
+				}
+				else {
+					replacementLibraryInsertStr = strdup(existingLibraryInsertStr);
+				}
+			}
+			
+			size_t noSafeModeEnvCount = ogEnvCount - (existingSafeModeIndex != -1) - (existingMSSafeModeIndex != -1) - (replacementLibraryInsertStr == NULL);
+			char **noSafeModeEnv = malloc(noSafeModeEnvCount * sizeof(char *));
+			int ci = 0;
+			for (int i = 0; i < ogEnvCount; i++) {
+				if (existingSafeModeIndex != -1) {
+					if (i == existingSafeModeIndex) continue;
+				}
+				if (existingMSSafeModeIndex != -1) {
+					if (i == existingMSSafeModeIndex) continue;
+				}
+				if (existingLibraryInsertIndex != -1) {
+					if (i == existingLibraryInsertIndex) {
+						if (replacementLibraryInsertStr) {
+							noSafeModeEnv[ci++] = replacementLibraryInsertStr;
+						}
+						continue;
+					}
+				}
+				noSafeModeEnv[ci++] = ogEnv[i];
+			}
+			int ret = pspawn_orig(pid, path, file_actions, attrp, argv, noSafeModeEnv);
+			if (replacementLibraryInsertStr) {
+				free(replacementLibraryInsertStr);
+			}
+			free(noSafeModeEnv);
+			return ret;
+		}
 	}
-
-	// Call posix_spawn with new environment
-	int orgReturn = pspawn_orig(pid, path, file_actions, attrp, argv, newEnv);
-
-	// Free new environment
-	for (int i = 0; i < newEnvCount; i++) {
-		free(newEnv[i]);
-	}
-	free(newEnv);
-
-	return orgReturn;
 }
 
 // Increase Jetsam limits by a factor of JETSAM_MULTIPLIER
