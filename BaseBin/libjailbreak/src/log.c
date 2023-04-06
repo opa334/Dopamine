@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <dispatch/dispatch.h>
 
-bool debugLogsEnabled = true;
-bool errorLogsEnabled = true;
+bool debugLogsEnabled = false;
+bool errorLogsEnabled = false;
 #define LOGGING_PATH "/var/log/"
 
 const char *JBLogGetProcessName(void)
