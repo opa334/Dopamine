@@ -20,7 +20,9 @@ int64_t launchctlLoad(const char* plistPath)
 	
 	xpc_object_t msgReply = launchd_xpc_send_message(msgDictionary);
 
-	printf("msgReply = %s\n", xpc_copy_description(msgReply));
+	char *msgReplyDescription = xpc_copy_description(msgReply);
+	printf("msgReply = %s\n", msgReplyDescription);
+	free(msgReplyDescription);
 	
 	int64_t bootstrapError = xpc_dictionary_get_int64(msgReply, "bootstrap-error");
 	if(bootstrapError != 0)

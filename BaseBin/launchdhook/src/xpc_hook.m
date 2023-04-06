@@ -22,7 +22,6 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 {
 	if (xdict) {
 		if (xpc_get_type(xdict) == XPC_TYPE_DICTIONARY) {
-			//JBLogDebug("launchd server got dictionary: %ss", xpc_copy_description(xdict));
 			bool jbRelated = xpc_dictionary_get_bool(xdict, "jailbreak");
 			if (jbRelated) {
 				audit_token_t auditToken = {};
@@ -30,7 +29,9 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 				pid_t clientPid = audit_token_to_pid(auditToken);
 				NSString *clientPath = [[procPath(clientPid) stringByResolvingSymlinksInPath] stringByStandardizingPath];
 				NSString *jailbreakdPath = [[@"/var/jb/basebin/jailbreakd" stringByResolvingSymlinksInPath] stringByStandardizingPath];
-				JBLogDebug("jailbreak related message %s coming from binary: %s", xpc_copy_description(xdict), clientPath.UTF8String);
+				char *xdictDescription = xpc_copy_description(xdict);
+				JBLogDebug("jailbreak related message %s coming from binary: %s", xdictDescription, clientPath.UTF8String);
+				free(xdictDescription);
 				if ([clientPath isEqualToString:jailbreakdPath]) {
 					uint64_t jbAction = xpc_dictionary_get_uint64(xdict, "jailbreak-action");
 					xpc_object_t xreply = xpc_dictionary_create_reply(xdict);

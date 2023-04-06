@@ -277,7 +277,9 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 
 			msgId = xpc_dictionary_get_uint64(message, "id");
 
-			JBLogDebug("received %s message %d with dictionary: %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(message));
+			char *description = xpc_copy_description(message);
+			JBLogDebug("received %s message %d with dictionary: %s", systemwide ? "systemwide" : "", msgId, description);
+			free(description);
 
 			BOOL isAllowedSystemWide = msgId == JBD_MSG_PROCESS_BINARY || 
 									msgId == JBD_MSG_DEBUG_ME ||
@@ -473,7 +475,9 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 			}
 		}
 		if (reply) {
-			JBLogDebug("responding to %s message %d with %s", systemwide ? "systemwide" : "", msgId, xpc_copy_description(reply));
+			char *description = xpc_copy_description(reply);
+			JBLogDebug("responding to %s message %d with %s", systemwide ? "systemwide" : "", msgId, description);
+			free(description);
 			err = xpc_pipe_routine_reply(reply);
 			if (err != 0) {
 				JBLogError("Error %d sending response", err);
