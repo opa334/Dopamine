@@ -311,7 +311,7 @@ __attribute__((constructor)) static void initializer(void)
 	loadExecutablePath();
 
 	if (gExecutablePath) {
-		if (strcmp(gExecutablePath, "/usr/libexec/backboardd") == 0) {
+		if (strcmp(gExecutablePath, "/System/Library/CoreServices/SpringBoard.app/SpringBoard") == 0) {
 			applyKbdFix();
 		}
 	}
