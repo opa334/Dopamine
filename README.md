@@ -10,6 +10,12 @@ It is currently **IN DEVELOPMENT** and not recommended to be used by **ANYONE SA
 
 The wifi and deep sleep bugs mentioned below have already been fixed in upstream commits, although the solution for the deep sleep is to just kill oobPCI after we have spawned jailbreakd and handed off the primitives to it and the solution for the wifi bug still requires disabling wifi during the jailbreak (can be reenabled afterwards).
 
+Notes:
+
+* To completely clean up the jailbreak environment (which will result in losing all installed plugins and their configurations), you can create an empty `.re` file in the `/var/mobile` directory (i.e. `/var/mobile/.re`) and then open Fugu15 Max jailbreak. When this file is detected, Fugu15 Max will delete the existing jailbreak directory (i.e. `/private/preboot/<uuid>/jb-<random>`) and rebuild it.
+
+------
+
 # Fugu15
 Fugu15 is a semi-untethered permasigned jailbreak for iOS 15.  
 It contains a code-signing bypass, kernel exploit, kernel PAC bypass and PPL bypass.  
