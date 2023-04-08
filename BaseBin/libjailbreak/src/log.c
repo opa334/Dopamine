@@ -55,7 +55,6 @@ void JBDLogV(const char* prefix, const char *format, va_list va)
 
 	FILE *logFile = fopen(logFilePath, "a");
 	if (logFile) {
-
 		time_t ltime;
 		struct tm result;
 		char stime[32];

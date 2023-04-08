@@ -76,12 +76,14 @@ int evaluateSignature(NSURL* fileURL, NSData **cdHashOut, BOOL *isAdhocSignedOut
 		return 6;
 	}
 
-	if (cdHashOut) {
-		*cdHashOut = machoCSDataCalculateCDHash(machoFile, CSDataStart, CSDataSize);
+	BOOL isAdhocSigned = machoCSDataIsAdHocSigned(machoFile, CSDataStart, CSDataSize);
+	if (isAdhocSignedOut) {
+		*isAdhocSignedOut = isAdhocSigned;
 	}
 
-	if (isAdhocSignedOut) {
-		*isAdhocSignedOut = machoCSDataIsAdHocSigned(machoFile, CSDataStart, CSDataSize);
+	// we only care about the cd hash on stuff that's already verified to be ad hoc signed
+	if (isAdhocSigned && cdHashOut) {
+		*cdHashOut = machoCSDataCalculateCDHash(machoFile, CSDataStart, CSDataSize);
 	}
 
 	fclose(machoFile);

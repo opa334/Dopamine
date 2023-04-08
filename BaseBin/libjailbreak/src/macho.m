@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "macho.h"
 #import <CommonCrypto/CommonDigest.h>
+#import "log.h"
 
 void machoEnumerateArchs(FILE* machoFile, void (^archEnumBlock)(struct fat_arch* arch, uint32_t archMetadataOffset, uint32_t archOffset, BOOL* stop))
 {
@@ -98,8 +99,11 @@ void machoEnumerateLoadCommands(FILE *machoFile, uint32_t archOffset, void (^enu
 	fseek(machoFile, archOffset, SEEK_SET);
 	fread(&mh, sizeof(mh), 1, machoFile);
 
+	uint32_t nCmds = OSSwapLittleToHostInt32(mh.ncmds);
+	uint32_t sizeOfCmds = OSSwapLittleToHostInt32(mh.sizeofcmds);
 	uint32_t offset = 0;
-	for (int i = 0; i < OSSwapLittleToHostInt32(mh.ncmds) && offset < OSSwapLittleToHostInt32(mh.sizeofcmds); i++) {
+	JBLogDebug("[machoEnumerateLoadCommands] About to enumerate over %u load commands (total size: 0x%X)", nCmds, sizeOfCmds);
+	for (uint32_t i = 0; i < nCmds && offset < sizeOfCmds; i++) {
 		uint32_t absoluteOffset = archOffset + sizeof(mh) + offset;
 		struct load_command cmd;
 		fseek(machoFile, absoluteOffset, SEEK_SET);
@@ -107,6 +111,7 @@ void machoEnumerateLoadCommands(FILE *machoFile, uint32_t archOffset, void (^enu
 		enumerateBlock(cmd, absoluteOffset);
 		offset += OSSwapLittleToHostInt32(cmd.cmdsize);
 	}
+	JBLogDebug("[machoEnumerateLoadCommands] Finished enumerating over %u load commands (total size: 0x%X)", nCmds, sizeOfCmds);
 }
 
 void machoFindCSData(FILE* machoFile, uint32_t archOffset, uint32_t* outOffset, uint32_t* outSize)
@@ -198,21 +203,40 @@ void _machoEnumerateDependencies(FILE *machoFile, uint32_t archOffset, NSString 
 					[enumeratedCache addObject:resolvedPath];
 					enumerateBlock(resolvedPath);
 
+					JBLogDebug("[_machoEnumerateDependencies] Found depdendency %s, recursively enumerating over it...", resolvedPath);
 					FILE *nextFile = fopen(resolvedPath.fileSystemRepresentation, "rb");
-					_machoEnumerateDependencies(nextFile, archOffset, imagePath, sourceExecutablePath, enumeratedCache, enumerateBlock);
-					fclose(nextFile);
+					if (nextFile) {
+						BOOL nextFileIsMacho = NO;
+						machoGetInfo(nextFile, &nextFileIsMacho, NULL);
+						if (nextFileIsMacho) {
+							int64_t nextBestArchCandidate = machoFindBestArch(nextFile);
+							if (nextBestArchCandidate >= 0) {
+								_machoEnumerateDependencies(nextFile, nextBestArchCandidate, imagePath, sourceExecutablePath, enumeratedCache, enumerateBlock);
+							}
+							else {
+								JBLogError("[_machoEnumerateDependencies] Failed to find best arch of dependency %s", resolvedPath);
+							}
+						}
+						else {
+							JBLogError("[_machoEnumerateDependencies] Dependency %s does not seem to be a macho", resolvedPath);
+						}
+						fclose(nextFile);
+					}
+					else {
+						JBLogError("[_machoEnumerateDependencies] Dependency %s does not seem to exist, maybe path resolving failed?", resolvedPath);
+					}
 				}
 				else {
 					if (![[NSFileManager defaultManager] fileExistsAtPath:resolvedPath]) {
-						//JBLogDebug("skipped %s, non existant", resolvedPath.UTF8String);
+						JBLogError("[_machoEnumerateDependencies] Skipped dependency %s, non existant", resolvedPath.UTF8String);
 					}
 					else {
-						//JBLogDebug("skipped %s, in cache", resolvedPath.UTF8String);
+						JBLogDebug("[_machoEnumerateDependencies] Skipped dependency %s, already cached", resolvedPath.UTF8String);
 					}
 				}
 			}
 			else {
-				//JBLogDebug("skipped %s, in DSC", imagePath.UTF8String);
+				JBLogDebug("[_machoEnumerateDependencies] Skipped dependency %s, in dyld_shared_cache", imagePath.UTF8String);
 			}
 		}
 	});
