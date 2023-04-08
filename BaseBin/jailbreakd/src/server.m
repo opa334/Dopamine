@@ -414,14 +414,20 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 					case JBD_MSG_SETUID_FIX: {
 						int64_t result = 0;
 						if (gPPLRWStatus == kPPLRWStatusInitialized) {
-							NSString *clientPath = procPath(clientPid);
-							if ([[clientPath stringByResolvingSymlinksInPath] hasPrefix:[@"/var/jb" stringByResolvingSymlinksInPath]]) {
-								uint64_t proc = proc_for_pid(clientPid);
-								uint64_t ucred = proc_get_ucred(proc);
-								ucred_set_svuid(ucred, 0);
+							NSString *clientPath = [procPath(clientPid) stringByResolvingSymlinksInPath];
+							struct stat sb;
+							if(stat(clientPath.fileSystemRepresentation, &sb) == 0) {
+								if (S_ISREG(sb.st_mode) && (sb.st_mode & S_ISUID)) {
+									uint64_t proc = proc_for_pid(clientPid);
+									uint64_t ucred = proc_get_ucred(proc);
+									ucred_set_svuid(ucred, 0);
+								}
+								else {
+									result = 10;
+								}
 							}
 							else {
-								result = JBD_ERR_NOT_PERMITTED;
+								result = 5;
 							}
 						}
 						else {
