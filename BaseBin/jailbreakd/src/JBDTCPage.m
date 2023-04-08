@@ -6,6 +6,8 @@
 #import <libjailbreak/util.h>
 
 NSMutableArray<JBDTCPage *> *gTCPages = nil;
+NSMutableArray<NSNumber *> *gTCUnusedAllocations = nil;
+
 dispatch_queue_t gTCAccessQueue;
 
 extern void trustCacheListAdd(uint64_t trustCacheKaddr);
@@ -19,6 +21,10 @@ BOOL tcPagesRecover(void)
 		uint64_t kaddr = [allocNum unsignedLongLongValue];
 		[gTCPages addObject:[[JBDTCPage alloc] initWithKernelAddress:kaddr]];
 	}
+	NSArray *existingUnusuedTCAllocations = bootInfo_getArray(@"trustcache_unused_allocations");
+	if (existingUnusuedTCAllocations) {
+		gTCUnusedAllocations = [existingUnusuedTCAllocations mutableCopy];
+	}
 	return (BOOL)existingTCAllocations;
 }
 
@@ -29,6 +35,7 @@ void tcPagesChanged(void)
 		[tcAllocations addObject:@(page.kaddr)];
 	}
 	bootInfo_setObject(@"trustcache_allocations", tcAllocations);
+	bootInfo_setObject(@"trustcache_unused_allocations", gTCUnusedAllocations);
 }
 
 @implementation JBDTCPage
@@ -97,11 +104,18 @@ void tcPagesChanged(void)
 
 - (BOOL)allocateInKernel
 {
-	_kaddr = kalloc(0x4000);
+	if (gTCUnusedAllocations.count) {
+		_kaddr = [gTCUnusedAllocations.firstObject unsignedLongLongValue];
+		[gTCUnusedAllocations removeObjectAtIndex:0];
+		JBLogDebug("got existing trust cache page at 0x%llX", _kaddr);
+	}
+	else {
+		_kaddr = kalloc(0x4000);
+		JBLogDebug("allocated trust cache page at 0x%llX", _kaddr);
+	}
+
 	if (_kaddr == 0) return NO;
 
-	JBLogDebug("allocated trust cache page at 0x%llX", _kaddr);
-	
 	[self ensureMappedInAndPerform:^{
 		_mappedInPage->selfPtr = _kaddr + 0x10;
 		uuid_generate(_mappedInPage->file.uuid);
@@ -127,10 +141,10 @@ void tcPagesChanged(void)
 {
 	if (_kaddr == 0) return;
 
-	kfree(_kaddr, 0x4000);
-	JBLogDebug("freed trust cache page at 0x%llX", _kaddr);
+	[gTCUnusedAllocations addObject:@(_kaddr)];
+	JBLogDebug("moved trust cache page at 0x%llX to unused list", _kaddr);
 	_kaddr = 0;
-	
+
 	[gTCPages removeObject:self];
 	tcPagesChanged();
 }

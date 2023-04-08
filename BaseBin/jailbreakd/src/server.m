@@ -511,6 +511,7 @@ int main(int argc, char* argv[])
 		gIsJailbreakd = YES;
 
 		gTCPages = [NSMutableArray new];
+		gTCUnusedAllocations = [NSMutableArray new];
 		gTCAccessQueue = dispatch_queue_create("com.opa334.jailbreakd.tcAccessQueue", DISPATCH_QUEUE_SERIAL);
 
 		mach_port_t machPort = 0;

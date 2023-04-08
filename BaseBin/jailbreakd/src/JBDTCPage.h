@@ -8,6 +8,7 @@
 @class JBDTCPage;
 
 extern NSMutableArray<JBDTCPage *> *gTCPages;
+extern NSMutableArray<NSNumber *> *gTCUnusedAllocations;
 extern dispatch_queue_t gTCAccessQueue;
 BOOL tcPagesRecover(void);
 void tcPagesChanged(void);
