@@ -1,11 +1,16 @@
 #import <spawn.h>
 #import <libfilecom/FCHandler.h>
 #import <libjailbreak/libjailbreak.h>
+#import <unistd.h>
+#import <sys/param.h>
+#import <sys/mount.h>
 
 extern int (*posix_spawn_orig)(pid_t *restrict, const char *restrict, const posix_spawn_file_actions_t *restrict, const posix_spawnattr_t *restrict, char *const[restrict], char *const[restrict]);
 
 void boomerang_userspaceRebootIncoming()
 {
+	unmount("/Developer", MNT_FORCE);
+
 	pid_t boomerangPid = 0;
 
 	// Wait until boomerang process has initialized primitives
