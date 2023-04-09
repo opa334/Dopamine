@@ -11,6 +11,7 @@ typedef enum {
 	JBD_MSG_DO_KCALL = 11,
 	JBD_MSG_DO_KCALL_THREADSTATE = 12,
 	JBD_MSG_INIT_ENVIRONMENT = 13,
+	JBD_MSG_JBUPDATE = 14,
 
 	JBD_MSG_REBUILD_TRUSTCACHE = 20,
 	JBD_MSG_SETUID_FIX = 21,
@@ -51,6 +52,9 @@ uint64_t jbdKcallThreadState(KcallThreadState *threadState, bool raw);
 uint64_t jbdKcall(uint64_t func, uint64_t argc, uint64_t *argv);
 uint64_t jbdKcall8(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8);
 int64_t jbdInitEnvironment(NSDictionary *settings);
+
+int64_t jbdUpdateFromTIPA(NSString *pathToTIPA);
+int64_t jbdUpdateFromBasebinTar(NSString *pathToBasebinTar);
 
 int64_t jbdRebuildTrustCache(void);
 int64_t jbdProcSetDebugged(pid_t pid);

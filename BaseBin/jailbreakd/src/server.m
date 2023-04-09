@@ -15,6 +15,7 @@
 #import <libproc.h>
 #import "spawn_wrapper.h"
 #import "dyld_patch.h"
+#import "update.h"
 #import <sandbox.h>
 
 
@@ -388,13 +389,36 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 
 					case JBD_MSG_INIT_ENVIRONMENT: {
 						int64_t result = 0;
-						if (gKCallStatus == kKcallStatusFinalized) {
+						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 							result = initEnvironment(nil);
 						}
 						else {
 							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
 						}
 						xpc_dictionary_set_int64(reply, "result", result);
+						break;
+					}
+
+					case JBD_MSG_JBUPDATE: {
+						int64_t result = 0;
+						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+							const char *basebinPath = xpc_dictionary_get_string(message, "basebinPath");
+							const char *tipaPath = xpc_dictionary_get_string(message, "tipaPath");
+
+							if (basebinPath) {
+								result = basebinUpdateFromTar([NSString stringWithUTF8String:basebinPath]);
+							}
+							else if (tipaPath) {
+								result = basebinUpdateFromTar([NSString stringWithUTF8String:tipaPath]);
+							}
+							else {
+								result = 101;
+							}
+						}
+						else {
+							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+						}
+
 						break;
 					}
 
