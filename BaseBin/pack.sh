@@ -23,7 +23,6 @@ mkdir -p ".tmp/basebin"
 
 # libfilecom
 cd "libfilecom"
-make clean
 make
 cd -
 cp "./libfilecom/libfilecom.dylib" ".tmp/basebin/libfilecom.dylib"
@@ -33,7 +32,6 @@ cp ./libfilecom/src/*.h ./_shared/libfilecom
 
 # libjailbreak
 cd "libjailbreak"
-make clean
 make
 cd -
 cp "./libjailbreak/libjailbreak.dylib" ".tmp/basebin/libjailbreak.dylib"
@@ -43,7 +41,6 @@ cp ./libjailbreak/src/*.h ./_shared/libjailbreak
 
 # jailbreakd
 cd "jailbreakd"
-make clean
 make
 cd -
 cp "./jailbreakd/jailbreakd" ".tmp/basebin/jailbreakd"
@@ -55,35 +52,30 @@ cp "./jailbreakd/daemon.plist" ".tmp/basebin/LaunchDaemons/com.opa334.jailbreakd
 
 # boomerang
 cd "boomerang"
-make clean
 make
 cd -
 cp "./boomerang/boomerang" ".tmp/basebin/boomerang"
 
 # jbinit
 cd "jbinit"
-make clean
 make
 cd -
 cp "./jbinit/jbinit" ".tmp/basebin/jbinit"
 
 # jbctl
 cd "jbctl"
-make clean
 make
 cd -
 cp "./jbctl/jbctl" ".tmp/basebin/jbctl"
 
 # launchdhook
 cd "launchdhook"
-make clean
 make
 cd -
 cp "./launchdhook/launchdhook.dylib" ".tmp/basebin/launchdhook.dylib"
 
 # systemhook
 cd "systemhook"
-make clean
 make
 cd -
 cp "./systemhook/systemhook.dylib" ".tmp/basebin/systemhook.dylib"

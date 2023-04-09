@@ -409,7 +409,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 								result = basebinUpdateFromTar([NSString stringWithUTF8String:basebinPath]);
 							}
 							else if (tipaPath) {
-								result = basebinUpdateFromTar([NSString stringWithUTF8String:tipaPath]);
+								result = jbUpdateFromTIPA([NSString stringWithUTF8String:tipaPath]);
 							}
 							else {
 								result = 101;
@@ -418,7 +418,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						else {
 							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
 						}
-
+						xpc_dictionary_set_int64(reply, "result", result);
 						break;
 					}
 

@@ -2,8 +2,27 @@
 
 set -e
 
+PREV_DIR=$(pwd)
+PACK_DIR=$(dirname -- "$0")
+cd "$PACK_DIR"
+
+# libfilecom
+cd "libfilecom"
+make clean
+cd -
+
+# libjailbreak
+cd "libjailbreak"
+make clean
+cd -
+
 # jailbreakd
 cd "jailbreakd"
+make clean
+cd -
+
+# boomerang
+cd "boomerang"
 make clean
 cd -
 
@@ -26,3 +45,5 @@ cd -
 cd "systemhook"
 make clean
 cd -
+
+cd "$PREV_DIR"

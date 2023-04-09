@@ -2,6 +2,7 @@
 #import <spawn.h>
 #import "spawn_wrapper.h"
 #import <libjailbreak/libjailbreak.h>
+extern char **environ;
 
 int spawn(NSString* path, NSArray* args)
 {
@@ -19,13 +20,13 @@ int spawn(NSString* path, NSArray* args)
 
 	pid_t task_pid;
 	int status = -200;
-	int spawnError = posix_spawn(&task_pid, path.fileSystemRepresentation, NULL, NULL, (char *const *)argsC, NULL);
+	int spawnError = posix_spawn(&task_pid, path.fileSystemRepresentation, NULL, NULL, (char *const *)argsC, environ);
 	for (NSUInteger i = 0; i < argCount; i++)
 	{
 		free(argsC[i]);
 	}
 	free(argsC);
-
+	if (spawnError != 0) return spawnError;
 	do
 	{
 		if (waitpid(task_pid, &status, 0) != -1) {

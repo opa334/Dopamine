@@ -1,8 +1,10 @@
 #import <libjailbreak/jailbreakd.h>
+extern char **environ;
 
 int main(int argc, char* argv[])
 {
 	if (argc < 2) return 1;
+	setvbuf(stdout, NULL, _IOLBF, 0);
 
 	char *cmd = argv[1];
 	if (!strcmp(cmd, "proc_set_debugged")) {
@@ -30,10 +32,12 @@ int main(int argc, char* argv[])
 			result = jbdUpdateFromBasebinTar([NSString stringWithUTF8String:argv[3]]);
 		}
 		if (result == 0) {
-			printf("Update applied, userspace reboot to finish.");
+			printf("Update applied, userspace rebooting to finalize it...\n");
+			usleep(5000);
+			execve("/var/jb/usr/bin/launchctl", (char *const[]){ "/var/jb/usr/bin/launchctl", "reboot", "userspace", NULL }, environ);
 		}
 		else {
-			printf("Update failed with error code %lld", result);
+			printf("Update failed with error code %lld\n", result);
 			return result;
 		}
 	}
