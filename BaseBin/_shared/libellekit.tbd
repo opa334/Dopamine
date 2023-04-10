@@ -1,11 +1,8 @@
 --- !tapi-tbd
 tbd-version:           4
 targets:               [ arm64, arm64e ]
-uuids:
-  - target: arm64-macos
-    value: '238236C3-54A1-3AF1-B872-A6F34F8E92F0'
 flags:                 [ flat_namespace, not_app_extension_safe ]
-install-name:          /var/jb/basebin/fallback/libellekit.dylib
+install-name:          '@rpath/CydiaSubstrate.framework/CydiaSubstrate'
 current-version:       1
 compatibility-version: 1
 exports:
