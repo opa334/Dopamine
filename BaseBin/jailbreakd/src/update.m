@@ -144,7 +144,7 @@ int basebinUpdateFromTar(NSString *basebinPath)
 	if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/basebin/.fakelib/systemhook.dylib"]) {
 		[[NSFileManager defaultManager] removeItemAtPath:@"/var/jb/basebin/.fakelib/systemhook.dylib" error:nil];
 	}
-	[[NSFileManager defaultManager] copyItemAtPath:@"/var/jb/basebin/systemhook.dylib" toPath:@"/var/jb/basebin/.fakelib/systemhook.dylib"];
+	[[NSFileManager defaultManager] copyItemAtPath:@"/var/jb/basebin/systemhook.dylib" toPath:@"/var/jb/basebin/.fakelib/systemhook.dylib" error:nil];
 
 	trustCacheListRemove(existingTCKaddr);
 
