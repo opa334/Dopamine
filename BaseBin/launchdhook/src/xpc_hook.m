@@ -6,6 +6,7 @@
 #import <xpc/xpc.h>
 #import <bsm/libbsm.h>
 #import <libproc.h>
+#import <sandbox.h>
 #import "substrate.h"
 
 NSString *procPath(pid_t pid)
@@ -29,40 +30,62 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 				pid_t clientPid = audit_token_to_pid(auditToken);
 				NSString *clientPath = [[procPath(clientPid) stringByResolvingSymlinksInPath] stringByStandardizingPath];
 				NSString *jailbreakdPath = [[@"/var/jb/basebin/jailbreakd" stringByResolvingSymlinksInPath] stringByStandardizingPath];
-				char *xdictDescription = xpc_copy_description(xdict);
-				JBLogDebug("jailbreak related message %s coming from binary: %s", xdictDescription, clientPath.UTF8String);
-				free(xdictDescription);
-				if ([clientPath isEqualToString:jailbreakdPath]) {
-					uint64_t msgId = xpc_dictionary_get_uint64(xdict, "id");
-					xpc_object_t xreply = xpc_dictionary_create_reply(xdict);
-					switch (msgId) {
-						// get pplrw
-						case LAUNCHD_JB_MSG_ID_GET_PPLRW: {
-							uint64_t magicPage = 0;
-							int ret = handoffPPLPrimitives(clientPid, &magicPage);
-							if (ret == 0) {
-								xpc_dictionary_set_uint64(xreply, "magicPage", magicPage);
+				if (xpc_dictionary_get_bool(xdict, "sw-fallback")) {
+					int sbc = sandbox_check(clientPid, "mach-lookup", SANDBOX_FILTER_GLOBAL_NAME | SANDBOX_CHECK_NO_REPORT, "com.opa334.jailbreakd.systemwide");
+					// Fallback API is only accessible if systemwide jailbreakd is not accessible
+					if (sbc != 0) {
+						uint64_t msgId = xpc_dictionary_get_uint64(xdict, "id");
+						xpc_object_t xreply = xpc_dictionary_create_reply(xdict);
+						switch (msgId) {
+							case JBD_MSG_DEBUG_ME: {
+								proc_set_debugged(clientPid);
+								FILE *f = fopen("/var/mobile/launchd-debug.log", "a");
+								fprintf(f, "set wx_allowed on proc of pid %d\n", clientPid);
+								fclose(f);
+								xpc_dictionary_set_int64(xreply, "result", 0);
+								break;
 							}
-							uint64_t slide = bootInfo_getUInt64(@"kernelslide");
-							xpc_dictionary_set_uint64(xreply, "testread", kread64(slide + 0xFFFFFFF007004000));
-							xpc_dictionary_set_int64(xreply, "error", ret);
-							break;
 						}
-
-						// sign thread state
-						case LAUNCHD_JB_MSG_ID_SIGN_STATE: {
-							uint64_t actContext = xpc_dictionary_get_uint64(xdict, "actContext");
-							int error = -1;
-							if (actContext) {
-								error = signState(actContext);
-							}
-							xpc_dictionary_set_int64(xreply, "error", error);
-							break;
-						}
+						xpc_pipe_routine_reply(xreply);
+						return;
 					}
+				}
+				else {
+					char *xdictDescription = xpc_copy_description(xdict);
+					JBLogDebug("jailbreak related message %s coming from binary: %s", xdictDescription, clientPath.UTF8String);
+					free(xdictDescription);
+					if ([clientPath isEqualToString:jailbreakdPath]) {
+						uint64_t msgId = xpc_dictionary_get_uint64(xdict, "id");
+						xpc_object_t xreply = xpc_dictionary_create_reply(xdict);
+						switch (msgId) {
+							// get pplrw
+							case LAUNCHD_JB_MSG_ID_GET_PPLRW: {
+								uint64_t magicPage = 0;
+								int ret = handoffPPLPrimitives(clientPid, &magicPage);
+								if (ret == 0) {
+									xpc_dictionary_set_uint64(xreply, "magicPage", magicPage);
+								}
+								uint64_t slide = bootInfo_getUInt64(@"kernelslide");
+								xpc_dictionary_set_uint64(xreply, "testread", kread64(slide + 0xFFFFFFF007004000));
+								xpc_dictionary_set_int64(xreply, "error", ret);
+								break;
+							}
 
-					xpc_pipe_routine_reply(xreply);
-					return;
+							// sign thread state
+							case LAUNCHD_JB_MSG_ID_SIGN_STATE: {
+								uint64_t actContext = xpc_dictionary_get_uint64(xdict, "actContext");
+								int error = -1;
+								if (actContext) {
+									error = signState(actContext);
+								}
+								xpc_dictionary_set_int64(xreply, "error", error);
+								break;
+							}
+						}
+
+						xpc_pipe_routine_reply(xreply);
+						return;
+					}
 				}
 			}
 		}

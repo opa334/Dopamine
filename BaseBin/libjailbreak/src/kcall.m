@@ -390,7 +390,7 @@ int signStateOverLaunchd(uint64_t actContext)
 {
 	xpc_object_t msg = xpc_dictionary_create_empty();
 	xpc_dictionary_set_bool(msg, "jailbreak", true);
-	xpc_dictionary_set_uint64(msg, "jailbreak-action", LAUNCHD_JB_MSG_ID_SIGN_STATE);
+	xpc_dictionary_set_uint64(msg, "id", LAUNCHD_JB_MSG_ID_SIGN_STATE);
 	xpc_dictionary_set_uint64(msg, "actContext", actContext);
 
 	xpc_object_t reply = launchd_xpc_send_message(msg);

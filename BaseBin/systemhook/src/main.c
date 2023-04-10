@@ -27,6 +27,7 @@ static void freeExecutablePath(void)
 {
 	if (gExecutablePath) {
 		free(gExecutablePath);
+		gExecutablePath = NULL;
 	}
 }
 
