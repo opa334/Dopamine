@@ -9,6 +9,7 @@ extern int (*posix_spawn_orig)(pid_t *restrict, const char *restrict, const posi
 
 void boomerang_userspaceRebootIncoming()
 {
+	// Fix Xcode debugging being broken after the userspace reboot
 	unmount("/Developer", MNT_FORCE);
 
 	pid_t boomerangPid = 0;
