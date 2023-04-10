@@ -227,7 +227,8 @@ kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 	// Blacklist to ensure general system stability
 	// I don't like this but it seems neccessary
 	const char *processBlacklist[] = {
-		"/System/Library/Frameworks/GSS.framework/Helpers/GSSCred"
+		"/System/Library/Frameworks/GSS.framework/Helpers/GSSCred",
+		"/System/Library/PrivateFrameworks/IDSBlastDoorSupport.framework/XPCServices/IDSBlastDoorService.xpc/IDSBlastDoorService"
 	};
 	size_t blacklistCount = sizeof(processBlacklist) / sizeof(processBlacklist[0]);
 	for (size_t i = 0; i < blacklistCount; i++)
