@@ -33,10 +33,9 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 				JBLogDebug("jailbreak related message %s coming from binary: %s", xdictDescription, clientPath.UTF8String);
 				free(xdictDescription);
 				if ([clientPath isEqualToString:jailbreakdPath]) {
-					uint64_t jbAction = xpc_dictionary_get_uint64(xdict, "jailbreak-action");
+					uint64_t msgId = xpc_dictionary_get_uint64(xdict, "id");
 					xpc_object_t xreply = xpc_dictionary_create_reply(xdict);
-
-					switch (jbAction) {
+					switch (msgId) {
 						// get pplrw
 						case LAUNCHD_JB_MSG_ID_GET_PPLRW: {
 							uint64_t magicPage = 0;

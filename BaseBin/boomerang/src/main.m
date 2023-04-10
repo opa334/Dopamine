@@ -11,7 +11,7 @@ int launchdInitPPLRW(void)
 {
 	xpc_object_t msg = xpc_dictionary_create_empty();
 	xpc_dictionary_set_bool(msg, "jailbreak", true);
-	xpc_dictionary_set_uint64(msg, "jailbreak-action", LAUNCHD_JB_MSG_ID_GET_PPLRW);
+	xpc_dictionary_set_uint64(msg, "id", LAUNCHD_JB_MSG_ID_GET_PPLRW);
 	xpc_object_t reply = launchd_xpc_send_message(msg);
 
 	int error = xpc_dictionary_get_int64(reply, "error");
