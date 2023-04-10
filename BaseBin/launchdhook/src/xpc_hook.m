@@ -39,9 +39,6 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 						switch (msgId) {
 							case JBD_MSG_DEBUG_ME: {
 								proc_set_debugged(clientPid);
-								FILE *f = fopen("/var/mobile/launchd-debug.log", "a");
-								fprintf(f, "set wx_allowed on proc of pid %d\n", clientPid);
-								fclose(f);
 								xpc_dictionary_set_int64(xreply, "result", 0);
 								break;
 							}
@@ -103,11 +100,11 @@ void initXPCHooks(void)
 	unsigned char xpcHandlerBytesMask[] = "\xE0\xFF\xE0\xFF\xE0\xFF\xE0\xFF\xE0\xFF\xE0\xFF\x00\xFF\xE0\xFF\x00\x00\x00\xFF";
 	
 	void *xpcHandlerMid = patchfind_find(gLaunchdImageIndex, (unsigned char*)xpcHandlerBytes, (unsigned char*)xpcHandlerBytesMask, sizeof(xpcHandlerBytes));
-	JBLogDebug("Launchd patchfinder found mid 0x%llX", xpcHandlerMid);
+	JBLogDebug("Launchd patchfinder found mid %p", xpcHandlerMid);
 
 	void *xpcHandlerPtr = patchfind_seek_back(xpcHandlerMid, 0xD503237F, 0xFFFFFFFF, 50 * 4);
 
-	JBLogDebug("Launchd patchfinder found 0x%llX", xpcHandlerPtr);
+	JBLogDebug("Launchd patchfinder found %p", xpcHandlerPtr);
 	if (xpcHandlerPtr)
 	{
 		MSHookFunction(xpcHandlerPtr, (void *)xpc_handler_hook, (void **)&xpc_handler_orig);

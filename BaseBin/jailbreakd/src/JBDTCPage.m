@@ -117,9 +117,12 @@ void tcPagesChanged(void)
 	if (_kaddr == 0) return NO;
 
 	[self ensureMappedInAndPerform:^{
+		_mappedInPage->nextPtr = 0;
 		_mappedInPage->selfPtr = _kaddr + 0x10;
-		uuid_generate(_mappedInPage->file.uuid);
+
 		_mappedInPage->file.version = 1;
+		uuid_generate(_mappedInPage->file.uuid);
+		_mappedInPage->file.length = 0;
 	}];
 
 	[gTCPages addObject:self];

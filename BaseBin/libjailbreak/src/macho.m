@@ -203,7 +203,7 @@ void _machoEnumerateDependencies(FILE *machoFile, uint32_t archOffset, NSString 
 					[enumeratedCache addObject:resolvedPath];
 					enumerateBlock(resolvedPath);
 
-					JBLogDebug("[_machoEnumerateDependencies] Found depdendency %s, recursively enumerating over it...", resolvedPath);
+					JBLogDebug("[_machoEnumerateDependencies] Found depdendency %s, recursively enumerating over it...", resolvedPath.UTF8String);
 					FILE *nextFile = fopen(resolvedPath.fileSystemRepresentation, "rb");
 					if (nextFile) {
 						BOOL nextFileIsMacho = NO;
@@ -214,16 +214,16 @@ void _machoEnumerateDependencies(FILE *machoFile, uint32_t archOffset, NSString 
 								_machoEnumerateDependencies(nextFile, nextBestArchCandidate, imagePath, sourceExecutablePath, enumeratedCache, enumerateBlock);
 							}
 							else {
-								JBLogError("[_machoEnumerateDependencies] Failed to find best arch of dependency %s", resolvedPath);
+								JBLogError("[_machoEnumerateDependencies] Failed to find best arch of dependency %s", resolvedPath.UTF8String);
 							}
 						}
 						else {
-							JBLogError("[_machoEnumerateDependencies] Dependency %s does not seem to be a macho", resolvedPath);
+							JBLogError("[_machoEnumerateDependencies] Dependency %s does not seem to be a macho", resolvedPath.UTF8String);
 						}
 						fclose(nextFile);
 					}
 					else {
-						JBLogError("[_machoEnumerateDependencies] Dependency %s does not seem to exist, maybe path resolving failed?", resolvedPath);
+						JBLogError("[_machoEnumerateDependencies] Dependency %s does not seem to exist, maybe path resolving failed?", resolvedPath.UTF8String);
 					}
 				}
 				else {

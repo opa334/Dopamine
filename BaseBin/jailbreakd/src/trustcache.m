@@ -145,7 +145,7 @@ void dynamicTrustCacheUploadDirectory(NSString *directoryPath)
 						[mappedInPage sort];
 						[mappedInPage mapOut];
 					}
-
+					JBLogDebug("mapping in a new tc page");
 					mappedInPage = trustCacheMapInFreePage();
 				}
 

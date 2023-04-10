@@ -36,6 +36,7 @@ xpc_object_t xpc_dictionary_get_value_hook(xpc_object_t xdict, const char *key)
 	xpc_object_t orgValue = xpc_dictionary_get_value_orig(xdict, key);
 	if (!strcmp(key, "LaunchDaemons")) {
 		addLaunchDaemon(orgValue, "/var/jb/basebin/LaunchDaemons/com.opa334.jailbreakd.plist");
+		addLaunchDaemon(orgValue, "/var/jb/basebin/LaunchDaemons/com.opa334.trustcache_rebuild.plist");
 		for (NSString *daemonPlistName in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/var/jb/Library/LaunchDaemons" error:nil]) {
 			if ([daemonPlistName isEqualToString:@"com.opa334.jailbreakd.plist"]) continue;
 			if ([daemonPlistName.pathExtension isEqualToString:@"plist"]) {
