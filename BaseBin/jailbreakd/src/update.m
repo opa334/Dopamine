@@ -127,6 +127,8 @@ int basebinUpdateFromTar(NSString *basebinPath)
 		return 4;
 	}
 
+	bootInfo_setObject(@"basebin_trustcache_kaddr", @(newTCKaddr));
+
 	// Copy new basebin over old basebin
 	NSArray *basebinItems = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:tmpBasebinPath error:nil];
 	for (NSString *basebinItem in basebinItems) {
@@ -138,7 +140,12 @@ int basebinUpdateFromTar(NSString *basebinPath)
 		[[NSFileManager defaultManager] copyItemAtPath:newBasebinPath toPath:oldBasebinPath error:nil];
 	}
 
-	bootInfo_setObject(@"basebin_trustcache_kaddr", @(newTCKaddr));
+	// Update systemhook.dylib on bind mount
+	if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/basebin/.fakelib/systemhook.dylib"]) {
+		[[NSFileManager defaultManager] removeItemAtPath:@"/var/jb/basebin/.fakelib/systemhook.dylib" error:nil];
+	}
+	[[NSFileManager defaultManager] copyItemAtPath:@"/var/jb/basebin/systemhook.dylib" toPath:@"/var/jb/basebin/.fakelib/systemhook.dylib"];
+
 	trustCacheListRemove(existingTCKaddr);
 
 	// there is a non zero chance that the kernel is in the process of reading the
