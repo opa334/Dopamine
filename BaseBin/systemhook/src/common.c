@@ -212,8 +212,7 @@ kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 
 	// Don't do anything for xpcproxy if it's called on jailbreakd because this also implies jbd is not running currently
 	if (!strcmp(path, "/usr/libexec/xpcproxy")) {
-		if (argv)
-		{
+		if (argv) {
 			if (argv[0]) {
 				if (argv[1]) {
 					if (!strcmp(argv[1], "com.opa334.jailbreakd")) {
