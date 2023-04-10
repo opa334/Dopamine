@@ -19,15 +19,12 @@ int posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
 					   char *const envp[restrict])
 {
 	if (path) {
-		FILE *f = fopen("/var/mobile/launchd_log.log", "a");
 		const char *firstArg = "<none>";
 		if (argv[0]) {
 			if (argv[1]) {
 				firstArg = argv[1];
 			}
 		}
-		fprintf(f, "posix_spawn %s %s\n%s\nposix_spawn end\n", path, firstArg, NSThread.callStackSymbols.description.UTF8String);
-		fclose(f);
 
 		char executablePath[1024];
 		uint32_t bufsize = sizeof(executablePath);
