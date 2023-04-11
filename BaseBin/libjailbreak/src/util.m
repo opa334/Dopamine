@@ -215,7 +215,7 @@ uint32_t ucred_get_svuid(uint64_t ucred_ptr)
 	return kread32(cr_posix_ptr + 0x8);
 }
 
-void ucred_set_svuid(uint64_t ucred_ptr, uint32_t svuid)
+int ucred_set_svuid(uint64_t ucred_ptr, uint32_t svuid)
 {
 	uint64_t cr_posix_ptr = ucred_ptr + 0x18;
 	return kwrite32(cr_posix_ptr + 0x8, svuid);
