@@ -26,7 +26,7 @@ void proc_set_csflags(uint64_t proc, uint32_t csflags);
 uint64_t self_proc(void);
 
 uint32_t ucred_get_svuid(uint64_t ucred_ptr);
-void ucred_set_svuid(uint64_t ucred_ptr, uint32_t svuid);
+int ucred_set_svuid(uint64_t ucred_ptr, uint32_t svuid);
 uint64_t ucred_get_cr_label(uint64_t ucred_ptr);
 
 uint64_t task_get_first_thread(uint64_t task_ptr);

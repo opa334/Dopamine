@@ -257,11 +257,11 @@ void mappingDestroy(void* ctx)
 
 // Physical read / write
 
-void physreadbuf(uint64_t physaddr, void* output, size_t size)
+int physreadbuf(uint64_t physaddr, void* output, size_t size)
 {
 	if(gPPLRWStatus == kPPLRWStatusNotInitialized) {
 		bzero(output, size);
-		return;
+		return -1;
 	}
 
 	JBLogDebug("before physread of 0x%llX (size: %zd)", physaddr, size);
@@ -286,12 +286,13 @@ void physreadbuf(uint64_t physaddr, void* output, size_t size)
 	}
 
 	JBLogDebug("after physread of 0x%llX", physaddr);
+  return 0;
 }
 
-void physwritebuf(uint64_t physaddr, const void* input, size_t size)
+int physwritebuf(uint64_t physaddr, const void* input, size_t size)
 {
 	if(gPPLRWStatus == kPPLRWStatusNotInitialized) {
-		return;
+		return -1;
 	}
 
 	JBLogDebug("before physwrite at 0x%llX (size: %zd)", physaddr, size);
@@ -316,15 +317,16 @@ void physwritebuf(uint64_t physaddr, const void* input, size_t size)
 	}
 
 	JBLogDebug("after physwrite at 0x%llX", physaddr);
+  return 0;
 }
 
 // Virtual read / write
 
-void kreadbuf(uint64_t kaddr, void* output, size_t size)
+int kreadbuf(uint64_t kaddr, void* output, size_t size)
 {
 	bzero(output, size);
 	if(gPPLRWStatus == kPPLRWStatusNotInitialized) {
-		return;
+		return -1;
 	}
 
 	JBLogDebug("before virtread of 0x%llX (size: %zd)", kaddr, size);
@@ -343,7 +345,7 @@ void kreadbuf(uint64_t kaddr, void* output, size_t size)
 		if (failure)
 		{
 			JBLogError("[kreadbuf] Lookup failure when trying to read %zu bytes at 0x%llX, aborting", size, kaddr);
-			return;
+			return -1;
 		}
 
 		PPLWindow window = getWindow();
@@ -357,12 +359,13 @@ void kreadbuf(uint64_t kaddr, void* output, size_t size)
 	}
 
 	JBLogDebug("after virtread of 0x%llX", kaddr);
+  return 0;
 }
 
-void kwritebuf(uint64_t kaddr, const void* input, size_t size)
+int kwritebuf(uint64_t kaddr, const void* input, size_t size)
 {
 	if(gPPLRWStatus == kPPLRWStatusNotInitialized) {
-		return;
+		return -1;
 	}
 
 	JBLogDebug("before virtwrite at 0x%llX (size: %zd)", kaddr, size);
@@ -381,7 +384,7 @@ void kwritebuf(uint64_t kaddr, const void* input, size_t size)
 		if (failure)
 		{
 			JBLogError("[kwritebuf] Lookup failure when trying to write %zu bytes to 0x%llX, aborting", size, kaddr);
-			return;
+			return -1;
 		}
 
 		PPLWindow window = getWindow();
@@ -395,6 +398,7 @@ void kwritebuf(uint64_t kaddr, const void* input, size_t size)
 	}
 
 	JBLogDebug("after virtwrite at 0x%llX", kaddr);
+  return 0;
 }
 
 
@@ -434,24 +438,24 @@ uint8_t physread8(uint64_t pa)
 }
 
 
-void physwrite64(uint64_t pa, uint64_t v)
+int physwrite64(uint64_t pa, uint64_t v)
 {
-	physwritebuf(pa, &v, sizeof(v));
+	return physwritebuf(pa, &v, sizeof(v));
 }
 
-void physwrite32(uint64_t pa, uint32_t v)
+int physwrite32(uint64_t pa, uint32_t v)
 {
-	physwritebuf(pa, &v, sizeof(v));
+	return physwritebuf(pa, &v, sizeof(v));
 }
 
-void physwrite16(uint64_t pa, uint16_t v)
+int physwrite16(uint64_t pa, uint16_t v)
 {
-	physwritebuf(pa, &v, sizeof(v));
+	return physwritebuf(pa, &v, sizeof(v));
 }
 
-void physwrite8(uint64_t pa, uint8_t v)
+int physwrite8(uint64_t pa, uint8_t v)
 {
-	physwritebuf(pa, &v, sizeof(v));
+	return physwritebuf(pa, &v, sizeof(v));
 }
 
 
@@ -489,24 +493,24 @@ uint8_t kread8(uint64_t va)
 }
 
 
-void kwrite64(uint64_t va, uint64_t v)
+int kwrite64(uint64_t va, uint64_t v)
 {
-	kwritebuf(va, &v, sizeof(v));
+	return kwritebuf(va, &v, sizeof(v));
 }
 
-void kwrite32(uint64_t va, uint32_t v)
+int kwrite32(uint64_t va, uint32_t v)
 {
-	kwritebuf(va, &v, sizeof(v));
+	return kwritebuf(va, &v, sizeof(v));
 }
 
-void kwrite16(uint64_t va, uint16_t v)
+int kwrite16(uint64_t va, uint16_t v)
 {
-	kwritebuf(va, &v, sizeof(v));
+	return kwritebuf(va, &v, sizeof(v));
 }
 
-void kwrite8(uint64_t va, uint8_t v)
+int kwrite8(uint64_t va, uint8_t v)
 {
-	kwritebuf(va, &v, sizeof(v));
+	return kwritebuf(va, &v, sizeof(v));
 }
 
 void initPPLPrimitives(uint64_t magicPage)
