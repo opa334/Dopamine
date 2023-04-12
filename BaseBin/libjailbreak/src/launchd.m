@@ -36,10 +36,16 @@ xpc_object_t launchd_xpc_send_message(xpc_object_t xdict)
 		if (!pipePtr) _os_alloc_once_table[1].once = -1;
 	}
 
-	struct xpc_global_data* globalData = pipePtr;
-	xpc_object_t pipe = globalData->xpc_bootstrap_pipe;
-
-	xpc_object_t xreply;
-	xpc_pipe_routine_with_flags(pipe, xdict, &xreply, 0);
+	xpc_object_t xreply = nil;
+	if (pipePtr) {
+		struct xpc_global_data* globalData = pipePtr;
+		xpc_object_t pipe = globalData->xpc_bootstrap_pipe;
+		if (pipe) {
+			int err = xpc_pipe_routine_with_flags(pipe, xdict, &xreply, 0);
+			if (err != 0) {
+				return nil;
+			}
+		}
+	}
 	return xreply;
 }

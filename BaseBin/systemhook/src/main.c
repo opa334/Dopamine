@@ -20,8 +20,12 @@ static void loadExecutablePath(void)
 {
 	uint32_t bufsize = 0;
 	_NSGetExecutablePath(NULL, &bufsize);
-	gExecutablePath = malloc(bufsize);
-	_NSGetExecutablePath(gExecutablePath, &bufsize);
+	char *executablePath = malloc(bufsize);
+	_NSGetExecutablePath(executablePath, &bufsize);
+	if (executablePath) {
+		gExecutablePath = realpath(executablePath, NULL);
+		free(executablePath);
+	}
 }
 static void freeExecutablePath(void)
 {
@@ -272,8 +276,37 @@ bool shouldEnableTweaks(void)
 	bool tweaksEnabled = true;
 
 	if (gExecutablePath) {
-		if (!strcmp(gExecutablePath, "/usr/libexec/xpcproxy")) {
+		if (!strcmp(gExecutablePath, "/usr/libexec/xpcproxy") ||
+			!strcmp(gExecutablePath, "/sbin/mount") ||
+			!strcmp(gExecutablePath, "/System/Library/PrivateFrameworks/MobileSoftwareUpdate.framework/XPCServices/com.apple.MobileSoftwareUpdate.CleanupPreparePathService.xpc/com.apple.MobileSoftwareUpdate.CleanupPreparePathService")) {
 			tweaksEnabled = false;
+		}
+		else {
+			/*
+			Disable Tweaks for anything inside /var/jb except for stuff in /var/jb/Applications
+			Explanation: Hooking C functions inside a process breaks fork() because the child process will not have wx_allowed
+						 so any modified TEXT mapping will be mapped in as r--, causing the process to crash when anything in it
+						 gets called, this is probably fixable in some way, but for now this solution has to suffice
+			*/
+			const char *pp = "/private/preboot";
+			if (strncmp(gExecutablePath, pp, strlen(pp)) == 0) {
+				char *varJB = realpath("/var/jb", NULL);
+				if (varJB) {
+					if (strncmp(gExecutablePath, varJB, strlen(varJB)) == 0) {
+						char *varJBApps = realpath("/var/jb/Applications", NULL);
+						if (varJBApps) {
+							if (strncmp(gExecutablePath, varJBApps, strlen(varJBApps)) != 0) {
+								tweaksEnabled = false;
+							}
+							free(varJBApps);
+						}
+						else {
+							tweaksEnabled = false;
+						}
+					}
+					free(varJB);
+				}
+			}
 		}
 	}
 
@@ -288,24 +321,6 @@ void applyKbdFix(void)
 	killall("/System/Library/TextInput/kbd", false);
 }
 
-bool gListenForImageLoads = false;
-void imageLoadListener(const struct mach_header *header, intptr_t slide)
-{
-    if (!gListenForImageLoads) return;
-
-    Dl_info dlInfo;
-    dladdr(header, &dlInfo);
-    
-    void *imageHandle = dlopen(dlInfo.dli_fname, RTLD_NOLOAD);
-
-	// If something with the ability to hook C functions is loaded into the process
-	// Make the process get CS_DEBUGGED through XPC with jailbreakd
-	if (dlsym(imageHandle, "MSHookFunction") || dlsym(imageHandle, "SubHookFunctions") || dlsym(imageHandle, "LHHookFunctions")) {
-		jbdswDebugMe();
-		gListenForImageLoads = false;
-	}
-}
-
 __attribute__((constructor)) static void initializer(void)
 {
 	unsandbox();
@@ -318,11 +333,12 @@ __attribute__((constructor)) static void initializer(void)
 	}
 
 	if (shouldEnableTweaks()) {
-		_dyld_register_func_for_add_image(imageLoadListener);
-		gListenForImageLoads = true;
-		if(access("/var/jb/usr/lib/TweakLoader.dylib", F_OK) == 0)
-		{
-			dlopen_hook("/var/jb/usr/lib/TweakLoader.dylib", RTLD_NOW);
+		int64_t debugErr = jbdswDebugMe();
+		if (debugErr == 0) {
+			if(access("/var/jb/usr/lib/TweakLoader.dylib", F_OK) == 0)
+			{
+				dlopen_hook("/var/jb/usr/lib/TweakLoader.dylib", RTLD_NOW);
+			}
 		}
 	}
 	freeExecutablePath();

@@ -57,4 +57,5 @@ int64_t jbdUpdateFromTIPA(NSString *pathToTIPA);
 int64_t jbdUpdateFromBasebinTar(NSString *pathToBasebinTar);
 
 int64_t jbdRebuildTrustCache(void);
+int64_t jbdProcessBinary(const char *filePath);
 int64_t jbdProcSetDebugged(pid_t pid);

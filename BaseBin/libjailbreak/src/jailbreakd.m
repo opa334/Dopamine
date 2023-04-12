@@ -4,6 +4,8 @@
 #import <unistd.h>
 #import <xpc/xpc.h>
 #import <bsm/libbsm.h>
+#include <sys/param.h>
+#include <sys/mount.h>
 #import "log.h"
 #import "pplrw.h"
 
@@ -27,20 +29,22 @@ mach_port_t jbdMachPort(void)
 	return outPort;
 }
 
-xpc_object_t sendJBDMessage(xpc_object_t message)
+xpc_object_t sendJBDMessage(xpc_object_t xdict)
 {
+	xpc_object_t xreply = nil;
 	mach_port_t jbdPort = jbdMachPort();
-	xpc_object_t pipe = xpc_pipe_create_from_port(jbdPort, 0);
-
-	xpc_object_t reply = nil;
-	int err = xpc_pipe_routine(pipe, message, &reply);
-	mach_port_deallocate(mach_task_self(), jbdPort);
-	if (err != 0) {
-		JBLogError("xpc_pipe_routine error on sending message to jailbreakd: %d", err);
-		return nil;
+	if (jbdPort != -1) {
+		xpc_object_t pipe = xpc_pipe_create_from_port(jbdPort, 0);
+		if (pipe) {
+			int err = xpc_pipe_routine(pipe, xdict, &xreply);
+			if (err != 0) {
+				JBLogError("xpc_pipe_routine error on sending message to jailbreakd: %d / %s", err, xpc_strerror(err));
+				xreply = nil;
+			};
+		}
+		mach_port_deallocate(mach_task_self(), jbdPort);
 	}
-
-	return reply;
+	return xreply;
 }
 
 void jbdGetStatus(uint64_t *PPLRWStatus, uint64_t *kcallStatus, pid_t *pid)
@@ -193,6 +197,35 @@ int64_t jbdRebuildTrustCache(void)
 
 	xpc_object_t reply = sendJBDMessage(message);
 	return xpc_dictionary_get_int64(reply, "result");
+}
+
+int64_t jbdProcessBinary(const char *filePath)
+{
+	// if file doesn't exist, bail out
+	if (access(filePath, F_OK) != 0) return 0;
+
+	// if file is on rootfs mount point, it doesn't need to be
+	// processed as it's guaranteed to be in static trust cache
+	// same goes for our /usr/lib bind mount
+	struct statfs fs;
+	int sfsret = statfs(filePath, &fs);
+	if (sfsret == 0) {
+		if (!strcmp(fs.f_mntonname, "/") || !strcmp(fs.f_mntonname, "/usr/lib")) return -1;
+	}
+
+	char absolutePath[PATH_MAX];
+	if (realpath(filePath, absolutePath) == NULL) return -1;
+
+	xpc_object_t message = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(message, "id", JBD_MSG_PROCESS_BINARY);
+	xpc_dictionary_set_string(message, "filePath", absolutePath);
+
+	xpc_object_t reply = sendJBDMessage(message);
+	int64_t result = -1;
+	if (reply) {
+		result  = xpc_dictionary_get_int64(reply, "result");
+	}
+	return result;
 }
 
 int64_t jbdProcSetDebugged(pid_t pid)
