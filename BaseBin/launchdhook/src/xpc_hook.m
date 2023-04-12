@@ -9,14 +9,6 @@
 #import <sandbox.h>
 #import "substrate.h"
 
-NSString *procPath(pid_t pid)
-{
-	char pathbuf[4*MAXPATHLEN];
-	int ret = proc_pidpath(pid, pathbuf, sizeof(pathbuf));
-	if (ret <= 0) return nil;
-	return [NSString stringWithUTF8String:pathbuf];
-}
-
 // Server routine to make jailbreakd able to get back primitives when it restarts
 void (*xpc_handler_orig)(uint64_t a1, uint64_t a2, xpc_object_t xdict);
 void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
@@ -28,24 +20,40 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 				audit_token_t auditToken = {};
 				xpc_dictionary_get_audit_token(xdict, &auditToken);
 				pid_t clientPid = audit_token_to_pid(auditToken);
-				NSString *clientPath = [[procPath(clientPid) stringByResolvingSymlinksInPath] stringByStandardizingPath];
+				NSString *clientPath = proc_get_path(clientPid);
 				NSString *jailbreakdPath = [[@"/var/jb/basebin/jailbreakd" stringByResolvingSymlinksInPath] stringByStandardizingPath];
-				if (xpc_dictionary_get_bool(xdict, "sw-fallback")) {
-					int sbc = sandbox_check(clientPid, "mach-lookup", SANDBOX_FILTER_GLOBAL_NAME | SANDBOX_CHECK_NO_REPORT, "com.opa334.jailbreakd.systemwide");
-					// Fallback API is only accessible if systemwide jailbreakd is not accessible
-					if (sbc != 0) {
-						uint64_t msgId = xpc_dictionary_get_uint64(xdict, "id");
-						xpc_object_t xreply = xpc_dictionary_create_reply(xdict);
-						switch (msgId) {
-							case JBD_MSG_DEBUG_ME: {
-								proc_set_debugged(clientPid);
-								xpc_dictionary_set_int64(xreply, "result", 0);
-								break;
-							}
+				if (xpc_dictionary_get_bool(xdict, "jailbreak-systemwide")) {
+					uint64_t msgId = xpc_dictionary_get_uint64(xdict, "id");
+					xpc_object_t xreply = xpc_dictionary_create_reply(xdict);
+					switch (msgId) {
+						case JBD_MSG_DEBUG_ME: {
+							proc_set_debugged(clientPid);
+							xpc_dictionary_set_int64(xreply, "result", 0);
+							break;
 						}
-						xpc_pipe_routine_reply(xreply);
-						return;
+						case JBD_MSG_PROCESS_BINARY: {
+							dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+								// downcall to jailbreakd asynchronously
+								// async because jbd might be upcalling to get primitives back
+								// which would cause an infinite hang if we're sync here
+								int64_t result = 0;
+								const char* filePath = xpc_dictionary_get_string(xdict, "filePath");
+								if (filePath) {
+									result = jbdProcessBinary(filePath);
+								}
+								xpc_dictionary_set_uint64(xreply, "result", result);
+								xpc_pipe_routine_reply(xreply);
+							});
+							return;
+						}
+						case JBD_MSG_SETUID_FIX: {
+							proc_fix_setuid(clientPid);
+							xpc_dictionary_set_int64(xreply, "result", 0);
+							break;
+						}
 					}
+					xpc_pipe_routine_reply(xreply);
+					return;
 				}
 				else {
 					char *xdictDescription = xpc_copy_description(xdict);

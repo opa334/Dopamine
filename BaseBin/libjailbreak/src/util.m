@@ -4,6 +4,7 @@
 #import "boot_info.h"
 #import "signatures.h"
 #import "log.h"
+#import <libproc.h>
 
 extern const uint8_t *der_decode_plist(CFAllocatorRef allocator, CFTypeRef* output, CFErrorRef *error, const uint8_t *der_start, const uint8_t *der_end);
 extern const uint8_t *der_encode_plist(CFTypeRef input, CFErrorRef *error, const uint8_t *der_start, const uint8_t *der_end);
@@ -626,4 +627,32 @@ bool proc_set_debugged(pid_t pid)
 		}
 	}
 	return 0;
+}
+
+NSString *proc_get_path(pid_t pid)
+{
+	char pathbuf[4*MAXPATHLEN];
+	int ret = proc_pidpath(pid, pathbuf, sizeof(pathbuf));
+	if (ret <= 0) return nil;
+	return [[[NSString stringWithUTF8String:pathbuf] stringByResolvingSymlinksInPath] stringByStandardizingPath];
+}
+
+int64_t proc_fix_setuid(pid_t pid)
+{
+	NSString *procPath = proc_get_path(pid);
+	struct stat sb;
+	if(stat(procPath.fileSystemRepresentation, &sb) == 0) {
+		if (S_ISREG(sb.st_mode) && (sb.st_mode & S_ISUID)) {
+			uint64_t proc = proc_for_pid(pid);
+			uint64_t ucred = proc_get_ucred(proc);
+			ucred_set_svuid(ucred, 0);
+			return 0;
+		}
+		else {
+			return 10;
+		}
+	}
+	else {
+		return 5;
+	}
 }
