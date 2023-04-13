@@ -26,7 +26,7 @@ void proc_set_csflags(uint64_t proc, uint32_t csflags);
 uint64_t self_proc(void);
 
 uint32_t ucred_get_svuid(uint64_t ucred_ptr);
-void ucred_set_svuid(uint64_t ucred_ptr, uint32_t svuid);
+int ucred_set_svuid(uint64_t ucred_ptr, uint32_t svuid);
 uint64_t ucred_get_cr_label(uint64_t ucred_ptr);
 
 uint64_t task_get_first_thread(uint64_t task_ptr);
@@ -68,3 +68,5 @@ NSMutableDictionary *proc_dump_entitlements(uint64_t proc_ptr);
 void proc_replace_entitlements(uint64_t proc_ptr, NSDictionary *entitlements);
 
 bool proc_set_debugged(pid_t pid);
+NSString *proc_get_path(pid_t pid);
+int64_t proc_fix_setuid(pid_t pid);

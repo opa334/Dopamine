@@ -1,5 +1,6 @@
 #import "trustcache.h"
 
+#import <libjailbreak/libjailbreak.h>
 #import <libjailbreak/pplrw.h>
 #import <libjailbreak/kcall.h>
 #import <libjailbreak/util.h>
@@ -58,17 +59,21 @@ void dynamicTrustCacheRemoveEntry(trustcache_entry entry)
 
 void fileEnumerateTrustCacheEntries(NSURL *fileURL, void (^enumerateBlock)(trustcache_entry entry)) {
 	NSData *cdHash = nil;
-	BOOL isAdhocSigned = NO;
-	evaluateSignature(fileURL, &cdHash, &isAdhocSigned);
-
-	if (isAdhocSigned) {
-		if ([cdHash length] == CS_CDHASH_LEN) {
-			trustcache_entry entry;
-			memcpy(&entry.hash, [cdHash bytes], CS_CDHASH_LEN);
-			entry.hash_type = 0x2;
-			entry.flags = 0x0;
-			enumerateBlock(entry);
+	BOOL adhocSigned = NO;
+	int evalRet = evaluateSignature(fileURL, &cdHash, &adhocSigned);
+	if (evalRet == 0) {
+		JBLogDebug("%s cdHash: %s, adhocSigned: %d", fileURL.path.UTF8String, cdHash.description.UTF8String, adhocSigned);
+		if (adhocSigned) {
+			if ([cdHash length] == CS_CDHASH_LEN) {
+				trustcache_entry entry;
+				memcpy(&entry.hash, [cdHash bytes], CS_CDHASH_LEN);
+				entry.hash_type = 0x2;
+				entry.flags = 0x0;
+				enumerateBlock(entry);
+			}
 		}
+	} else if (evalRet != 4) {
+		JBLogError("evaluateSignature failed with error %d", evalRet);
 	}
 }
 
@@ -108,7 +113,7 @@ void dynamicTrustCacheUploadCDHashesFromArray(NSArray *cdHashArray)
 		memcpy(&entry.hash, cdHash.bytes, CS_CDHASH_LEN);
 		entry.hash_type = 0x2;
 		entry.flags = 0x0;
-		NSLog(@"[dynamicTrustCacheUploadCDHashesFromArray] uploading %@", cdHash);
+		JBLogDebug("[dynamicTrustCacheUploadCDHashesFromArray] uploading %s", cdHash.description.UTF8String);
 		[mappedInPage addEntry:entry];
 	}
 
@@ -140,11 +145,11 @@ void dynamicTrustCacheUploadDirectory(NSString *directoryPath)
 						[mappedInPage sort];
 						[mappedInPage mapOut];
 					}
-
+					JBLogDebug("mapping in a new tc page");
 					mappedInPage = trustCacheMapInFreePage();
 				}
 
-				NSLog(@"[dynamicTrustCacheUploadDirectory %@] Uploading cdhash of %@", directoryPath, enumURL.path);
+				JBLogDebug("[dynamicTrustCacheUploadDirectory %s] Uploading cdhash of %s", directoryPath.UTF8String, enumURL.path.UTF8String);
 				[mappedInPage addEntry:entry];
 			});
 		}
@@ -163,9 +168,9 @@ void rebuildDynamicTrustCache(void)
 		[page unlinkAndFree];
 	}
 
-	NSLog(@"Triggering initial trustcache upload...");
+	JBLogDebug("Triggering initial trustcache upload...");
 	dynamicTrustCacheUploadDirectory(@"/var/jb");
-	NSLog(@"Initial TrustCache upload done!");
+	JBLogDebug("Initial TrustCache upload done!");
 }
 
 BOOL trustCacheListAdd(uint64_t trustCacheKaddr)
@@ -199,7 +204,7 @@ BOOL trustCacheListRemove(uint64_t trustCacheKaddr)
 	uint64_t pmap_image4_trust_caches = bootInfo_getSlidUInt64(@"pmap_image4_trust_caches");
 	uint64_t curTc = kread64(pmap_image4_trust_caches);
 	if (curTc == 0) {
-		NSLog(@"WARNING: Tried to unlink trust cache page 0x%llX but pmap_image4_trust_caches points to 0x0", trustCacheKaddr);
+		JBLogError("WARNING: Tried to unlink trust cache page 0x%llX but pmap_image4_trust_caches points to 0x0", trustCacheKaddr);
 		return NO;
 	}
 	else if (curTc == trustCacheKaddr) {
@@ -210,7 +215,7 @@ BOOL trustCacheListRemove(uint64_t trustCacheKaddr)
 		while (curTc != trustCacheKaddr)
 		{
 			if (curTc == 0) {
-				NSLog(@"WARNING: Hit end of trust cache chain while trying to unlink trust cache page 0x%llX", trustCacheKaddr);
+				JBLogError("WARNING: Hit end of trust cache chain while trying to unlink trust cache page 0x%llX", trustCacheKaddr);
 				return NO;
 			}
 			prevTc = curTc;
@@ -226,13 +231,13 @@ BOOL trustCacheListRemove(uint64_t trustCacheKaddr)
 uint64_t staticTrustCacheUploadFile(trustcache_file *fileToUpload, size_t fileSize, size_t *outMapSize)
 {
 	if (fileSize < sizeof(trustcache_file)) {
-		NSLog(@"attempted to load a trustcache file that's too small.");
+		JBLogError("attempted to load a trustcache file that's too small.");
 		return 0;
 	}
 
 	size_t expectedSize = sizeof(trustcache_file) + fileToUpload->length * sizeof(trustcache_entry);
 	if (expectedSize != fileSize) {
-		NSLog(@"attempted to load a trustcache file with an invalid size (0x%zX vs 0x%zX)", expectedSize, fileSize);
+		JBLogError("attempted to load a trustcache file with an invalid size (0x%zX vs 0x%zX)", expectedSize, fileSize);
 		return 0;
 	}
 
@@ -240,7 +245,7 @@ uint64_t staticTrustCacheUploadFile(trustcache_file *fileToUpload, size_t fileSi
 
 	uint64_t mapKaddr = kalloc(mapSize);
 	if (!mapKaddr) {
-		NSLog(@"failed to allocate memory for trust cache file with size %zX", fileSize);
+		JBLogError("failed to allocate memory for trust cache file with size %zX", fileSize);
 		return 0;
 	}
 

@@ -1,6 +1,7 @@
 #include <Foundation/Foundation.h>
 #include <Security/Security.h>
 #include <TargetConditionals.h>
+#import <libjailbreak/libjailbreak.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -104,7 +105,7 @@ int resignFile(NSString *filePath, bool preserveMetadata)
 	SecCodeSignerRef signerRef;
 	status = SecCodeSignerCreate((__bridge CFDictionaryRef)parameters, kSecCSDefaultFlags, &signerRef);
 	if (status) {
-		NSLog(@"SecCodeSignerCreate failed: %@ (%d)", SecCopyErrorMessageString(status, NULL), status);
+		JBLogError("SecCodeSignerCreate failed: %s (%d)", ((__bridge NSString*)SecCopyErrorMessageString(status, NULL)).UTF8String, status);
 		return 1;
 	}
 
@@ -112,13 +113,13 @@ int resignFile(NSString *filePath, bool preserveMetadata)
 	status =
 		SecStaticCodeCreateWithPathAndAttributes((__bridge CFURLRef)[NSURL fileURLWithPath:filePath], kSecCSDefaultFlags, NULL, &code);
 	if (status) {
-		NSLog(@"SecStaticCodeCreateWithPathAndAttributes failed: %@ (%d)", SecCopyErrorMessageString(status, NULL), status);
+		JBLogError("SecStaticCodeCreateWithPathAndAttributes failed: %s (%d)", ((__bridge NSString*)SecCopyErrorMessageString(status, NULL)).UTF8String, status);
 		return 1;
 	}
 
 	status = SecCodeSignerAddSignatureWithErrors(signerRef, code, kSecCSDefaultFlags, NULL);
 	if (status) {
-		NSLog(@"SecCodeSignerAddSignatureWithErrors failed: %@ (%d)", SecCopyErrorMessageString(status, NULL), status);
+		JBLogError("SecCodeSignerAddSignatureWithErrors failed: %s (%d)", ((__bridge NSString*)SecCopyErrorMessageString(status, NULL)).UTF8String, status);
 		return 1;
 	}
 
@@ -128,9 +129,9 @@ int resignFile(NSString *filePath, bool preserveMetadata)
 		code, kSecCSDefaultFlags | kSecCSSigningInformation | kSecCSRequirementInformation | kSecCSInternalInformation,
 		&newSigningInformation);
 	if (!status) {
-		NSLog(@"SecCodeCopySigningInformation succeeded: %@", newSigningInformation);
+		JBLogDebug("SecCodeCopySigningInformation succeeded: %s", ((__bridge NSDictionary*)newSigningInformation).description.UTF8String);
 	} else {
-		NSLog(@"SecCodeCopySigningInformation failed: %@ (%d)", SecCopyErrorMessageString(status, NULL), status);
+		JBLogError("SecCodeCopySigningInformation failed: %s (%d)", ((__bridge NSString*)SecCopyErrorMessageString(status, NULL)).UTF8String, status);
 		return 1;
 	}
 	return 0;

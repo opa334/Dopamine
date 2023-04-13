@@ -7,7 +7,7 @@ extern int64_t sandbox_extension_consume(const char *extension_token);
 
 extern xpc_object_t xpc_create_from_plist(const void *buf, size_t len);
 
-static void unsandbox(void) {
+void unsandbox(void) {
 	size_t len = 0;
 	void *addr = NULL;
 	struct stat s = {};
@@ -41,10 +41,4 @@ static void unsandbox(void) {
 		}
 	}
 	close(fd);
-}
-
-void unrestrict(void)
-{
-	unsandbox();
-	jbdDebugMe();
 }

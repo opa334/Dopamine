@@ -21,53 +21,62 @@ if [ -d ".tmp/basebin" ]; then
 fi
 mkdir -p ".tmp/basebin"
 
+# libfilecom
+cd "libfilecom"
+make
+cd -
+cp "./libfilecom/libfilecom.dylib" ".tmp/basebin/libfilecom.dylib"
+rm -rf "./_shared/libfilecom"
+mkdir -p "./_shared/libfilecom"
+cp ./libfilecom/src/*.h ./_shared/libfilecom
+
 # libjailbreak
 cd "libjailbreak"
-make clean
 make
 cd -
 cp "./libjailbreak/libjailbreak.dylib" ".tmp/basebin/libjailbreak.dylib"
-
-# copy headers
 rm -rf "./_shared/libjailbreak"
 mkdir -p "./_shared/libjailbreak"
 cp ./libjailbreak/src/*.h ./_shared/libjailbreak
 
 # jailbreakd
-
 cd "jailbreakd"
-make clean
 make
 cd -
 cp "./jailbreakd/jailbreakd" ".tmp/basebin/jailbreakd"
-cp "./jailbreakd/daemon.plist" ".tmp/basebin/jailbreakd.plist"
 
-# kickstart
+# daemon plists
+# needs separate directory because launchd is picky
+mkdir -p ".tmp/basebin/LaunchDaemons"
+cp "./jailbreakd/daemon.plist" ".tmp/basebin/LaunchDaemons/com.opa334.jailbreakd.plist"
+cp "./jbctl/rebuild_daemon.plist" ".tmp/basebin/LaunchDaemons/com.opa334.trustcache_rebuild.plist"
 
-cd "kickstart"
-make clean
+# boomerang
+cd "boomerang"
 make
 cd -
-cp "./kickstart/kickstart" ".tmp/basebin/kickstart"
+cp "./boomerang/boomerang" ".tmp/basebin/boomerang"
+
+# jbinit
+cd "jbinit"
+make
+cd -
+cp "./jbinit/jbinit" ".tmp/basebin/jbinit"
 
 # jbctl
-
 cd "jbctl"
-make clean
 make
 cd -
 cp "./jbctl/jbctl" ".tmp/basebin/jbctl"
 
 # launchdhook
 cd "launchdhook"
-make clean
 make
 cd -
 cp "./launchdhook/launchdhook.dylib" ".tmp/basebin/launchdhook.dylib"
 
 # systemhook
 cd "systemhook"
-make clean
 make
 cd -
 cp "./systemhook/systemhook.dylib" ".tmp/basebin/systemhook.dylib"
@@ -79,6 +88,7 @@ cp -r ./_external/* .tmp/basebin/
 # Create TrustCache, for basebinaries
 rm -rf "./basebin.tc"
 trustcache create "./basebin.tc" "./.tmp/basebin"
+cp "./basebin.tc" "./.tmp/basebin"
 
 # Tar /tmp to basebin.tar
 cd ".tmp"

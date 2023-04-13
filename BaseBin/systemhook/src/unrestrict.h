@@ -1,1 +1,0 @@
-void unrestrict(void);

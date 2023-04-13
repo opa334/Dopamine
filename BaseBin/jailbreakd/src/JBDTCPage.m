@@ -1,10 +1,13 @@
 #import "JBDTCPage.h"
+#import <libjailbreak/libjailbreak.h>
 #import <libjailbreak/pplrw.h>
 #import <libjailbreak/kcall.h>
 #import <libjailbreak/boot_info.h>
 #import <libjailbreak/util.h>
 
 NSMutableArray<JBDTCPage *> *gTCPages = nil;
+NSMutableArray<NSNumber *> *gTCUnusedAllocations = nil;
+
 dispatch_queue_t gTCAccessQueue;
 
 extern void trustCacheListAdd(uint64_t trustCacheKaddr);
@@ -18,6 +21,10 @@ BOOL tcPagesRecover(void)
 		uint64_t kaddr = [allocNum unsignedLongLongValue];
 		[gTCPages addObject:[[JBDTCPage alloc] initWithKernelAddress:kaddr]];
 	}
+	NSArray *existingUnusuedTCAllocations = bootInfo_getArray(@"trustcache_unused_allocations");
+	if (existingUnusuedTCAllocations) {
+		gTCUnusedAllocations = [existingUnusuedTCAllocations mutableCopy];
+	}
 	return (BOOL)existingTCAllocations;
 }
 
@@ -28,6 +35,7 @@ void tcPagesChanged(void)
 		[tcAllocations addObject:@(page.kaddr)];
 	}
 	bootInfo_setObject(@"trustcache_allocations", tcAllocations);
+	bootInfo_setObject(@"trustcache_unused_allocations", gTCUnusedAllocations);
 }
 
 @implementation JBDTCPage
@@ -59,7 +67,7 @@ void tcPagesChanged(void)
 	if (!_kaddr) return NO;
 	if (_mapRefCount == 0) {
 		_mappedInPageCtx = mapInRange(_kaddr, 1, (uint8_t**)&_mappedInPage);
-		//NSLog(@"mapped in page %p", _mappedInPage);
+		JBLogDebug("mapped in page %p", _mappedInPage);
 	};
 	_mapRefCount++;
 	return YES;
@@ -68,13 +76,13 @@ void tcPagesChanged(void)
 - (void)mapOut
 {
 	if (_mapRefCount == 0) {
-		NSLog(@"attempted to map out a map with a ref count of 0");
+		JBLogError("attempted to map out a map with a ref count of 0");
 		abort();
 	}
 	_mapRefCount--;
 	
 	if (_mapRefCount == 0) {
-		//NSLog(@"mapping out page %p", _mappedInPage);
+		JBLogDebug("mapping out page %p", _mappedInPage);
 		mappingDestroy(_mappedInPageCtx);
 		_mappedInPage = NULL;
 		_mappedInPageCtx = NULL;
@@ -96,15 +104,25 @@ void tcPagesChanged(void)
 
 - (BOOL)allocateInKernel
 {
-	_kaddr = kalloc(0x4000);
+	if (gTCUnusedAllocations.count) {
+		_kaddr = [gTCUnusedAllocations.firstObject unsignedLongLongValue];
+		[gTCUnusedAllocations removeObjectAtIndex:0];
+		JBLogDebug("got existing trust cache page at 0x%llX", _kaddr);
+	}
+	else {
+		_kaddr = kalloc(0x4000);
+		JBLogDebug("allocated trust cache page at 0x%llX", _kaddr);
+	}
+
 	if (_kaddr == 0) return NO;
 
-	NSLog(@"allocated trust cache page at 0x%llX", _kaddr);
-	
 	[self ensureMappedInAndPerform:^{
+		_mappedInPage->nextPtr = 0;
 		_mappedInPage->selfPtr = _kaddr + 0x10;
-		uuid_generate(_mappedInPage->file.uuid);
+
 		_mappedInPage->file.version = 1;
+		uuid_generate(_mappedInPage->file.uuid);
+		_mappedInPage->file.length = 0;
 	}];
 
 	[gTCPages addObject:self];
@@ -126,10 +144,10 @@ void tcPagesChanged(void)
 {
 	if (_kaddr == 0) return;
 
-	kfree(_kaddr, 0x4000);
-	NSLog(@"freed trust cache page at 0x%llX", _kaddr);
+	[gTCUnusedAllocations addObject:@(_kaddr)];
+	JBLogDebug("moved trust cache page at 0x%llX to unused list", _kaddr);
 	_kaddr = 0;
-	
+
 	[gTCPages removeObject:self];
 	tcPagesChanged();
 }
@@ -199,7 +217,7 @@ uint32_t right = count - 1;
 register uint32_t mid, cmp, i;
 while (left <= right) {
 	mid = (left + right) >> 1;
-	NSLog(@"left: %u, right: %u, mid: %u", left, right, mid);
+	JBLogDebug("left: %u, right: %u, mid: %u", left, right, mid);
 	cmp = entries[mid].hash[0] - entry.hash[0];
 	
 	if (cmp == 0) {

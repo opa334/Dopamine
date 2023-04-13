@@ -3,6 +3,8 @@
 #import "kcall.h"
 #import "boot_info.h"
 #import "signatures.h"
+#import "log.h"
+#import <libproc.h>
 
 extern const uint8_t *der_decode_plist(CFAllocatorRef allocator, CFTypeRef* output, CFErrorRef *error, const uint8_t *der_start, const uint8_t *der_end);
 extern const uint8_t *der_encode_plist(CFTypeRef input, CFErrorRef *error, const uint8_t *der_start, const uint8_t *der_end);
@@ -214,7 +216,7 @@ uint32_t ucred_get_svuid(uint64_t ucred_ptr)
 	return kread32(cr_posix_ptr + 0x8);
 }
 
-void ucred_set_svuid(uint64_t ucred_ptr, uint32_t svuid)
+int ucred_set_svuid(uint64_t ucred_ptr, uint32_t svuid)
 {
 	uint64_t cr_posix_ptr = ucred_ptr + 0x18;
 	return kwrite32(cr_posix_ptr + 0x8, svuid);
@@ -348,7 +350,7 @@ NSMutableDictionary *DEREntitlementsDecode(uint8_t *start, uint8_t *end)
 			NSError *decodeError;
 			NSMutableDictionary *result = ((NSDictionary *)[NSPropertyListSerialization propertyListWithData:plistData options:0 format:&format error:&decodeError]).mutableCopy;
 			if (!result) {
-				NSLog(@"decode error: %@", decodeError);
+				JBLogError("Error decoding DER: %s", decodeError.description.UTF8String);
 			}
 			return result;
 		}
@@ -444,8 +446,8 @@ void cr_label_replace_entitlements(uint64_t cr_label_ptr, NSDictionary *newEntit
 	kwrite64(fakeCERValidationResult + 0x00, 2); // version
 	kwrite64(fakeCERValidationResult + 0x08, kern_der_start+0x8); // blob_start
 	kwrite64(fakeCERValidationResult + 0x10, kern_der_end); // blob_end
-	NSLog(@"kern_der_start: 0x%llX, kern_der_end: 0x%llX", kern_der_start, kern_der_end);
-	NSLog(@"fakeCERValidationResult: 0x%llX", fakeCERValidationResult);
+	JBLogDebug("kern_der_start: 0x%llX, kern_der_end: 0x%llX", kern_der_start, kern_der_end);
+	JBLogDebug("fakeCERValidationResult: 0x%llX", fakeCERValidationResult);
 
 	// Get current OSEntitlements object
 	uint64_t OSEntitlements_ptr = kread64(cr_label_ptr + 0x8);
@@ -454,20 +456,20 @@ void cr_label_replace_entitlements(uint64_t cr_label_ptr, NSDictionary *newEntit
 	//uint64_t OSEntitlements_newPtr = kcall(bootInfo_getSlidUInt64(@"OSEntitlements_MetaClass_alloc"), 0, 0, 0, 0, 0, 0, 0, 0);
 
 	uint64_t kslide = bootInfo_getUInt64(@"kernelslide");
-	/*NSLog(@"initWithValidationResult(0x%llX, 0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345CF8, OSEntitlements_newPtr, fakeCERValidationResult, csblob, true);
+	/*JBLogDebug("initWithValidationResult(0x%llX, 0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345CF8, OSEntitlements_newPtr, fakeCERValidationResult, csblob, true);
 	sleep(5);
 	uint64_t ret = kcall(kslide + 0xFFFFFFF008345CF8, OSEntitlements_newPtr, fakeCERValidationResult, csblob, true, 0, 0, 0, 0);
-	NSLog(@"initWithValidationResult => 0x%llX", ret);*/
+	JBLogDebug("initWithValidationResult => 0x%llX", ret);*/
 
-	/*NSLog(@"withValidationResult(0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345C24, fakeCERValidationResult, csblob, false);
+	/*JBLogDebug("withValidationResult(0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345C24, fakeCERValidationResult, csblob, false);
 	sleep(3);
 	return;
 	uint64_t OSEntitlements_newPtr = kcall(kslide + 0xFFFFFFF008345C24, fakeCERValidationResult, csblob, false, 0, 0, 0, 0, 0);*/
 
-	/*NSLog(@"initWithValidationResult(0x%llX, 0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345CF8, OSEntitlements_ptr, fakeCERValidationResult, csblob, true);
+	/*JBLogDebug("initWithValidationResult(0x%llX, 0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345CF8, OSEntitlements_ptr, fakeCERValidationResult, csblob, true);
 	sleep(3);
 	uint64_t ret = kcall(kslide + 0xFFFFFFF008345CF8, OSEntitlements_ptr, fakeCERValidationResult, csblob, true, 0, 0, 0, 0);
-	NSLog(@"initWithValidationResult => 0x%llX", ret);*/
+	JBLogDebug("initWithValidationResult => 0x%llX", ret);*/
 
 	// Copy existing properties from old object ot new object
 	/*uint8_t *buf = malloc(0x88);
@@ -606,10 +608,12 @@ bool proc_set_debugged(pid_t pid)
 
 			pmap_set_wx_allowed(pmap, true);
 
-			uint32_t csflags = proc_get_csflags(proc);
+			// cs_flags, not needed, wx_allowed is enough
+			/*uint32_t csflags = proc_get_csflags(proc);
 			uint32_t new_csflags = ((csflags & ~0x703b10) | 0x10000024);
-			proc_set_csflags(proc, new_csflags);
+			proc_set_csflags(proc, new_csflags);*/
 
+			// some vm map crap, not needed
 			/*uint32_t f1 = kread32(vm_map + 0x94);
 			uint32_t f2 = kread32(vm_map + 0x98);
 			printf("before f1: %X, f2: %X\n", f1, f2);
@@ -623,4 +627,32 @@ bool proc_set_debugged(pid_t pid)
 		}
 	}
 	return 0;
+}
+
+NSString *proc_get_path(pid_t pid)
+{
+	char pathbuf[4*MAXPATHLEN];
+	int ret = proc_pidpath(pid, pathbuf, sizeof(pathbuf));
+	if (ret <= 0) return nil;
+	return [[[NSString stringWithUTF8String:pathbuf] stringByResolvingSymlinksInPath] stringByStandardizingPath];
+}
+
+int64_t proc_fix_setuid(pid_t pid)
+{
+	NSString *procPath = proc_get_path(pid);
+	struct stat sb;
+	if(stat(procPath.fileSystemRepresentation, &sb) == 0) {
+		if (S_ISREG(sb.st_mode) && (sb.st_mode & S_ISUID)) {
+			uint64_t proc = proc_for_pid(pid);
+			uint64_t ucred = proc_get_ucred(proc);
+			ucred_set_svuid(ucred, 0);
+			return 0;
+		}
+		else {
+			return 10;
+		}
+	}
+	else {
+		return 5;
+	}
 }

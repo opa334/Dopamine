@@ -1,7 +1,10 @@
-#import "common.h"
-#import "unrestrict.h"
+#include "common.h"
+#include "unsandbox.h"
 
+#include <mach-o/dyld.h>
 #include <dlfcn.h>
+#include <sys/sysctl.h>
+
 void* dlopen_from(const char* path, int mode, void* addressInCaller);
 void* dlopen_audited(const char* path, int mode);
 bool dlopen_preflight(const char* path);
@@ -11,6 +14,75 @@ int posix_spawnattr_setjetsam_ext(posix_spawnattr_t *attr, short flags, int prio
 #define DYLD_INTERPOSE(_replacement,_replacee) \
    __attribute__((used)) static struct{ const void* replacement; const void* replacee; } _interpose_##_replacee \
 			__attribute__ ((section ("__DATA,__interpose"))) = { (const void*)(unsigned long)&_replacement, (const void*)(unsigned long)&_replacee };
+
+static char *gExecutablePath = NULL;
+static void loadExecutablePath(void)
+{
+	uint32_t bufsize = 0;
+	_NSGetExecutablePath(NULL, &bufsize);
+	char *executablePath = malloc(bufsize);
+	_NSGetExecutablePath(executablePath, &bufsize);
+	if (executablePath) {
+		gExecutablePath = realpath(executablePath, NULL);
+		free(executablePath);
+	}
+}
+static void freeExecutablePath(void)
+{
+	if (gExecutablePath) {
+		free(gExecutablePath);
+		gExecutablePath = NULL;
+	}
+}
+
+void killall(const char *executablePathToKill, bool softly)
+{
+	static int maxArgumentSize = 0;
+	if (maxArgumentSize == 0) {
+		size_t size = sizeof(maxArgumentSize);
+		if (sysctl((int[]){ CTL_KERN, KERN_ARGMAX }, 2, &maxArgumentSize, &size, NULL, 0) == -1) {
+			perror("sysctl argument size");
+			maxArgumentSize = 4096; // Default
+		}
+	}
+	int mib[3] = { CTL_KERN, KERN_PROC, KERN_PROC_ALL};
+	struct kinfo_proc *info;
+	size_t length;
+	int count;
+	
+	if (sysctl(mib, 3, NULL, &length, NULL, 0) < 0)
+		return;
+	if (!(info = malloc(length)))
+		return;
+	if (sysctl(mib, 3, info, &length, NULL, 0) < 0) {
+		free(info);
+		return;
+	}
+	count = length / sizeof(struct kinfo_proc);
+	for (int i = 0; i < count; i++) {
+		pid_t pid = info[i].kp_proc.p_pid;
+		if (pid == 0) {
+			continue;
+		}
+		size_t size = maxArgumentSize;
+		char* buffer = (char *)malloc(length);
+		if (sysctl((int[]){ CTL_KERN, KERN_PROCARGS2, pid }, 3, buffer, &size, NULL, 0) == 0) {
+			char *executablePath = buffer + sizeof(int);
+			if (strcmp(executablePath, executablePathToKill) == 0) {
+				if(softly)
+				{
+					kill(pid, SIGTERM);
+				}
+				else
+				{
+					kill(pid, SIGKILL);
+				}
+			}
+		}
+		free(buffer);
+	}
+	free(info);
+}
 
 int posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
 					   const posix_spawn_file_actions_t *restrict file_actions,
@@ -27,7 +99,10 @@ int posix_spawnp_hook(pid_t *restrict pid, const char *restrict file,
 					   char *const argv[restrict],
 					   char *const envp[restrict])
 {
-	return spawn_hook_common(pid, resolvePath(file, NULL), file_actions, attrp, argv, envp, (void *)posix_spawn);
+	char *resolvedPath = resolvePath(file, NULL);
+	int ret = spawn_hook_common(pid, resolvedPath, file_actions, attrp, argv, envp, (void *)posix_spawn);
+	if (resolvedPath) free(resolvedPath);
+	return ret;
 }
 
 
@@ -91,7 +166,10 @@ int execlp_hook(const char *file, const char *arg0, ... /*, (char *)0 */)
 	}
 	argv[arg_count] = NULL;
 
-	return execve_hook(resolvePath(file, NULL), argv, NULL);
+	char *resolvedPath = resolvePath(file, NULL);
+	int ret = execve_hook(resolvedPath, argv, NULL);
+	if (resolvedPath) free(resolvedPath);
+	return ret;
 }
 
 int execl_hook(const char *path, const char *arg0, ... /*, (char *)0 */)
@@ -125,19 +203,25 @@ int execv_hook(const char *path, char *const argv[])
 
 int execvp_hook(const char *file, char *const argv[])
 {
-	return execve_hook(resolvePath(file, NULL), argv, NULL);
+	char *resolvedPath = resolvePath(file, NULL);
+	int ret = execve_hook(resolvedPath, argv, NULL);
+	if (resolvedPath) free(resolvedPath);
+	return ret;
 }
 
 int execvP_hook(const char *file, const char *search_path, char *const argv[])
 {
-	return execve_hook(resolvePath(file, search_path), argv, NULL);
+	char *resolvedPath = resolvePath(file, search_path);
+	int ret = execve_hook(resolvedPath, argv, NULL);
+	if (resolvedPath) free(resolvedPath);
+	return ret;
 }
 
 
 void* dlopen_hook(const char* path, int mode)
 {
 	if (path) {
-		jbdProcessLibrary(path);
+		jbdswProcessLibrary(path);
 	}
 	return dlopen(path, mode);
 }
@@ -145,7 +229,7 @@ void* dlopen_hook(const char* path, int mode)
 void* dlopen_from_hook(const char* path, int mode, void* addressInCaller)
 {
 	if (path) {
-		jbdProcessLibrary(path);
+		jbdswProcessLibrary(path);
 	}
 	return dlopen_from(path, mode, addressInCaller);
 }
@@ -153,7 +237,7 @@ void* dlopen_from_hook(const char* path, int mode, void* addressInCaller)
 void* dlopen_audited_hook(const char* path, int mode)
 {
 	if (path) {
-		jbdProcessLibrary(path);
+		jbdswProcessLibrary(path);
 	}
 	return dlopen_audited(path, mode);
 }
@@ -161,7 +245,7 @@ void* dlopen_audited_hook(const char* path, int mode)
 bool dlopen_preflight_hook(const char* path)
 {
 	if (path) {
-		jbdProcessLibrary(path);
+		jbdswProcessLibrary(path);
 	}
 	return dlopen_preflight(path);
 }
@@ -180,21 +264,84 @@ int posix_spawnattr_setjetsam_ext_hook(posix_spawnattr_t *attr, short flags, int
 int setuid_hook(uid_t uid)
 {
 	if (uid == 0) {
-		jbdFixSetuid();
+		jbdswFixSetuid();
 		setuid(uid);
 		return setuid(uid);
 	}
 	return setuid(uid);
 }
 
+bool shouldEnableTweaks(void)
+{
+	bool tweaksEnabled = true;
+
+	if (gExecutablePath) {
+		if (!strcmp(gExecutablePath, "/usr/libexec/xpcproxy") ||
+			!strcmp(gExecutablePath, "/sbin/mount") ||
+			!strcmp(gExecutablePath, "/System/Library/PrivateFrameworks/MobileSoftwareUpdate.framework/XPCServices/com.apple.MobileSoftwareUpdate.CleanupPreparePathService.xpc/com.apple.MobileSoftwareUpdate.CleanupPreparePathService")) {
+			tweaksEnabled = false;
+		}
+		else {
+			/*
+			Disable Tweaks for anything inside /var/jb except for stuff in /var/jb/Applications
+			Explanation: Hooking C functions inside a process breaks fork() because the child process will not have wx_allowed
+						 so any modified TEXT mapping will be mapped in as r--, causing the process to crash when anything in it
+						 gets called, this is probably fixable in some way, but for now this solution has to suffice
+			*/
+			const char *pp = "/private/preboot";
+			if (strncmp(gExecutablePath, pp, strlen(pp)) == 0) {
+				char *varJB = realpath("/var/jb", NULL);
+				if (varJB) {
+					if (strncmp(gExecutablePath, varJB, strlen(varJB)) == 0) {
+						char *varJBApps = realpath("/var/jb/Applications", NULL);
+						if (varJBApps) {
+							if (strncmp(gExecutablePath, varJBApps, strlen(varJBApps)) != 0) {
+								tweaksEnabled = false;
+							}
+							free(varJBApps);
+						}
+						else {
+							tweaksEnabled = false;
+						}
+					}
+					free(varJB);
+				}
+			}
+		}
+	}
+
+	return tweaksEnabled;
+}
+
+void applyKbdFix(void)
+{
+	// For whatever reason after SpringBoard has restarted, AutoFill and other stuff stops working
+	// The fix is to always also restart the kbd daemon alongside SpringBoard
+	// Seems to be something sandbox related where kbd doesn't have the right extensions until restarted
+	killall("/System/Library/TextInput/kbd", false);
+}
+
 __attribute__((constructor)) static void initializer(void)
 {
-	//printf("systemhook init (%d)\n", getpid());
-	unrestrict();
-	if(access("/var/jb/usr/lib/TweakLoader.dylib", F_OK) != -1)
-	{
-		dlopen_hook("/var/jb/usr/lib/TweakLoader.dylib", RTLD_NOW);
+	unsandbox();
+	loadExecutablePath();
+
+	if (gExecutablePath) {
+		if (strcmp(gExecutablePath, "/System/Library/CoreServices/SpringBoard.app/SpringBoard") == 0) {
+			applyKbdFix();
+		}
 	}
+
+	if (shouldEnableTweaks()) {
+		int64_t debugErr = jbdswDebugMe();
+		if (debugErr == 0) {
+			if(access("/var/jb/usr/lib/TweakLoader.dylib", F_OK) == 0)
+			{
+				dlopen_hook("/var/jb/usr/lib/TweakLoader.dylib", RTLD_NOW);
+			}
+		}
+	}
+	freeExecutablePath();
 }
 
 DYLD_INTERPOSE(posix_spawn_hook, posix_spawn)

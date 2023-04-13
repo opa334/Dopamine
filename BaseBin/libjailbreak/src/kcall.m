@@ -4,11 +4,13 @@
 #import <stdbool.h>
 #import <mach/mach.h>
 #import <mach-o/dyld.h>
+#import <libfilecom/FCHandler.h>
 #import "pplrw.h"
 #import "util.h"
 #import "jailbreakd.h"
 #import "launchd.h"
 #import "boot_info.h"
+#import "log.h"
 
 typedef struct {
 	bool inited;
@@ -61,7 +63,7 @@ uint64_t getUserReturnThreadContext(void) {
 	thread_t chThread = 0;
 	kern_return_t kr = thread_create_running(mach_task_self_, ARM_THREAD_STATE64, (thread_state_t)&state, ARM_THREAD_STATE64_COUNT, &chThread);
 	if (kr != KERN_SUCCESS) {
-		NSLog(@"[-] getUserReturnThreadContext: Failed to create return thread!");
+		JBLogError("[-] getUserReturnThreadContext: Failed to create return thread!");
 		return 0;
 	}
 	
@@ -69,13 +71,13 @@ uint64_t getUserReturnThreadContext(void) {
 	
 	uint64_t returnThreadPtr = task_get_first_thread(self_task());
 	if (returnThreadPtr == 0) {
-		NSLog(@"[-] getUserReturnThreadContext: Failed to find return thread!");
+		JBLogError("[-] getUserReturnThreadContext: Failed to find return thread!");
 		return 0;
 	}
 	
 	uint64_t returnThreadACTContext = thread_get_act_context(returnThreadPtr);
 	if (returnThreadACTContext == 0) {
-		NSLog(@"[-] getUserReturnThreadContext: Return thread has no ACT_CONTEXT?!");
+		JBLogError("[-] getUserReturnThreadContext: Return thread has no ACT_CONTEXT?!");
 		return 0;
 	}
 	
@@ -224,21 +226,21 @@ uint64_t initPACPrimitives(uint64_t kernelAllocation)
 	thread_t thread = 0;
 	kern_return_t kr = thread_create(mach_task_self_, &thread);
 	if (kr != KERN_SUCCESS) {
-		NSLog(@"[-] setupFugu14Kcall: thread_create failed!");
+		JBLogError("[-] setupFugu14Kcall: thread_create failed!");
 		return false;
 	}
 	
 	// Find the thread
 	uint64_t threadPtr = task_get_first_thread(self_task());
 	if (threadPtr == 0) {
-		NSLog(@"[-] setupFugu14Kcall: Failed to find thread!");
+		JBLogError("[-] setupFugu14Kcall: Failed to find thread!");
 		return false;
 	}
 
 	// Get it's state pointer
 	uint64_t actContext = thread_get_act_context(threadPtr);
 	if (threadPtr == 0) {
-		NSLog(@"[-] setupFugu14Kcall: Failed to get thread ACT_CONTEXT!");
+		JBLogError("[-] setupFugu14Kcall: Failed to get thread ACT_CONTEXT!");
 		return false;
 	}
 
@@ -246,7 +248,7 @@ uint64_t initPACPrimitives(uint64_t kernelAllocation)
 	gThreadMapContext = mapInRange(kernelAllocation, 4, &gThreadMapStart);
 	if (!gThreadMapContext)
 	{
-		NSLog(@"ERROR: gThreadMapContext lookup failure");
+		JBLogError("ERROR: gThreadMapContext lookup failure");
 	}
 
 	// stack is at middle of allocation
@@ -388,18 +390,33 @@ int signStateOverLaunchd(uint64_t actContext)
 {
 	xpc_object_t msg = xpc_dictionary_create_empty();
 	xpc_dictionary_set_bool(msg, "jailbreak", true);
-	xpc_dictionary_set_uint64(msg, "jailbreak-action", LAUNCHD_JB_MSG_ID_SIGN_STATE);
+	xpc_dictionary_set_uint64(msg, "id", LAUNCHD_JB_MSG_ID_SIGN_STATE);
 	xpc_dictionary_set_uint64(msg, "actContext", actContext);
 
 	xpc_object_t reply = launchd_xpc_send_message(msg);
 	return xpc_dictionary_get_int64(reply, "error");
 }
 
-// boomerang -> launchd (using libfilecom)
-int signStateOverBoomerang(uint64_t actContext)
+// boomerang <-> launchd (using libfilecom)
+int signStateLibFileCom(uint64_t actContext, NSString *from, NSString *to)
 {
-	// TODO
-	return -1;
+	NSString *fromPath = [NSString stringWithFormat:@"/var/jb/basebin/.communication/%@_to_%@", from, to];
+	NSString *toPath = [NSString stringWithFormat:@"/var/jb/basebin/.communication/%@_to_%@", to, from];
+	dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+	FCHandler *handler = [[FCHandler alloc] initWithReceiveFilePath:fromPath sendFilePath:toPath];
+	handler.receiveHandler = ^(NSDictionary *message) {
+		NSString *identifier = message[@"id"];
+		if (identifier) {
+			if ([identifier isEqualToString:@"signedThreadState"])
+			{
+				dispatch_semaphore_signal(sema);
+			}
+		}
+	};
+	[handler sendMessage:@{ @"id" : @"signThreadState", @"actContext" : @(actContext) }];
+	dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+
+	return 0;
 }
 
 int recoverPACPrimitives()
@@ -422,8 +439,11 @@ int recoverPACPrimitives()
 	int signStatus = 0;
 
 	// Sign context using suitable method based on process and system state
-	if ([processName isEqualToString:@"boomerang"] || [processName isEqualToString:@"jailbreakd"]) {
+	if ([processName isEqualToString:@"jailbreakd"]) {
 		signStatus = signStateOverLaunchd(actContextKptr);
+	}
+	else if ([processName isEqualToString:@"boomerang"]) {
+		signStatus = signStateLibFileCom(actContextKptr, @"launchd", @"boomerang");
 	}
 	else if ([processName isEqualToString:@"launchd"])
 	{
@@ -432,7 +452,7 @@ int recoverPACPrimitives()
 		// When launchd was already initialized once, we want to get primitives from boomerang
 		// (As we are coming from a userspace reboot)
 		if (environmentInitialized) {
-			signStatus = signStateOverBoomerang(actContextKptr);
+			signStatus = signStateLibFileCom(actContextKptr, @"boomerang", @"launchd");
 		}
 		// Otherwise we want to get them from jailbreakd,
 		// (As we are coming from a fresh jailbreak)

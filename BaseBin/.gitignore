@@ -1,10 +1,12 @@
 basebin.tc
-_shared/libjailbreak
 libjailbreak/libjailbreak.dylib
 jailbreakd/jailbreakd
-kickstart/kickstart
+jbinit/jbinit
 jbctl/jbctl
 launchdhook/launchdhook.dylib
 systemhook/systemhook.dylib
 libfilecom/libfilecom.dylib
 boomerang/boomerang
+_shared/libjailbreak
+_shared/libfilecom
+.tmp
