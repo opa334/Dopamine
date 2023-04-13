@@ -1,9 +1,9 @@
-#import "common.h"
-#import "unsandbox.h"
+#include "common.h"
+#include "unsandbox.h"
 
 #include <mach-o/dyld.h>
 #include <dlfcn.h>
-#import <sys/sysctl.h>
+#include <sys/sysctl.h>
 
 void* dlopen_from(const char* path, int mode, void* addressInCaller);
 void* dlopen_audited(const char* path, int mode);

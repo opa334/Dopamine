@@ -177,7 +177,7 @@ char *resolvePath(const char *file, const char *searchPath)
 	char fullpath[1024];
 
 	while (dir != NULL) {
-		sprintf(fullpath, "%s/%s", dir, file);
+		snprintf(fullpath, 1024, "%s/%s", dir, file);
 		if (access(fullpath, X_OK) == 0) {
 			return strdup(fullpath);
 		}
@@ -445,7 +445,8 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 						}
 						else {
 							strncpy(&replacementLibraryInsertStr[0], existingLibraryInsertStr, existingLibraryStart-existingLibraryInsertStr);
-							strncpy(&replacementLibraryInsertStr[strlen(replacementLibraryInsertStr)], afterStart, strlen(afterStart));
+							strncpy(&replacementLibraryInsertStr[existingLibraryStart-existingLibraryInsertStr], afterStart, strlen(afterStart));
+							replacementLibraryInsertStr[existingLibraryStart-existingLibraryInsertStr+strlen(afterStart)] = '\0';
 						}
 					}
 				}
@@ -455,7 +456,7 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 			}
 			
 			size_t noSafeModeEnvCount = ogEnvCount - (existingSafeModeIndex != -1) - (existingMSSafeModeIndex != -1) - (replacementLibraryInsertStr == NULL);
-			char **noSafeModeEnv = malloc(noSafeModeEnvCount * sizeof(char *));
+			char **noSafeModeEnv = malloc((noSafeModeEnvCount+1) * sizeof(char *));
 			int ci = 0;
 			for (int i = 0; i < ogEnvCount; i++) {
 				if (existingSafeModeIndex != -1) {
