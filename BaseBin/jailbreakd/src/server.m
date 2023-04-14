@@ -258,8 +258,8 @@ int64_t initEnvironment(NSDictionary *settings)
 	}
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoard.framework"]) {
-		[[NSFileManager defaultManager] removeItemAtPath:springBoardPath error:nil];
-		[[NSFileManager defaultManager] copyItemAtPath:springBoardPath toPath:springBoardPath error:nil];
+		[[NSFileManager defaultManager] removeItemAtPath:fakeSpringBoardPath error:nil];
+		[[NSFileManager defaultManager] copyItemAtPath:springBoardPath toPath:fakeSpringBoardPath error:nil];
 	}
 	
 	
