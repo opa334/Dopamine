@@ -39,8 +39,8 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: master
-          body: master
+          tag_name: Fugu15_master
+          body: Fugu15_master
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           files: |
            *.tipa
