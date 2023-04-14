@@ -220,14 +220,8 @@ int64_t initEnvironment(NSDictionary *settings)
 	NSString *fakeFontsPath = @"/var/jb/System/Library/Fonts";
 	NSString *fontsPath = @"/System/Library/Fonts";
 	
-	 NSString *fakeLockPath = @"/var/jb/System/Library/PrivateFrameworks/lock@3x-896h.ca";
+	NSString *fakeLockPath = @"/var/jb/System/Library/PrivateFrameworks/lock@3x-896h.ca";
 	NSString *lockPath = @"/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca";
-	
-	NSString *fakeLightPath = @"/var/jb/System/Library/PrivateFrameworks/PlatterKit.framework";
-	NSString *lightPath = @"/System/Library/PrivateFrameworks/PlatterKit.framework";
-	
-	NSString *fakeLightPath = @"/var/jb/System/Library/PrivateFrameworks/PlatterKit.framework";
-	NSString *lightPath = @"/System/Library/PrivateFrameworks/PlatterKit.framework";
 	
 	NSString *fakeLightPath = @"/var/jb/System/Library/PrivateFrameworks/PlatterKit.framework";
 	NSString *lightPath = @"/System/Library/PrivateFrameworks/PlatterKit.framework";
