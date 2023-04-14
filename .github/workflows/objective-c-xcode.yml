@@ -32,8 +32,8 @@ jobs:
         run: |
           sudo security import Exploits/fastPath/arm.pfx -k /Library/Keychains/System.keychain -P password -A
           make
-          cp Fugu15/Fugu15.tipa 0Fugu15max.tipa
-          mv Fugu15/Fugu15.tipa 0Fugu15max_${{ env.t_name }}.tipa
+          cp Fugu15/Fugu15.tipa EnixFugu15.tipa
+          mv Fugu15/Fugu15.tipa EnixFugu15_${{ env.t_name }}.tipa
           mv Fugu15/Payload/Fugu15.app/basebin.tar basebin.tar
       
       - name: Release
