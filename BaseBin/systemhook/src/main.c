@@ -4,6 +4,7 @@
 #include <mach-o/dyld.h>
 #include <dlfcn.h>
 #include <sys/sysctl.h>
+#include <sys/stat.h>
 
 void* dlopen_from(const char* path, int mode, void* addressInCaller);
 void* dlopen_audited(const char* path, int mode);
@@ -261,16 +262,6 @@ int posix_spawnattr_setjetsam_ext_hook(posix_spawnattr_t *attr, short flags, int
 	return posix_spawnattr_setjetsam_ext_replacement(attr, flags, priority, memlimit_active, memlimit_inactive, &posix_spawnattr_setjetsam_ext);
 }
 
-int setuid_hook(uid_t uid)
-{
-	if (uid == 0) {
-		jbdswFixSetuid();
-		setuid(uid);
-		return setuid(uid);
-	}
-	return setuid(uid);
-}
-
 bool shouldEnableTweaks(void)
 {
 	bool tweaksEnabled = true;
@@ -326,6 +317,14 @@ __attribute__((constructor)) static void initializer(void)
 	unsandbox();
 	loadExecutablePath();
 
+	struct stat sb;
+	if(stat(gExecutablePath, &sb) == 0) {
+		if (S_ISREG(sb.st_mode) && (sb.st_mode & S_ISUID)) {
+			jbdswFixSetuid();
+			setuid(sb.st_uid);
+		}
+	}
+
 	if (gExecutablePath) {
 		if (strcmp(gExecutablePath, "/System/Library/CoreServices/SpringBoard.app/SpringBoard") == 0) {
 			applyKbdFix();
@@ -358,4 +357,3 @@ DYLD_INTERPOSE(dlopen_audited_hook, dlopen_audited)
 DYLD_INTERPOSE(dlopen_preflight_hook, dlopen_preflight)
 DYLD_INTERPOSE(posix_spawnattr_setjetsam_hook, posix_spawnattr_setjetsam)
 DYLD_INTERPOSE(posix_spawnattr_setjetsam_ext_hook, posix_spawnattr_setjetsam_ext)
-DYLD_INTERPOSE(setuid_hook, setuid)
