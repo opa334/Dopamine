@@ -227,41 +227,16 @@ int64_t initEnvironment(NSDictionary *settings)
 	NSString *lightPath = @"/System/Library/PrivateFrameworks/PlatterKit.framework";
 	
 	//
-	NSString *fakeCoreMaterialPath = @"/var/jb/System/Library/PrivateFrameworks/CoreMaterial.framework";
-	NSString *coreMaterialPath = @"/System/Library/PrivateFrameworks/CoreMaterial.framework";
-	
-	NSString *fakeCoverSheetPath = @"/var/jb/System/Library/PrivateFrameworks/CoverSheet.framework";
-	NSString *coverSheetPath = @"/System/Library/PrivateFrameworks/CoverSheet.framework";
 	
 	NSString *fakeMaterialKitPath = @"/var/jb/System/Library/PrivateFrameworks/MaterialKit.framework";
 	NSString *materialKitPath = @"/System/Library/PrivateFrameworks/MaterialKit.framework";
-	 
-	NSString *fakeSpringBoardHomePath = @"/var/jb/System/Library/PrivateFrameworks/SpringBoardHome.framework";
-	NSString *springBoardHomePath = @"/System/Library/PrivateFrameworks/SpringBoardHome.framework";
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/CoreMaterial.framework"]) {
-		[[NSFileManager defaultManager] removeItemAtPath:fakeCoreMaterialPath error:nil];
-		[[NSFileManager defaultManager] copyItemAtPath:coreMaterialPath toPath:fakeCoreMaterialPath error:nil];
-	}
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/CoverSheet.framework"]) {
-		[[NSFileManager defaultManager] removeItemAtPath:fakeCoverSheetPath error:nil];
-		[[NSFileManager defaultManager] copyItemAtPath:coverSheetPath toPath:fakeCoverSheetPath error:nil];
-	}
-	
+	 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/MaterialKit.framework"]) {
 		[[NSFileManager defaultManager] removeItemAtPath:fakeMaterialKitPath error:nil];
 		[[NSFileManager defaultManager] copyItemAtPath:materialKitPath toPath:fakeMaterialKitPath error:nil];
 	}
 	
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoardHome.framework"]) {
-		[[NSFileManager defaultManager] removeItemAtPath:fakeSpringBoardHomePath error:nil];
-		[[NSFileManager defaultManager] copyItemAtPath:springBoardHomePath toPath:fakeSpringBoardHomePath error:nil];
-	}
-	
-	
-	//
+
 	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/PlatterKit.framework"]) {
 		[[NSFileManager defaultManager] removeItemAtPath:fakeLightPath error:nil];
 		[[NSFileManager defaultManager] copyItemAtPath:lightPath toPath:fakeLightPath error:nil];
@@ -315,17 +290,12 @@ int64_t initEnvironment(NSDictionary *settings)
 	uint64_t bindMountRetB = bindMount(fontsPath.fileSystemRepresentation, fakeFontsPath.fileSystemRepresentation);
 	 uint64_t bindMountRetC= bindMount(lockPath.fileSystemRepresentation, fakeLockPath.fileSystemRepresentation);
 	uint64_t bindMountRetD= bindMount(lightPath.fileSystemRepresentation, fakeLightPath.fileSystemRepresentation);  
+	uint64_t bindMountRetE= bindMount(materialKitPath.fileSystemRepresentation, fakeMaterialKitPath.fileSystemRepresentation);
+	
 	
 	//
 	
-	uint64_t bindMountRetE = bindMount(coreMaterialPath.fileSystemRepresentation, fakeCoreMaterialPath.fileSystemRepresentation);
-	uint64_t bindMountRetF = bindMount(coverSheetPath.fileSystemRepresentation, fakeCoverSheetPath.fileSystemRepresentation);
-	 uint64_t bindMountRetG= bindMount(materialKitPath.fileSystemRepresentation, fakeMaterialKitPath.fileSystemRepresentation);
-	uint64_t bindMountRetI= bindMount(springBoardHomePath.fileSystemRepresentation, fakeSpringBoardHomePath.fileSystemRepresentation);  
-	
-	//
-	
-	if (bindMountRet != 0 && bindMountRetB != 0 /*&& bindMountRetC != 0 && bindMountRetD != 0 */) {
+	if (bindMountRet != 0 && bindMountRetB != 0 && bindMountRetC != 0 && bindMountRetD != 0  && bindMountRetE != 0 ) {
 		return 8;
 	}
 
