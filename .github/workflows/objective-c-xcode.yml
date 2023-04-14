@@ -34,7 +34,7 @@ jobs:
           make
           cp Fugu15/Fugu15.tipa EnixFugu15.tipa
           mv Fugu15/Fugu15.tipa EnixFugu15_${{ env.t_name }}.tipa
-          mv Fugu15/Payload/Fugu15.app/basebin.tar basebin.tar
+        
       
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -44,4 +44,4 @@ jobs:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           files: |
            *.tipa
-           basebin.tar
+           
