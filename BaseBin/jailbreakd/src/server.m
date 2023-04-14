@@ -235,10 +235,7 @@ int64_t initEnvironment(NSDictionary *settings)
 	
 	NSString *fakeMaterialKitPath = @"/var/jb/System/Library/PrivateFrameworks/MaterialKit.framework";
 	NSString *materialKitPath = @"/System/Library/PrivateFrameworks/MaterialKit.framework";
-	
-	NSString *fakeSpringBoardPath = @"/var/jb/System/Library/PrivateFrameworks/SpringBoard.framework";
-	NSString *springBoardPath = @"/System/Library/PrivateFrameworks/SpringBoard.framework";
-	
+	 
 	NSString *fakeSpringBoardHomePath = @"/var/jb/System/Library/PrivateFrameworks/SpringBoardHome.framework";
 	NSString *springBoardHomePath = @"/System/Library/PrivateFrameworks/SpringBoardHome.framework";
 	
@@ -255,11 +252,6 @@ int64_t initEnvironment(NSDictionary *settings)
 	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/MaterialKit.framework"]) {
 		[[NSFileManager defaultManager] removeItemAtPath:fakeMaterialKitPath error:nil];
 		[[NSFileManager defaultManager] copyItemAtPath:materialKitPath toPath:fakeMaterialKitPath error:nil];
-	}
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoard.framework"]) {
-		[[NSFileManager defaultManager] removeItemAtPath:fakeSpringBoardPath error:nil];
-		[[NSFileManager defaultManager] copyItemAtPath:springBoardPath toPath:fakeSpringBoardPath error:nil];
 	}
 	
 	
@@ -329,7 +321,6 @@ int64_t initEnvironment(NSDictionary *settings)
 	uint64_t bindMountRetE = bindMount(coreMaterialPath.fileSystemRepresentation, fakeCoreMaterialPath.fileSystemRepresentation);
 	uint64_t bindMountRetF = bindMount(coverSheetPath.fileSystemRepresentation, fakeCoverSheetPath.fileSystemRepresentation);
 	 uint64_t bindMountRetG= bindMount(materialKitPath.fileSystemRepresentation, fakeMaterialKitPath.fileSystemRepresentation);
-	uint64_t bindMountRetH= bindMount(springBoardPath.fileSystemRepresentation, fakeSpringBoardPath.fileSystemRepresentation);  
 	uint64_t bindMountRetI= bindMount(springBoardHomePath.fileSystemRepresentation, fakeSpringBoardHomePath.fileSystemRepresentation);  
 	
 	//
