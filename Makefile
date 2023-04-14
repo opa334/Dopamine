@@ -7,7 +7,7 @@ all %:
 	@xattr -rc Tools >/dev/null 2>&1
 	$(MAKE) -C Exploits/oobPCI $@
 	$(MAKE) -C Fugu15 $@
-	$(MAKE) -C FuguInstall $@
+	#$(MAKE) -C FuguInstall $@
 
 clean:
 	@./BaseBin/clean.sh
