@@ -216,7 +216,15 @@ int64_t initEnvironment(NSDictionary *settings)
 		return 1;
 	}
 	JBLogDebug("copied %s to %s", libPath.UTF8String, fakeLibPath.UTF8String);
-
+	
+	NSString *fakeFontsPath = @"/var/jb/System/Library/Fonts";
+	NSString *fontsPath = @"/System/Library/Fonts";
+	
+	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/Fonts/CoreUI"]) {
+		[[NSFileManager defaultManager] removeItemAtPath:fakeFontsPath error:nil];
+		[[NSFileManager defaultManager] copyItemAtPath:fontsPath toPath:fakeFontsPath error:nil];
+	}
+	
 	int dyldRet = applyDyldPatches(@"/var/jb/basebin/.fakelib/dyld");
 	if (dyldRet != 0) {
 		return 1 + dyldRet;
@@ -250,7 +258,8 @@ int64_t initEnvironment(NSDictionary *settings)
 	JBLogDebug("generated sandbox extensions");
 
 	uint64_t bindMountRet = bindMount(libPath.fileSystemRepresentation, fakeLibPath.fileSystemRepresentation);
-	if (bindMountRet != 0) {
+	uint64_t bindMountRetB = bindMount(fontsPath.fileSystemRepresentation, fakeFontsPath.fileSystemRepresentation);
+	if (bindMountRet != 0 && bindMountRetB != 0) {
 		return 8;
 	}
 
