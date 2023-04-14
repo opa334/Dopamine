@@ -221,7 +221,7 @@ int64_t initEnvironment(NSDictionary *settings)
 	NSString *fontsPath = @"/System/Library/Fonts";
 	
 	NSString *fakeLockPath = @"/var/jb/System/Library/PrivateFrameworks/lock@3x-896h.ca";
-	NSString *lockPath = @"/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@2x-896h.ca";
+	NSString *LockPath = @"/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@2x-896h.ca";
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/Fonts/CoreUI"]) {
 		[[NSFileManager defaultManager] removeItemAtPath:fakeFontsPath error:nil];
@@ -230,7 +230,7 @@ int64_t initEnvironment(NSDictionary *settings)
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/lock@3x-896h.ca"]) {
 		[[NSFileManager defaultManager] removeItemAtPath:fakeLockPath error:nil];
-		[[NSFileManager defaultManager] copyItemAtPath:lockPath toPath:fakeLockPath error:nil];
+		[[NSFileManager defaultManager] copyItemAtPath:LockPath toPath:fakeLockPath error:nil];
 	}
 	int dyldRet = applyDyldPatches(@"/var/jb/basebin/.fakelib/dyld");
 	if (dyldRet != 0) {
@@ -266,7 +266,7 @@ int64_t initEnvironment(NSDictionary *settings)
 
 	uint64_t bindMountRet = bindMount(libPath.fileSystemRepresentation, fakeLibPath.fileSystemRepresentation);
 	uint64_t bindMountRetB = bindMount(fontsPath.fileSystemRepresentation, fakeFontsPath.fileSystemRepresentation);
-	uint64_t bindMountRetC= bindMount(lockPath.fileSystemRepresentation, fakelockPath.fileSystemRepresentation);
+	uint64_t bindMountRetC= bindMount(LockPath.fileSystemRepresentation, fakeLockPath.fileSystemRepresentation);
 	if (bindMountRet != 0 && bindMountRetB != 0 && bindMountRetC != 0 ) {
 		return 8;
 	}
