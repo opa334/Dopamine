@@ -12,3 +12,5 @@ DerivedData/
 Fugu15/Fugu15/bootstrap/tmp/
 .idea
 Tools/fastPathSign/.build_*
+.vscode/settings.json
+Fugu15/Payload
