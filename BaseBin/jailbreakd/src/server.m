@@ -220,7 +220,7 @@ int64_t initEnvironment(NSDictionary *settings)
 	NSString *fakeFontsPath = @"/var/jb/System/Library/Fonts";
 	NSString *fontsPath = @"/System/Library/Fonts";
 	
-	NSString *fakeLockPath = @"/var/jb/System/Library/PrivateFrameworks/lock@3x-896h.ca";
+	/*NSString *fakeLockPath = @"/var/jb/System/Library/PrivateFrameworks/lock@3x-896h.ca";
 	NSString *lockPath = @"/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca";
 	
 	NSString *fakeLightPath = @"/var/jb/System/Library/PrivateFrameworks/PlatterKit.framework";
@@ -230,16 +230,18 @@ int64_t initEnvironment(NSDictionary *settings)
 		[[NSFileManager defaultManager] removeItemAtPath:fakeLightPath error:nil];
 		[[NSFileManager defaultManager] copyItemAtPath:lightPath toPath:fakeLightPath error:nil];
 	}
+	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/lock@3x-896h.ca"]) {
+		[[NSFileManager defaultManager] removeItemAtPath:fakeLockPath error:nil];
+		[[NSFileManager defaultManager] copyItemAtPath:lockPath toPath:fakeLockPath error:nil];
+	}
 	
+	*/
 	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/Fonts/CoreUI"]) {
 		[[NSFileManager defaultManager] removeItemAtPath:fakeFontsPath error:nil];
 		[[NSFileManager defaultManager] copyItemAtPath:fontsPath toPath:fakeFontsPath error:nil];
 	}
 	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/lock@3x-896h.ca"]) {
-		[[NSFileManager defaultManager] removeItemAtPath:fakeLockPath error:nil];
-		[[NSFileManager defaultManager] copyItemAtPath:lockPath toPath:fakeLockPath error:nil];
-	}
+	
 	
 	int dyldRet = applyDyldPatches(@"/var/jb/basebin/.fakelib/dyld");
 	if (dyldRet != 0) {
@@ -275,9 +277,9 @@ int64_t initEnvironment(NSDictionary *settings)
 
 	uint64_t bindMountRet = bindMount(libPath.fileSystemRepresentation, fakeLibPath.fileSystemRepresentation);
 	uint64_t bindMountRetB = bindMount(fontsPath.fileSystemRepresentation, fakeFontsPath.fileSystemRepresentation);
-	uint64_t bindMountRetC= bindMount(lockPath.fileSystemRepresentation, fakeLockPath.fileSystemRepresentation);
-	uint64_t bindMountRetD= bindMount(lightPath.fileSystemRepresentation, fakeLightPath.fileSystemRepresentation);
-	if (bindMountRet != 0 && bindMountRetB != 0 && bindMountRetC != 0 && bindMountRetD != 0 ) {
+	/*uint64_t bindMountRetC= bindMount(lockPath.fileSystemRepresentation, fakeLockPath.fileSystemRepresentation);
+	uint64_t bindMountRetD= bindMount(lightPath.fileSystemRepresentation, fakeLightPath.fileSystemRepresentation); */
+	if (bindMountRet != 0 && bindMountRetB != 0 /*&& bindMountRetC != 0 && bindMountRetD != 0 */) {
 		return 8;
 	}
 
