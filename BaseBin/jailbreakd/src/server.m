@@ -226,10 +226,10 @@ int64_t initEnvironment(NSDictionary *settings)
 		[[NSFileManager defaultManager] copyItemAtPath:fontsPath toPath:fakeFontsPath error:nil];
 	}
 	
-	NSString *fakeLockPath = @"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca";
-	NSString *lockPath = @"/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca";
+	NSString *fakeLockPath = @"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework";
+	NSString *lockPath = @"/System/Library/PrivateFrameworks/SpringBoardUIServices.framework";
 	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca"]) {
+	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework"]) {
 		[[NSFileManager defaultManager] removeItemAtPath:fakeLockPath error:nil];
 		[[NSFileManager defaultManager] copyItemAtPath:lockPath toPath:fakeLockPath error:nil];
 	}
