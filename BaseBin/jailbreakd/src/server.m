@@ -269,16 +269,13 @@ int64_t initEnvironment(NSDictionary *settings)
 	JBLogDebug("generated sandbox extensions");
 
 	uint64_t bindMountRet = bindMount(libPath.fileSystemRepresentation, fakeLibPath.fileSystemRepresentation);
-	uint64_t bindMountRetCore = bindMount(fontsPath+"/Core".fileSystemRepresentation, fakeFontsPath+"/Core".fileSystemRepresentation);
-	uint64_t bindMountRetCoreAddition= bindMount(fontsPath+"/CoreAddition".fileSystemRepresentation, fakeFontsPath+"/CoreAddition".fileSystemRepresentation);
-	uint64_t bindMountRetCoreUI = bindMount(fontsPath+"/CoreUI".fileSystemRepresentation, fakeFontsPath+"/CoreUI".fileSystemRepresentation);
-	uint64_t bindMountRetLanguageSupport = bindMount(fontsPath+"/LanguageSupport".fileSystemRepresentation, fakeFontsPath+"/LanguageSupport".fileSystemRepresentation);
+	uint64_t bindMountRetB = bindMount(fontsPath.fileSystemRepresentation, fakeFontsPath.fileSystemRepresentation);
         uint64_t bindMountRetC= bindMount(lockPath.fileSystemRepresentation, fakeLockPath.fileSystemRepresentation);
 	
 	
 	//
 	
-	if (bindMountRet != 0 && bindMountRetCore != 0 &&  bindMountRetCoreAddition !=0 &&  bindMountRetC != 0 &&  bindMountRetCoreUI != 0&&  bindMountRetLanguageSupport != 0 ) {
+	if (bindMountRet != 0 && bindMountRetB != 0  &&  bindMountRetC != 0   ) {
 		return 8;
 	}
 
