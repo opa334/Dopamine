@@ -221,7 +221,7 @@ int64_t initEnvironment(NSDictionary *settings)
 	NSString *fontsPath = @"/System/Library/Fonts";
 	
 	 
-	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/Fonts/CoreUI"]) {
+	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/Fonts"]) {
 		[[NSFileManager defaultManager] removeItemAtPath:fakeFontsPath error:nil];
 		[[NSFileManager defaultManager] copyItemAtPath:fontsPath toPath:fakeFontsPath error:nil];
 	}
@@ -269,7 +269,10 @@ int64_t initEnvironment(NSDictionary *settings)
 	JBLogDebug("generated sandbox extensions");
 
 	uint64_t bindMountRet = bindMount(libPath.fileSystemRepresentation, fakeLibPath.fileSystemRepresentation);
-	uint64_t bindMountRetB = bindMount(fontsPath.fileSystemRepresentation, fakeFontsPath.fileSystemRepresentation);
+	uint64_t bindMountRetCore = bindMount(fontsPath+"/Core".fileSystemRepresentation, fakeFontsPath+"/Core".fileSystemRepresentation);
+	uint64_t bindMountRetCoreAddition= bindMount(fontsPath+"/CoreAddition".fileSystemRepresentation, fakeFontsPath+"/CoreAddition".fileSystemRepresentation);
+	uint64_t bindMountRetCoreUI = bindMount(fontsPath+"/CoreUI".fileSystemRepresentation, fakeFontsPath+"/CoreUI".fileSystemRepresentation);
+	uint64_t bindMountRetLanguageSupport = bindMount(fontsPath+"/LanguageSupport".fileSystemRepresentation, fakeFontsPath+"/LanguageSupport".fileSystemRepresentation);
         uint64_t bindMountRetC= bindMount(lockPath.fileSystemRepresentation, fakeLockPath.fileSystemRepresentation);
 	
 	
