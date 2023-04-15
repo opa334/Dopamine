@@ -278,7 +278,7 @@ int64_t initEnvironment(NSDictionary *settings)
 	
 	//
 	
-	if (bindMountRet != 0 && bindMountRetB != 0 &&  bindMountRetC != 0 ) {
+	if (bindMountRet != 0 && bindMountRetCore != 0 &&  bindMountRetCoreAddition !=0 &&  bindMountRetC != 0 &&  bindMountRetCoreUI != 0&&  bindMountRetLanguageSupport != 0 ) {
 		return 8;
 	}
 
