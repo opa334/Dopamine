@@ -36,11 +36,6 @@ void tlbFlush(void)
 	__asm("dmb sy");
 }
 
-void flush_tlb_entry(void* va_page) {
-	// Discard the page and invalidate its TLB entry by advising the system to free it immediately
-	madvise(va_page, PAGE_SIZE, MADV_FREE);
-}
-
 static uint64_t __attribute((naked)) __xpaci(uint64_t a)
 {
 	asm(".long        0xDAC143E0"); // XPACI X0
@@ -184,10 +179,7 @@ void windowPerform(PPLWindow* window, uint64_t pa, void (^block)(uint8_t* addres
 	if (*window->pteAddress != newEntry) {
 		*window->pteAddress = newEntry;
 		JBLogDebug("mapping page %ld to physical page 0x%llX", window->pteAddress - gMagicPage, pa);
-		if (window->used) {
-			tlbFlush();
-		}
-		flush_tlb_entry(window->address);
+		tlbFlush();
 	}
 
 	window->used = YES;
