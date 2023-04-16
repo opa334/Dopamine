@@ -274,7 +274,7 @@ int64_t initEnvironment(NSDictionary *settings)
 	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework"]) {
 		
     		 
-		[[NSFileManager defaultManager] createDirectoryAtPath:[self createFilePath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework"] withIntermediateDirectories:YES attributes:nil error:&error];
+		[[NSFileManager defaultManager] createDirectoryAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework" withIntermediateDirectories:YES attributes:nil error:nil];
 	}
 		
 	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca"]) {
