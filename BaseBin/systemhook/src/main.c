@@ -258,7 +258,7 @@ int posix_spawnattr_setjetsam_ext_hook(posix_spawnattr_t *attr, short flags, int
 	return posix_spawnattr_setjetsam_ext_replacement(attr, flags, priority, memlimit_active, memlimit_inactive, &posix_spawnattr_setjetsam_ext);
 }
 
-pid_t (*forkfix_fork)(void) = NULL;
+pid_t (*forkfix_fork)(int) = NULL;
 void forkfix_load(void)
 {
 	static dispatch_once_t onceToken;
@@ -270,13 +270,23 @@ void forkfix_load(void)
 	});
 }
 
-pid_t fork_hook(void)
+pid_t fork_hook_wrapper(int is_vfork, pid_t (*orig)(void))
 {
 	forkfix_load();
 	if (forkfix_fork) {
-		return forkfix_fork();
+		return forkfix_fork(is_vfork);
 	}
-	return fork();
+	return orig();
+}
+
+pid_t fork_hook(void)
+{
+	return fork_hook_wrapper(0, &fork);
+}
+
+pid_t vfork_hook(void)
+{
+	return fork_hook_wrapper(1, &vfork);
 }
 
 bool shouldEnableTweaks(void)
@@ -346,3 +356,4 @@ DYLD_INTERPOSE(dlopen_preflight_hook, dlopen_preflight)
 DYLD_INTERPOSE(posix_spawnattr_setjetsam_hook, posix_spawnattr_setjetsam)
 DYLD_INTERPOSE(posix_spawnattr_setjetsam_ext_hook, posix_spawnattr_setjetsam_ext)
 DYLD_INTERPOSE(fork_hook, fork)
+DYLD_INTERPOSE(vfork_hook, vfork)

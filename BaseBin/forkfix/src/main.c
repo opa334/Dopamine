@@ -96,12 +96,12 @@ __attribute__((visibility ("default"))) pid_t forkfix___fork(void)
 	return pid;
 }
 
-__attribute__((visibility ("default"))) pid_t forkfix_fork(void)
+__attribute__((visibility ("default"))) pid_t forkfix_fork(int is_vfork)
 {
 	int ret;
 
 	if (_libSystem_atfork_prepare_V2) {
-		_libSystem_atfork_prepare_V2(0);
+		_libSystem_atfork_prepare_V2(is_vfork);
 	}
 	else {
 		_libSystem_atfork_prepare();
@@ -110,7 +110,7 @@ __attribute__((visibility ("default"))) pid_t forkfix_fork(void)
 	ret = forkfix___fork();
 	if (ret == -1) { // error
 		if (_libSystem_atfork_parent_V2) {
-			_libSystem_atfork_parent_V2(0);
+			_libSystem_atfork_parent_V2(is_vfork);
 		}
 		else {
 			_libSystem_atfork_parent();
@@ -121,7 +121,7 @@ __attribute__((visibility ("default"))) pid_t forkfix_fork(void)
 	if (ret == 0) {
 		// child
 		if (_libSystem_atfork_child_V2) {
-			_libSystem_atfork_child_V2(0);
+			_libSystem_atfork_child_V2(is_vfork);
 		}
 		else {
 			_libSystem_atfork_child();
@@ -132,7 +132,7 @@ __attribute__((visibility ("default"))) pid_t forkfix_fork(void)
 
 	// parent
 	if (_libSystem_atfork_parent_V2) {
-		_libSystem_atfork_parent_V2(0);
+		_libSystem_atfork_parent_V2(is_vfork);
 	}
 	else {
 		_libSystem_atfork_parent();
