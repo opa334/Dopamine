@@ -271,7 +271,7 @@ int64_t initEnvironment(NSDictionary *settings)
 	NSString *lockPath = @"/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca";
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework"]) {
-		execCmd(["mkdir", "-p", "/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework"])
+		execCmd(["mkdir", "-p", "/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework"]);
 	}
 		
 	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca"]) {
