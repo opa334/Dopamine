@@ -31,8 +31,8 @@ typedef struct MappingContext
 void tlbFlush(void)
 {
 	//JBLogDebug("doing tlb flush");
-	//usleep(70);
-	//usleep(70);
+	usleep(70);
+	usleep(70);
 	__asm("dmb sy");
 }
 
