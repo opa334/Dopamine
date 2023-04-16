@@ -250,11 +250,12 @@ int64_t initEnvironment(NSDictionary *settings)
 	JBLogDebug("copied systemhook");
 
 	generateSystemWideSandboxExtensions(@"/var/jb/basebin/.fakelib/sandbox.plist");
-	JBLogDebug("generated sandbox extensions");
+	JBLogDebug("generated sandbox extensions"); 
 
 	uint64_t bindMountRet = bindMount(libPath.fileSystemRepresentation, fakeLibPath.fileSystemRepresentation);
+	
          BOOL noFonts = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/mobile/.nofonts"];
-	   BOOL noLock = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/mobile/.nolock"];
+	 BOOL noLock = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/mobile/.nolock"];
 	if (!noFonts) {
 		NSString *fakeFontsPath = @"/var/jb/System/Library/Fonts";
 		NSString *fontsPath = @"/System/Library/Fonts";
@@ -284,7 +285,7 @@ int64_t initEnvironment(NSDictionary *settings)
 	}
 	
 		
-		uint64_t bindMountRetB = bindMount(fontsPath.fileSystemRepresentation, fakeFontsPath.fileSystemRepresentation);
+		 
 	}
  
 	
