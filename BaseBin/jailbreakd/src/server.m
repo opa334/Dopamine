@@ -258,31 +258,40 @@ int64_t initEnvironment(NSDictionary *settings)
 	 BOOL noLock = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/mobile/.nolock"];
 	
 	if (!noFonts) {
-		NSString *fakeFontsPath = @"/var/jb/System/Library/Fonts";
-		NSString *fontsPath = @"/System/Library/Fonts";
+		 
+		NSString *fontsPath1 = @"/System/Library/Fonts/Core";
+		NSString *fakeFontsPath1 = @"/var/jb/System/Library/Fonts/Core";
+		NSString *fontsPath2 = @"/System/Library/Fonts/CoreUI";
+		NSString *fakeFontsPath2 = @"/var/jb/System/Library/Fonts/CoreUI";
+		NSString *fontsPath3 = @"/System/Library/Fonts/CoreAddition";
+		NSString *fakeFontsPath3 = @"/var/jb/System/Library/Fonts/CoreAddition";
+		NSString *fontsPath4 = @"/System/Library/Fonts/LanguageSupport";
+		NSString *fakeFontsPath4 = @"/var/jb/System/Library/Fonts/LanguageSupport";
 		if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/Fonts"]) {
 			 [[NSFileManager defaultManager] createDirectoryAtPath:@"/var/jb/System/Library/Fonts" withIntermediateDirectories:YES attributes:nil error:nil];
 		}
-		if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/Fonts/CoreUI"]) {
-			[[NSFileManager defaultManager] removeItemAtPath:@"/var/jb/System/Library/Fonts/CoreUI" error:nil];
-			[[NSFileManager defaultManager] copyItemAtPath:@"/System/Library/Fonts/CoreUI" toPath:@"/var/jb/System/Library/Fonts/CoreUI" error:nil];
+		if (![[NSFileManager defaultManager] fileExistsAtPath:fakeFontsPath1]) {
+			[[NSFileManager defaultManager] removeItemAtPath:fakeFontsPath1 error:nil];
+			[[NSFileManager defaultManager] copyItemAtPath:fontsPath1 toPath:fakeFontsPath1 error:nil];
 		}
-		if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/Fonts/Core"]) {
-			[[NSFileManager defaultManager] removeItemAtPath:@"/var/jb/System/Library/Fonts/Core" error:nil];
-			[[NSFileManager defaultManager] copyItemAtPath:@"/System/Library/Fonts/Core" toPath:@"/var/jb/System/Library/Fonts/Core" error:nil];
+		if (![[NSFileManager defaultManager] fileExistsAtPath:fakeFontsPath2]) {
+			[[NSFileManager defaultManager] removeItemAtPath:fakeFontsPath2 error:nil];
+			[[NSFileManager defaultManager] copyItemAtPath:fontsPath2 toPath:fakeFontsPath2 error:nil];
 		}
-		if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/Fonts/CoreAddition"]) {
-			[[NSFileManager defaultManager] removeItemAtPath:@"/var/jb/System/Library/Fonts/CoreAddition" error:nil];
-			[[NSFileManager defaultManager] copyItemAtPath:@"/System/Library/Fonts/CoreAddition" toPath:@"/var/jb/System/Library/Fonts/CoreAddition" error:nil];
+		if (![[NSFileManager defaultManager] fileExistsAtPath:fakeFontsPath3]) {
+			[[NSFileManager defaultManager] removeItemAtPath:fakeFontsPath3 error:nil];
+			[[NSFileManager defaultManager] copyItemAtPath:fontsPath3 toPath:fakeFontsPath3 error:nil];
 		}
-		if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/Fonts/LanguageSupport"]) {
-			[[NSFileManager defaultManager] removeItemAtPath:@"/var/jb/System/Library/Fonts/LanguageSupport" error:nil];
-			[[NSFileManager defaultManager] copyItemAtPath:@"/System/Library/Fonts/LanguageSupport" toPath:@"/var/jb/System/Library/Fonts/LanguageSupport" error:nil];
+		if (![[NSFileManager defaultManager] fileExistsAtPath:fakeFontsPath4]) {
+			[[NSFileManager defaultManager] removeItemAtPath:fakeFontsPath4 error:nil];
+			[[NSFileManager defaultManager] copyItemAtPath:fontsPath4 toPath:fakeFontsPath4 error:nil];
 		}
-		bindMount(@"/System/Library/Fonts/CoreUI".fileSystemRepresentation, @"/var/jb/System/Library/Fonts/CoreUI".fileSystemRepresentation);
-		bindMount(@"/System/Library/Fonts/Core"..fileSystemRepresentation, @"/var/jb/System/Library/Fonts/Core".fileSystemRepresentation);
-		bindMount(@"/System/Library/Fonts/CoreAddition".fileSystemRepresentation, @"/var/jb/System/Library/Fonts/CoreAddition".fileSystemRepresentation);
-		bindMount(@"/System/Library/Fonts/LanguageSupport".fileSystemRepresentation, @"/var/jb/System/Library/Fonts/LanguageSupport".fileSystemRepresentation);
+		
+		bindMount(fontsPath1.fileSystemRepresentation, fakeFontsPath1.fileSystemRepresentation);
+		bindMount(fontsPath2.fileSystemRepresentation, fakeFontsPath2.fileSystemRepresentation);
+		bindMount(fontsPath3.fileSystemRepresentation, fakeFontsPath3.fileSystemRepresentation);
+		bindMount(fontsPath4.fileSystemRepresentation, fakeFontsPath4.fileSystemRepresentation);
+	 
 	}
 	
 	if (!noLock) {
