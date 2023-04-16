@@ -23,10 +23,22 @@ uint64_t proc_get_file_glob_by_file_descriptor(uint64_t proc_ptr, int fd);
 uint64_t proc_get_vnode_by_file_descriptor(uint64_t proc_ptr, int fd);
 uint32_t proc_get_csflags(uint64_t proc);
 void proc_set_csflags(uint64_t proc, uint32_t csflags);
+uint32_t proc_get_svuid(uint64_t proc_ptr);
+void proc_set_svuid(uint64_t proc_ptr, uid_t svuid);
+uint32_t proc_get_svgid(uint64_t proc_ptr);
+void proc_set_svgid(uint64_t proc_ptr, uid_t svgid);
+uint32_t proc_get_p_flag(uint64_t proc_ptr);
+void proc_set_p_flag(uint64_t proc_ptr, uint32_t p_flag);
 uint64_t self_proc(void);
 
+uint32_t ucred_get_uid(uint64_t ucred_ptr);
+int ucred_set_uid(uint64_t ucred_ptr, uint32_t uid);
 uint32_t ucred_get_svuid(uint64_t ucred_ptr);
 int ucred_set_svuid(uint64_t ucred_ptr, uint32_t svuid);
+uint32_t ucred_get_cr_groups(uint64_t ucred_ptr);
+int ucred_set_cr_groups(uint64_t ucred_ptr, uint32_t cr_groups);
+uint32_t ucred_get_svgid(uint64_t ucred_ptr);
+int ucred_set_svgid(uint64_t ucred_ptr, uint32_t svgid);
 uint64_t ucred_get_cr_label(uint64_t ucred_ptr);
 
 uint64_t task_get_first_thread(uint64_t task_ptr);

@@ -317,9 +317,8 @@ __attribute__((constructor)) static void initializer(void)
 
 	struct stat sb;
 	if(stat(gExecutablePath, &sb) == 0) {
-		if (S_ISREG(sb.st_mode) && (sb.st_mode & S_ISUID)) {
+		if (S_ISREG(sb.st_mode) && (sb.st_mode & (S_ISUID | S_ISGID))) {
 			jbdswFixSetuid();
-			setuid(sb.st_uid);
 		}
 	}
 

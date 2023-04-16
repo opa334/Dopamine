@@ -6,6 +6,8 @@
 #import "log.h"
 #import <libproc.h>
 
+#define P_SUGID 0x00000100
+
 extern const uint8_t *der_decode_plist(CFAllocatorRef allocator, CFTypeRef* output, CFErrorRef *error, const uint8_t *der_start, const uint8_t *der_end);
 extern const uint8_t *der_encode_plist(CFTypeRef input, CFErrorRef *error, const uint8_t *der_start, const uint8_t *der_end);
 extern size_t der_sizeof_plist(CFPropertyListRef pl, CFErrorRef *error);
@@ -200,6 +202,66 @@ void proc_set_csflags(uint64_t proc, uint32_t csflags)
 	}
 }
 
+uint32_t proc_get_svuid(uint64_t proc_ptr)
+{
+	if (@available(iOS 15.2, *)) {
+		return kread32(proc_ptr + 0x44);
+	}
+	else {
+		return kread32(proc_ptr + 0x3C);
+	}
+}
+
+void proc_set_svuid(uint64_t proc_ptr, uid_t svuid)
+{
+	if (@available(iOS 15.2, *)) {
+		kwrite32(proc_ptr + 0x44, svuid);
+	}
+	else {
+		kwrite32(proc_ptr + 0x3C, svuid);
+	}
+}
+
+uint32_t proc_get_svgid(uint64_t proc_ptr)
+{
+	if (@available(iOS 15.2, *)) {
+		return kread32(proc_ptr + 0x48);
+	}
+	else {
+		return kread32(proc_ptr + 0x40);
+	}
+}
+
+void proc_set_svgid(uint64_t proc_ptr, uid_t svgid)
+{
+	if (@available(iOS 15.2, *)) {
+		kwrite32(proc_ptr + 0x48, svgid);
+	}
+	else {
+		kwrite32(proc_ptr + 0x40, svgid);
+	}
+}
+
+uint32_t proc_get_p_flag(uint64_t proc_ptr)
+{
+	if (@available(iOS 15.2, *)) {
+		return kread32(proc_ptr + 0x264); // ref to this at the beginning of __mac_mount (& 4)
+	}
+	else {
+		return kread32(proc_ptr + 0x1BC);
+	}
+}
+
+void proc_set_p_flag(uint64_t proc_ptr, uint32_t p_flag)
+{
+	if (@available(iOS 15.2, *)) {
+		kwrite32(proc_ptr + 0x264, p_flag);
+	}
+	else {
+		kwrite32(proc_ptr + 0x1BC, p_flag);
+	}
+}
+
 uint64_t self_proc(void)
 {
 	static uint64_t gSelfProc = 0;
@@ -208,6 +270,18 @@ uint64_t self_proc(void)
 		gSelfProc = proc_for_pid(getpid());
 	});
 	return gSelfProc;
+}
+
+uint32_t ucred_get_uid(uint64_t ucred_ptr)
+{
+	uint64_t cr_posix_ptr = ucred_ptr + 0x18;
+	return kread32(cr_posix_ptr + 0x0);
+}
+
+int ucred_set_uid(uint64_t ucred_ptr, uint32_t uid)
+{
+	uint64_t cr_posix_ptr = ucred_ptr + 0x18;
+	return kwrite32(cr_posix_ptr + 0x0, uid);
 }
 
 uint32_t ucred_get_svuid(uint64_t ucred_ptr)
@@ -220,6 +294,30 @@ int ucred_set_svuid(uint64_t ucred_ptr, uint32_t svuid)
 {
 	uint64_t cr_posix_ptr = ucred_ptr + 0x18;
 	return kwrite32(cr_posix_ptr + 0x8, svuid);
+}
+
+uint32_t ucred_get_cr_groups(uint64_t ucred_ptr)
+{
+	uint64_t cr_posix_ptr = ucred_ptr + 0x18;
+	return kread32(cr_posix_ptr + 0x10);
+}
+
+int ucred_set_cr_groups(uint64_t ucred_ptr, uint32_t cr_groups)
+{
+	uint64_t cr_posix_ptr = ucred_ptr + 0x18;
+	return kwrite32(cr_posix_ptr + 0x10, cr_groups);
+}
+
+uint32_t ucred_get_svgid(uint64_t ucred_ptr)
+{
+	uint64_t cr_posix_ptr = ucred_ptr + 0x18;
+	return kread32(cr_posix_ptr + 0x54);
+}
+
+int ucred_set_svgid(uint64_t ucred_ptr, uint32_t svgid)
+{
+	uint64_t cr_posix_ptr = ucred_ptr + 0x18;
+	return kwrite32(cr_posix_ptr + 0x54, svgid);
 }
 
 uint64_t ucred_get_cr_label(uint64_t ucred_ptr)
@@ -710,10 +808,24 @@ int64_t proc_fix_setuid(pid_t pid)
 	NSString *procPath = proc_get_path(pid);
 	struct stat sb;
 	if(stat(procPath.fileSystemRepresentation, &sb) == 0) {
-		if (S_ISREG(sb.st_mode) && (sb.st_mode & S_ISUID)) {
+		if (S_ISREG(sb.st_mode) && (sb.st_mode & (S_ISUID | S_ISGID))) {
 			uint64_t proc = proc_for_pid(pid);
 			uint64_t ucred = proc_get_ucred(proc);
-			ucred_set_svuid(ucred, 0);
+			if ((sb.st_mode & (S_ISUID))) {
+				proc_set_svuid(proc, sb.st_uid);
+				ucred_set_svuid(ucred, sb.st_uid);
+				ucred_set_uid(ucred, sb.st_uid);
+			}
+			if ((sb.st_mode & (S_ISGID))) {
+				proc_set_svgid(proc, sb.st_gid);
+				ucred_set_svgid(ucred, sb.st_gid);
+				ucred_set_cr_groups(ucred, sb.st_gid);
+			}
+			uint32_t p_flag = proc_get_p_flag(proc);
+			if ((p_flag & P_SUGID) != 0) {
+				p_flag &= ~P_SUGID;
+				proc_set_p_flag(proc, p_flag);
+			}
 			return 0;
 		}
 		else {
