@@ -353,18 +353,24 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 	}
 
 	// If we have found an existing DYLD_INSERT_LIBRARIES variable, check if the systemwide.dylib is already in there
+	// Also, all other libraries in that variable need to be processed with jailbreakd to ensure they are in trustcache
 	bool isAlreadyInjected = false;
 	if (existingLibraryInsertIndex != -1) {
 		char *const existingEnv = ogEnv[existingLibraryInsertIndex];
-		char *existingStart = strstr(existingEnv, HOOK_DYLIB_PATH);
-		if (existingStart) {
-			char before = 0;
-			if (existingStart > existingEnv) {
-				before = existingStart[-1];
+		char *libPaths = strdup(&existingEnv[strlen(insertVarPrefix)]);
+		char *libPath = strtok(libPaths, ":");
+		while (libPath != NULL) {
+			if (!strcmp(libPath, HOOK_DYLIB_PATH)) {
+				isAlreadyInjected = true;
 			}
-			char after = existingStart[strlen(HOOK_DYLIB_PATH)];
-			isAlreadyInjected = (before == '=' || before == ':') && (after == '\0' || after == ':');
+			else {
+				if (!(binaryConfig & kBinaryConfigDontProcess)) {
+					jbdswProcessLibrary(libPath);
+				}
+			}
+			libPath = strtok(NULL, ":");
 		}
+		free(libPaths);
 	}
 
 	if (shouldInject == isAlreadyInjected && (existingSafeModeIndex == -1 && existingMSSafeModeIndex == -1)) {
