@@ -36,21 +36,26 @@ void tlbFlush(void)
 	__asm("dmb sy");
 }
 
+void flush_tlb_entry(void* va_page) {
+	// Discard the page and invalidate its TLB entry by advising the system to free it immediately
+	madvise(va_page, PAGE_SIZE, MADV_FREE);
+}
+
 static uint64_t __attribute((naked)) __xpaci(uint64_t a)
 {
-    asm(".long        0xDAC143E0"); // XPACI X0
-    asm("ret");
+	asm(".long        0xDAC143E0"); // XPACI X0
+	asm("ret");
 }
 
 uint64_t xpaci(uint64_t a)
 {
-    // If a looks like a non-pac'd pointer just return it
-    if ((a & 0xFFFFFF0000000000) == 0xFFFFFF0000000000)
-    {
-        return a;
-    }
-    
-    return __xpaci(a);
+	// If a looks like a non-pac'd pointer just return it
+	if ((a & 0xFFFFFF0000000000) == 0xFFFFFF0000000000)
+	{
+		return a;
+	}
+	
+	return __xpaci(a);
 }
 
 // Virtual to physical address translation
@@ -61,7 +66,7 @@ uint64_t walkPageTable(uint64_t table, uint64_t virt, bool *err)
 	uint64_t table1Off = (virt >> 36ULL) & 0x7ULL;
 	uint64_t table1Entry = physread64(table + (8ULL * table1Off));
 	if ((table1Entry & 0x3) != 3) {
-		JBLogError("[walkPageTable] table1 lookup failure, table:0x%llX virt:0x%llX", table, virt); usleep(1000);
+		JBLogError("[walkPageTable] table1 lookup failure, table:0x%llX virt:0x%llX", table, virt);
 		if (err) *err = true;
 		return 0;
 	}
@@ -84,7 +89,7 @@ uint64_t walkPageTable(uint64_t table, uint64_t virt, bool *err)
 			JBLogDebug("[walkPageTable] table3Entry: 0x%llX", table3Entry);
 			
 			if ((table3Entry & 0x3) != 3) {
-				JBLogDebug("[walkPageTable] table3 lookup failure, table:0x%llX virt:0x%llX", table3, virt); usleep(1000);
+				JBLogDebug("[walkPageTable] table3 lookup failure, table:0x%llX virt:0x%llX", table3, virt);
 				if (err) *err = true;
 				return 0;
 			}
@@ -94,7 +99,7 @@ uint64_t walkPageTable(uint64_t table, uint64_t virt, bool *err)
 		}
 
 		default:
-			JBLogDebug("[walkPageTable] table2 lookup failure, table:0x%llX virt:0x%llX", table2, virt); usleep(1000);
+			JBLogDebug("[walkPageTable] table2 lookup failure, table:0x%llX virt:0x%llX", table2, virt);
 			return 0;
 	}
 }
@@ -124,6 +129,7 @@ PPLWindow getWindow()
 			PPLWindow window;
 			window.pteAddress = &gMagicPage[i];
 			window.address = mapped;
+			window.used = false;
 			return window;
 		}
 	}
@@ -154,6 +160,7 @@ PPLWindow* getConcurrentWindows(uint32_t count)
 					uint64_t* mapped = (uint64_t*)(((uint64_t)gMagicPage) + ((fmi+k) << 14));
 					output[k].pteAddress = &gMagicPage[fmi+k];
 					output[k].address = mapped;
+					output[k].used = false;
 				}
 				return output;
 			}
@@ -177,7 +184,10 @@ void windowPerform(PPLWindow* window, uint64_t pa, void (^block)(uint8_t* addres
 	if (*window->pteAddress != newEntry) {
 		*window->pteAddress = newEntry;
 		JBLogDebug("mapping page %ld to physical page 0x%llX", window->pteAddress - gMagicPage, pa);
-		tlbFlush();
+		if (window->used) {
+			tlbFlush();
+		}
+		flush_tlb_entry(window->address);
 	}
 
 	window->used = YES;
@@ -286,7 +296,7 @@ int physreadbuf(uint64_t physaddr, void* output, size_t size)
 	}
 
 	JBLogDebug("after physread of 0x%llX", physaddr);
-  return 0;
+	return 0;
 }
 
 int physwritebuf(uint64_t physaddr, const void* input, size_t size)
@@ -317,7 +327,7 @@ int physwritebuf(uint64_t physaddr, const void* input, size_t size)
 	}
 
 	JBLogDebug("after physwrite at 0x%llX", physaddr);
-  return 0;
+	return 0;
 }
 
 // Virtual read / write
@@ -398,7 +408,7 @@ int kwritebuf(uint64_t kaddr, const void* input, size_t size)
 	}
 
 	JBLogDebug("after virtwrite at 0x%llX", kaddr);
-  return 0;
+	return 0;
 }
 
 
