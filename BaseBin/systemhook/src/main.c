@@ -262,42 +262,28 @@ int posix_spawnattr_setjetsam_ext_hook(posix_spawnattr_t *attr, short flags, int
 	return posix_spawnattr_setjetsam_ext_replacement(attr, flags, priority, memlimit_active, memlimit_inactive, &posix_spawnattr_setjetsam_ext);
 }
 
+pid_t fork_hook(void)
+{
+	void *forkfixHandle = dlopen("/var/jb/basebin/forkfix.dylib", RTLD_NOW);
+	if (forkfixHandle) {
+		pid_t (*forkfix_fork)(void) = dlsym(forkfixHandle, "forkfix_fork");
+		if (forkfix_fork) {
+			pid_t ret = forkfix_fork();
+			dlclose(forkfixHandle);
+			return ret;
+		}
+		dlclose(forkfixHandle);
+	}
+	return fork();
+}
+
 bool shouldEnableTweaks(void)
 {
 	bool tweaksEnabled = true;
 
 	if (gExecutablePath) {
-		if (!strcmp(gExecutablePath, "/usr/libexec/xpcproxy") ||
-			!strcmp(gExecutablePath, "/sbin/mount") ||
-			!strcmp(gExecutablePath, "/System/Library/PrivateFrameworks/MobileSoftwareUpdate.framework/XPCServices/com.apple.MobileSoftwareUpdate.CleanupPreparePathService.xpc/com.apple.MobileSoftwareUpdate.CleanupPreparePathService")) {
+		if (!strcmp(gExecutablePath, "/usr/libexec/xpcproxy")) {
 			tweaksEnabled = false;
-		}
-		else {
-			/*
-			Disable Tweaks for anything inside /var/jb except for stuff in /var/jb/Applications
-			Explanation: Hooking C functions inside a process breaks fork() because the child process will not have wx_allowed
-						 so any modified TEXT mapping will be mapped in as r--, causing the process to crash when anything in it
-						 gets called, this is probably fixable in some way, but for now this solution has to suffice
-			*/
-			const char *pp = "/private/preboot";
-			if (strncmp(gExecutablePath, pp, strlen(pp)) == 0) {
-				char *varJB = realpath("/var/jb", NULL);
-				if (varJB) {
-					if (strncmp(gExecutablePath, varJB, strlen(varJB)) == 0) {
-						char *varJBApps = realpath("/var/jb/Applications", NULL);
-						if (varJBApps) {
-							if (strncmp(gExecutablePath, varJBApps, strlen(varJBApps)) != 0) {
-								tweaksEnabled = false;
-							}
-							free(varJBApps);
-						}
-						else {
-							tweaksEnabled = false;
-						}
-					}
-					free(varJB);
-				}
-			}
 		}
 	}
 
@@ -357,3 +343,4 @@ DYLD_INTERPOSE(dlopen_audited_hook, dlopen_audited)
 DYLD_INTERPOSE(dlopen_preflight_hook, dlopen_preflight)
 DYLD_INTERPOSE(posix_spawnattr_setjetsam_hook, posix_spawnattr_setjetsam)
 DYLD_INTERPOSE(posix_spawnattr_setjetsam_ext_hook, posix_spawnattr_setjetsam_ext)
+DYLD_INTERPOSE(fork_hook, fork)

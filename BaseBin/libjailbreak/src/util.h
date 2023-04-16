@@ -35,6 +35,12 @@ uint64_t task_get_vm_map(uint64_t task_ptr);
 uint64_t self_task(void);
 
 uint64_t vm_map_get_pmap(uint64_t vm_map_ptr);
+void vm_map_iterate_entries(uint64_t vm_map_ptr, void (^itBlock)(uint64_t start, uint64_t end, uint64_t entry, BOOL* stop));
+
+void vm_map_entry_get_prot(uint64_t entry_ptr, vm_prot_t *prot, vm_prot_t *max_prot);
+void vm_map_entry_set_prot(uint64_t entry_ptr, vm_prot_t prot, vm_prot_t max_prot);
+void vm_map_fork_fixup(uint64_t parent_map_ptr, uint64_t child_map_ptr);
+
 void pmap_set_wx_allowed(uint64_t pmap_ptr, bool wx_allowed);
 void pmap_set_type(uint64_t pmap_ptr, uint8_t type);
 uint64_t pmap_lv2(uint64_t pmap_ptr, uint64_t virt);
@@ -70,3 +76,4 @@ void proc_replace_entitlements(uint64_t proc_ptr, NSDictionary *entitlements);
 bool proc_set_debugged(pid_t pid);
 NSString *proc_get_path(pid_t pid);
 int64_t proc_fix_setuid(pid_t pid);
+int64_t proc_fork_fixup(pid_t parentPid, pid_t childPid);

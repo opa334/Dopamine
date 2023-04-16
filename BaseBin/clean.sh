@@ -46,4 +46,9 @@ cd "systemhook"
 make clean
 cd -
 
+# forkfix
+cd "forkfix"
+make clean
+cd -
+
 cd "$PREV_DIR"

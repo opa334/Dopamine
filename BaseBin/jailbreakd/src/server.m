@@ -284,7 +284,8 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 
 			BOOL isAllowedSystemWide = msgId == JBD_MSG_PROCESS_BINARY || 
 									msgId == JBD_MSG_DEBUG_ME ||
-									msgId == JBD_MSG_SETUID_FIX;
+									msgId == JBD_MSG_SETUID_FIX ||
+									msgId == JBD_MSG_DEBUG_FORKED;
 
 			if (!systemwide || isAllowedSystemWide) {
 				switch (msgId) {
@@ -480,6 +481,19 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						int64_t result = 0;
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 							proc_set_debugged(clientPid);
+						}
+						else {
+							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+						}
+						xpc_dictionary_set_int64(reply, "result", result);
+						break;
+					}
+
+					case JBD_MSG_DEBUG_FORKED: {
+						int64_t result = 0;
+						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+							pid_t childPid = xpc_dictionary_get_int64(message, "childPid");
+							proc_fork_fixup(clientPid, childPid);
 						}
 						else {
 							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;

@@ -81,6 +81,12 @@ make
 cd -
 cp "./systemhook/systemhook.dylib" ".tmp/basebin/systemhook.dylib"
 
+# forkfix
+cd "forkfix"
+make
+cd -
+cp "./forkfix/forkfix.dylib" ".tmp/basebin/forkfix.dylib"
+
 
 # external
 cp -r ./_external/* .tmp/basebin/

@@ -4,6 +4,7 @@ jailbreakd/jailbreakd
 jbinit/jbinit
 jbctl/jbctl
 launchdhook/launchdhook.dylib
+forkfix/forkfix.dylib
 systemhook/systemhook.dylib
 libfilecom/libfilecom.dylib
 boomerang/boomerang
