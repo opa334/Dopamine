@@ -285,7 +285,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 			BOOL isAllowedSystemWide = msgId == JBD_MSG_PROCESS_BINARY || 
 									msgId == JBD_MSG_DEBUG_ME ||
 									msgId == JBD_MSG_SETUID_FIX ||
-									msgId == JBD_MSG_DEBUG_FORKED;
+									msgId == JBD_MSG_FORK_FIX;
 
 			if (!systemwide || isAllowedSystemWide) {
 				switch (msgId) {
@@ -489,7 +489,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						break;
 					}
 
-					case JBD_MSG_DEBUG_FORKED: {
+					case JBD_MSG_FORK_FIX: {
 						int64_t result = 0;
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 							pid_t childPid = xpc_dictionary_get_int64(message, "childPid");
