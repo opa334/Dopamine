@@ -17,7 +17,7 @@
 #import "dyld_patch.h"
 #import "update.h"
 #import <sandbox.h>
-
+#import "forkfix.h"
 
 kern_return_t bootstrap_check_in(mach_port_t bootstrap_port, const char *service, mach_port_t *server_port);
 
@@ -493,7 +493,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						int64_t result = 0;
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 							pid_t childPid = xpc_dictionary_get_int64(message, "childPid");
-							proc_fork_fixup(clientPid, childPid);
+							result = apply_fork_fixup(clientPid, childPid);
 						}
 						else {
 							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;

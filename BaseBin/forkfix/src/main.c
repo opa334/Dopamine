@@ -98,8 +98,6 @@ __attribute__((visibility ("default"))) pid_t forkfix___fork(void)
 
 __attribute__((visibility ("default"))) pid_t forkfix_fork(void)
 {
-	loadPrivateSymbols();
-
 	int ret;
 
 	if (_libSystem_atfork_prepare_V2) {
@@ -144,3 +142,7 @@ __attribute__((visibility ("default"))) pid_t forkfix_fork(void)
 	return ret;
 }
 
+__attribute__((constructor)) static void initializer(void)
+{
+	loadPrivateSymbols();
+}

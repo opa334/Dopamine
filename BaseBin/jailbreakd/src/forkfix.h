@@ -1,0 +1,1 @@
+int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid);

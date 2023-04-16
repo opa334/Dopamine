@@ -137,10 +137,6 @@ int execle_hook(const char *path, const char *arg0, ... /*, (char *)0, char *con
 	argv[arg_count] = NULL;
 
 	char *nullChar = va_arg(args, char*);
-	if (nullChar != NULL)
-	{
-		printf("FAILURE\n");
-	}
 
 	char **envp = va_arg(args, char**);
 	return execve_hook(path, argv, envp);
@@ -262,17 +258,23 @@ int posix_spawnattr_setjetsam_ext_hook(posix_spawnattr_t *attr, short flags, int
 	return posix_spawnattr_setjetsam_ext_replacement(attr, flags, priority, memlimit_active, memlimit_inactive, &posix_spawnattr_setjetsam_ext);
 }
 
+pid_t (*forkfix_fork)(void) = NULL;
+void forkfix_load(void)
+{
+	static dispatch_once_t onceToken;
+	dispatch_once (&onceToken, ^{
+		void *forkfixHandle = dlopen("/var/jb/basebin/forkfix.dylib", RTLD_NOW);
+		if (forkfixHandle) {
+			forkfix_fork = dlsym(forkfixHandle, "forkfix_fork");
+		}
+	});
+}
+
 pid_t fork_hook(void)
 {
-	void *forkfixHandle = dlopen("/var/jb/basebin/forkfix.dylib", RTLD_NOW);
-	if (forkfixHandle) {
-		pid_t (*forkfix_fork)(void) = dlsym(forkfixHandle, "forkfix_fork");
-		if (forkfix_fork) {
-			pid_t ret = forkfix_fork();
-			dlclose(forkfixHandle);
-			return ret;
-		}
-		dlclose(forkfixHandle);
+	forkfix_load();
+	if (forkfix_fork) {
+		return forkfix_fork();
 	}
 	return fork();
 }

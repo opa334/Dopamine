@@ -280,6 +280,27 @@ void vm_map_iterate_entries(uint64_t vm_map_ptr, void (^itBlock)(uint64_t start,
 	}
 }
 
+uint64_t vm_map_find_entry(uint64_t vm_map_ptr, uint64_t map_start)
+{
+	uint64_t header = vm_map_ptr + 0x10;
+	uint64_t link = header + 0x0;
+	uint64_t entry = kread_ptr(link + 0x8);
+	int numentry = kread32(header + 0x20);
+
+	while(entry != 0 && numentry > 0)
+	{
+		link = entry + 0x0;
+		uint64_t start = kread64(link + 0x10);
+
+		if (start == map_start) return entry;
+
+		entry = kread_ptr(link + 0x8);
+		numentry--;
+	}
+
+	return 0;
+}
+
 #define FLAGS_PROT_SHIFT    7
 #define FLAGS_MAXPROT_SHIFT 11
 //#define FLAGS_PROT_MASK     0xF << FLAGS_PROT_SHIFT
@@ -303,44 +324,6 @@ void vm_map_entry_set_prot(uint64_t entry_ptr, vm_prot_t prot, vm_prot_t max_pro
 	if (new_flags != flags) {
 		kwrite64(entry_ptr + 0x48, new_flags);
 	}
-}
-
-typedef struct {
-	uint64_t start;
-	uint64_t end;
-	vm_prot_t prot;
-	vm_prot_t max_prot;
-} mem_region_info_t;
-
-void vm_map_fork_fixup(uint64_t parent_map_ptr, uint64_t child_map_ptr)
-{
-	uint64_t header = parent_map_ptr + 0x10;
-	int numentry = kread32(header + 0x20);
-	mem_region_info_t *parentMappings = malloc(numentry * sizeof(mem_region_info_t));
-
-	__block int c = 0;
-	vm_map_iterate_entries(parent_map_ptr, ^(uint64_t start, uint64_t end, uint64_t entry, BOOL* stop) {
-		vm_prot_t prot, max_prot;
-		vm_map_entry_get_prot(entry, &prot, &max_prot);
-		if (prot & VM_PROT_EXECUTE) //optimization: as the fixup is only for executable stuff, we can skip anything that's not executable
-		{
-			parentMappings[c].start = start;
-			parentMappings[c].end = end;
-			parentMappings[c].prot = prot;
-			parentMappings[c].max_prot = max_prot;
-			c++;
-		}
-	});
-
-	vm_map_iterate_entries(child_map_ptr, ^(uint64_t child_start, uint64_t child_end, uint64_t child_entry, BOOL* child_stop) {
-		for (int i = 0; i < c; i++) {
-			if (parentMappings[i].start == child_start && parentMappings[i].end == child_end) {
-				vm_map_entry_set_prot(child_entry, parentMappings[i].prot, parentMappings[i].max_prot);
-			}
-		}
-	});
-
-	free(parentMappings);
 }
 
 void pmap_set_wx_allowed(uint64_t pmap_ptr, bool wx_allowed)
@@ -739,29 +722,5 @@ int64_t proc_fix_setuid(pid_t pid)
 	}
 	else {
 		return 5;
-	}
-}
-
-int64_t proc_fork_fixup(pid_t parentPid, pid_t childPid)
-{
-	NSString *callerPath = proc_get_path(parentPid);
-	NSString *childPath = proc_get_path(childPid);
-	// very basic check to make sure this is actually a fork flow
-	if ([callerPath isEqualToString:childPath]) {
-		proc_set_debugged(childPid);
-
-		uint64_t parent_proc = proc_for_pid(parentPid);
-		uint64_t parent_task = proc_get_task(parent_proc);
-		uint64_t parent_vm_map = task_get_vm_map(parent_task);
-
-		uint64_t child_proc = proc_for_pid(childPid);
-		uint64_t child_task = proc_get_task(child_proc);
-		uint64_t child_vm_map = task_get_vm_map(child_task);
-
-		vm_map_fork_fixup(parent_vm_map, child_vm_map);
-		return 0;
-	}
-	else {
-		return 10;
 	}
 }
