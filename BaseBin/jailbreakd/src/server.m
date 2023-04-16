@@ -217,22 +217,6 @@ int64_t initEnvironment(NSDictionary *settings)
 	}
 	JBLogDebug("copied %s to %s", libPath.UTF8String, fakeLibPath.UTF8String);
 	
-	NSString *fakeFontsPath = @"/var/jb/System/Library/Fonts";
-	NSString *fontsPath = @"/System/Library/Fonts";
-	
-	 
-	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/Fonts"]) {
-		[[NSFileManager defaultManager] removeItemAtPath:fakeFontsPath error:nil];
-		[[NSFileManager defaultManager] copyItemAtPath:fontsPath toPath:fakeFontsPath error:nil];
-	}
-	
-	NSString *fakeLockPath = @"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework";
-	NSString *lockPath = @"/System/Library/PrivateFrameworks/SpringBoardUIServices.framework";
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework"]) {
-		[[NSFileManager defaultManager] removeItemAtPath:fakeLockPath error:nil];
-		[[NSFileManager defaultManager] copyItemAtPath:lockPath toPath:fakeLockPath error:nil];
-	}
 	
 	
 	
@@ -269,13 +253,40 @@ int64_t initEnvironment(NSDictionary *settings)
 	JBLogDebug("generated sandbox extensions");
 
 	uint64_t bindMountRet = bindMount(libPath.fileSystemRepresentation, fakeLibPath.fileSystemRepresentation);
-	uint64_t bindMountRetB = bindMount(fontsPath.fileSystemRepresentation, fakeFontsPath.fileSystemRepresentation);
-        uint64_t bindMountRetC= bindMount(lockPath.fileSystemRepresentation, fakeLockPath.fileSystemRepresentation);
+         BOOL noFonts = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/mobile/.nofonts"];
+	   BOOL noLock = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/mobile/.nolock"];
+	if (!noFonts) {
+		NSString *fakeFontsPath = @"/var/jb/System/Library/Fonts";
+		NSString *fontsPath = @"/System/Library/Fonts";
+		if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/Fonts/CoreUI"]) {
+			[[NSFileManager defaultManager] removeItemAtPath:fakeFontsPath error:nil];
+			[[NSFileManager defaultManager] copyItemAtPath:fontsPath toPath:fakeFontsPath error:nil];
+		}
+		uint64_t bindMountRetB = bindMount(fontsPath.fileSystemRepresentation, fakeFontsPath.fileSystemRepresentation);
+	}
 	
+	if (!noLock) {
+		
+	NSString *fakeLockPath = @"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca";
+	NSString *lockPath = @"/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca";
 	
-	//
+	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework"]) {
+		execCmd(args: ["mkdir","/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework"]);
 	
-	if (bindMountRet != 0 && bindMountRetB != 0  &&  bindMountRetC != 0   ) {
+	}
+		
+	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca"]) {
+		[[NSFileManager defaultManager] removeItemAtPath:fakeLockPath error:nil];
+		[[NSFileManager defaultManager] copyItemAtPath:lockPath toPath:fakeLockPath error:nil];
+	
+	}
+	
+		
+		uint64_t bindMountRetB = bindMount(fontsPath.fileSystemRepresentation, fakeFontsPath.fileSystemRepresentation);
+	}
+ 
+	
+	if (bindMountRet != 0   ) {
 		return 8;
 	}
 
