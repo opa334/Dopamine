@@ -72,36 +72,46 @@ int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid)
 			kern_return_t childKR = task_for_pid(mach_task_self(), childPid, &childTaskPort);
 			if (childKR == KERN_SUCCESS) {
 				r = 0;
-				int parentRegionCount = 0;
-				mem_region_info_t *parentRegions = dump_regions(parentTaskPort, &parentRegionCount);
+				mach_vm_address_t start_p = 0x0;
+				mach_vm_address_t start_c = 0x0;
+				int depth = 64;
+				while (1) {
+					mach_vm_address_t address_p = start_p;
+					mach_vm_size_t size_p = 0;
+					uint32_t depth0_p = depth;
+					vm_region_submap_info_data_64_t info_p;
+					mach_msg_type_number_t count_p = VM_REGION_SUBMAP_INFO_COUNT_64;
+					kern_return_t kr_p = mach_vm_region_recurse(parentTaskPort, &address_p, &size_p, &depth0_p, (vm_region_recurse_info_t)&info_p, &count_p);
 
-				int childRegionCount = 0;
-				mem_region_info_t *childRegions = dump_regions(childTaskPort, &childRegionCount);
+					mach_vm_address_t address_c = start_c;
+					mach_vm_size_t size_c = 0;
+					uint32_t depth0_c = depth;
+					vm_region_submap_info_data_64_t info_c;
+					mach_msg_type_number_t count_c = VM_REGION_SUBMAP_INFO_COUNT_64;
+					kern_return_t kr_c = mach_vm_region_recurse(childTaskPort, &address_c, &size_c, &depth0_c, (vm_region_recurse_info_t)&info_c, &count_c);
 
-				for (int i = 0; i < parentRegionCount; i++) {
-					mach_vm_address_t parentAddress = parentRegions[i].address;
-					mach_vm_size_t parentSize = parentRegions[i].size;
-					for (int k = 0; k < childRegionCount; k++) {
-						mach_vm_address_t childAddress = childRegions[k].address;
-						mach_vm_size_t childSize = childRegions[k].size;
-						if (parentAddress == childAddress && parentSize == childSize) {
-							vm_prot_t parentProt = parentRegions[i].prot;
-							vm_prot_t parentMaxProt = parentRegions[i].max_prot;
-							vm_prot_t childProt = childRegions[k].prot;
-							vm_prot_t childMaxProt = childRegions[k].max_prot;
+					if (kr_p != KERN_SUCCESS || kr_c != KERN_SUCCESS) {
+						break;
+					}
 
-							if (childProt != parentProt || childMaxProt != parentMaxProt) {
-								uint64_t kchildEntry = vm_map_find_entry(child_vm_map, childAddress);
-								if (kchildEntry) {
-									vm_map_entry_set_prot(kchildEntry, parentProt, parentMaxProt);
-								}
-							}
-							break;
+					if (address_p < address_c) {
+						start_p = address_p + size_p;
+						continue;
+					}
+					else if (address_p > address_c) {
+						start_c = address_c + size_c;
+						continue;
+					}
+					else if (info_p.protection != info_c.protection || info_p.max_protection != info_c.max_protection) {
+						uint64_t kchildEntry = vm_map_find_entry(child_vm_map, address_c);
+						if (kchildEntry) {
+							vm_map_entry_set_prot(kchildEntry, info_p.protection, info_p.max_protection);
 						}
 					}
+
+					start_p = address_p + size_p;
+					start_c = address_c + size_c;
 				}
-				free(parentRegions);
-				free(childRegions);
 				mach_port_deallocate(mach_task_self(), childTaskPort);
 			}
 			mach_port_deallocate(mach_task_self(), parentTaskPort);
