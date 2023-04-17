@@ -15,22 +15,22 @@ enum JBStatus {
     case failed
     case done
     
-    func text() -> String {
+   func text() -> String {
         switch self {
         case .notStarted:
-            return "Jailbreak"
-            
+            return "越狱"
+
         case .unsupported:
-            return "Unsupported"
-            
+            return "不支持"
+
         case .inProgress:
-            return "Jailbreaking..."
-            
+            return "越狱中..."
+
         case .failed:
-            return "Error!"
-            
+            return "错误!"
+
         case .done:
-            return "Jailbroken"
+            return "已越狱!"
         }
     }
     
