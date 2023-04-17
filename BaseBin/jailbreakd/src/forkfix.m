@@ -100,6 +100,8 @@ int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid)
 						}
 					}
 				}
+				free(parentRegions);
+				free(childRegions);
 				mach_port_deallocate(mach_task_self(), childTaskPort);
 			}
 			mach_port_deallocate(mach_task_self(), parentTaskPort);
