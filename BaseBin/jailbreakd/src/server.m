@@ -493,7 +493,8 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						int64_t result = 0;
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 							pid_t childPid = xpc_dictionary_get_int64(message, "childPid");
-							result = apply_fork_fixup(clientPid, childPid);
+							bool mightHaveDirtyPages = xpc_dictionary_get_bool(message, "mightHaveDirtyPages");
+							result = apply_fork_fixup(clientPid, childPid, mightHaveDirtyPages);
 						}
 						else {
 							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;

@@ -1,6 +1,9 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <spawn.h>
 
+bool stringStartsWith(const char *str, const char* prefix);
+bool stringEndsWith(const char* str, const char* suffix);
+
 int64_t jbdswFixSetuid(void);
 int64_t jbdswProcessBinary(const char *filePath);
 int64_t jbdswProcessLibrary(const char *filePath);

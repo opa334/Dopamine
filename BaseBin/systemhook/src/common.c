@@ -18,6 +18,40 @@ int posix_spawnattr_getprocesstype_np(const posix_spawnattr_t * __restrict, int 
 #define JETSAM_MULTIPLIER 3
 #define XPC_TIMEOUT 0.1 * NSEC_PER_SEC
 
+bool swh_is_debugged = false;
+
+bool stringStartsWith(const char *str, const char* prefix)
+{
+	if (!str || !prefix) {
+		return false;
+	}
+
+	size_t str_len = strlen(str);
+	size_t prefix_len = strlen(prefix);
+
+	if (str_len < prefix_len) {
+		return false;
+	}
+
+	return !strncmp(str, prefix, prefix_len);
+}
+
+bool stringEndsWith(const char* str, const char* suffix)
+{
+	if (!str || !suffix) {
+		return false;
+	}
+
+	size_t str_len = strlen(str);
+	size_t suffix_len = strlen(suffix);
+
+	if (str_len < suffix_len) {
+		return false;
+	}
+
+	return !strcmp(str + str_len - suffix_len, suffix);
+}
+
 extern char **environ;
 kern_return_t bootstrap_look_up(mach_port_t port, const char *service, mach_port_t *server_port);
 
@@ -149,6 +183,7 @@ int64_t jbdswProcessLibrary(const char *filePath)
 
 int64_t jbdswDebugMe(void)
 {
+	if (swh_is_debugged) return 0;
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_DEBUG_ME);
 	xpc_object_t reply = sendJBDMessageSystemWide(message);
@@ -157,14 +192,16 @@ int64_t jbdswDebugMe(void)
 		result  = xpc_dictionary_get_int64(reply, "result");
 		xpc_release(reply);
 	}
+	if (result == 0) swh_is_debugged = true;
 	return result;
 }
 
-int64_t jbdswDebugForked(pid_t childPid)
+int64_t jbdswForkFix(pid_t childPid, bool mightHaveDirtyPages)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_FORK_FIX);
 	xpc_dictionary_set_int64(message, "childPid", childPid);
+	xpc_dictionary_set_bool(message, "mightHaveDirtyPages", mightHaveDirtyPages);
 	xpc_object_t reply = sendJBDMessageSystemWide(message);
 	int64_t result = -1;
 	if (reply) {
@@ -200,18 +237,6 @@ char *resolvePath(const char *file, const char *searchPath)
 	}
 
 	return NULL;
-}
-
-bool stringEndsWith(const char* str, const char* suffix)
-{
-	size_t str_len = strlen(str);
-	size_t suffix_len = strlen(suffix);
-
-	if (str_len < suffix_len) {
-		return 0;
-	}
-
-	return !strcmp(str + str_len - suffix_len, suffix);
 }
 
 // I don't like the idea of blacklisting certain processes

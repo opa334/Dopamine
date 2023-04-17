@@ -6,6 +6,8 @@
 #include <sys/sysctl.h>
 #include <sys/stat.h>
 
+extern bool swh_is_debugged;
+
 void* dlopen_from(const char* path, int mode, void* addressInCaller);
 void* dlopen_audited(const char* path, int mode);
 bool dlopen_preflight(const char* path);
@@ -258,7 +260,7 @@ int posix_spawnattr_setjetsam_ext_hook(posix_spawnattr_t *attr, short flags, int
 	return posix_spawnattr_setjetsam_ext_replacement(attr, flags, priority, memlimit_active, memlimit_inactive, &posix_spawnattr_setjetsam_ext);
 }
 
-pid_t (*forkfix_fork)(int) = NULL;
+pid_t (*forkfix_fork)(int, bool) = NULL;
 void forkfix_load(void)
 {
 	static dispatch_once_t onceToken;
@@ -272,9 +274,14 @@ void forkfix_load(void)
 
 pid_t fork_hook_wrapper(int is_vfork, pid_t (*orig)(void))
 {
-	forkfix_load();
-	if (forkfix_fork) {
-		return forkfix_fork(is_vfork);
+	if (swh_is_debugged) {
+		// we assume if none of these functions exists in the process space, nothing can be hooked
+		// this is a naive assumption but performance wise this is an important optimization and absolutely needed
+		bool mightHaveDirtyPages = dlsym(RTLD_DEFAULT, "MSHookFunction") || dlsym(RTLD_DEFAULT, "SubHookFunctions") || dlsym(RTLD_DEFAULT, "LHHookFunctions");
+		forkfix_load();
+		if (forkfix_fork) {
+			return forkfix_fork(is_vfork, mightHaveDirtyPages);
+		}
 	}
 	return orig();
 }
@@ -295,6 +302,12 @@ bool shouldEnableTweaks(void)
 
 	if (gExecutablePath) {
 		if (!strcmp(gExecutablePath, "/usr/libexec/xpcproxy")) {
+			tweaksEnabled = false;
+		}
+		else if (stringEndsWith(gExecutablePath, "/usr/bin/dash")) {
+			tweaksEnabled = false;
+		}
+		else if (stringEndsWith(gExecutablePath, "/usr/bin/apt-config")) {
 			tweaksEnabled = false;
 		}
 	}

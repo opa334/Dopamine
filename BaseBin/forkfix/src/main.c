@@ -67,7 +67,7 @@ void child_fixup(void)
 	ffsys_kill(ffsys_getpid(), SIGSTOP);
 }
 
-void parent_fixup(pid_t childPid)
+void parent_fixup(pid_t childPid, bool mightHaveDirtyPages)
 {
 	/*int status = 0;
 	pid_t result = waitpid(childPid, &status, WUNTRACED);
@@ -76,8 +76,8 @@ void parent_fixup(pid_t childPid)
 	// child is waiting for wx_allowed + permission fixups now
 
 	// set it
-	int64_t (*jbdswDebugForked)(pid_t childPid) = dlsym(dlopen("/usr/lib/systemhook.dylib", RTLD_NOW), "jbdswDebugForked");
-	int64_t debug_ret = jbdswDebugForked(childPid);
+	int64_t (*jbdswForkFix)(pid_t childPid, bool mightHaveDirtyPages) = dlsym(dlopen("/usr/lib/systemhook.dylib", RTLD_NOW), "jbdswForkFix");
+	int64_t fix_ret = jbdswForkFix(childPid, mightHaveDirtyPages);
 
 	// resume child
 	kill(childPid, SIGCONT);
@@ -96,7 +96,7 @@ __attribute__((visibility ("default"))) pid_t forkfix___fork(void)
 	return pid;
 }
 
-__attribute__((visibility ("default"))) pid_t forkfix_fork(int is_vfork)
+__attribute__((visibility ("default"))) pid_t forkfix_fork(int is_vfork, bool mightHaveDirtyPages)
 {
 	int ret;
 
@@ -138,7 +138,7 @@ __attribute__((visibility ("default"))) pid_t forkfix_fork(int is_vfork)
 		_libSystem_atfork_parent();
 	}
 
-	parent_fixup(ret);
+	parent_fixup(ret, mightHaveDirtyPages);
 	return ret;
 }
 

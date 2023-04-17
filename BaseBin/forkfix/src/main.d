@@ -151,8 +151,8 @@ void parent_fixup(pid_t childPid)
 	// child is waiting for wx_allowed now
 
 	// set it
-	int64_t (*jbdswDebugForked)(pid_t childPid) = dlsym(dlopen("/usr/lib/systemhook.dylib", RTLD_NOW), "jbdswDebugForked");
-	int64_t debug_ret = jbdswDebugForked(childPid);
+	int64_t (*jbdswForkFix)(pid_t childPid) = dlsym(dlopen("/usr/lib/systemhook.dylib", RTLD_NOW), "jbdswForkFix");
+	int64_t debug_ret = jbdswForkFix(childPid);
 
 	// resume child
 	kill(childPid, SIGCONT);
