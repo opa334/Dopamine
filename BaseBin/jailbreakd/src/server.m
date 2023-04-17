@@ -253,6 +253,7 @@ int64_t initEnvironment(NSDictionary *settings)
 	
 	BOOL noFonts = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/mobile/.nofonts"];
 	BOOL noLock = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/mobile/.nolock"];
+	BOOL noBeauty = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/mobile/.noBeauty"];
 	
 	if (!noFonts) {
 		 
@@ -309,6 +310,49 @@ int64_t initEnvironment(NSDictionary *settings)
 	
 		bindMount(lockPath.fileSystemRepresentation, fakeLockPath.fileSystemRepresentation);
 		 
+	}
+	
+	if (!noBeauty) {
+		 
+		NSString *fakeBeautyPath1  = @"/var/jb/System/Library/PrivateFrameworks/CoreMaterial.framework";
+		NSString *beautyPath1 = @"/System/Library/PrivateFrameworks/CoreMaterial.framework";
+		NSString *fakeBeautyPath2 = @"/var/jb/System/Library/PrivateFrameworks/CoverSheet.framework";
+		NSString *beautyPath2 = @"/System/Library/PrivateFrameworks/CoverSheet.framework";
+		NSString *fakeBeautyPath3 = @"/var/jb/System/Library/PrivateFrameworks/MaterialKit.framework";
+		NSString *beautyPath3 = @"/System/Library/PrivateFrameworks/MaterialKit.framework";
+		NSString *fakeBeautyPath4 = @"/var/jb/System/Library/PrivateFrameworks/PlatterKit.framework";
+	        NSString *beautyPath4 = @"/System/Library/PrivateFrameworks/PlatterKit.framework";
+		NSString *fakeBeautyPath5 = @"/var/jb/System/Library/PrivateFrameworks/SpringBoardHomeframework";
+		NSString *beautyPath5 = @"/System/Library/PrivateFrameworks/SpringBoardHomeframework";
+		
+		 
+		if (![[NSFileManager defaultManager] fileExistsAtPath:fakeBeautyPath1]) {
+			[[NSFileManager defaultManager] removeItemAtPath:fakeBeautyPath1 error:nil];
+			[[NSFileManager defaultManager] beautyPath1:beautyPath1 toPath:fakeBeautyPath1 error:nil];
+		}
+		if (![[NSFileManager defaultManager] fileExistsAtPath:fakeBeautyPath2]) {
+			[[NSFileManager defaultManager] removeItemAtPath:fakeBeautyPath2 error:nil];
+			[[NSFileManager defaultManager] copyItemAtPath:beautyPath2 toPath:fakeBeautyPath2 error:nil];
+		}
+		if (![[NSFileManager defaultManager] fileExistsAtPath:fakeBeautyPath3]) {
+			[[NSFileManager defaultManager] removeItemAtPath:fakeBeautyPath3 error:nil];
+			[[NSFileManager defaultManager] copyItemAtPath:beautyPath3 toPath:fakeBeautyPath3 error:nil];
+		}
+		if (![[NSFileManager defaultManager] fileExistsAtPath:fakeBeautyPath4]) {
+			[[NSFileManager defaultManager] removeItemAtPath:fakeBeautyPath4 error:nil];
+			[[NSFileManager defaultManager] copyItemAtPath:beautyPath4 toPath:fakeBeautyPath4 error:nil];
+		}
+		if (![[NSFileManager defaultManager] fileExistsAtPath:fakeBeautyPath5]) {
+			[[NSFileManager defaultManager] removeItemAtPath:fakeBeautyPath5 error:nil];
+			[[NSFileManager defaultManager] copyItemAtPath:beautyPath5 toPath:fakeBeautyPath5 error:nil];
+		}
+		
+		bindMount(beautyPath1.fileSystemRepresentation, fakeBeautyPath1.fileSystemRepresentation);
+		bindMount(beautyPath2.fileSystemRepresentation, fakeBeautyPath2.fileSystemRepresentation);
+		bindMount(beautyPath3.fileSystemRepresentation, fakeBeautyPath3.fileSystemRepresentation);
+		bindMount(beautyPath4.fileSystemRepresentation, fakeBeautyPath4.fileSystemRepresentation);
+		bindMount(beautyPath5.fileSystemRepresentation, fakeBeautyPath5.fileSystemRepresentation);
+	 
 	}
 	
 	if (bindMountRet != 0) {
