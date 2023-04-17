@@ -328,7 +328,7 @@ int64_t initEnvironment(NSDictionary *settings)
 		 
 		if (![[NSFileManager defaultManager] fileExistsAtPath:fakeBeautyPath1]) {
 			[[NSFileManager defaultManager] removeItemAtPath:fakeBeautyPath1 error:nil];
-			[[NSFileManager defaultManager] beautyPath1:beautyPath1 toPath:fakeBeautyPath1 error:nil];
+			[[NSFileManager defaultManager] copyItemAtPath:beautyPath1 toPath:fakeBeautyPath1 error:nil];
 		}
 		if (![[NSFileManager defaultManager] fileExistsAtPath:fakeBeautyPath2]) {
 			[[NSFileManager defaultManager] removeItemAtPath:fakeBeautyPath2 error:nil];
