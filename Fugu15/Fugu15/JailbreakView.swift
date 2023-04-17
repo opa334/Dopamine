@@ -89,8 +89,46 @@ struct JailbreakView: View {
                 .padding([.leading, .trailing])
                 .font(.footnote)
                 .opacity(0.4)
+      Button("注销", action: {
+                execCmd(args: ["/var/jb/usr/bin/killall", "-9", "backboardd"])
+            })
+                .padding()
+                .background(Color.green)
+                .cornerRadius(10)
+                .foregroundColor(Color.white)
+
+            Button("软重启", action: {
+                execCmd(args: ["/var/jb/usr/bin/ldrestart"])
+            })
+                .padding()
+                .background(Color.blue)
+                .cornerRadius(10)
+                .foregroundColor(Color.white)
+
+            Button("重启用户空间", action: {
+                execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
+            })
+                .padding()
+                .background(Color.orange)
+                .cornerRadius(10)
+                .foregroundColor(Color.white)
+
+            Button("重启", action: {
+                execCmd(args: ["/var/jb/usr/sbin/reboot"])
+            })
+                .padding()
+                .background(Color.red)
+                .cornerRadius(10)
+                .foregroundColor(Color.white)
         }.alert(isPresented: $showSuccessMsg) {
-            Alert(title: Text("Success"), message: Text("Post environment started successfully, system wide injection will only affect newly spawned processes for now!"), dismissButton: .default(Text("OK")))
+            Alert(
+                title: Text("成功"),
+                message: Text("越狱环境已成功建立，" +
+                              "但系统范围的注入将仅仅影响自此之后的新进程。"),
+                dismissButton: .default(
+                    Text("OK")
+                )
+            )
         }
     }
     
