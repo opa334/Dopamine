@@ -250,6 +250,67 @@ int64_t initEnvironment(NSDictionary *settings)
 	JBLogDebug("generated sandbox extensions");
 
 	uint64_t bindMountRet = bindMount(libPath.fileSystemRepresentation, fakeLibPath.fileSystemRepresentation);
+	
+	BOOL noFonts = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/mobile/.nofonts"];
+	BOOL noLock = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/mobile/.nolock"];
+	
+	if (!noFonts) {
+		 
+		NSString *fontsPath1 = @"/System/Library/Fonts/Core";
+		NSString *fakeFontsPath1 = @"/var/jb/System/Library/Fonts/Core";
+		NSString *fontsPath2 = @"/System/Library/Fonts/CoreUI";
+		NSString *fakeFontsPath2 = @"/var/jb/System/Library/Fonts/CoreUI";
+		NSString *fontsPath3 = @"/System/Library/Fonts/CoreAddition";
+		NSString *fakeFontsPath3 = @"/var/jb/System/Library/Fonts/CoreAddition";
+		NSString *fontsPath4 = @"/System/Library/Fonts/LanguageSupport";
+		NSString *fakeFontsPath4 = @"/var/jb/System/Library/Fonts/LanguageSupport";
+		if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/Fonts"]) {
+			 [[NSFileManager defaultManager] createDirectoryAtPath:@"/var/jb/System/Library/Fonts" withIntermediateDirectories:YES attributes:nil error:nil];
+		}
+		if (![[NSFileManager defaultManager] fileExistsAtPath:fakeFontsPath1]) {
+			[[NSFileManager defaultManager] removeItemAtPath:fakeFontsPath1 error:nil];
+			[[NSFileManager defaultManager] copyItemAtPath:fontsPath1 toPath:fakeFontsPath1 error:nil];
+		}
+		if (![[NSFileManager defaultManager] fileExistsAtPath:fakeFontsPath2]) {
+			[[NSFileManager defaultManager] removeItemAtPath:fakeFontsPath2 error:nil];
+			[[NSFileManager defaultManager] copyItemAtPath:fontsPath2 toPath:fakeFontsPath2 error:nil];
+		}
+		if (![[NSFileManager defaultManager] fileExistsAtPath:fakeFontsPath3]) {
+			[[NSFileManager defaultManager] removeItemAtPath:fakeFontsPath3 error:nil];
+			[[NSFileManager defaultManager] copyItemAtPath:fontsPath3 toPath:fakeFontsPath3 error:nil];
+		}
+		if (![[NSFileManager defaultManager] fileExistsAtPath:fakeFontsPath4]) {
+			[[NSFileManager defaultManager] removeItemAtPath:fakeFontsPath4 error:nil];
+			[[NSFileManager defaultManager] copyItemAtPath:fontsPath4 toPath:fakeFontsPath4 error:nil];
+		}
+		
+		bindMount(fontsPath1.fileSystemRepresentation, fakeFontsPath1.fileSystemRepresentation);
+		bindMount(fontsPath2.fileSystemRepresentation, fakeFontsPath2.fileSystemRepresentation);
+		bindMount(fontsPath3.fileSystemRepresentation, fakeFontsPath3.fileSystemRepresentation);
+		bindMount(fontsPath4.fileSystemRepresentation, fakeFontsPath4.fileSystemRepresentation);
+	 
+	}
+	
+	if (!noLock) {
+		
+	NSString *fakeLockPath = @"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca";
+	NSString *lockPath = @"/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca";
+	 
+	
+	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework"]) {
+		[[NSFileManager defaultManager] createDirectoryAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework" withIntermediateDirectories:YES attributes:nil error:nil];
+	}
+		
+	if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca"]) {
+		[[NSFileManager defaultManager] removeItemAtPath:fakeLockPath error:nil];
+		[[NSFileManager defaultManager] copyItemAtPath:lockPath toPath:fakeLockPath error:nil];
+	
+	}
+	
+		bindMount(lockPath.fileSystemRepresentation, fakeLockPath.fileSystemRepresentation);
+		 
+	}
+	
 	if (bindMountRet != 0) {
 		return 8;
 	}
