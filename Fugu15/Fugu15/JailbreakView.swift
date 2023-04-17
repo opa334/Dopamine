@@ -73,7 +73,7 @@ struct JailbreakView: View {
                 }
             })
                 .padding()
-                .background(status.color())
+               .background(LinearGradient(gradient: Gradient(colors: [status.color(), Color.yellow]), startPoint: .leading, endPoint: .trailing))
                 .cornerRadius(10)
                 .foregroundColor(Color.white)
                 .disabled(status != .notStarted)
