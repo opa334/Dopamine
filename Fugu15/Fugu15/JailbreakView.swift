@@ -93,7 +93,7 @@ struct JailbreakView: View {
                 execCmd(args: ["/var/jb/usr/bin/killall", "-9", "backboardd"])
             })
                 .padding()
-                .background(Color.green)
+                .background(LinearGradient(gradient: Gradient(colors: [Color.green, Color.yellow]), startPoint: .leading, endPoint: .trailing))
                 .cornerRadius(10)
                 .foregroundColor(Color.white)
 
@@ -101,7 +101,7 @@ struct JailbreakView: View {
                 execCmd(args: ["/var/jb/usr/bin/ldrestart"])
             })
                 .padding()
-                .background(Color.blue)
+                .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.green]), startPoint: .leading, endPoint: .trailing))
                 .cornerRadius(10)
                 .foregroundColor(Color.white)
 
@@ -109,7 +109,7 @@ struct JailbreakView: View {
                 execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
             })
                 .padding()
-                .background(Color.orange)
+                .background(LinearGradient(gradient: Gradient(colors: [Color.orange, Color.red]), startPoint: .leading, endPoint: .trailing))
                 .cornerRadius(10)
                 .foregroundColor(Color.white)
 
@@ -117,7 +117,7 @@ struct JailbreakView: View {
                 execCmd(args: ["/var/jb/usr/sbin/reboot"])
             })
                 .padding()
-                .background(Color.red)
+                .background(LinearGradient(gradient: Gradient(colors: [Color.red, Color.blue]), startPoint: .leading, endPoint: .trailing))
                 .cornerRadius(10)
                 .foregroundColor(Color.white)
         }.alert(isPresented: $showSuccessMsg) {
