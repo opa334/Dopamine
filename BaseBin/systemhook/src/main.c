@@ -298,6 +298,13 @@ pid_t vfork_hook(void)
 
 bool shouldEnableTweaks(void)
 {
+	char *tweaksDisabledEnv = getenv("DISABLE_TWEAKS");
+	if (tweaksDisabledEnv) {
+		if (!strcmp(tweaksDisabledEnv, "1")) {
+			return false;
+		}
+	}
+
 	bool tweaksEnabled = true;
 
 	if (gExecutablePath) {
