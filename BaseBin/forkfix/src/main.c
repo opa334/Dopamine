@@ -24,8 +24,6 @@ static void (*_libSystem_atfork_prepare_V2)(int) = 0;
 static void (*_libSystem_atfork_parent_V2)(int) = 0;
 static void (*_libSystem_atfork_child_V2)(int) = 0;
 
-pid_t *__current_pid;
-
 void loadPrivateSymbols(void) {
 	MSImageRef libSystemCHandle = MSGetImageByName("/usr/lib/system/libsystem_c.dylib");
 	void *libSystemKernelDLHandle = dlopen("/usr/lib/system/libsystem_kernel.dylib", RTLD_NOW);
@@ -44,8 +42,6 @@ void loadPrivateSymbols(void) {
 	if (_libSystem_atfork_prepare_V2_ptr) _libSystem_atfork_prepare_V2 = (void (*)(int))*_libSystem_atfork_prepare_V2_ptr;
 	if (_libSystem_atfork_parent_V2_ptr) _libSystem_atfork_parent_V2 = (void (*)(int))*_libSystem_atfork_parent_V2_ptr;
 	if (_libSystem_atfork_child_V2_ptr) _libSystem_atfork_child_V2 = (void (*)(int))*_libSystem_atfork_child_V2_ptr;
-
-	__current_pid = dlsym(libSystemKernelDLHandle, "_current_pid");
 }
 
 typedef struct {
@@ -60,9 +56,6 @@ mem_region_info_t *regions = NULL;
 
 void child_fixup(void)
 {
-	// this fixup is missing inside forkfix_fork, so we do it here
-	*__current_pid = 0;
-
 	// SIGSTOP and wait for the parent process to run fixups
 	ffsys_kill(ffsys_getpid(), SIGSTOP);
 }

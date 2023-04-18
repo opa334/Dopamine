@@ -12,11 +12,14 @@ _ffsys_fork:
 	b.cs _ffsys_fork_err
 	cbz x1, _ffsys_fork_end
 	mov w0, #0
-	// normally it sets __current_pid = 0 in the child here but we can't
-	// really do it, so whatever calls this has to fix it later
+	adrp x9, __current_pid@PAGE
+	add x9, x9, __current_pid@PAGEOFF
+	mov w0, #0
+	str w0, [x9]
 	b _ffsys_fork_end
 
 _ffsys_fork_err:
+	bl _cerror
 	mov w0, #-1
 
 _ffsys_fork_end:
