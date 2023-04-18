@@ -90,7 +90,9 @@ struct JailbreakView: View {
                 .font(.footnote)
                 .opacity(0.4)
         }.alert(isPresented: $showSuccessMsg) {
-            Alert(title: Text("Success"), message: Text("Post environment started successfully, system wide injection will only affect newly spawned processes for now!"), dismissButton: .default(Text("OK")))
+            Alert(title: Text("Success"), message: Text("Jailbreak initialized. A userspace reboot is needed to finalize it!"), dismissButton: .default(Text("Userspace Reboot"), action: {
+                execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
+            }))
         }
     }
     
