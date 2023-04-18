@@ -56,6 +56,11 @@ mem_region_info_t *regions = NULL;
 
 void child_fixup(void)
 {
+	// late fixup, normally done in ASM
+	// ASM is a bitch though and I couldn't out how to do this
+	extern pid_t _current_pid;
+	_current_pid = 0;
+
 	// SIGSTOP and wait for the parent process to run fixups
 	ffsys_kill(ffsys_getpid(), SIGSTOP);
 }
@@ -119,7 +124,6 @@ __attribute__((visibility ("default"))) pid_t forkfix_fork(int is_vfork, bool mi
 		else {
 			_libSystem_atfork_child();
 		}
-
 		return 0;
 	}
 
