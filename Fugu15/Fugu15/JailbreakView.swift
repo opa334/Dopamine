@@ -54,6 +54,10 @@ enum JBStatus {
     }
 }
 
+enum ActiveAlert {
+    case jailbroken, hidden, uninstall
+}
+
 struct JailbreakView: View {
     @Binding var logText: String
     
@@ -61,17 +65,32 @@ struct JailbreakView: View {
     @State var textStatus1      = "Status: Not running"
     @State var textStatus2      = ""
     @State var textStatus3      = ""
-    @State var showSuccessMsg   = false
+    @State var showAlert                = false
+    @State var activeAlert: ActiveAlert = .jailbroken
     
     var body: some View {
         VStack {
             Button(status.text(), action: {
                 status = .inProgress
-                
                 DispatchQueue(label: "Fugu15").async {
                     launchExploit()
                 }
             })
+            .contextMenu {
+                Button(action: {
+                    execCmd(args: [CommandLine.arguments[0], "hide_environment"])
+                    activeAlert = .hidden
+                    showAlert = true
+                }, label: {
+                    Label("Hide Environment", systemImage: "eye.slash")
+                })
+                Button(role: .destructive, action: {
+                    activeAlert = .uninstall
+                    showAlert = true
+                }, label: {
+                    Label("Uninstall Environment", systemImage: "trash")
+                })
+            }
                 .padding()
                 .background(status.color())
                 .cornerRadius(10)
@@ -89,10 +108,22 @@ struct JailbreakView: View {
                 .padding([.leading, .trailing])
                 .font(.footnote)
                 .opacity(0.4)
-        }.alert(isPresented: $showSuccessMsg) {
-            Alert(title: Text("Success"), message: Text("Jailbreak initialized. A userspace reboot is needed to finalize it!"), dismissButton: .default(Text("Userspace Reboot"), action: {
-                execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
-            }))
+        }.alert(isPresented: $showAlert) {
+            switch activeAlert {
+                case .jailbroken:
+                    return  Alert(title: Text("Success"), message: Text("Jailbreak initialized. A userspace reboot is needed to finalize it!"), dismissButton: .default(Text("Userspace Reboot"), action: {
+                        execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
+                    }))
+                case .hidden:
+                    return Alert(title: Text("Environment Hidden"), message: Text("Jailbreak environment fully hidden until the next rejailbreak"), dismissButton: .default(Text("OK")))
+                case .uninstall:
+                    return Alert(title: Text("Uninstall"),
+                        message: Text("Are you sure you want to uninstall the jailbreak environment? This will delete everything about your jailbreak including packages, tweaks and apps."),
+                        primaryButton: .cancel(),
+                        secondaryButton: .default(Text("Uninstall Environment")) {
+                            execCmd(args: [CommandLine.arguments[0], "uninstall_environment"])
+                    })
+            }  
         }
     }
     
@@ -129,7 +160,8 @@ struct JailbreakView: View {
             DispatchQueue.main.async {
                 statusUpdate("Status: Done!")
                 status = .done
-                showSuccessMsg = true
+                activeAlert = .jailbroken
+                showAlert = true
             }
         } catch {
             DispatchQueue.main.async {
