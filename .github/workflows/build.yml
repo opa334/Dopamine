@@ -1,0 +1,51 @@
+name: build automatically
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Procursus
+        uses: dhinakg/procursus-action@main
+        with:
+          packages: ldid trustcache
+
+      - name: Set Environment Variables
+        run: |
+         SHASH=$(git rev-parse --short HEAD)
+         echo "Git commit log since last tag:" > commit_logs.txt
+         echo "\`\`\`" >> commit_logs.txt
+         git log --graph --pretty=format:'%h - %s <%an>' --abbrev-commit $(git describe --tags --abbrev=0).. >> commit_logs.txt
+         echo "" >> commit_logs.txt
+         echo "\`\`\`" >> commit_logs.txt
+
+      - name: Print Environment Variables
+        run: |
+         cat ./commit_logs.txt
+
+      - name: Build
+        run: |
+          sed -i '' "/.*Fugu15_Developer.*/d" Makefile
+          sed -i '' "/.*FuguInstall.*/d" Makefile
+          sudo security import Exploits/fastPath/arm.pfx -k /Library/Keychains/System.keychain -P password -A
+          make
