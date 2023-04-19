@@ -366,9 +366,11 @@ struct ContentView: View {
     func uiJailbreak() {
         jailbreakingProgress = .jailbreaking
         UserDefaults.standard.set(UserDefaults.standard.integer(forKey: "totalJailbreaks") + 1, forKey: "totalJailbreaks")
-        jailbreak { e in
-            jailbreakingProgress = .finished
-            jailbreakingError = e
+        DispatchQueue(label: "Dopamine").async {
+            jailbreak { e in
+                jailbreakingProgress = .finished
+                jailbreakingError = e
+            }
         }
     }
     

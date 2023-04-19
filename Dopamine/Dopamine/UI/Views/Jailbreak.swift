@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Fugu15KernelExploit
 
 
 func respring() {
@@ -29,7 +30,7 @@ func userspaceReboot() {
     }
     
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-        // put implementation here
+        execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
     })
 }
 
@@ -48,12 +49,37 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
     let selectedPackageManagers = UserDefaults.standard.array(forKey: "selectedPackageManagers") as? [String] ?? []
     let shouldInstallZebra = selectedPackageManagers.contains("Zebra")
     let shouldInstallSileo = selectedPackageManagers.contains("Sileo")
-    
-    // testing function, can be removed
-    DispatchQueue.main.asyncAfter(deadline: .now() + 6, execute: {
-//      completion(NSError(domain: "", code: 1))
-        completion(nil)
-    })
+
+    do {
+        Logger.log("Launching kexploitd", isUserFriendly: true)
+        
+        try Fugu15.launchKernelExploit(oobPCI: Bundle.main.bundleURL.appendingPathComponent("oobPCI")) { msg in
+            DispatchQueue.main.async {
+                var toPrint: String
+                let verbose = !msg.hasPrefix("Status: ")
+                if !verbose {
+                    toPrint = String(msg.dropFirst("Status: ".count))
+                }
+                else {
+                    toPrint = msg
+                }
+
+                Logger.log(toPrint, isUserFriendly: !verbose)
+            }
+        }
+        
+        try Fugu15.startEnvironment()
+        
+        DispatchQueue.main.async {
+            Logger.log("Done!", isUserFriendly: true)
+            completion(nil)
+        }
+    } catch {
+        DispatchQueue.main.async {
+            completion(error)
+            NSLog("Fugu15 error: \(error)")
+        }
+    }
 }
 
 func changeRootPassword(newPassword: String) {

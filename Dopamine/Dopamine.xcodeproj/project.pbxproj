@@ -13,10 +13,12 @@
 		1502A4242891BD800011CB6E /* Fugu15KernelExploit in Frameworks */ = {isa = PBXBuildFile; productRef = 1502A4232891BD800011CB6E /* Fugu15KernelExploit */; };
 		151CAFAD2893645C00B2A6BA /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 151CAFAC2893645C00B2A6BA /* CoreServices.framework */; };
 		151CAFB32894041D00B2A6BA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151CAFB22894041D00B2A6BA /* main.swift */; };
-		15372EA228DDF5EF00514A73 /* TrustCache in Resources */ = {isa = PBXBuildFile; fileRef = 15372E9F28DDF5EF00514A73 /* TrustCache */; };
 		15372EA328DDF5EF00514A73 /* bootstrap.tar in Resources */ = {isa = PBXBuildFile; fileRef = 15372EA028DDF5EF00514A73 /* bootstrap.tar */; };
 		15372EA628DDFF9000514A73 /* sileo.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 15372EA528DDFF9000514A73 /* sileo.deb */; };
 		15372EA728DDFF9A00514A73 /* sileo.deb in Resources */ = {isa = PBXBuildFile; fileRef = 15372EA528DDFF9000514A73 /* sileo.deb */; };
+		8C2EDE1929F0AAF70060D192 /* oobPCI in Resources */ = {isa = PBXBuildFile; fileRef = 8C2EDE1829F0AAF70060D192 /* oobPCI */; };
+		8C2EDE1B29F0ACA60060D192 /* basebin.tar in Resources */ = {isa = PBXBuildFile; fileRef = 8C2EDE1A29F0ACA60060D192 /* basebin.tar */; };
+		8C2EDE1D29F0AE3A0060D192 /* basebin.tc in Resources */ = {isa = PBXBuildFile; fileRef = 8C2EDE1C29F0ACC80060D192 /* basebin.tc */; };
 		8C8D955B29D04B4C00A482A8 /* tar in Resources */ = {isa = PBXBuildFile; fileRef = 8C8D955A29D04B4C00A482A8 /* tar */; };
 		8C8D955E29D04C4D00A482A8 /* zebra.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C8D955D29D04C4D00A482A8 /* zebra.deb */; };
 		8C8D955F29D04CD100A482A8 /* zebra.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C8D955D29D04C4D00A482A8 /* zebra.deb */; };
@@ -52,9 +54,11 @@
 		151CAFA72893622C00B2A6BA /* LSBundleProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LSBundleProxy.h; sourceTree = "<group>"; };
 		151CAFAC2893645C00B2A6BA /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		151CAFB22894041D00B2A6BA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		15372E9F28DDF5EF00514A73 /* TrustCache */ = {isa = PBXFileReference; lastKnownFileType = file; path = TrustCache; sourceTree = "<group>"; };
 		15372EA028DDF5EF00514A73 /* bootstrap.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = bootstrap.tar; sourceTree = "<group>"; };
 		15372EA528DDFF9000514A73 /* sileo.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = sileo.deb; sourceTree = "<group>"; };
+		8C2EDE1829F0AAF70060D192 /* oobPCI */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = oobPCI; path = ../../Exploits/oobPCI/oobPCI; sourceTree = "<group>"; };
+		8C2EDE1A29F0ACA60060D192 /* basebin.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = basebin.tar; sourceTree = "<group>"; };
+		8C2EDE1C29F0ACC80060D192 /* basebin.tc */ = {isa = PBXFileReference; lastKnownFileType = file; name = basebin.tc; path = ../../../BaseBin/basebin.tc; sourceTree = "<group>"; };
 		8C8D955A29D04B4C00A482A8 /* tar */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = tar; path = ../../../BaseBin/_external/tar; sourceTree = "<group>"; };
 		8C8D955D29D04C4D00A482A8 /* zebra.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = zebra.deb; sourceTree = "<group>"; };
 		8C8D956129D0B27100A482A8 /* master.rootalpine.passwd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = master.rootalpine.passwd; sourceTree = "<group>"; };
@@ -121,6 +125,7 @@
 				151CAFA32893621300B2A6BA /* include */,
 				1502A41D2891B1360011CB6E /* Dopamine-Bridging-Header.h */,
 				1502A4292891BF0A0011CB6E /* Dopamine.entitlements */,
+				8C2EDE1829F0AAF70060D192 /* oobPCI */,
 			);
 			path = Dopamine;
 			sourceTree = "<group>";
@@ -159,8 +164,9 @@
 				15372EA528DDFF9000514A73 /* sileo.deb */,
 				8C8D955D29D04C4D00A482A8 /* zebra.deb */,
 				15372EA028DDF5EF00514A73 /* bootstrap.tar */,
+				8C2EDE1A29F0ACA60060D192 /* basebin.tar */,
+				8C2EDE1C29F0ACC80060D192 /* basebin.tc */,
 				8C8D955A29D04B4C00A482A8 /* tar */,
-				15372E9F28DDF5EF00514A73 /* TrustCache */,
 				8C8D956129D0B27100A482A8 /* master.rootalpine.passwd */,
 			);
 			path = bootstrap;
@@ -278,8 +284,10 @@
 				8C8D956229D0B27100A482A8 /* master.rootalpine.passwd in Resources */,
 				8C8D955F29D04CD100A482A8 /* zebra.deb in Resources */,
 				8C8D955B29D04B4C00A482A8 /* tar in Resources */,
+				8C2EDE1929F0AAF70060D192 /* oobPCI in Resources */,
 				15372EA728DDFF9A00514A73 /* sileo.deb in Resources */,
-				15372EA228DDF5EF00514A73 /* TrustCache in Resources */,
+				8C2EDE1B29F0ACA60060D192 /* basebin.tar in Resources */,
+				8C2EDE1D29F0AE3A0060D192 /* basebin.tc in Resources */,
 				1502A4132891B0410011CB6E /* Preview Assets.xcassets in Resources */,
 				15372EA328DDF5EF00514A73 /* bootstrap.tar in Resources */,
 				1502A4102891B0410011CB6E /* Assets.xcassets in Resources */,
