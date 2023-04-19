@@ -14,40 +14,40 @@ enum JBStatus {
     case inProgress
     case failed
     case done
-    
+
     func text() -> String {
         switch self {
         case .notStarted:
             return "Jailbreak"
-            
+
         case .unsupported:
             return "Unsupported"
-            
+
         case .inProgress:
             return "Jailbreaking..."
-            
+
         case .failed:
             return "Error!"
-            
+
         case .done:
-            return "Jailbroken"
+            return "Jailbroken!"
         }
     }
-    
+
     func color() -> Color {
         switch self {
         case .notStarted:
             return .accentColor
-            
+
         case .unsupported:
             return .accentColor
-            
+
         case .inProgress:
             return .accentColor
-            
+
         case .failed:
             return .red
-            
+
         case .done:
             return .green
         }
@@ -60,43 +60,46 @@ enum ActiveAlert {
 
 struct JailbreakView: View {
     @Binding var logText: String
-    
+
     @State var status: JBStatus = .notStarted
     @State var textStatus1      = "Status: Not running"
     @State var textStatus2      = ""
     @State var textStatus3      = ""
     @State var showAlert                = false
     @State var activeAlert: ActiveAlert = .jailbroken
-    
+
     var body: some View {
         VStack {
+            Spacer()
+
             Button(status.text(), action: {
                 status = .inProgress
+
                 DispatchQueue(label: "Fugu15").async {
                     launchExploit()
                 }
             })
-            .contextMenu {
-                Button(action: {
-                    execCmd(args: [CommandLine.arguments[0], "hide_environment"])
-                    activeAlert = .hidden
-                    showAlert = true
-                }, label: {
-                    Label("Hide Environment", systemImage: "eye.slash")
-                })
-                Button(role: .destructive, action: {
-                    activeAlert = .uninstall
-                    showAlert = true
-                }, label: {
-                    Label("Uninstall Environment", systemImage: "trash")
-                })
-            }
+                .contextMenu {
+                    Button(action: {
+                        execCmd(args: [CommandLine.arguments[0], "hide_environment"])
+                        activeAlert = .hidden
+                        showAlert = true
+                    }, label: {
+                        Label("Hide Environment", systemImage: "eye.slash")
+                    })
+                    Button(role: .destructive, action: {
+                        activeAlert = .uninstall
+                        showAlert = true
+                    }, label: {
+                        Label("Uninstall Environment", systemImage: "trash")
+                    })
+                }
                 .padding()
                 .background(status.color())
                 .cornerRadius(10)
                 .foregroundColor(Color.white)
                 .disabled(status != .notStarted)
-            
+
             Text(textStatus1)
                 .padding([.top, .leading, .trailing])
                 .font(.headline)
@@ -108,55 +111,102 @@ struct JailbreakView: View {
                 .padding([.leading, .trailing])
                 .font(.footnote)
                 .opacity(0.4)
+
+            Button("Respring", action: {
+                execCmd(args: ["/var/jb/usr/bin/killall", "-9", "backboardd"])
+            })
+                .padding()
+                .background(Color.cyan)
+                .cornerRadius(10)
+                .foregroundColor(Color.white)
+                .contextMenu {
+                    Button(action: {
+                        execCmd(args: ["/var/jb/usr/bin/ldrestart"])
+                    }, label: {
+                        Label("ldrestart", systemImage: "restart")
+                    })
+                    Button(action: {
+                        execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
+                    }, label: {
+                        Label("reboot userspace", systemImage: "restart.circle")
+                    })
+                    Button(role: .destructive, action: {
+                        execCmd(args: ["/var/jb/usr/sbin/reboot"])
+                    }, label: {
+                        Label("reboot", systemImage: "restart.circle.fill")
+                    })
+                }
+
+            Spacer()
+
+            Group {
+                Text("Note: Long press button to active the Haptic Touch menu.")
+                    .multilineTextAlignment(.center)
+                    .padding(.leading, 10)
+                    .padding(.trailing, 10)
+                    .padding(.bottom)
+                    .frame(width: 360)
+            }.padding(.bottom, 25)
         }.alert(isPresented: $showAlert) {
             switch activeAlert {
                 case .jailbroken:
-                    return  Alert(title: Text("Success"), message: Text("Jailbreak initialized. A userspace reboot is needed to finalize it!"), dismissButton: .default(Text("Userspace Reboot"), action: {
-                        execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
-                    }))
+                    return  Alert(
+                        title: Text("Success"),
+                        message: Text("Post environment started successfully, system wide injection will only affect newly spawned processes for now!" +
+                                    "Hence, reboot userspace is recommended; however, you can manually respring/ldrestart/reboot userspace later."),
+                        primaryButton: .cancel(
+                            Text("I'll do it later manually")
+                        ),
+                        secondaryButton: .default(
+                            Text("Reboot userspace now"),
+                            action: {
+                                execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
+                            }
+                        )
+                    )
                 case .hidden:
-                    return Alert(title: Text("Environment Hidden"), message: Text("Jailbreak environment fully hidden until the next rejailbreak"), dismissButton: .default(Text("OK")))
+                    return Alert(title: Text("Environment Hidden"), message: Text("Jailbreak environment fully hidden until the next rejailbreak."), dismissButton: .default(Text("OK")))
                 case .uninstall:
-                    return Alert(title: Text("Uninstall"),
+                    return Alert(title: Text("Uninstall?"),
                         message: Text("Are you sure you want to uninstall the jailbreak environment? This will delete everything about your jailbreak including packages, tweaks and apps."),
                         primaryButton: .cancel(),
                         secondaryButton: .default(Text("Uninstall Environment")) {
                             execCmd(args: [CommandLine.arguments[0], "uninstall_environment"])
                     })
-            }  
+            }
         }
     }
-    
+
     func print(_ text: String, ender: String = "\n") {
         NSLog(text)
         logText += text + ender
     }
-    
+
     func statusUpdate(_ s: String) {
         textStatus3 = textStatus2
         textStatus2 = textStatus1
         textStatus1 = s
     }
-    
+
     func launchExploit() {
         do {
             statusUpdate("Status: Launching kexploitd")
-            
+
             try Fugu15.launchKernelExploit(oobPCI: Bundle.main.bundleURL.appendingPathComponent("oobPCI")) { msg in
                 if status != .done {
                     DispatchQueue.main.async {
                         if msg.hasPrefix("Status: ") {
                             statusUpdate(msg)
                         }
-                        
+
                         print(msg)
                     }
                 }
             }
-            
+
             try Fugu15.startEnvironment()
             //try Fugu15.launch_iDownload()
-            
+
             DispatchQueue.main.async {
                 statusUpdate("Status: Done!")
                 status = .done
@@ -174,7 +224,7 @@ struct JailbreakView: View {
 
 struct JailbreakView_Previews: PreviewProvider {
     @State static var logText = ""
-    
+
     static var previews: some View {
         JailbreakView(logText: $logText)
     }
