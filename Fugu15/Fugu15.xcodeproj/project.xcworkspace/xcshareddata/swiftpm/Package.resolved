@@ -24,8 +24,17 @@
         "repositoryURL": "https://github.com/pinauten/PatchfinderUtils",
         "state": {
           "branch": "master",
-          "revision": "8f9d9fb3afa8e745f477f9612464e51b463e8975",
+          "revision": "68f6e7f430d94bc01315b0f1e753e3764b9cc31d",
           "version": null
+        }
+      },
+      {
+        "package": "SwiftfulLoadingIndicators",
+        "repositoryURL": "https://github.com/SwiftfulThinking/SwiftfulLoadingIndicators",
+        "state": {
+          "branch": null,
+          "revision": "85858c0246dcd781228301f9928519f75ce89758",
+          "version": "0.0.4"
         }
       },
       {
@@ -33,7 +42,7 @@
         "repositoryURL": "https://github.com/pinauten/SwiftMachO",
         "state": {
           "branch": "master",
-          "revision": "d433b349d7e69bb8fd5d18ea5cdbcd8b731ddf55",
+          "revision": "7bcffb07259191f7103ded3d29c77f05b7fed396",
           "version": null
         }
       },

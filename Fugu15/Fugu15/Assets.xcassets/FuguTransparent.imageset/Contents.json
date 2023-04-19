@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "Pinauten_Logo_SecResearch_1024.png",
+      "filename" : "Artboard.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Pinauten_Logo_SecResearch_2048.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Pinauten_Logo_SecResearch_4096.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
