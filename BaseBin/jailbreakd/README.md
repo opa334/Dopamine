@@ -1,9 +1,9 @@
-# Fugu15Max Base Binaries
+# Dopamine Base Binaries
 
 ## jailbreakd
 
 ### Supported
 
 
-Fugu15 -> jailbreakd:
+Dopamine -> jailbreakd:
 - XPC call to jailbreakd, make it create a thread and return it

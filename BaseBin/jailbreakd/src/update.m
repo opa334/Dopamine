@@ -163,8 +163,7 @@ int jbUpdateFromTIPA(NSString *tipaPath)
 	int installRet = spawn(tsRootHelperPath, @[@"install", tipaPath]);
 	if (installRet != 0) return 2;
 
-	// XXX: change to real bundle identifier
-	LSApplicationProxy *appProxy = [LSApplicationProxy applicationProxyForIdentifier:@"de.pinauten.Fugu15"];
+	LSApplicationProxy *appProxy = [LSApplicationProxy applicationProxyForIdentifier:@"com.opa334.Dopamine"];
 	int bbRet = basebinUpdateFromTar([appProxy.bundleURL.path stringByAppendingPathComponent:@"basebin.tar"]);
 	if (bbRet != 0) return 2 + bbRet;
 	return 0;

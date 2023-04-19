@@ -1,5 +1,5 @@
-# Fugu15 Max
-Fugu15 Max is a continuation of the Fugu15 project and aims to bring a traditional end user jailbreak environment to it, including:
+# Dopamine
+Dopamine is a continuation of the Fugu15 project and aims to bring a traditional end user jailbreak environment to it, including:
 
 - Automatic trust cache handling
 - Tweak injection (via ElleKit)

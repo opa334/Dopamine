@@ -6,7 +6,7 @@ PREV_DIR=$(pwd)
 PACK_DIR=$(dirname -- "$0")
 cd "$PACK_DIR"
 
-TARGET="../Fugu15/Fugu15/bootstrap/basebin.tar"
+TARGET="../Dopamine/Dopamine/bootstrap/basebin.tar"
 
 if [ -d "$TARGET" ]; then
 	rm -rf "$TARGET"

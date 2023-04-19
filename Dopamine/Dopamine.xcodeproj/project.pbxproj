@@ -7,11 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1502A40C2891B03F0011CB6E /* Fugu15App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1502A40B2891B03F0011CB6E /* Fugu15App.swift */; };
+		1502A40C2891B03F0011CB6E /* DopamineApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1502A40B2891B03F0011CB6E /* DopamineApp.swift */; };
 		1502A4102891B0410011CB6E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1502A40F2891B0410011CB6E /* Assets.xcassets */; };
 		1502A4132891B0410011CB6E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1502A4122891B0410011CB6E /* Preview Assets.xcassets */; };
 		1502A4242891BD800011CB6E /* Fugu15KernelExploit in Frameworks */ = {isa = PBXBuildFile; productRef = 1502A4232891BD800011CB6E /* Fugu15KernelExploit */; };
-		151CAFA2289348E200B2A6BA /* RemoveFuguInstall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151CAFA1289348E200B2A6BA /* RemoveFuguInstall.swift */; };
 		151CAFAD2893645C00B2A6BA /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 151CAFAC2893645C00B2A6BA /* CoreServices.framework */; };
 		151CAFB32894041D00B2A6BA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151CAFB22894041D00B2A6BA /* main.swift */; };
 		15372EA228DDF5EF00514A73 /* TrustCache in Resources */ = {isa = PBXBuildFile; fileRef = 15372E9F28DDF5EF00514A73 /* TrustCache */; };
@@ -38,16 +37,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1502A4082891B03F0011CB6E /* Fugu15.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fugu15.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		1502A40B2891B03F0011CB6E /* Fugu15App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fugu15App.swift; sourceTree = "<group>"; };
+		1502A4082891B03F0011CB6E /* Dopamine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dopamine.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1502A40B2891B03F0011CB6E /* DopamineApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineApp.swift; sourceTree = "<group>"; };
 		1502A40F2891B0410011CB6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1502A4122891B0410011CB6E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1502A41B2891B0980011CB6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1502A41C2891B1260011CB6E /* posix_spawn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = posix_spawn.h; sourceTree = "<group>"; };
-		1502A41D2891B1360011CB6E /* Fugu15-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Fugu15-Bridging-Header.h"; sourceTree = "<group>"; };
-		1502A4292891BF0A0011CB6E /* Fugu15.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Fugu15.entitlements; sourceTree = "<group>"; };
+		1502A41D2891B1360011CB6E /* Dopamine-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Dopamine-Bridging-Header.h"; sourceTree = "<group>"; };
+		1502A4292891BF0A0011CB6E /* Dopamine.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Dopamine.entitlements; sourceTree = "<group>"; };
 		1502A42A2891BF130011CB6E /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		151CAFA1289348E200B2A6BA /* RemoveFuguInstall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveFuguInstall.swift; sourceTree = "<group>"; };
 		151CAFA42893622C00B2A6BA /* _LSApplicationState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = _LSApplicationState.h; sourceTree = "<group>"; };
 		151CAFA52893622C00B2A6BA /* LSApplicationProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LSApplicationProxy.h; sourceTree = "<group>"; };
 		151CAFA62893622C00B2A6BA /* LSApplicationWorkspace.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LSApplicationWorkspace.h; sourceTree = "<group>"; };
@@ -96,7 +94,7 @@
 			children = (
 				9380BFFF29E8601600C0121A /* Fugu15KernelExploit */,
 				1502A42A2891BF130011CB6E /* Makefile */,
-				1502A40A2891B03F0011CB6E /* Fugu15 */,
+				1502A40A2891B03F0011CB6E /* Dopamine */,
 				1502A4092891B03F0011CB6E /* Products */,
 				151CAFAB2893645C00B2A6BA /* Frameworks */,
 			);
@@ -105,27 +103,26 @@
 		1502A4092891B03F0011CB6E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1502A4082891B03F0011CB6E /* Fugu15.app */,
+				1502A4082891B03F0011CB6E /* Dopamine.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		1502A40A2891B03F0011CB6E /* Fugu15 */ = {
+		1502A40A2891B03F0011CB6E /* Dopamine */ = {
 			isa = PBXGroup;
 			children = (
 				CE53628529D64DBA00E4332B /* UI */,
 				15372E9E28DDF5D300514A73 /* bootstrap */,
 				1502A41B2891B0980011CB6E /* Info.plist */,
-				1502A40B2891B03F0011CB6E /* Fugu15App.swift */,
-				151CAFA1289348E200B2A6BA /* RemoveFuguInstall.swift */,
+				1502A40B2891B03F0011CB6E /* DopamineApp.swift */,
 				151CAFB22894041D00B2A6BA /* main.swift */,
 				1502A40F2891B0410011CB6E /* Assets.xcassets */,
 				1502A4112891B0410011CB6E /* Preview Content */,
 				151CAFA32893621300B2A6BA /* include */,
-				1502A41D2891B1360011CB6E /* Fugu15-Bridging-Header.h */,
-				1502A4292891BF0A0011CB6E /* Fugu15.entitlements */,
+				1502A41D2891B1360011CB6E /* Dopamine-Bridging-Header.h */,
+				1502A4292891BF0A0011CB6E /* Dopamine.entitlements */,
 			);
-			path = Fugu15;
+			path = Dopamine;
 			sourceTree = "<group>";
 		};
 		1502A4112891B0410011CB6E /* Preview Content */ = {
@@ -215,9 +212,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1502A4072891B03F0011CB6E /* Fugu15 */ = {
+		1502A4072891B03F0011CB6E /* Dopamine */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1502A4162891B0410011CB6E /* Build configuration list for PBXNativeTarget "Fugu15" */;
+			buildConfigurationList = 1502A4162891B0410011CB6E /* Build configuration list for PBXNativeTarget "Dopamine" */;
 			buildPhases = (
 				1502A4042891B03F0011CB6E /* Sources */,
 				1502A4052891B03F0011CB6E /* Frameworks */,
@@ -227,13 +224,13 @@
 			);
 			dependencies = (
 			);
-			name = Fugu15;
+			name = Dopamine;
 			packageProductDependencies = (
 				1502A4232891BD800011CB6E /* Fugu15KernelExploit */,
 				CE27798829D459220030E28D /* SwiftfulLoadingIndicators */,
 			);
 			productName = Fugu15;
-			productReference = 1502A4082891B03F0011CB6E /* Fugu15.app */;
+			productReference = 1502A4082891B03F0011CB6E /* Dopamine.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -252,7 +249,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 1502A4032891B03F0011CB6E /* Build configuration list for PBXProject "Fugu15" */;
+			buildConfigurationList = 1502A4032891B03F0011CB6E /* Build configuration list for PBXProject "Dopamine" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -268,7 +265,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1502A4072891B03F0011CB6E /* Fugu15 */,
+				1502A4072891B03F0011CB6E /* Dopamine */,
 			);
 		};
 /* End PBXProject section */
@@ -309,8 +306,7 @@
 				CE6CA69329D6D7C100A6E513 /* AboutView.swift in Sources */,
 				CEBBF6DB29D9DCD900AD7299 /* SettingsView.swift in Sources */,
 				CE284DE729D478620096D99D /* LogView.swift in Sources */,
-				1502A40C2891B03F0011CB6E /* Fugu15App.swift in Sources */,
-				151CAFA2289348E200B2A6BA /* RemoveFuguInstall.swift in Sources */,
+				1502A40C2891B03F0011CB6E /* DopamineApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,7 +363,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -421,7 +417,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -439,11 +435,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Fugu15/Preview Content\"";
-				DEVELOPMENT_TEAM = 92S6JX27W2;
+				DEVELOPMENT_ASSET_PATHS = "\"Dopamine/Preview Content\"";
+				DEVELOPMENT_TEAM = 3Z56NQJ65R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Fugu15/Info.plist;
+				INFOPLIST_FILE = Dopamine/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Dopamine;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -457,17 +453,17 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Fugu15/bootstrap",
+					"$(PROJECT_DIR)/Dopamine/bootstrap",
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "de.pinauten.Fugu15-demo";
+				PRODUCT_BUNDLE_IDENTIFIER = com.opa334.Dopamine;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Fugu15/Fugu15-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Dopamine/Dopamine-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -482,11 +478,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Fugu15/Preview Content\"";
-				DEVELOPMENT_TEAM = 92S6JX27W2;
+				DEVELOPMENT_ASSET_PATHS = "\"Dopamine/Preview Content\"";
+				DEVELOPMENT_TEAM = 3Z56NQJ65R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Fugu15/Info.plist;
+				INFOPLIST_FILE = Dopamine/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Dopamine;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -500,17 +496,17 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Fugu15/bootstrap",
+					"$(PROJECT_DIR)/Dopamine/bootstrap",
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "de.pinauten.Fugu15-demo";
+				PRODUCT_BUNDLE_IDENTIFIER = com.opa334.Dopamine;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Fugu15/Fugu15-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Dopamine/Dopamine-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -519,7 +515,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1502A4032891B03F0011CB6E /* Build configuration list for PBXProject "Fugu15" */ = {
+		1502A4032891B03F0011CB6E /* Build configuration list for PBXProject "Dopamine" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1502A4142891B0410011CB6E /* Debug */,
@@ -528,7 +524,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1502A4162891B0410011CB6E /* Build configuration list for PBXNativeTarget "Fugu15" */ = {
+		1502A4162891B0410011CB6E /* Build configuration list for PBXNativeTarget "Dopamine" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1502A4172891B0410011CB6E /* Debug */,

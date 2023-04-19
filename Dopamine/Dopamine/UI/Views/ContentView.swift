@@ -47,9 +47,6 @@ struct ContentView: View {
     @State var showingUpdatePopup = false
     @State var updateChangelog: String? = nil
     
-    
-    @State private var showingRemoveFrame = RemoveFuguInstall.shouldShow()
-    
     @AppStorage("verboseLogs") var advancedLogsByDefault: Bool = false
     @State var advancedLogsTemporarilyEnabled: Bool = false
     
@@ -147,9 +144,6 @@ struct ContentView: View {
                 .opacity(shouldShowBackground ? 1 : 0)
                 .animation(.spring().speed(1.5), value: shouldShowBackground)
             }
-        }
-        .sheet(isPresented: $showingRemoveFrame) {
-            RemoveFuguInstall(isPresented: $showingRemoveFrame)
         }
         .onAppear {
             Task {
