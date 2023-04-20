@@ -115,7 +115,6 @@ struct LogView: View {
                                 }
                             }
                             .onChange(of: logger.userFriendlyLogs) { newValue in
-                                print("changed")
                                 if !advanced {
                                     withAnimation(.spring().speed(2)) {
                                         reader.scrollTo(newValue.last!.id, anchor: .top)
@@ -125,11 +124,8 @@ struct LogView: View {
                             
                             Text(logger.log)
                                 .foregroundColor(.white)
-                                .frame(minWidth: 0,
-                                       maxWidth: .infinity,
-                                       minHeight: 0,
-                                       maxHeight: .infinity,
-                                       alignment: .topLeading)
+                                .frame(maxWidth: advanced ? .infinity : 0,
+                                       maxHeight: advanced ? .infinity : 0)
                                 .tag("AdvancedText")
                                 .padding(.bottom, 64)
                                 .padding(.horizontal, 32)
