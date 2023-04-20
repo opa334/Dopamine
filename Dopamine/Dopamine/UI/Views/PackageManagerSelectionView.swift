@@ -63,6 +63,7 @@ struct PackageManagerSelectionView: View {
             Spacer()
             
             Button {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 onContinue()
             } label: {
                 Label(title: { Text("Continue") }, icon: {

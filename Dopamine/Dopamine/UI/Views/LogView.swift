@@ -14,6 +14,8 @@ struct LogView: View {
     @Binding var advancedLogsTemporarilyEnabled: Bool
     @Binding var advancedLogsByDefault: Bool
     
+    let viewAppearanceDate = Date()
+    
     var advanced: Bool {
         advancedLogsByDefault || advancedLogsTemporarilyEnabled
     }
@@ -109,6 +111,11 @@ struct LogView: View {
                             .animation(.spring(), value: advanced)
                             .onChange(of: logger.userFriendlyLogs) { newValue in
                                 if !advanced {
+                                    // give 0.5 seconds for a better feel
+                                    if viewAppearanceDate.timeIntervalSinceNow < -0.5 {
+                                        UISelectionFeedbackGenerator().selectionChanged()
+                                    }
+                                    
                                     withAnimation {
                                         reader.scrollTo("RegularLogs", anchor: .bottom)
                                     }

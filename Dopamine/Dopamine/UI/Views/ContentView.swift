@@ -233,6 +233,7 @@ struct ContentView: View {
     var bottomSection: some View {
         VStack {
             Button {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                 if (UserDefaults.standard.array(forKey: "selectedPackageManagers") as? [String] ?? []).isEmpty {
                     jailbreakingProgress = .selectingPackageManager
                 } else {
@@ -383,7 +384,10 @@ struct ContentView: View {
                 jailbreakingError = e
                 
                 if e == nil {
-                    UserDefaults.standard.set(UserDefaults.standard.integer(forKey: "successfulJailbreaks") + 1, forKey: "successfulJailbreaks") 
+                    UserDefaults.standard.set(UserDefaults.standard.integer(forKey: "successfulJailbreaks") + 1, forKey: "successfulJailbreaks")
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                } else {
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }
             }
         }
