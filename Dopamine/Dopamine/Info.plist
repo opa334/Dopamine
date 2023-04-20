@@ -7,5 +7,7 @@
 		<string>oobPCI</string>
 		<string>tar</string>
 	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>
