@@ -62,9 +62,7 @@ class Logger: ObservableObject {
         print(text)
         shared.log += "\n\(type.rawValue) \(text)"
         if isUserFriendly {
-            withAnimation {
-                shared.userFriendlyLogs.append(.init(text: String(describing: text), type: type))
-            }
+            shared.userFriendlyLogs.append(.init(text: String(describing: text), type: type))
         }
     }
 }

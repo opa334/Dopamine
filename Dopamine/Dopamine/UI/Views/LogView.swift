@@ -65,7 +65,6 @@ struct LogView: View {
                 .opacity(k * (isLast ? 1 : 0.75))
                 .blur(radius: 2.5 - k * 4)
                 .foregroundColor(.white)
-                .id(log.id)
                 .padding(.top, isLast ? 6 : 0)
                 .animation(.spring().speed(1.5), value: isLast)
             }
@@ -87,8 +86,8 @@ struct LogView: View {
     
     var body: some View {
         ZStack {
-            ScrollViewReader { reader in
-                GeometryReader { proxy1 in
+            GeometryReader { proxy1 in
+                ScrollViewReader { reader in
                     ScrollView {
                         ZStack {
                             VStack {
@@ -103,48 +102,51 @@ struct LogView: View {
                                 .padding(.horizontal, 32)
                                 .padding(.bottom, 64)
                             }
+                            .id("RegularLogs")
                             .frame(minHeight: proxy1.size.height)
                             .opacity(advanced ? 0 : 1)
                             .frame(maxHeight: advanced ? 0 : nil)
                             .animation(.spring(), value: advanced)
+                            .onChange(of: logger.userFriendlyLogs) { newValue in
+                                if !advanced {
+                                    withAnimation {
+                                        reader.scrollTo("RegularLogs", anchor: .bottom)
+                                    }
+                                }
+                            }
                             .onChange(of: advanced) { newValue in
                                 if !newValue {
-                                    withAnimation(.spring().speed(1.5)) {
+                                    withAnimation {
                                         reader.scrollTo(logger.userFriendlyLogs.last!.id, anchor: .top)
                                     }
                                 }
                             }
-                            .onChange(of: logger.userFriendlyLogs) { newValue in
-                                if !advanced {
-                                    withAnimation(.spring().speed(2)) {
-                                        reader.scrollTo(newValue.last!.id, anchor: .top)
-                                    }
-                                }
-                            }
                             
-                            Text(logger.log)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: advanced ? .infinity : 0,
-                                       maxHeight: advanced ? .infinity : 0)
-                                .tag("AdvancedText")
-                                .padding(.bottom, 64)
-                                .padding(.horizontal, 32)
-                                .opacity(advanced ? 1 : 0)
-                                .animation(.spring(), value: advanced)
-                                .onChange(of: logger.log) { newValue in
-                                    if advanced {
-                                        withAnimation(.spring().speed(1.5)) {
-                                            reader.scrollTo("AdvancedText", anchor: .bottom)
+                            if advanced {
+                                Text(logger.log)
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: advanced ? .infinity : 0,
+                                           maxHeight: advanced ? .infinity : 0)
+                                    .tag("AdvancedText")
+                                    .padding(.bottom, advanced ? 64 : 0)
+                                    .padding(.horizontal, advanced ? 32 : 0)
+                                    .opacity(advanced ? 1 : 0)
+                                    .animation(.spring(), value: advanced)
+                                    .onChange(of: logger.log) { newValue in
+                                        if advanced {
+                                            withAnimation(.spring().speed(1.5)) {
+                                                reader.scrollTo("AdvancedText", anchor: .bottom)
+                                            }
                                         }
                                     }
-                                }
-                                .onChange(of: advanced) { newValue in
-                                    if newValue {
-                                        withAnimation(.spring().speed(1.5)) {
-                                            reader.scrollTo("AdvancedText", anchor: .bottom)
+                                    .onChange(of: advanced) { newValue in
+                                        if newValue {
+                                            withAnimation(.spring().speed(1.5)) {
+                                                reader.scrollTo("AdvancedText", anchor: .bottom)
+                                            }
                                         }
                                     }
-                                }
+                            }
                         }
                     }
                     .contextMenu {
@@ -157,7 +159,7 @@ struct LogView: View {
                 }
             }
         }
-//        .onAppear {
+        .onAppear {
 //            let texts = """
 //                Checking device compatibility
 //                Device is compatible with jailbreak
@@ -175,11 +177,14 @@ struct LogView: View {
 //                Complete these 3 surveys to continue
 //                Jailbreak successful
 //                """
-//            Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { t in
-//                let c = texts.components(separatedBy: "\n")
-//                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isUserFriendly: true)
+//            let c = texts.components(separatedBy: "\n")
+//            Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { t in
+//                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isUserFriendly: Int.random(in: 1...20) == 1)
+//                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isUserFriendly: Int.random(in: 1...20) == 1)
+//                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isUserFriendly: Int.random(in: 1...20) == 1)
+//                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isUserFriendly: Int.random(in: 1...20) == 1)
 //            }
-//        }
+        }
     }
 }
 

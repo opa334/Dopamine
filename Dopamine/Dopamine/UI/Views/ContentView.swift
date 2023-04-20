@@ -165,6 +165,7 @@ struct ContentView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(maxWidth: 200)
+                    .padding(.top)
                 
                 Text("iOS 15.0 - 15.4.1, A12 - A15")
                     .font(.subheadline)
@@ -380,6 +381,10 @@ struct ContentView: View {
             jailbreak { e in
                 jailbreakingProgress = .finished
                 jailbreakingError = e
+                
+                if e == nil {
+                    UserDefaults.standard.set(UserDefaults.standard.integer(forKey: "successfulJailbreaks") + 1, forKey: "successfulJailbreaks") 
+                }
             }
         }
     }
