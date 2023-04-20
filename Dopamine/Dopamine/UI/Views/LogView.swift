@@ -71,7 +71,7 @@ struct LogView: View {
             }
             .opacity(shown ? 1 : 0)
             .onAppear {
-                withAnimation {
+                withAnimation(.spring().speed(3)) {
                     shown = true
                 }
             }
@@ -104,14 +104,6 @@ struct LogView: View {
                                 .padding(.bottom, 64)
                             }
                             .frame(minHeight: proxy1.size.height)
-                            .onChange(of: logger.userFriendlyLogs, perform: { value in
-                                print(advanced)
-                                if !advanced {
-                                    withAnimation(.spring().speed(1.5)) {
-                                        reader.scrollTo(logger.userFriendlyLogs.last!.id, anchor: .top)
-                                    }
-                                }
-                            })
                             .opacity(advanced ? 0 : 1)
                             .frame(maxHeight: advanced ? 0 : nil)
                             .animation(.spring(), value: advanced)
@@ -119,6 +111,14 @@ struct LogView: View {
                                 if !newValue {
                                     withAnimation(.spring().speed(1.5)) {
                                         reader.scrollTo(logger.userFriendlyLogs.last!.id, anchor: .top)
+                                    }
+                                }
+                            }
+                            .onChange(of: logger.userFriendlyLogs) { newValue in
+                                print("changed")
+                                if !advanced {
+                                    withAnimation(.spring().speed(2)) {
+                                        reader.scrollTo(newValue.last!.id, anchor: .top)
                                     }
                                 }
                             }
@@ -136,8 +136,10 @@ struct LogView: View {
                                 .opacity(advanced ? 1 : 0)
                                 .animation(.spring(), value: advanced)
                                 .onChange(of: logger.log) { newValue in
-                                    withAnimation(.spring().speed(1.5)) {
-                                        reader.scrollTo("AdvancedText", anchor: .bottom)
+                                    if advanced {
+                                        withAnimation(.spring().speed(1.5)) {
+                                            reader.scrollTo("AdvancedText", anchor: .bottom)
+                                        }
                                     }
                                 }
                                 .onChange(of: advanced) { newValue in
@@ -149,13 +151,13 @@ struct LogView: View {
                                 }
                         }
                     }
-//                    .contextMenu {
-//                        Button {
-//                            UIPasteboard.general.string = logger.log
-//                        } label: {
-//                            Label("Copy", systemImage: "doc.on.doc")
-//                        }
-//                    }
+                    .contextMenu {
+                        Button {
+                            UIPasteboard.general.string = logger.log
+                        } label: {
+                            Label("Copy", systemImage: "doc.on.doc")
+                        }
+                    }
                 }
             }
         }
@@ -177,17 +179,9 @@ struct LogView: View {
 //                Complete these 3 surveys to continue
 //                Jailbreak successful
 //                """
-//            var i = 0
-//            Timer.scheduledTimer(withTimeInterval: 0.4, repeats: true) { t in
+//            Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { t in
 //                let c = texts.components(separatedBy: "\n")
-//                if i < c.count {
-//                    Logger.log(c[i], type: (i != c.count - 1) ? [LogMessage.LogType.continuous, .error, .instant].randomElement()! : .success, isUserFriendly: true)
-//                    i += 1
-//
-//                    if i == c.count - 1 {
-//                        UserDefaults.standard.set(UserDefaults.standard.integer(forKey: "successfulJailbreaks") + 1, forKey: "successfulJailbreaks")
-//                    }
-//                }
+//                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isUserFriendly: true)
 //            }
 //        }
     }
@@ -195,7 +189,7 @@ struct LogView: View {
 
 struct LogView_Previews: PreviewProvider {
     static var previews: some View {
-        LogView(advancedLogsTemporarilyEnabled: .constant(true), advancedLogsByDefault: .constant(true))
+        LogView(advancedLogsTemporarilyEnabled: .constant(false), advancedLogsByDefault: .constant(false))
             .background(.black)
     }
 }

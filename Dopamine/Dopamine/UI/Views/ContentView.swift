@@ -251,7 +251,11 @@ struct ContentView: View {
                         case .selectingPackageManager:
                             Text("Select Package Manager(s)")
                         case .finished:
-                            Text("Jailbroken")
+                            if jailbreakingError == nil {
+                                Text("Jailbroken")
+                            } else {
+                                Text("Unsuccessful")
+                            }
                         }
                     }}, icon: {
                         ZStack {
@@ -260,7 +264,13 @@ struct ContentView: View {
                                 LoadingIndicator(animation: .doubleHelix, color: .white, size: .small)
                             case .selectingPackageManager:
                                 Image(systemName: "shippingbox")
-                            default:
+                            case .finished:
+                                if jailbreakingError == nil {
+                                    Image(systemName: "lock.open")
+                                } else {
+                                    Image(systemName: "lock.slash")
+                                }
+                            case .idle:
                                 Image(systemName: "lock.open")
                             }
                         }
@@ -318,7 +328,7 @@ struct ContentView: View {
                 Button {
                     advancedLogsTemporarilyEnabled.toggle()
                 } label: {
-                    Label(title: { Text("Show Logs") }, icon: {
+                    Label(title: { Text(advancedLogsTemporarilyEnabled ? "Hide Logs" : "Show Logs") }, icon: {
                         Image(systemName: "scroll")
                     })
                     .foregroundColor(.white)

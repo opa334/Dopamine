@@ -104,10 +104,12 @@ struct UpdateDownloadingView: View {
                     .frame(height: 225)
                     
                     VStack {
-                        LogView(advancedLogsTemporarilyEnabled: .constant(true), advancedLogsByDefault: .constant(true))
-                        Text("Log view can be scrolled")
-                            .foregroundColor(.white.opacity(0.5))
-                            .padding()
+                        if showLogView {
+                            LogView(advancedLogsTemporarilyEnabled: .constant(true), advancedLogsByDefault: .constant(true))
+                            Text("Log view can be scrolled")
+                                .foregroundColor(.white.opacity(0.5))
+                                .padding()
+                        }
                     }
                     .opacity(showLogView ? 1 : 0)
                     .frame(height: 225)

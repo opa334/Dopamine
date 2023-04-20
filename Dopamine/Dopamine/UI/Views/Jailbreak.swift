@@ -30,7 +30,7 @@ func userspaceReboot() {
     }
     
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-        execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
+        let _ = execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
     })
 }
 
@@ -71,11 +71,12 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
         try Fugu15.startEnvironment()
         
         DispatchQueue.main.async {
-            Logger.log("Done!", isUserFriendly: true)
+            Logger.log("Done!", type: .success, isUserFriendly: true)
             completion(nil)
         }
     } catch {
         DispatchQueue.main.async {
+            Logger.log("\(error.localizedDescription)", type: .error, isUserFriendly: true)
             completion(error)
             NSLog("Fugu15 error: \(error)")
         }
