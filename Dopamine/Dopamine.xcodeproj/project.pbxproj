@@ -79,6 +79,7 @@
 		938DADEB29F2DAEA00C37952 /* sl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sl; path = sl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		938DADEC29F2DBE100C37952 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		938DADEE29F2E0FA00C37952 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		938DADEF29F2FCE400C37952 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		93D2565829ED68B100B549BA /* Error++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error++.swift"; sourceTree = "<group>"; };
 		93D2565A29ED6EDE00B549BA /* URLExtension+download.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLExtension+download.swift"; sourceTree = "<group>"; };
 		CE284DE429D4777A0096D99D /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
@@ -290,6 +291,7 @@
 				sl,
 				"zh-Hans",
 				"pt-BR",
+				nl,
 			);
 			mainGroup = 1502A3FF2891B03F0011CB6E;
 			packageReferences = (
@@ -367,6 +369,7 @@
 				938DADEB29F2DAEA00C37952 /* sl */,
 				938DADEC29F2DBE100C37952 /* zh-Hans */,
 				938DADEE29F2E0FA00C37952 /* pt-BR */,
+				938DADEF29F2FCE400C37952 /* nl */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
