@@ -1,0 +1,116 @@
+"Bootstrapping" = "Bootstrappen";
+
+"Button_Cancel" = "Abbrechen";
+
+"Button_Hide_Jailbreak" = "Jailbreak verstecken";
+
+"Button_Hide_Logs_Title" = "Logs ausblenden";
+
+"Button_Jailbreak_Title" = "Jailbreak";
+
+"Button_Remove_Jailbreak" = "Jailbreak entfernen";
+
+"Button_Set_Root_Password" = "Root Passwort setzen";
+
+"Button_Show_Logs_Title" = "Logs anzeigen";
+
+"Button_Unhide_Jailbreak" = "Jailbreak wieder anzeigen";
+
+"Button_Update" = "Aktualisieren";
+
+"Button_Update_Available" = "Aktualisierung verfügbar";
+
+"Bypassing PAC" = "Umgehe PAC";
+
+"Bypassing PPL" = "Umgehe PPL";
+
+"Changelog_Unavailable_Text" = "Changelog nicht verfügbar";
+
+"Context_Menu_Copy_To_Clipboard" = "In die Zwischenablage kopieren";
+
+"Credits_Button_License" = "Lizenz";
+
+"Credits_Button_Source_Code" = "Quellcode";
+
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine Version %@\n%@";
+
+"Credits_Header_Special_Thanks" = "Großen Dank:";
+
+"Credits_Made_By" = "Von opa334, évelyne";
+
+"Credits_Made_By_Subheadline" = "UI von sourcelocation\nLogo und Symbol von xerus";
+
+"Finalizing Bootstrap" = "Stelle Bootstrap fertig";
+
+"Gaining r/w" = "Erhalte r/w";
+
+"Hint_Hide_Jailbreak" = "\"Jailbreak verstecken\" entfernt temporär Jailbreak Dateien bis zum nächsten Jailbreak";
+
+"Initializing Environment" = "Initialisiere Umgebung";
+
+"Initializing System Hook" = "Initialisiere System Hook";
+
+"Jailbreak_Done" = "Fertig!";
+
+"Launching kexploitd" = "Starte kexploitd";
+
+"Launching oobPCI" = "Starte oobPCI";
+
+"Loading Basebin Trustcache" = "Lade Basebin Trustcache";
+
+"Menu_Credits_Title" = "Über";
+
+"Menu_Options_Title" = "Optionen";
+
+"Menu_Reboot_Userspace_Title" = "Userspace neustarten";
+
+"Menu_Restart_SpringBoard_Title" = "SpringBoard neustarten";
+
+"Options_iDownload" = "iDownload";
+
+"Options_Tweak_Injection" = "Tweak Injektion";
+
+"Options_Verbose_Logs" = "Detaillierte Protokolle";
+
+"Patchfinding" = "Patchfinding";
+
+"Rebuilding TrustCache" = "Baue TrustCache neu auf";
+
+"Refreshing Icon Cache" = "Symbol Cache auffrischen";
+
+"Settings_Footer_Device_Bootstrapped" = "Gerät gebootstrapped";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "Gerät ist nicht gebootstrapped";
+
+"Settings_Title" = "Einstellungen";
+
+"Starting jailbreakd" = "Starte jailbreakd";
+
+"Starting Launch Daemons" = "Starte Launch Daemons";
+
+"Status_Title_Jailbreaking" = "Jailbreaken";
+
+"Status_Title_Jailbroken" = "Gejailbreakt";
+
+"Status_Title_Select_Package_Managers" = "Paket Manager auswählen";
+
+"Status_Title_Unsuccessful" = "Erfolglos";
+
+"Success_Rate %@%% (%lld/%lld)" = "Erfolgsrate: %@%% (%lld/%lld)";
+
+"Title_Changelog" = "Changelog";
+
+"Title_Made_By" = "von opa334, évelyne, Benutzeroberfläche von sourceloc";
+
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+
+"Update_Log_Hint_Scrollable" = "Die Protokollansicht ist durchscrollbar";
+
+"Update_Status_Downloading" = "Lade Aktualisierung herunter...";
+
+"Update_Status_Installing" = "Installiere Aktualisierung...";
+
+"Update_Status_Subtitle_Please_Wait" = "Bitte warte bis die Dateien heruntergeladen wurden";
+
+"Update_Status_Subtitle_Restart_Soon" = "Das Gerät wird bald neustarten";
+

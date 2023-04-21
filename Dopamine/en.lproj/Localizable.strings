@@ -1,174 +1,116 @@
-/* (No Comment) */
 "Bootstrapping" = "Bootstrapping";
 
-/* No comment provided by engineer. */
 "Button_Cancel" = "Cancel";
 
-/* No comment provided by engineer. */
 "Button_Hide_Jailbreak" = "Hide Jailbreak";
 
-/* No comment provided by engineer. */
 "Button_Hide_Logs_Title" = "Hide Logs";
 
-/* No comment provided by engineer. */
 "Button_Jailbreak_Title" = "Jailbreak";
 
-/* No comment provided by engineer. */
 "Button_Remove_Jailbreak" = "Remove Jailbreak";
 
-/* No comment provided by engineer. */
 "Button_Set_Root_Password" = "Set Root Password";
 
-/* No comment provided by engineer. */
 "Button_Show_Logs_Title" = "Show Logs";
 
-/* No comment provided by engineer. */
 "Button_Unhide_Jailbreak" = "Unhide Jailbreak";
 
-/* No comment provided by engineer. */
 "Button_Update" = "Update";
 
-/* No comment provided by engineer. */
 "Button_Update_Available" = "Update available";
 
-/* (No Comment) */
 "Bypassing PAC" = "Bypassing PAC";
 
-/* (No Comment) */
 "Bypassing PPL" = "Bypassing PPL";
 
-/* No comment provided by engineer. */
 "Changelog_Unavailable_Text" = "Changelog Unavailable";
 
-/* No comment provided by engineer. */
 "Context_Menu_Copy_To_Clipboard" = "Copy to clipboard";
 
-/* No comment provided by engineer. */
 "Credits_Button_License" = "License";
 
-/* No comment provided by engineer. */
 "Credits_Button_Source_Code" = "Source Code";
 
-/* No comment provided by engineer. */
 "Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
 
-/* No comment provided by engineer. */
 "Credits_Header_Special_Thanks" = "Special thanks:";
 
-/* No comment provided by engineer. */
 "Credits_Made_By" = "Made by by opa334, évelyne";
 
-/* No comment provided by engineer. */
 "Credits_Made_By_Subheadline" = "UI by sourcelocation\nLogo and icon by xerus";
 
-/* (No Comment) */
 "Finalizing Bootstrap" = "Finalizing Bootstrap";
 
-/* (No Comment) */
 "Gaining r/w" = "Gaining r/w";
 
-/* No comment provided by engineer. */
 "Hint_Hide_Jailbreak" = "\"Hide Jailbreak\" temporarily removes jailbreak-related files until next jailbreak";
 
-/* (No Comment) */
 "Initializing Environment" = "Initializing Environment";
 
-/* (No Comment) */
 "Initializing System Hook" = "Initializing System Hook";
 
-/* No comment provided by engineer. */
 "Jailbreak_Done" = "Done!";
 
-/* (No Comment) */
 "Launching kexploitd" = "Launching kexploitd";
 
-/* (No Comment) */
 "Launching oobPCI" = "Launching oobPCI";
 
-/* (No Comment) */
 "Loading Basebin Trustcache" = "Loading Basebin Trustcache";
 
-/* No comment provided by engineer. */
 "Menu_Credits_Title" = "About";
 
-/* No comment provided by engineer. */
 "Menu_Options_Title" = "Options";
 
-/* No comment provided by engineer. */
 "Menu_Reboot_Userspace_Title" = "Reboot Userspace";
 
-/* No comment provided by engineer. */
 "Menu_Restart_SpringBoard_Title" = "Restart SpringBoard";
 
-/* No comment provided by engineer. */
 "Options_iDownload" = "iDownload";
 
-/* No comment provided by engineer. */
 "Options_Tweak_Injection" = "Tweak Injection";
 
-/* No comment provided by engineer. */
 "Options_Verbose_Logs" = "Verbose Logs";
 
-/* (No Comment) */
 "Patchfinding" = "Patchfinding";
 
-/* (No Comment) */
 "Rebuilding TrustCache" = "Rebuilding TrustCache";
 
-/* (No Comment) */
 "Refreshing Icon Cache" = "Refreshing Icon Cache";
 
-/* No comment provided by engineer. */
 "Settings_Footer_Device_Bootstrapped" = "Device is bootstrapped";
 
-/* No comment provided by engineer. */
 "Settings_Footer_Device_Not_Bootstrapped" = "Device is not bootstrapped";
 
-/* No comment provided by engineer. */
 "Settings_Title" = "Settings";
 
-/* (No Comment) */
 "Starting jailbreakd" = "Starting jailbreakd";
 
-/* (No Comment) */
 "Starting Launch Daemons" = "Starting Launch Daemons";
 
-/* No comment provided by engineer. */
 "Status_Title_Jailbreaking" = "Jailbreaking";
 
-/* No comment provided by engineer. */
 "Status_Title_Jailbroken" = "Jailbroken";
 
-/* No comment provided by engineer. */
 "Status_Title_Select_Package_Managers" = "Select Package Manager(s)";
 
-/* No comment provided by engineer. */
 "Status_Title_Unsuccessful" = "Unsuccessful";
 
-/* No comment provided by engineer. */
 "Success_Rate %@%% (%lld/%lld)" = "Success rate: %@%% (%lld/%lld)";
 
-/* No comment provided by engineer. */
 "Title_Changelog" = "Changelog";
 
-/* No comment provided by engineer. */
 "Title_Made_By" = "by opa334, évelyne, UI by sourceloc";
 
-/* No comment provided by engineer. */
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
 
-/* No comment provided by engineer. */
 "Update_Log_Hint_Scrollable" = "Log view can be scrolled";
 
-/* No comment provided by engineer. */
 "Update_Status_Downloading" = "Downloading update...";
 
-/* No comment provided by engineer. */
 "Update_Status_Installing" = "Installing update...";
 
-/* No comment provided by engineer. */
 "Update_Status_Subtitle_Please_Wait" = "Please wait while files finish downloading";
 
-/* No comment provided by engineer. */
 "Update_Status_Subtitle_Restart_Soon" = "The device will restart soon";
 

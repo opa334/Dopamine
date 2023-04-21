@@ -1,0 +1,116 @@
+"Bootstrapping" = "Bootstrapping";
+
+"Button_Cancel" = "Anuluj";
+
+"Button_Hide_Jailbreak" = "Ukryj Jailbreak";
+
+"Button_Hide_Logs_Title" = "Ukryj Logi";
+
+"Button_Jailbreak_Title" = "Jailbreak";
+
+"Button_Remove_Jailbreak" = "Usuń Jailbreak";
+
+"Button_Set_Root_Password" = "Ustaw Hasło Rootu";
+
+"Button_Show_Logs_Title" = "Pokaż Logi";
+
+"Button_Unhide_Jailbreak" = "Odkryj Jailbreak";
+
+"Button_Update" = "Aktualizacja";
+
+"Button_Update_Available" = "Aktualizacja dostępna";
+
+"Bypassing PAC" = "Omijanie PAC";
+
+"Bypassing PPL" = "Omijanie PPL";
+
+"Changelog_Unavailable_Text" = "Dziennik zmian niedostępny";
+
+"Context_Menu_Copy_To_Clipboard" = "Skopiuj do schowka";
+
+"Credits_Button_License" = "Licencja";
+
+"Credits_Button_Source_Code" = "Kod Źródłowy";
+
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Wersja Dopamine %@\n%@";
+
+"Credits_Header_Special_Thanks" = "Podziękowania:";
+
+"Credits_Made_By" = "Zrobione przez: opa334, évelyne";
+
+"Credits_Made_By_Subheadline" = "Interfejs zzrobiony przez sourcelocation\nLogo i ikona przez xerus";
+
+"Finalizing Bootstrap" = "Finalizowanie Bootstrapu";
+
+"Gaining r/w" = "Zdobywanie r/w";
+
+"Hint_Hide_Jailbreak" = "\"Ukryj Jailbreak\" tymczasowo usuwa wszystkie pliki kojarzone z Jailbreakiem (aż do następnego Jailbreakowania)";
+
+"Initializing Environment" = "Inicjowanie Środowiska";
+
+"Initializing System Hook" = "Inicjowanie System Hook";
+
+"Jailbreak_Done" = "Zrobione!";
+
+"Launching kexploitd" = "Uruchamianie kexploitd";
+
+"Launching oobPCI" = "Uruchamianie oobPCI";
+
+"Loading Basebin Trustcache" = "Ładowanie Basebin Trustcache";
+
+"Menu_Credits_Title" = "Na temat";
+
+"Menu_Options_Title" = "Opcje";
+
+"Menu_Reboot_Userspace_Title" = "Restartuj Userspace";
+
+"Menu_Restart_SpringBoard_Title" = "Restartuj SpringBoard";
+
+"Options_iDownload" = "iDownload";
+
+"Options_Tweak_Injection" = "Tweak Injection";
+
+"Options_Verbose_Logs" = "Logi Verbose";
+
+"Patchfinding" = "Odnajdywanie Poprawek";
+
+"Rebuilding TrustCache" = "Odbudowywanie TrustCache";
+
+"Refreshing Icon Cache" = "Odbudowywanie Icon Cache";
+
+"Settings_Footer_Device_Bootstrapped" = "Urządznie ma bootstrap";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "Urządzenie nie ma bootstrapu";
+
+"Settings_Title" = "Ustawienia";
+
+"Starting jailbreakd" = "Startowanie jailbreakd";
+
+"Starting Launch Daemons" = "Startowanie Launch Daemons";
+
+"Status_Title_Jailbreaking" = "Jailbreakowanie";
+
+"Status_Title_Jailbroken" = "Jailbroken";
+
+"Status_Title_Select_Package_Managers" = "Wybierz menadżer(y) pakietów";
+
+"Status_Title_Unsuccessful" = "Niepowodzenie";
+
+"Success_Rate %@%% (%lld/%lld)" = "Szansa na sukces: %@%% (%lld/%lld)";
+
+"Title_Changelog" = "Dziennik Zmian";
+
+"Title_Made_By" = "Autorzy: opa334, évelyne, sourceloc";
+
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+
+"Update_Log_Hint_Scrollable" = "Można scrollować w widoku logów";
+
+"Update_Status_Downloading" = "Pobieranie aktualizacji...";
+
+"Update_Status_Installing" = "Instalowanie aktualizacji...";
+
+"Update_Status_Subtitle_Please_Wait" = "Proszę zaczekać dopóki pliki są pobierane";
+
+"Update_Status_Subtitle_Restart_Soon" = "Urządznie niedługo uruchomi się ponownie";
+
