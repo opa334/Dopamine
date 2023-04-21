@@ -16,7 +16,7 @@
 
 "Button_Unhide_Jailbreak" = "탈옥 보이기";
 
-"Button_Update" = "업데이트하기";
+"Button_Update" = "업데이트";
 
 "Button_Update_Available" = "업데이트 사용 가능";
 
@@ -26,7 +26,7 @@
 
 "Changelog_Unavailable_Text" = "변경사용 사용불가";
 
-"Context_Menu_Copy_To_Clipboard" = "클립보드에 복사하기";
+"Context_Menu_Copy_To_Clipboard" = "클립보드에 복사";
 
 "Credits_Button_License" = "라이센스";
 
