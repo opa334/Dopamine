@@ -18,6 +18,9 @@ int posix_spawnattr_getprocesstype_np(const posix_spawnattr_t * __restrict, int 
 #define JETSAM_MULTIPLIER 3
 #define XPC_TIMEOUT 0.1 * NSEC_PER_SEC
 
+#define POSIX_SPAWNATTR_OFF_MEMLIMIT_ACTIVE 0x48
+#define POSIX_SPAWNATTR_OFF_MEMLIMIT_INACTIVE 0x4C
+
 bool swh_is_debugged = false;
 
 bool stringStartsWith(const char *str, const char* prefix)
@@ -273,6 +276,7 @@ kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 	const char *processBlacklist[] = {
 		"/System/Library/Frameworks/GSS.framework/Helpers/GSSCred",
 		"/System/Library/PrivateFrameworks/IDSBlastDoorSupport.framework/XPCServices/IDSBlastDoorService.xpc/IDSBlastDoorService",
+		"/System/Library/PrivateFrameworks/MessagesBlastDoorSupport.framework/XPCServices/MessagesBlastDoorService.xpc/MessagesBlastDoorService",
 		"/usr/sbin/wifid"
 	};
 	size_t blacklistCount = sizeof(processBlacklist) / sizeof(processBlacklist[0]);
@@ -396,6 +400,23 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 			libPath = strtok(NULL, ":");
 		}
 		free(libPaths);
+	}
+
+	// If systemhook is being injected and Jetsam limits are set, increase them by a factor of JETSAM_MULTIPLIER
+	if (shouldInject) {
+		if (attrp) {
+			uint8_t *attrStruct = *attrp;
+			if (attrStruct) {
+				int memlimit_active = *(int*)(attrStruct + POSIX_SPAWNATTR_OFF_MEMLIMIT_ACTIVE);
+				if (memlimit_active != -1) {
+					*(int*)(attrStruct + POSIX_SPAWNATTR_OFF_MEMLIMIT_ACTIVE) = memlimit_active * JETSAM_MULTIPLIER;
+				}
+				int memlimit_inactive = *(int*)(attrStruct + POSIX_SPAWNATTR_OFF_MEMLIMIT_INACTIVE);
+				if (memlimit_inactive != -1) {
+					*(int*)(attrStruct + POSIX_SPAWNATTR_OFF_MEMLIMIT_INACTIVE) = memlimit_inactive * JETSAM_MULTIPLIER;
+				}
+			}
+		}
 	}
 
 	if (shouldInject == isAlreadyInjected && (existingSafeModeIndex == -1 && existingMSSafeModeIndex == -1)) {
@@ -530,18 +551,4 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 			return ret;
 		}
 	}
-}
-
-// Increase Jetsam limits by a factor of JETSAM_MULTIPLIER
-
-int posix_spawnattr_setjetsam_replacement(posix_spawnattr_t *attr, short flags, int priority, int memlimit, void *orig)
-{
-	int (*posix_spawnattr_setjetsam_orig)(posix_spawnattr_t *, short, int, int) = orig;
-	return posix_spawnattr_setjetsam_orig(attr, flags, priority, memlimit * JETSAM_MULTIPLIER);
-}
-
-int posix_spawnattr_setjetsam_ext_replacement(posix_spawnattr_t *attr, short flags, int priority, int memlimit_active, int memlimit_inactive, void *orig)
-{
-	int (*posix_spawnattr_setjetsam_ext_replacement)(posix_spawnattr_t *, short, int, int, int) = orig;
-	return posix_spawnattr_setjetsam_ext_replacement(attr, flags, priority, memlimit_active * JETSAM_MULTIPLIER, memlimit_inactive * JETSAM_MULTIPLIER);
 }

@@ -71,5 +71,11 @@
 		<string>AGXDeviceUserClient</string>
 		<string>IOSurfaceRootUserClient</string>
 	</array>
+	<key>com.apple.wifi.manager-access</key>
+	<true/>
+	<key>com.apple.security.exception.shared-preference.read-write</key>
+	<array>
+		<string>com.opa334.Dopamine</string>
+	</array>
 </dict>
 </plist>

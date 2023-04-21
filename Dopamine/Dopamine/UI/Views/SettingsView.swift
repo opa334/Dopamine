@@ -12,9 +12,9 @@ struct SettingsView: View {
     @AppStorage("totalJailbreaks") var totalJailbreaks: Int = 0
     @AppStorage("successfulJailbreaks") var successfulJailbreaks: Int = 0
     
-    @AppStorage("verboseLogs") var verboseLogs: Bool = false
-    @AppStorage("tweakInjection") var tweakInjection: Bool = true
-    @AppStorage("enableiDownload") var enableiDownload: Bool = false
+    @AppStorage("verboseLogsEnabled") var verboseLogs: Bool = false
+    @AppStorage("tweakInjectionEnabled") var tweakInjection: Bool = true
+    @AppStorage("iDownloadEnabled") var enableiDownload: Bool = false
     
     @State var rootPasswordChangeAlertShown = false
     @State var rootPasswordInput = "alpine"
@@ -32,68 +32,71 @@ struct SettingsView: View {
                 .opacity(0.25)
             
             VStack(spacing: 10) {
-                Toggle("Options_Tweak_Injection", isOn: $tweakInjection)
-                Toggle("Options_iDownload", isOn: $enableiDownload)
-                Toggle("Options_Verbose_Logs", isOn: $verboseLogs)
-                
-                VStack {
-                    if isJailbroken() {
-                        Button(action: {
-                            rootPasswordChangeAlertShown.toggle()
-                        }) {
-                            HStack {
-                                Image(systemName: "key")
-                                Text("Button_Set_Root_Password")
-                                    .lineLimit(1)
-                            }
-                            .padding(8)
-                            .frame(maxWidth: .infinity)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
-                            )
-                        }
-                        .padding(.bottom)
-                    }
-                    VStack {
-                        Button(action: {
-                            isEnvironmentHiddenState.toggle()
-                            changeEnvironmentVisibility(hidden: !isEnvironmentHidden())
-                        }) {
-                            HStack {
-                                Image(systemName: isEnvironmentHiddenState ? "eye" : "eye.slash")
-                                Text(isEnvironmentHiddenState ? "Button_Unhide_Jailbreak" : "Button_Hide_Jailbreak")
-                                    .lineLimit(1)
-                            }
-                            .padding(8)
-                            .frame(maxWidth: .infinity)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
-                            )
-                        }
-                        Button(action: {
-                            removeJailbreakAlertShown = true
-                        }) {
-                            HStack {
-                                Image(systemName: "trash")
-                                Text("Button_Remove_Jailbreak")
-                                    .lineLimit(1)
-                            }
-                            .padding(8)
-                            .frame(maxWidth: .infinity)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
-                            )
-                        }
-                        Text("Hint_Hide_Jailbreak")
-                            .font(.footnote)
-                            .opacity(0.6)
-                            .padding(.top, 2)
-                    }
+                if !isJailbroken() {
+                    Toggle("Options_Tweak_Injection", isOn: $tweakInjection)
+                    Toggle("Options_iDownload", isOn: $enableiDownload)
+                    Toggle("Options_Verbose_Logs", isOn: $verboseLogs)
                 }
-                .padding(.top, 12)
+                if isBootstrapped() {
+                    VStack {
+                        if isJailbroken() {
+                            Button(action: {
+                                rootPasswordChangeAlertShown.toggle()
+                            }) {
+                                HStack {
+                                    Image(systemName: "key")
+                                    Text("Button_Set_Root_Password")
+                                        .lineLimit(1)
+                                }
+                                .padding(8)
+                                .frame(maxWidth: .infinity)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
+                                )
+                            }
+                            .padding(.bottom)
+                        }
+                        VStack {
+                            Button(action: {
+                                isEnvironmentHiddenState.toggle()
+                                changeEnvironmentVisibility(hidden: !isEnvironmentHidden())
+                            }) {
+                                HStack {
+                                    Image(systemName: isEnvironmentHiddenState ? "eye" : "eye.slash")
+                                    Text(isEnvironmentHiddenState ? "Button_Unhide_Jailbreak" : "Button_Hide_Jailbreak")
+                                        .lineLimit(1)
+                                }
+                                .padding(8)
+                                .frame(maxWidth: .infinity)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
+                                )
+                            }
+                            Button(action: {
+                                removeJailbreakAlertShown = true
+                            }) {
+                                HStack {
+                                    Image(systemName: "trash")
+                                    Text("Button_Remove_Jailbreak")
+                                        .lineLimit(1)
+                                }
+                                .padding(8)
+                                .frame(maxWidth: .infinity)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
+                                )
+                            }
+                            Text("Hint_Hide_Jailbreak")
+                                .font(.footnote)
+                                .opacity(0.6)
+                                .padding(.top, 2)
+                        }
+                    }
+                    .padding(.top, 12)
+                }
             }
             .tint(.accentColor)
             .padding(.vertical, 16)

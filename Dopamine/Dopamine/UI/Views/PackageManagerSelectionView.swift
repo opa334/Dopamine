@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Fugu15KernelExploit
 
 struct PackageManagerSelectionView: View {
     
@@ -84,7 +85,7 @@ struct PackageManagerSelectionView: View {
         }
         .foregroundColor(.white)
         .onChange(of: selectedNames) { newValue in
-            UserDefaults.standard.set(newValue, forKey: "selectedPackageManagers")
+            dopamineDefaults().set(newValue, forKey: "selectedPackageManagers")
         }
     }
 }

@@ -16,5 +16,3 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 					   char *const argv[restrict],
 					   char *const envp[restrict],
 					   void *pspawn_org);
-int posix_spawnattr_setjetsam_replacement(posix_spawnattr_t *attr, short flags, int priority, int memlimit, void *orig);
-int posix_spawnattr_setjetsam_ext_replacement(posix_spawnattr_t *attr, short flags, int priority, int memlimit_active, int memlimit_inactive, void *orig);

@@ -47,7 +47,7 @@ struct ContentView: View {
     @State var showingUpdatePopup = false
     @State var updateChangelog: String? = nil
     
-    @AppStorage("verboseLogs") var advancedLogsByDefault: Bool = false
+    @AppStorage("verboseLogsEnabled") var advancedLogsByDefault: Bool = false
     @State var advancedLogsTemporarilyEnabled: Bool = false
     
     var isJailbreaking: Bool {
@@ -66,8 +66,8 @@ struct ContentView: View {
             .init(imageName: "info.circle", title: NSLocalizedString("Menu_Credits_Title", comment: ""), view: AnyView(AboutView())),
         ]
         
-        UserDefaults.standard.register(defaults: [
-            "tweakInjection": true,
+        dopamineDefaults().register(defaults: [
+            "tweakInjectionEnabled": true,
         ])
     }
     
@@ -233,8 +233,12 @@ struct ContentView: View {
     var bottomSection: some View {
         VStack {
             Button {
+<<<<<<< Updated upstream
                 UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                 if (UserDefaults.standard.array(forKey: "selectedPackageManagers") as? [String] ?? []).isEmpty {
+=======
+                if (dopamineDefaults().array(forKey: "selectedPackageManagers") as? [String] ?? []).isEmpty {
+>>>>>>> Stashed changes
                     jailbreakingProgress = .selectingPackageManager
                 } else {
                     uiJailbreak()
@@ -355,7 +359,7 @@ struct ContentView: View {
     @ViewBuilder
     var updateButton: some View {
         Button {
-            //            UserDefaults.standard.set(nil, forKey: "selectedPackageManagers")
+            //            dopamineDefaults().set(nil, forKey: "selectedPackageManagers")
             showingUpdatePopup = true
         } label: {
             Label(title: { Text("Button_Update_Available") }, icon: {
@@ -377,15 +381,27 @@ struct ContentView: View {
     
     func uiJailbreak() {
         jailbreakingProgress = .jailbreaking
-        UserDefaults.standard.set(UserDefaults.standard.integer(forKey: "totalJailbreaks") + 1, forKey: "totalJailbreaks")
+        let dpDefaults = dopamineDefaults()
+        dpDefaults.set(dpDefaults.integer(forKey: "totalJailbreaks") + 1, forKey: "totalJailbreaks")
         DispatchQueue(label: "Dopamine").async {
+            sleep(1)
+
             jailbreak { e in
                 jailbreakingProgress = .finished
                 jailbreakingError = e
                 
                 if e == nil {
-                    UserDefaults.standard.set(UserDefaults.standard.integer(forKey: "successfulJailbreaks") + 1, forKey: "successfulJailbreaks")
+                    dpDefaults.set(dpDefaults.integer(forKey: "successfulJailbreaks") + 1, forKey: "successfulJailbreaks")
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    let tweakInjectionEnabled = dpDefaults.bool(forKey: "tweakInjectionEnabled")
+                    DispatchQueue.main.async {
+                        if tweakInjectionEnabled {
+                            userspaceReboot()
+                        }
+                        else {
+                            respring()
+                        }
+                    }
                 } else {
                     UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }

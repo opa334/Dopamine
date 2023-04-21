@@ -22,7 +22,6 @@
 		8C8D955B29D04B4C00A482A8 /* tar in Resources */ = {isa = PBXBuildFile; fileRef = 8C8D955A29D04B4C00A482A8 /* tar */; };
 		8C8D955E29D04C4D00A482A8 /* zebra.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C8D955D29D04C4D00A482A8 /* zebra.deb */; };
 		8C8D955F29D04CD100A482A8 /* zebra.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C8D955D29D04C4D00A482A8 /* zebra.deb */; };
-		8C8D956229D0B27100A482A8 /* master.rootalpine.passwd in Resources */ = {isa = PBXBuildFile; fileRef = 8C8D956129D0B27100A482A8 /* master.rootalpine.passwd */; };
 		9380BFFE29E6F1FA00C0121A /* UpdateDownloadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9380BFFD29E6F1FA00C0121A /* UpdateDownloadingView.swift */; };
 		9380C00129EAE9C600C0121A /* PackageManagerSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9380C00029EAE9C600C0121A /* PackageManagerSelectionView.swift */; };
 		938DADDE29F2993400C37952 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 938DADDD29F20ACA00C37952 /* Localizable.strings */; };
@@ -62,7 +61,6 @@
 		8C2EDE1C29F0ACC80060D192 /* basebin.tc */ = {isa = PBXFileReference; lastKnownFileType = file; name = basebin.tc; path = ../../../BaseBin/basebin.tc; sourceTree = "<group>"; };
 		8C8D955A29D04B4C00A482A8 /* tar */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = tar; path = ../../../BaseBin/_external/tar; sourceTree = "<group>"; };
 		8C8D955D29D04C4D00A482A8 /* zebra.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = zebra.deb; sourceTree = "<group>"; };
-		8C8D956129D0B27100A482A8 /* master.rootalpine.passwd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = master.rootalpine.passwd; sourceTree = "<group>"; };
 		9380BFFD29E6F1FA00C0121A /* UpdateDownloadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateDownloadingView.swift; sourceTree = "<group>"; };
 		9380BFFF29E8601600C0121A /* Fugu15KernelExploit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Fugu15KernelExploit; path = ../Packages/Fugu15KernelExploit; sourceTree = "<group>"; };
 		9380C00029EAE9C600C0121A /* PackageManagerSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageManagerSelectionView.swift; sourceTree = "<group>"; };
@@ -183,7 +181,6 @@
 				8C2EDE1A29F0ACA60060D192 /* basebin.tar */,
 				8C2EDE1C29F0ACC80060D192 /* basebin.tc */,
 				8C8D955A29D04B4C00A482A8 /* tar */,
-				8C8D956129D0B27100A482A8 /* master.rootalpine.passwd */,
 			);
 			path = bootstrap;
 			sourceTree = "<group>";
@@ -310,7 +307,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C8D956229D0B27100A482A8 /* master.rootalpine.passwd in Resources */,
 				8C8D955F29D04CD100A482A8 /* zebra.deb in Resources */,
 				938DADDE29F2993400C37952 /* Localizable.strings in Resources */,
 				8C8D955B29D04B4C00A482A8 /* tar in Resources */,
