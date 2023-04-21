@@ -4,7 +4,7 @@
 
 "Button_Hide_Jailbreak" = "Ẩn Jailbreak";
 
-"Button_Hide_Logs_Title" = "Ẩn tệp nhật ký";
+"Button_Hide_Logs_Title" = "Ẩn tệp Log";
 
 "Button_Jailbreak_Title" = "Jailbreak";
 
@@ -12,7 +12,7 @@
 
 "Button_Set_Root_Password" = "Đặt mật khẩu root";
 
-"Button_Show_Logs_Title" = "Hiện tệp nhật ký";
+"Button_Show_Logs_Title" = "Hiện tệp Log";
 
 "Button_Unhide_Jailbreak" = "Hiện Jailbreak";
 
@@ -24,15 +24,15 @@
 
 "Bypassing PPL" = "Đang bypass PPL";
 
-"Changelog_Unavailable_Text" = "Không có nhật ký thay đổi";
+"Changelog_Unavailable_Text" = "Không có Log thay đổi";
 
-"Context_Menu_Copy_To_Clipboard" = "Sao chép vào Clipboard";
+"Context_Menu_Copy_To_Clipboard" = "Sao chép vào Bộ nhớ đệm";
 
 "Credits_Button_License" = "Giấy phép";
 
 "Credits_Button_Source_Code" = "Mã nguồn";
 
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "phiên bản Dopamine %@\n%@";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine bản %@\n%@";
 
 "Credits_Header_Special_Thanks" = "Đặc biệt cảm ơn:";
 
@@ -42,13 +42,13 @@
 
 "Finalizing Bootstrap" = "Đang hoàn thiện Bootstrap";
 
-"Gaining r/w" = "Đang giành quyền r/w";
+"Gaining r/w" = "Đang lấy quyền r/w";
 
-"Hint_Hide_Jailbreak" = "\"Ẩn Jailbreak\" sẽ tạm thời xóa các tệp tin liên quan đến Jailbreak cho đến khi bạn chạy Jailbreak lại";
+"Hint_Hide_Jailbreak" = "\"Ẩn Jailbreak\" sẽ tạm thời xóa các tệp tin liên quan đến Jailbreak cho đến khi bạn Jailbreak lại";
 
-"Initializing Environment" = "Đang khởi tạo Environment";
+"Initializing Environment" = "Khởi tạo \"Môi trường\"";
 
-"Initializing System Hook" = "Đang khởi tạo System Hook";
+"Initializing System Hook" = "Khởi tạo System Hook";
 
 "Jailbreak_Done" = "Thành công!";
 
@@ -58,7 +58,7 @@
 
 "Loading Basebin Trustcache" = "Đang tải Basebin Trustcache";
 
-"Menu_Credits_Title" = "Về ứng dụng";
+"Menu_Credits_Title" = "Tác giả";
 
 "Menu_Options_Title" = "Tùy chọn";
 
@@ -68,15 +68,15 @@
 
 "Options_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Chèn Tweak";
+"Options_Tweak_Injection" = "Bật Tweak Injection";
 
-"Options_Verbose_Logs" = "Nhật ký Verbose";
+"Options_Verbose_Logs" = "Log Verbose";
 
 "Patchfinding" = "Đang tìm bản vá";
 
-"Rebuilding TrustCache" = "Đang tái xây dựng TrustCache";
+"Rebuilding TrustCache" = "Đang build lại TrustCache";
 
-"Refreshing Icon Cache" = "Đang làm mới bộ nhớ đệm biểu tượng";
+"Refreshing Icon Cache" = "Đang làm mới bộ nhớ đệm icon";
 
 "Settings_Footer_Device_Bootstrapped" = "Thiết bị đã được bootstrap";
 
@@ -84,9 +84,9 @@
 
 "Settings_Title" = "Cài đặt";
 
-"Starting jailbreakd" = "Đang mở jailbreakd";
+"Starting jailbreakd" = "Đang chạy jailbreakd";
 
-"Starting Launch Daemons" = "Đang mở Launch Daemons";
+"Starting Launch Daemons" = "Đang chạy các Daemons";
 
 "Status_Title_Jailbreaking" = "Đang Jailbreak";
 
@@ -98,19 +98,19 @@
 
 "Success_Rate %@%% (%lld/%lld)" = "Tỉ lệ thành công: %@%% (%lld/%lld)";
 
-"Title_Changelog" = "Nhật ký thay đổi";
+"Title_Changelog" = "Log thay đổi";
 
 "Title_Made_By" = "bởi opa334, évelyne, UI bởi sourceloc";
 
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
 
-"Update_Log_Hint_Scrollable" = "Trang nhật ký có thể được cuộn lên và xuống";
+"Update_Log_Hint_Scrollable" = "Trang Log có thể vuốt lên và xuống";
 
 "Update_Status_Downloading" = "Đang tải bản cập nhật...";
 
 "Update_Status_Installing" = "Đang cài bản cập nhật...";
 
-"Update_Status_Subtitle_Please_Wait" = "Xin hãy chờ để tệp tin hoành thành tải xuống";
+"Update_Status_Subtitle_Please_Wait" = "Vui lòng chờ để tệp tin tải xuống";
 
 "Update_Status_Subtitle_Restart_Soon" = "Thiết bị sẽ khởi động lại";
 
