@@ -65,10 +65,6 @@ struct ContentView: View {
             .init(imageName: "arrow.clockwise.circle", title: NSLocalizedString("Menu_Reboot_Userspace_Title", comment: ""), showUnjailbroken: false, action: userspaceReboot),
             .init(imageName: "info.circle", title: NSLocalizedString("Menu_Credits_Title", comment: ""), view: AnyView(AboutView())),
         ]
-        
-        dopamineDefaults().register(defaults: [
-            "tweakInjectionEnabled": true,
-        ])
     }
     
     
@@ -234,7 +230,8 @@ struct ContentView: View {
         VStack {
             Button {
                 UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                if (dopamineDefaults().array(forKey: "selectedPackageManagers") as? [String] ?? []).isEmpty {
+
+                if (dopamineDefaults().array(forKey: "selectedPackageManagers") as? [String] ?? []).isEmpty && !isBootstrapped() {
                     jailbreakingProgress = .selectingPackageManager
                 } else {
                     uiJailbreak()

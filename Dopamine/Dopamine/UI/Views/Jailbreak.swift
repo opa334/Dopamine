@@ -103,7 +103,11 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
 }
 
 func removeJailbreak() {
-    
+    dopamineDefaults().removeObject(forKey: "selectedPackageManagers")
+    _ = execCmd(args: [CommandLine.arguments[0], "uninstall_environment"])
+    if isJailbroken() {
+        reboot()
+    }
 }
 
 func changeRootPassword(newPassword: String) {
@@ -122,14 +126,6 @@ func changeEnvironmentVisibility(hidden: Bool) {
 
 func isEnvironmentHidden() -> Bool {
     return !FileManager.default.fileExists(atPath: "/var/jb")
-}
-
-func uninstallEnvironment() {
-    dopamineDefaults().removeObject(forKey: "selectedPackageManagers")
-    _ = execCmd(args: [CommandLine.arguments[0], "uninstall_environment"])
-    if isJailbroken() {
-        reboot()
-    }
 }
 
 func update(tipaURL: URL) {
