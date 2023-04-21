@@ -1,0 +1,116 @@
+"Bootstrapping" = "Bootstrapping";
+
+"Button_Cancel" = "Annuler";
+
+"Button_Hide_Jailbreak" = "Cacher le Jailbreak";
+
+"Button_Hide_Logs_Title" = "Cacher les Logs";
+
+"Button_Jailbreak_Title" = "Jailbreak";
+
+"Button_Remove_Jailbreak" = "Supprimer le Jailbreak";
+
+"Button_Set_Root_Password" = "Choisir un mot de passe ROOT";
+
+"Button_Show_Logs_Title" = "Afficher les Logs";
+
+"Button_Unhide_Jailbreak" = "Montrer le Jailbreak";
+
+"Button_Update" = "Mise à jour";
+
+"Button_Update_Available" = "Mise à jour disponible";
+
+"Bypassing PAC" = "Contournement du PAC";
+
+"Bypassing PPL" = "Contournement du PPL";
+
+"Changelog_Unavailable_Text" = "Changelog non disponible";
+
+"Context_Menu_Copy_To_Clipboard" = "Copier dans le presse papier";
+
+"Credits_Button_License" = "License";
+
+"Credits_Button_Source_Code" = "Code Source";
+
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
+
+"Credits_Header_Special_Thanks" = "Remerciements:";
+
+"Credits_Made_By" = "Fait par opa334, évelyne";
+
+"Credits_Made_By_Subheadline" = "UI par sourcelocation\nLogo et les icones par xerus";
+
+"Finalizing Bootstrap" = "Finalisation Bootstrap";
+
+"Gaining r/w" = "Gaining r/w";
+
+"Hint_Hide_Jailbreak" = "\"Cacher le Jailbreak\" supprime temporairement les fichiers liés au jailbreak jusqu'au prochain jailbreak";
+
+"Initializing Environment" = "Initialisation de l'environnement";
+
+"Initializing System Hook" = "Initialisation de System Hook";
+
+"Jailbreak_Done" = "Fait!";
+
+"Launching kexploitd" = "Lancement de kexploitd";
+
+"Launching oobPCI" = "Lancement de oobPCI";
+
+"Loading Basebin Trustcache" = "Chargement Basebin Trustcache";
+
+"Menu_Credits_Title" = "A propos de";
+
+"Menu_Options_Title" = "Options";
+
+"Menu_Reboot_Userspace_Title" = "Redémarrer l'Userspace";
+
+"Menu_Restart_SpringBoard_Title" = "Recharger SpringBoard";
+
+"Options_iDownload" = "iDownload";
+
+"Options_Tweak_Injection" = "Injection des Tweak";
+
+"Options_Verbose_Logs" = "Verbose Logs";
+
+"Patchfinding" = "Patchfinding";
+
+"Rebuilding TrustCache" = "Reconstruction du TrustCache";
+
+"Refreshing Icon Cache" = "Rafraîchissant de Icon Cache";
+
+"Settings_Footer_Device_Bootstrapped" = "L'appareil est bootstrapped";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "L'appareil n'est pas bootstrapped";
+
+"Settings_Title" = "Paramètres";
+
+"Starting jailbreakd" = "Démarrage du jailbreakd";
+
+"Starting Launch Daemons" = "Démarrage des Launch Daemons";
+
+"Status_Title_Jailbreaking" = "Jailbreaking";
+
+"Status_Title_Jailbroken" = "Jailbreaké";
+
+"Status_Title_Select_Package_Managers" = "Sélectionner le(s) gestionnaire(s) de paquets";
+
+"Status_Title_Unsuccessful" = "Unsuccessful";
+
+"Success_Rate %@%% (%lld/%lld)" = "Taux de réussite: %@%% (%lld/%lld)";
+
+"Title_Changelog" = "Changelog";
+
+"Title_Made_By" = "par opa334, évelyne, UI par sourceloc";
+
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+
+"Update_Log_Hint_Scrollable" = "L'affichage des log peut être déroulé";
+
+"Update_Status_Downloading" = "Téléchargement de la mise à jour...";
+
+"Update_Status_Installing" = "Installation de la mise à jour...";
+
+"Update_Status_Subtitle_Please_Wait" = "Veuillez patienter pendant le téléchargement des fichiers";
+
+"Update_Status_Subtitle_Restart_Soon" = "L'appareil va bientôt redémarrer";
+
