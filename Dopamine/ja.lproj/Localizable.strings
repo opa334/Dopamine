@@ -44,7 +44,7 @@
 
 "Gaining r/w" = "r/wを取得";
 
-"Hint_Hide_Jailbreak" = "\"脱獄環境を隠す\"次の脱獄まで脱獄関連のファイルを一時的に削除します";
+"Hint_Hide_Jailbreak" = "\"Jailbreakを隠す\"次の脱獄まで脱獄関連のファイルを一時的に削除します";
 
 "Initializing Environment" = "環境の初期化";
 
@@ -70,7 +70,7 @@
 
 "Options_Tweak_Injection" = "Tweak Injection";
 
-"Options_Verbose_Logs" = "詳細ログ";
+"Options_Verbose_Logs" = "ログ";
 
 "Patchfinding" = "Patchfinding";
 
@@ -78,9 +78,9 @@
 
 "Refreshing Icon Cache" = "IconCacheを更新中";
 
-"Settings_Footer_Device_Bootstrapped" = "デバイスはbootstrapされました";
+"Settings_Footer_Device_Bootstrapped" = "bootstrap済み";
 
-"Settings_Footer_Device_Not_Bootstrapped" = "デバイスはbootstrapされていません";
+"Settings_Footer_Device_Not_Bootstrapped" = "bootstrapされていません";
 
 "Settings_Title" = "設定";
 
