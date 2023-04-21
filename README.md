@@ -112,5 +112,7 @@ The following open-source software is used by Fugu15:
 - [Dhinak G](https://github.com/dhinakg)
 - [Kevin Alavik](httpts://github.com/kevinalavik)
 
+Feel free to open an pull request and contribute
+
 # License
 MIT. See the [`LICENSE`](https://github.com/opa334/Dopamine/blob/master/LICENSE) file.
