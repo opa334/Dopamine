@@ -106,7 +106,7 @@ The following open-source software is used by Fugu15:
 # Contributors
 - [Cryptiiiic](https://github.com/Cryptiiiic) - #11, #4
 - [zhaonan](https://github.com/invalidunit) - #7
-- [sroucelocation](https://github.com/sourcelocation) - #28
+- [sourcelocation](https://github.com/sourcelocation) - #28
 - [trungtoan337](https://github.com/trungtoan337) - #3
 - [Liam Huang](https://github.com/Liam0205) - #2
 - [Dhinak G](https://github.com/dhinakg) - #1
