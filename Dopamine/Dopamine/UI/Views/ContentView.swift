@@ -390,6 +390,7 @@ struct ContentView: View {
                     dpDefaults.set(dpDefaults.integer(forKey: "successfulJailbreaks") + 1, forKey: "successfulJailbreaks")
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                     let tweakInjectionEnabled = dpDefaults.bool(forKey: "tweakInjectionEnabled")
+                    sleep(1)
                     DispatchQueue.main.async {
                         if tweakInjectionEnabled {
                             userspaceReboot()
