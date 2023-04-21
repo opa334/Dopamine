@@ -1,58 +1,115 @@
-"Bootstrapping" = "Bootstrapping";
+"Bootstrapping" = "جارِ التمهيد";
+
 "Button_Cancel" = "إلغاء";
-"Button_Hide_Jailbreak" = "إخفاء الجلبريك";
-"Button_Hide_Logs_Title" = "إخفاء السجلات";
-"Button_Jailbreak_Title" = "جلبريك";
-"Button_Remove_Jailbreak" = "حذف الجلبريك";
-"Button_Set_Root_Password" = "تعيين كلمة مرور الروت (الجذر)";
-"Button_Show_Logs_Title" = "اظهار السجلات";
-"Button_Unhide_Jailbreak" = "اظهار الجلبريك";
+
+"Button_Hide_Jailbreak" = "إخفاء الجيلبريك";
+
+"Button_Hide_Logs_Title" = "إخفاء السجل";
+
+"Button_Jailbreak_Title" = "جيلبريك";
+
+"Button_Remove_Jailbreak" = "إزالة الجيلبريك";
+
+"Button_Set_Root_Password" = "تعيين كلمة مرور الجذر";
+
+"Button_Show_Logs_Title" = "إظهار السجل";
+
+"Button_Unhide_Jailbreak" = "عدم إخفاء الجيلبريك";
+
 "Button_Update" = "تحديث";
-"Button_Update_Available" = "يوجد تحديث جديد";
-"Bypassing PAC" = "يتم تخطية PAC";
-"Bypassing PPL" = "يتم تخطية PPL";
-"Changelog_Unavailable_Text" = "سجل التغيير غير متوفر";
-"Context_Menu_Copy_To_Clipboard" = "نسخ سجل البيانات";
-"Credits_Button_License" = "اجازة";
-"Credits_Button_Source_Code" = "مصدر كود البرنامج";
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine اصدار %@\n%@";
-"Credits_Header_Special_Thanks" = "Special thanks:";
-"Credits_Made_By" = "صنع بواسطة opa334, évelyne";
-"Credits_Made_By_Subheadline" = "واجهة المستخدم من sourcelocation\nالايقونة من xerus";
-"Finalizing Bootstrap" = "إنهاء الBootstrap";
-"Gaining r/w" = "يتم الحصول على حقوق الكتابة/القرائة";
-"Hint_Hide_Jailbreak" = "\"إخفاء الجلبريك\"- يخفي ملفات الجلبريك بشكل مؤقت حتى اعادة تشغيل الجلبريك";
-"Initializing Environment" = "تهيئة البيئة";
-"Initializing System Hook" = "تهيئة الربط بالنظام";
+
+"Button_Update_Available" = "يتوفر تحديث";
+
+"Bypassing PAC" = "تجاوز PAC";
+
+"Bypassing PPL" = "تجاوز PPL";
+
+"Changelog_Unavailable_Text" = "سجل التغييرات غير متاح";
+
+"Context_Menu_Copy_To_Clipboard" = "نسخ إلى الحافظة";
+
+"Credits_Button_License" = "الترخيص";
+
+"Credits_Button_Source_Code" = "شفرة المصدر";
+
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "إصدار Dopamine هو %@\n%@";
+
+"Credits_Header_Special_Thanks" = "شكر خاص:";
+
+"Credits_Made_By" = "صنع بواسطة opa334 و évelyne";
+
+"Credits_Made_By_Subheadline" = "واجهة المستخدم بواسطة sourcelocation\nالشعار والأيقونة بواسطة xerus";
+
+"Finalizing Bootstrap" = "جارِ إنهاء التمهيد";
+
+"Gaining r/w" = "الحصول على r/w";
+
+"Hint_Hide_Jailbreak" = "\"إخفاء الجيلبريك\" يقوم بإزالة الملفات المتعلقة بالجيلبريك مؤقتًا حتى تفعيل الجيلبريك القادم.";
+
+"Initializing Environment" = "جارِ تحسين البيئة";
+
+"Initializing System Hook" = "تحسين تكامل النظام";
+
 "Jailbreak_Done" = "تم!";
-"Launching kexploitd" = "إطلاق kexploitd!";
-"Launching oobPCI" = "إطلاق oobPCI!";
-"Loading Basebin Trustcache" = "تحميل Basebin Trustcache";
-"Menu_Credits_Title" = "عن";
+
+"Launching kexploitd" = "جارِ استغلال الثغرة";
+
+"Launching oobPCI" = "جارِ تشغيل oopPCI";
+
+"Loading Basebin Trustcache" = "تحميل بنية الذاكرة المؤقتة";
+
+"Menu_Credits_Title" = "الاعتمادات";
+
 "Menu_Options_Title" = "الخيارات";
+
 "Menu_Reboot_Userspace_Title" = "إعادة تشغيل Userspace";
-"Menu_Restart_SpringBoard_Title" = "إعادة تشغيل الSpringboard";
-"Options_Tweak_Injection" = "حقن الTweaks";
-"Options_Verbose_Logs" = "السجلات المطولة";
+
+"Menu_Restart_SpringBoard_Title" = "إعادة تشغيل واجهة النظام";
+
 "Options_iDownload" = "iDownload";
-"Patchfinding" = "Patchfinding";
-"Rebuilding TrustCache" = "إعادة بناء الTrustCache";
-"Refreshing Icon Cache" = "إعادة تعيين الايقونات";
-"Settings_Footer_Device_Bootstrapped" = "الجهاز في حالة الbootstrapped";
-"Settings_Footer_Device_Not_Bootstrapped" = "الجهاز ليس في حالة الbootstrap";
-"Settings_Title" = "الإعدادات ";
-"Starting Launch Daemons" = "يتم تشغيل Launch Daemons";
-"Starting jailbreakd" = "يتم تشغيل jailbreakd";
-"Status_Title_Jailbreaking" = "يتم عملية الجلبريك…";
-"Status_Title_Jailbroken" = "في حالة الجلبريك";
-"Status_Title_Select_Package_Managers" = "اختر مدير البكجات";
-"Status_Title_Unsuccessful" = "غير ناجح";
-"Success_Rate %@%% (%lld/%lld)" = "نسبة النجاح: %@%% (%lld/%lld)";
+
+"Options_Tweak_Injection" = "وصول الأدوات";
+
+"Options_Verbose_Logs" = "السجلات المطولة";
+
+"Patchfinding" = "العثور على التصحيح";
+
+"Rebuilding TrustCache" = "إعادة بناء الذاكرة المؤقتة";
+
+"Refreshing Icon Cache" = "تحديث ذاكرة التخزين المؤقتة للأيقونات";
+
+"Settings_Footer_Device_Bootstrapped" = "تم تمهيد الجهاز";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "لم يتم تمهيد الجهاز";
+
+"Settings_Title" = "الإعدادات";
+
+"Starting jailbreakd" = "بدء jailbreakd";
+
+"Starting Launch Daemons" = "بدء تشغيل العمليات الخفية";
+
+"Status_Title_Jailbreaking" = "جارِ تفعيل الجيلبريك";
+
+"Status_Title_Jailbroken" = "الجيلبريك مفعل";
+
+"Status_Title_Select_Package_Managers" = "اختر مدير الحزمة";
+
+"Status_Title_Unsuccessful" = "فشل";
+
+"Success_Rate %@%% (%lld/%lld)" = "معدل النجاح: %@%% (%lld/%lld)";
+
 "Title_Changelog" = "سجل التغييرات";
-"Title_Made_By" = "بواسطة المطورين opa334 و évelyne\nواجهة المستخدم من المطور Sourcelocation";
+
+"Title_Made_By" = "بواسطة opa334 و évelyne، واجهة المستخدم بواسطة sourceloc";
+
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
-"Update_Log_Hint_Scrollable" = "السجل قابل للتمرير";
-"Update_Status_Downloading" = "يتم تحميل التحديث…";
-"Update_Status_Installing" = "Installing update...";
-"Update_Status_Subtitle_Please_Wait" = "ارجو الانتظار حتى يتم تحميل الملفات";
-"Update_Status_Subtitle_Restart_Soon" = "سيتم إعادة تشغيل الجهاز عن قريب";
+
+"Update_Log_Hint_Scrollable" = "يمكن التمرير في هذه الواجهة";
+
+"Update_Status_Downloading" = "جارِ تنزيل التحديث…";
+
+"Update_Status_Installing" = "جارِ تثبيت التحديث…";
+
+"Update_Status_Subtitle_Please_Wait" = "يرجى الانتظار لحين الانتهاء من تنزيل الملفات";
+
+"Update_Status_Subtitle_Restart_Soon" = "سيتم إعادة تشغيل الجهاز خلال لحظات";
