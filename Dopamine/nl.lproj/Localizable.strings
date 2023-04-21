@@ -1,0 +1,116 @@
+"Bootstrapping" = "Bootstrapping";
+
+"Button_Cancel" = "Annuleren";
+
+"Button_Hide_Jailbreak" = "Jailbreak verbergen";
+
+"Button_Hide_Logs_Title" = "Logs verbergen";
+
+"Button_Jailbreak_Title" = "Jailbreak";
+
+"Button_Remove_Jailbreak" = "Jailbreak verwijderen";
+
+"Button_Set_Root_Password" = "Root wachtwoord instellen";
+
+"Button_Show_Logs_Title" = "Logs tonen";
+
+"Button_Unhide_Jailbreak" = "Jailbreak tonen";
+
+"Button_Update" = "Update";
+
+"Button_Update_Available" = "Update beschikbaar";
+
+"Bypassing PAC" = "PAC omzeilen";
+
+"Bypassing PPL" = "PPL omzeilen";
+
+"Changelog_Unavailable_Text" = "Changelog niet beschikbaar";
+
+"Context_Menu_Copy_To_Clipboard" = "kopieer naar klembord";
+
+"Credits_Button_License" = "Licentie";
+
+"Credits_Button_Source_Code" = "Source Code";
+
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine versie %@\n%@";
+
+"Credits_Header_Special_Thanks" = "Speciale dank aan:";
+
+"Credits_Made_By" = "Gemaakt door opa334, évelyne";
+
+"Credits_Made_By_Subheadline" = "UI door sourcelocation\nLogo en icoon door xerus";
+
+"Finalizing Bootstrap" = "Bootstrap Afronden";
+
+"Gaining r/w" = "r/w Bemachtigen";
+
+"Hint_Hide_Jailbreak" = "\"Jailbreak Verbergen\" verwijderd jailbreak-gerelateerde bestanden tot de volgende jailbreak";
+
+"Initializing Environment" = "Omgeving Initialiseren";
+
+"Initializing System Hook" = "System Hook initialiseren";
+
+"Jailbreak_Done" = "Klaar!";
+
+"Launching kexploitd" = "kexploitd Opstarten";
+
+"Launching oobPCI" = "oobPCI Opstarten";
+
+"Loading Basebin Trustcache" = "Basebin Trustcache Laden";
+
+"Menu_Credits_Title" = "Credits";
+
+"Menu_Options_Title" = "Opties";
+
+"Menu_Reboot_Userspace_Title" = "Userspace herstarten";
+
+"Menu_Restart_SpringBoard_Title" = "SpringBoard herstarten";
+
+"Options_iDownload" = "iDownload";
+
+"Options_Tweak_Injection" = "Tweak Injection";
+
+"Options_Verbose_Logs" = "Uitgebreide Logs";
+
+"Patchfinding" = "Patchfinding";
+
+"Rebuilding TrustCache" = "Wederopbouw TrustCache";
+
+"Refreshing Icon Cache" = "Wederopbouw Icon Cache";
+
+"Settings_Footer_Device_Bootstrapped" = "Apparaat is gebootstrapped";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "Apparaat is niet gebootstrapped";
+
+"Settings_Title" = "Instellingen";
+
+"Starting jailbreakd" = "jailbreakd starten";
+
+"Starting Launch Daemons" = "Launch Daemons starten";
+
+"Status_Title_Jailbreaking" = "Aan het jailbreaken";
+
+"Status_Title_Jailbroken" = "Gejailbreakt";
+
+"Status_Title_Select_Package_Managers" = "Selecteer Package Manager(s)";
+
+"Status_Title_Unsuccessful" = "Mislukt";
+
+"Success_Rate %@%% (%lld/%lld)" = "Slagingspercentage: %@%% (%lld/%lld)";
+
+"Title_Changelog" = "Changelog";
+
+"Title_Made_By" = "Door opa334, évelyne, UI door sourceloc";
+
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+
+"Update_Log_Hint_Scrollable" = "Er kan gescrold worden door het log overzicht";
+
+"Update_Status_Downloading" = "Update downloaden...";
+
+"Update_Status_Installing" = "Update installeren...";
+
+"Update_Status_Subtitle_Please_Wait" = "Een ogenblik geduld tot de bestanden zijn gedownload";
+
+"Update_Status_Subtitle_Restart_Soon" = "Het apparaat zal opnieuw worden opgestart";
+
