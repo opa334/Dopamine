@@ -1,0 +1,116 @@
+"Bootstrapping" = "부트스트랩 중";
+
+"Button_Cancel" = "취소";
+
+"Button_Hide_Jailbreak" = "탈옥 숨기기";
+
+"Button_Hide_Logs_Title" = "로그 숨기기";
+
+"Button_Jailbreak_Title" = "탈옥";
+
+"Button_Remove_Jailbreak" = "탈옥 제거";
+
+"Button_Set_Root_Password" = "루트 암호 설정";
+
+"Button_Show_Logs_Title" = "로그 보이기";
+
+"Button_Unhide_Jailbreak" = "탈옥 보이기";
+
+"Button_Update" = "업데이트하기";
+
+"Button_Update_Available" = "업데이트 사용 가능";
+
+"Bypassing PAC" = "PAC 우회 중";
+
+"Bypassing PPL" = "PPL 우회 중";
+
+"Changelog_Unavailable_Text" = "변경사용 사용불가";
+
+"Context_Menu_Copy_To_Clipboard" = "클립보드에 복사하기";
+
+"Credits_Button_License" = "라이센스";
+
+"Credits_Button_Source_Code" = "소스코드";
+
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine 버전 %@\n%@";
+
+"Credits_Header_Special_Thanks" = "Special thanks:";
+
+"Credits_Made_By" = "Made by opa334, évelyne";
+
+"Credits_Made_By_Subheadline" = "UI by sourcelocation\nLogo and icon by xerus";
+
+"Finalizing Bootstrap" = "부트스트랩 완료 중";
+
+"Gaining r/w" = "r/w 얻는 중";
+
+"Hint_Hide_Jailbreak" = "\"탈옥 숨기기\" 다음 탈옥 시까지 탈옥 관련된 파일들을 일시적으로 제거합니다.";
+
+"Initializing Environment" = "환경 준비 중";
+
+"Initializing System Hook" = "시스템 후크 준비 중";
+
+"Jailbreak_Done" = "완료!";
+
+"Launching kexploitd" = "kexploitd 시작 중";
+
+"Launching oobPCI" = "oobPCI 시작 중";
+
+"Loading Basebin Trustcache" = "Basebin Trustcache 로드 중";
+
+"Menu_Credits_Title" = "정보";
+
+"Menu_Options_Title" = "옵션";
+
+"Menu_Reboot_Userspace_Title" = "사용자 공간 재부팅";
+
+"Menu_Restart_SpringBoard_Title" = "SpringBoard 재시작";
+
+"Options_iDownload" = "iDownload";
+
+"Options_Tweak_Injection" = "트윅 인젝션";
+
+"Options_Verbose_Logs" = "Verbose 로그";
+
+"Patchfinding" = "Patchfinding";
+
+"Rebuilding TrustCache" = "TrustCache 새로 고치는 중";
+
+"Refreshing Icon Cache" = "아이콘 캐시 새로 고치는 중";
+
+"Settings_Footer_Device_Bootstrapped" = "다바이스가 부트스트랩됨";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "디바이스가 부트스트랩되지 않음";
+
+"Settings_Title" = "설정";
+
+"Starting jailbreakd" = "jailbreakd 시작 중";
+
+"Starting Launch Daemons" = "LaunchDaemons 시작 중";
+
+"Status_Title_Jailbreaking" = "탈옥 중";
+
+"Status_Title_Jailbroken" = "탈옥됨";
+
+"Status_Title_Select_Package_Managers" = "패키지 매니저 선택";
+
+"Status_Title_Unsuccessful" = "실패";
+
+"Success_Rate %@%% (%lld/%lld)" = "성공률: %@%% (%lld/%lld)";
+
+"Title_Changelog" = "변경사항";
+
+"Title_Made_By" = "by opa334, évelyne, UI by sourceloc";
+
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+
+"Update_Log_Hint_Scrollable" = "로그뷰를 스크롤할 수 있음";
+
+"Update_Status_Downloading" = "업데이트 다운로드 중...";
+
+"Update_Status_Installing" = "업데이트 설치 중...";
+
+"Update_Status_Subtitle_Please_Wait" = "파일이 다운로드될 때까지 잠시만 기다려주세요";
+
+"Update_Status_Subtitle_Restart_Soon" = "디바이스가 곧 재시작됩니다";
+
