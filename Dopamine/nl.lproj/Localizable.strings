@@ -20,9 +20,9 @@
 
 "Button_Update_Available" = "Update beschikbaar";
 
-"Bypassing PAC" = "PAC omzeilen";
+"Bypassing PAC" = "PAC aan het omzeilen";
 
-"Bypassing PPL" = "PPL omzeilen";
+"Bypassing PPL" = "PPL aan het omzeilen";
 
 "Changelog_Unavailable_Text" = "Changelog niet beschikbaar";
 
@@ -40,23 +40,23 @@
 
 "Credits_Made_By_Subheadline" = "Gebruikersinterface door sourcelocation\nLogo en app icoon door xerus";
 
-"Finalizing Bootstrap" = "Bootstrap Afronden";
+"Finalizing Bootstrap" = "Bootstrap aan het afronden";
 
 "Gaining r/w" = "r/w aan het bemachtigen";
 
-"Hint_Hide_Jailbreak" = "\"Jailbreak Verbergen\" verwijderd jailbreak-gerelateerde bestanden tot de volgende jailbreak";
+"Hint_Hide_Jailbreak" = "\"Jailbreak verbergen\" verwijderd jailbreak-gerelateerde bestanden tot de volgende jailbreak";
 
-"Initializing Environment" = "Omgeving Initialiseren";
+"Initializing Environment" = "Omgeving aan het initialiseren";
 
-"Initializing System Hook" = "System Hook initialiseren";
+"Initializing System Hook" = "System Hook aan het initialiseren";
 
 "Jailbreak_Done" = "Klaar!";
 
-"Launching kexploitd" = "kexploitd opstarten";
+"Launching kexploitd" = "kexploitd aan het opstarten";
 
-"Launching oobPCI" = "oobPCI opstarten";
+"Launching oobPCI" = "oobPCI aan het opstarten";
 
-"Loading Basebin Trustcache" = "Basebin Trustcache Laden";
+"Loading Basebin Trustcache" = "Basebin Trustcache aan het laden";
 
 "Menu_Credits_Title" = "Credits";
 
@@ -70,7 +70,7 @@
 
 "Options_Tweak_Injection" = "Tweak Injection";
 
-"Options_Verbose_Logs" = "Uitgebreide Logs";
+"Options_Verbose_Logs" = "Uitgebreide logs";
 
 "Patchfinding" = "Patchfinding";
 
@@ -90,7 +90,7 @@
 
 "Status_Title_Jailbreaking" = "Aan het jailbreaken";
 
-"Status_Title_Jailbroken" = "Gejailbreakt";
+"Status_Title_Jailbroken" = "Jailbreak klaar";
 
 "Status_Title_Select_Package_Managers" = "Selecteer Package Manager(s)";
 
@@ -100,7 +100,7 @@
 
 "Title_Changelog" = "Changelog";
 
-"Title_Made_By" = "Door opa334, évelyne, UI door sourceloc";
+"Title_Made_By" = "Door opa334, évelyne, gebruikersinterface door sourceloc";
 
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
 
@@ -113,4 +113,3 @@
 "Update_Status_Subtitle_Please_Wait" = "Een ogenblik geduld tot de bestanden zijn gedownload";
 
 "Update_Status_Subtitle_Restart_Soon" = "Het apparaat zal binnenkort worden herstart";
-
