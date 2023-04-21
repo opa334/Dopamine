@@ -20,8 +20,13 @@ struct SettingsView: View {
     @State var rootPasswordInput = "alpine"
     
     @State var removeJailbreakAlertShown = false
+    @State var tweakInjectionToggledAlertShown = false
     
     @State var isEnvironmentHiddenState = isEnvironmentHidden()
+    
+    init() {
+        UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = .init(named: "AccentColor")
+    }
     
     var body: some View {
         VStack {
@@ -31,17 +36,23 @@ struct SettingsView: View {
                 .padding(.horizontal, 32)
                 .opacity(0.25)
             
-            VStack(spacing: 10) {
-                if !isJailbroken() {
+            VStack(spacing: 20) {
+                VStack(spacing: 10) {
                     Toggle("Options_Tweak_Injection", isOn: $tweakInjection)
-                    Toggle("Options_iDownload", isOn: $enableiDownload)
-                    Toggle("Options_Verbose_Logs", isOn: $verboseLogs)
+                        .onChange(of: tweakInjection) { newValue in
+                            tweakInjectionToggledAlertShown = isJailbroken()
+                        }
+                    if !isJailbroken() {
+                        Toggle("Options_iDownload", isOn: $enableiDownload)
+                        Toggle("Options_Verbose_Logs", isOn: $verboseLogs)
+                    }
                 }
                 if isBootstrapped() {
                     VStack {
                         if isJailbroken() {
                             Button(action: {
-                                rootPasswordChangeAlertShown.toggle()
+                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                rootPasswordChangeAlertShown = true
                             }) {
                                 HStack {
                                     Image(systemName: "key")
@@ -59,6 +70,7 @@ struct SettingsView: View {
                         }
                         VStack {
                             Button(action: {
+                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
                                 isEnvironmentHiddenState.toggle()
                                 changeEnvironmentVisibility(hidden: !isEnvironmentHidden())
                             }) {
@@ -75,6 +87,7 @@ struct SettingsView: View {
                                 )
                             }
                             Button(action: {
+                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
                                 removeJailbreakAlertShown = true
                             }) {
                                 HStack {
@@ -95,7 +108,6 @@ struct SettingsView: View {
                                 .padding(.top, 2)
                         }
                     }
-                    .padding(.top, 12)
                 }
             }
             .tint(.accentColor)
@@ -122,11 +134,17 @@ struct SettingsView: View {
                     TextFieldAlert(title: NSLocalizedString("Popup_Change_Root_Password_Title", comment: ""), message: "", text: Binding<String?>($rootPasswordInput))
                 }
                 .alert("Settings_Remove_Jailbreak_Alert_Title", isPresented: $removeJailbreakAlertShown, actions: {
-                    Button("Settings_Remove_Jailbreak_Alert_Button_Cancel", role: .cancel) { }
-                    Button("Settings_Remove_Jailbreak_Alert_Button_Uninstall", role: .destructive) {
+                    Button("Button_Cancel", role: .cancel) { }
+                    Button("Alert_Button_Uninstall", role: .destructive) {
                         removeJailbreak()
                     }
-                }, message: { Text("Popup_Change_Root_Password_Body") })
+                }, message: { Text("Settings_Remove_Jailbreak_Alert_Body") })
+                .alert("Settings_Tweak_Injection_Toggled_Alert_Title", isPresented: $tweakInjectionToggledAlertShown, actions: {
+                    Button("Button_Cancel", role: .cancel) { }
+                    Button("Menu_Reboot_Userspace_Title") {
+                        userspaceReboot()
+                    }
+                }, message: { Text("Alert_Tweak_Injection_Toggled_Body") })
                 .frame(maxHeight: 0)
             
         }

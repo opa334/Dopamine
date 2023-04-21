@@ -57,7 +57,9 @@ class TextFieldAlertViewController: UIViewController {
                 .assign(to: \.text, on: self)
         }
         
-        vc.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        vc.addAction(UIAlertAction(title: "Cancel", style: .cancel) { [weak self] _ in
+            self?.isPresented?.wrappedValue = false
+        })
         vc.addAction(UIAlertAction(title: "Set", style: .default) { [weak self] _ in
             self?.isPresented?.wrappedValue = false
         })

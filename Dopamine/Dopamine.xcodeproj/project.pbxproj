@@ -56,6 +56,8 @@
 		151CAFB22894041D00B2A6BA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		15372EA028DDF5EF00514A73 /* bootstrap.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = bootstrap.tar; sourceTree = "<group>"; };
 		15372EA528DDFF9000514A73 /* sileo.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = sileo.deb; sourceTree = "<group>"; };
+		21AFE72F29F32AF8008B4B4C /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
+		21AFE73029F33538008B4B4C /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8C2EDE1829F0AAF70060D192 /* oobPCI */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = oobPCI; path = ../../Exploits/oobPCI/oobPCI; sourceTree = "<group>"; };
 		8C2EDE1A29F0ACA60060D192 /* basebin.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = basebin.tar; sourceTree = "<group>"; };
 		8C2EDE1C29F0ACC80060D192 /* basebin.tc */ = {isa = PBXFileReference; lastKnownFileType = file; name = basebin.tc; path = ../../../BaseBin/basebin.tc; sourceTree = "<group>"; };
@@ -292,6 +294,8 @@
 				"zh-Hans",
 				"pt-BR",
 				nl,
+				uk,
+				sv,
 			);
 			mainGroup = 1502A3FF2891B03F0011CB6E;
 			packageReferences = (
@@ -370,6 +374,8 @@
 				938DADEC29F2DBE100C37952 /* zh-Hans */,
 				938DADEE29F2E0FA00C37952 /* pt-BR */,
 				938DADEF29F2FCE400C37952 /* nl */,
+				21AFE72F29F32AF8008B4B4C /* uk */,
+				21AFE73029F33538008B4B4C /* sv */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
