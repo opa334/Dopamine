@@ -20,9 +20,9 @@
 
 "Button_Update_Available" = "يتوفر تحديث";
 
-"Bypassing PAC" = "جارِ تجاوز PAC";
+"Bypassing PAC" = "تجاوز PAC";
 
-"Bypassing PPL" = "جارِ تجاوز PPL";
+"Bypassing PPL" = "تجاوز PPL";
 
 "Changelog_Unavailable_Text" = "سجل التغييرات غير متاح";
 
@@ -48,7 +48,7 @@
 
 "Initializing Environment" = "جارِ تحسين البيئة";
 
-"Initializing System Hook" = "جارِ تحسين تكامل النظام";
+"Initializing System Hook" = "تحسين تكامل النظام";
 
 "Jailbreak_Done" = "تم!";
 
@@ -56,7 +56,7 @@
 
 "Launching oobPCI" = "جارِ تشغيل oopPCI";
 
-"Loading Basebin Trustcache" = "جارِ تحميل بنية الذاكرة المؤقتة";
+"Loading Basebin Trustcache" = "تحميل بنية الذاكرة المؤقتة";
 
 "Menu_Credits_Title" = "الاعتمادات";
 
@@ -72,7 +72,7 @@
 
 "Options_Verbose_Logs" = "السجلات المطولة";
 
-"Patchfinding" = "جارِ العثور على التصحيح";
+"Patchfinding" = "العثور على التصحيح";
 
 "Rebuilding TrustCache" = "إعادة بناء الذاكرة المؤقتة";
 
