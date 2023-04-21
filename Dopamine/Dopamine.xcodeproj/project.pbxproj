@@ -39,6 +39,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0CA22AFB29F134440088CB7B /* constants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = constants.m; path = Dopamine/constants.m; sourceTree = "<group>"; };
+		0C5D3B0829F2D5C7002924C0 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/Localizable.strings; sourceTree = "<group>"; };
+		0C5D3B0929F2DA27002924C0 /* zh_HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_HK; path = zh_HK.lproj/Localizable.strings; sourceTree = "<group>"; };
+		0C5D3B0A29F2DA3C002924C0 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1502A4082891B03F0011CB6E /* Dopamine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dopamine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1502A40B2891B03F0011CB6E /* DopamineApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineApp.swift; sourceTree = "<group>"; };
 		1502A40F2891B0410011CB6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -296,6 +300,9 @@
 				nl,
 				uk,
 				sv,
+				zh_CN,
+				zh_HK,
+				zh_TW,
 			);
 			mainGroup = 1502A3FF2891B03F0011CB6E;
 			packageReferences = (
@@ -376,6 +383,9 @@
 				938DADEF29F2FCE400C37952 /* nl */,
 				21AFE72F29F32AF8008B4B4C /* uk */,
 				21AFE73029F33538008B4B4C /* sv */,
+				0C5D3B0829F2D5C7002924C0 /* zh_CN */,
+				0C5D3B0929F2DA27002924C0 /* zh_HK */,
+				0C5D3B0A29F2DA3C002924C0 /* zh_TW */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
