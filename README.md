@@ -103,5 +103,13 @@ The following open-source software is used by Fugu15:
 - [Sileo](https://github.com/Sileo/Sileo): The package manager included in Fugu15. License: [BSD 4-Clause](https://github.com/Sileo/Sileo/blob/stable/LICENSE)
 - [ZIPFoundation](https://github.com/weichsel/ZIPFoundation): Swift library for working with ZIP archives. Used in FuguInstall to install the Fugu15 App. License: [MIT](https://github.com/weichsel/ZIPFoundation/blob/development/LICENSE)
 
+# Contributors
+- [Cryptiiiic](https://github.com/Cryptiiiic)
+- [zhaonan](https://github.com/invalidunit)
+- [sroucelocation](https://github.com/sourcelocation)
+- [trungtoan337](https://github.com/trungtoan337)
+- [Liam Huang](https://github.com/Liam0205)
+- [Dhinak G](https://github.com/dhinakg)
+
 # License
-MIT. See the `LICENSE` file.
+MIT. See the [`LICENSE`](https://github.com/opa334/Dopamine/blob/master/LICENSE) file.
