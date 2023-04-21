@@ -40,9 +40,9 @@
 
 "Credits_Made_By_Subheadline" = "UI von sourcelocation\nLogo und Symbol von xerus";
 
-"Finalizing Bootstrap" = "Stelle Bootstrap fertig";
+"Finalizing Bootstrap" = "Bootstrap fertigstellen";
 
-"Gaining r/w" = "Erhalte r/w";
+"Gaining r/w" = "Erhalte Kernel Lese- und Schreiberechte";
 
 "Hint_Hide_Jailbreak" = "\"Jailbreak verstecken\" entfernt temporär Jailbreak Dateien bis zum nächsten Jailbreak";
 
@@ -68,15 +68,15 @@
 
 "Options_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Tweak Injektion";
+"Options_Tweak_Injection" = "Tweaks laden";
 
-"Options_Verbose_Logs" = "Detaillierte Protokolle";
+"Options_Verbose_Logs" = "Detaillierte Logs";
 
 "Patchfinding" = "Patchfinding";
 
 "Rebuilding TrustCache" = "Baue TrustCache neu auf";
 
-"Refreshing Icon Cache" = "Symbol Cache auffrischen";
+"Refreshing Icon Cache" = "Frische App-Cache auf";
 
 "Settings_Footer_Device_Bootstrapped" = "Gerät gebootstrapped";
 
@@ -86,7 +86,7 @@
 
 "Starting jailbreakd" = "Starte jailbreakd";
 
-"Starting Launch Daemons" = "Starte Launch Daemons";
+"Starting Launch Daemons" = "Starte Hintergrunddienste";
 
 "Status_Title_Jailbreaking" = "Jailbreaken";
 
@@ -96,7 +96,7 @@
 
 "Status_Title_Unsuccessful" = "Erfolglos";
 
-"Success_Rate %@%% (%lld/%lld)" = "Erfolgsrate: %@%% (%lld/%lld)";
+"Success_Rate %@%% (%lld/%lld)" = "Erfolgsquote: %@%% (%lld/%lld)";
 
 "Title_Changelog" = "Changelog";
 
