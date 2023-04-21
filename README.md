@@ -110,6 +110,7 @@ The following open-source software is used by Fugu15:
 - [trungtoan337](https://github.com/trungtoan337)
 - [Liam Huang](https://github.com/Liam0205)
 - [Dhinak G](https://github.com/dhinakg)
+- [Kevin Alavik](httpts://github.com/kevinalavik)
 
 # License
 MIT. See the [`LICENSE`](https://github.com/opa334/Dopamine/blob/master/LICENSE) file.
