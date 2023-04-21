@@ -83,6 +83,10 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
     }
 }
 
+func removeJailbreak() {
+    
+}
+
 func changeRootPassword(newPassword: String) {
     
 }

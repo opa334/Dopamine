@@ -19,6 +19,8 @@ struct SettingsView: View {
     @State var rootPasswordChangeAlertShown = false
     @State var rootPasswordInput = "alpine"
     
+    @State var removeJailbreakAlertShown = false
+    
     @State var isEnvironmentHiddenState = isEnvironmentHidden()
     
     var body: some View {
@@ -71,7 +73,7 @@ struct SettingsView: View {
                             )
                         }
                         Button(action: {
-                            rootPasswordChangeAlertShown.toggle()
+                            removeJailbreakAlertShown = true
                         }) {
                             HStack {
                                 Image(systemName: "trash")
@@ -114,8 +116,14 @@ struct SettingsView: View {
             
             ZStack {}
                 .textFieldAlert(isPresented: $rootPasswordChangeAlertShown) { () -> TextFieldAlert in
-                    TextFieldAlert(title: "Popup_Change_Root_Password_Title", message: "", text: Binding<String?>($rootPasswordInput))
+                    TextFieldAlert(title: NSLocalizedString("Popup_Change_Root_Password_Title", comment: ""), message: "", text: Binding<String?>($rootPasswordInput))
                 }
+                .alert("Settings_Remove_Jailbreak_Alert_Title", isPresented: $removeJailbreakAlertShown, actions: {
+                    Button("Settings_Remove_Jailbreak_Alert_Button_Cancel", role: .cancel) { }
+                    Button("Settings_Remove_Jailbreak_Alert_Button_Uninstall", role: .destructive) {
+                        removeJailbreak()
+                    }
+                }, message: { Text("Popup_Change_Root_Password_Body") })
                 .frame(maxHeight: 0)
             
         }
