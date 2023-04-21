@@ -1,0 +1,116 @@
+"Bootstrapping" = "بوٹسٹریپنگ";
+
+"Button_Cancel" = "منسوخ کریں";
+
+"Button_Hide_Jailbreak" = "جیل بریک  چھپائیں ";
+
+"Button_Hide_Logs_Title" = "لاگ چھپائیں";
+
+"Button_Jailbreak_Title" = " جیل بریک";
+
+"Button_Remove_Jailbreak" = " جیل بریک اتارلو";
+
+"Button_Set_Root_Password" = "روٹ پاس ورڈ سیٹ کریں";
+
+"Button_Show_Logs_Title" = "لاگز دکھائیں";
+
+"Button_Unhide_Jailbreak" = "جیل بریک دکھائیں ";
+
+"Button_Update" = "اپ ڈیٹ";
+
+"Button_Update_Available" = "اپ ڈیٹ دستیاب ہے";
+
+"Bypassing PAC" = "Bypassing PAC";
+
+"Bypassing PPL" = "Bypassing PPL";
+
+"Changelog_Unavailable_Text" = "چینج لاگ دستیاب نہیں ہے";
+
+"Context_Menu_Copy_To_Clipboard" = "کلپ بورڈ پر کاپی کریں";
+
+"Credits_Button_License" = "لائسنس";
+
+"Credits_Button_Source_Code" = "خصوصی شکریہ";
+
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
+
+"Credits_Header_Special_Thanks" = "خصوصی شکریہ:";
+
+"Credits_Made_By" = "Made by by opa334, évelyne";
+
+"Credits_Made_By_Subheadline" = "UI by sourcelocation\nLogo and icon by xerus";
+
+"Finalizing Bootstrap" = "بوٹسٹریپ کو حتمی شکل دی جا رہی ہے";
+
+"Gaining r/w" = "Gaining r/w";
+
+"Hint_Hide_Jailbreak" = "\"چھپائیں جیل بریک\" اگلے جیل بریک تک عارضی طور پر جیل بریک سے متعلق فائلوں کو ہٹاتا ہے";
+
+"Initializing Environment" = "Initializing Environment";
+
+"Initializing System Hook" = "Initializing System Hook";
+
+"Jailbreak_Done" = "!ختم";
+
+"Launching kexploitd" = "Launching kexploitd";
+
+"Launching oobPCI" = "Launching oobPCI";
+
+"Loading Basebin Trustcache" = "Loading Basebin Trustcache";
+
+"Menu_Credits_Title" = "کے بارے میں";
+
+"Menu_Options_Title" = "ترتیبات";
+
+"Menu_Reboot_Userspace_Title" = "یوزر اسپیس کو ریبوٹ کریں";
+
+"Menu_Restart_SpringBoard_Title" = "اسپرنگ بورڈ کو دوبارہ شروع کریں";
+
+"Options_iDownload" = "iDownload";
+
+"Options_Tweak_Injection" = "Tweak Injection";
+
+"Options_Verbose_Logs" = "Verbose Logs";
+
+"Patchfinding" = "Patchfinding";
+
+"Rebuilding TrustCache" = "Rebuilding TrustCache";
+
+"Refreshing Icon Cache" = "Refreshing Icon Cache";
+
+"Settings_Footer_Device_Bootstrapped" = "آلہ بوٹسٹریپ ہے";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "ڈیوائس بوٹسٹریپ نہیں ہے";
+
+"Settings_Title" = "ترتیبات";
+
+"Starting jailbreakd" = "Starting jailbreakd";
+
+"Starting Launch Daemons" = "Starting Launch Daemons";
+
+"Status_Title_Jailbreaking" = "جیل بریکنگ";
+
+"Status_Title_Jailbroken" = "جیل بروکن";
+
+"Status_Title_Select_Package_Managers" = "پیکیج مینیجرز کو منتخب کریں";
+
+"Status_Title_Unsuccessful" = "ناکام";
+
+"Success_Rate %@%% (%lld/%lld)" = "کامیابی کی شرح: %@%% (%lld/%lld)";
+
+"Title_Changelog" = "چینج لاگ";
+
+"Title_Made_By" = "by opa334, évelyne, UI by sourceloc";
+
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+
+"Update_Log_Hint_Scrollable" = "لاگ ویو کو سکرول کیا جا سکتا ہے";
+
+"Update_Status_Downloading" = "...اپ ڈیٹ ڈاؤن لوڈ کر رہا ہے";
+
+"Update_Status_Installing" = "اپ ڈیٹ انسٹال ہو رہا ہے";
+
+"Update_Status_Subtitle_Please_Wait" = "براہ کرم فائلوں کے ڈاؤن لوڈ ہونے تک انتظار کریں";
+
+"Update_Status_Subtitle_Restart_Soon" = "آلہ جلد ہی دوبارہ شروع ہو جائے گا";
+

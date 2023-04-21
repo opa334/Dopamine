@@ -1,0 +1,116 @@
+"Bootstrapping" = "Bootstrapしています...";
+
+"Button_Cancel" = "キャンセル";
+
+"Button_Hide_Jailbreak" = "Jailbreakを隠す";
+
+"Button_Hide_Logs_Title" = "ログを隠す";
+
+"Button_Jailbreak_Title" = "Jailbreak";
+
+"Button_Remove_Jailbreak" = "脱獄環境を削除";
+
+"Button_Set_Root_Password" = "Rootのパスワードを設定";
+
+"Button_Show_Logs_Title" = "ログを表示";
+
+"Button_Unhide_Jailbreak" = "unhide Jailbreak";
+
+"Button_Update" = "アップデート";
+
+"Button_Update_Available" = "アップデートがあります";
+
+"Bypassing PAC" = "PACをbypass中...";
+
+"Bypassing PPL" = "PPLをbypass中...";
+
+"Changelog_Unavailable_Text" = "変更ログが利用できません";
+
+"Context_Menu_Copy_To_Clipboard" = "クリップボードにコピー";
+
+"Credits_Button_License" = "ライセンス";
+
+"Credits_Button_Source_Code" = "ソースコード";
+
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamineバージョン %@\n%@";
+
+"Credits_Header_Special_Thanks" = "Special thanks:";
+
+"Credits_Made_By" = "Made by by opa334, évelyne";
+
+"Credits_Made_By_Subheadline" = "UI by sourcelocation\nLogo and icon by xerus";
+
+"Finalizing Bootstrap" = "Bootstrapが完了しました";
+
+"Gaining r/w" = "r/wを取得";
+
+"Hint_Hide_Jailbreak" = "\"脱獄環境を隠す\"次の脱獄まで脱獄関連のファイルを一時的に削除します";
+
+"Initializing Environment" = "環境の初期化";
+
+"Initializing System Hook" = "システムフックの初期化";
+
+"Jailbreak_Done" = "完了";
+
+"Launching kexploitd" = "kexploitdを起動中";
+
+"Launching oobPCI" = "oobPCIを起動中";
+
+"Loading Basebin Trustcache" = "Basebin Trustcacheをロード中";
+
+"Menu_Credits_Title" = "クレジット";
+
+"Menu_Options_Title" = "オプション";
+
+"Menu_Reboot_Userspace_Title" = "Userspaceを再起動";
+
+"Menu_Restart_SpringBoard_Title" = "SpringBoardを再起動";
+
+"Options_iDownload" = "iDownload";
+
+"Options_Tweak_Injection" = "Tweak Injection";
+
+"Options_Verbose_Logs" = "詳細ログ";
+
+"Patchfinding" = "Patchfinding";
+
+"Rebuilding TrustCache" = "TrustCacheを再構築中...";
+
+"Refreshing Icon Cache" = "IconCacheを更新中";
+
+"Settings_Footer_Device_Bootstrapped" = "デバイスはbootstrapされました";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "デバイスはbootstrapされていません";
+
+"Settings_Title" = "設定";
+
+"Starting jailbreakd" = "Starting jailbreakd";
+
+"Starting Launch Daemons" = "Starting Launch Daemons";
+
+"Status_Title_Jailbreaking" = "Jailbreaking";
+
+"Status_Title_Jailbroken" = "Jailbroken";
+
+"Status_Title_Select_Package_Managers" = "パッケージマネージャーを選択";
+
+"Status_Title_Unsuccessful" = "失敗";
+
+"Success_Rate %@%% (%lld/%lld)" = "成功率: %@%% (%lld/%lld)";
+
+"Title_Changelog" = "変更ログ";
+
+"Title_Made_By" = "by opa334, évelyne, UI by sourceloc";
+
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+
+"Update_Log_Hint_Scrollable" = "ログはスクロール可能";
+
+"Update_Status_Downloading" = "アップデートをダウンロード中...";
+
+"Update_Status_Installing" = "アップデートをインストール中...";
+
+"Update_Status_Subtitle_Please_Wait" = "ファイルのダウンロードが完了するまでお待ちください";
+
+"Update_Status_Subtitle_Restart_Soon" = "デバイスはまもなく再起動します";
+
