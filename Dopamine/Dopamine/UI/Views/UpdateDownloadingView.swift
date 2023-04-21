@@ -34,13 +34,16 @@ struct UpdateDownloadingView: View {
                         .background(.white)
                         .padding(.horizontal, 32)
                         .opacity(0.5)
-                    Text(try! AttributedString(markdown: changelog, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)))
-                        .opacity(0.5)
-                        .multilineTextAlignment(.center)
-                        .padding(.vertical)
+                    ScrollView {
+                        Text(try! AttributedString(markdown: changelog, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)))
+                            .opacity(0.5)
+                            .multilineTextAlignment(.center)
+                            .padding(.vertical)
+                    }
                 }
                 
                 Button {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     updateState = .downloading
                     
                     // 💀 code
@@ -87,6 +90,8 @@ struct UpdateDownloadingView: View {
             }
             .opacity(updateState == .changelog ? 1 : 0)
             .animation(.spring(), value: updateState)
+            .padding(.top, 64)
+            .padding(.bottom)
             
             ZStack {
                 VStack(spacing: 150) {

@@ -9,10 +9,10 @@ import SwiftUI
 
 struct AboutView: View {
     @Environment(\.openURL) var openURL
-    @AppStorage("sfw") var sfw = false
+    @State var easterEgg = false
     
     let columns = [
-        GridItem(.adaptive(minimum: 80))
+        GridItem(.adaptive(minimum: 100))
     ]
     
     let contributors = [
@@ -117,10 +117,19 @@ struct AboutView: View {
                 }
             }
             .padding(.bottom)
-            Text("Credits_Footer_Dopamine_Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")\nOS:\(ProcessInfo.processInfo.operatingSystemVersionString)")
-                .fixedSize()
-                .font(.footnote)
-                .opacity(0.6)
+            Group {
+                if !easterEgg {
+                    Text("Credits_Footer_Dopamine_Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")\nOS:\(ProcessInfo.processInfo.operatingSystemVersionString)")
+                } else {
+                    Text(verbatim: "Wait, it's all Evyrest?\nAlways has been.")
+                }
+            }
+            .fixedSize()
+            .font(.footnote)
+            .opacity(0.6)
+            .onTapGesture(count: 5) {
+                easterEgg.toggle()
+            }
         }
         .foregroundColor(.white)
         .multilineTextAlignment(.center)
