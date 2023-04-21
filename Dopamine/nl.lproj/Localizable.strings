@@ -38,11 +38,11 @@
 
 "Credits_Made_By" = "Gemaakt door opa334, évelyne";
 
-"Credits_Made_By_Subheadline" = "Gebruikersinterface door sourcelocation\nLogo en icoon door xerus";
+"Credits_Made_By_Subheadline" = "Gebruikersinterface door sourcelocation\nLogo en app icoon door xerus";
 
 "Finalizing Bootstrap" = "Bootstrap Afronden";
 
-"Gaining r/w" = "r/w Bemachtigen";
+"Gaining r/w" = "r/w aan het bemachtigen";
 
 "Hint_Hide_Jailbreak" = "\"Jailbreak Verbergen\" verwijderd jailbreak-gerelateerde bestanden tot de volgende jailbreak";
 
@@ -52,9 +52,9 @@
 
 "Jailbreak_Done" = "Klaar!";
 
-"Launching kexploitd" = "kexploitd Opstarten";
+"Launching kexploitd" = "kexploitd opstarten";
 
-"Launching oobPCI" = "oobPCI Opstarten";
+"Launching oobPCI" = "oobPCI opstarten";
 
 "Loading Basebin Trustcache" = "Basebin Trustcache Laden";
 
@@ -74,9 +74,9 @@
 
 "Patchfinding" = "Patchfinding";
 
-"Rebuilding TrustCache" = "Wederopbouw TrustCache";
+"Rebuilding TrustCache" = "TrustCache aan het herbouwen";
 
-"Refreshing Icon Cache" = "Wederopbouw Icon Cache";
+"Refreshing Icon Cache" = "Icon Cache aan het herbouwen";
 
 "Settings_Footer_Device_Bootstrapped" = "Apparaat is gebootstrapped";
 
@@ -84,9 +84,9 @@
 
 "Settings_Title" = "Instellingen";
 
-"Starting jailbreakd" = "jailbreakd starten";
+"Starting jailbreakd" = "jailbreakd aan het starten";
 
-"Starting Launch Daemons" = "Launch Daemons starten";
+"Starting Launch Daemons" = "Launch Daemons aan het starten";
 
 "Status_Title_Jailbreaking" = "Aan het jailbreaken";
 
@@ -106,11 +106,11 @@
 
 "Update_Log_Hint_Scrollable" = "Er kan gescrold worden door het log overzicht";
 
-"Update_Status_Downloading" = "Update downloaden...";
+"Update_Status_Downloading" = "Update aan het downloaden...";
 
-"Update_Status_Installing" = "Update installeren...";
+"Update_Status_Installing" = "Update aan het installeren...";
 
 "Update_Status_Subtitle_Please_Wait" = "Een ogenblik geduld tot de bestanden zijn gedownload";
 
-"Update_Status_Subtitle_Restart_Soon" = "Het apparaat zal opnieuw worden opgestart";
+"Update_Status_Subtitle_Restart_Soon" = "Het apparaat zal binnenkort worden herstart";
 
