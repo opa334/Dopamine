@@ -19,6 +19,8 @@ struct SettingsView: View {
     @State var rootPasswordChangeAlertShown = false
     @State var rootPasswordInput = "alpine"
     
+    @State var isEnvironmentHiddenState = isEnvironmentHidden()
+    
     var body: some View {
         VStack {
             Text("Settings_Title")
@@ -53,11 +55,12 @@ struct SettingsView: View {
                     }
                     VStack {
                         Button(action: {
+                            isEnvironmentHiddenState.toggle()
                             changeEnvironmentVisibility(hidden: !isEnvironmentHidden())
                         }) {
                             HStack {
-                                Image(systemName: isEnvironmentHidden() ? "eye" : "eye.slash")
-                                Text(isEnvironmentHidden() ? "Button_Unhide_Jailbreak" : "Button_Hide_Jailbreak")
+                                Image(systemName: isEnvironmentHiddenState ? "eye" : "eye.slash")
+                                Text(isEnvironmentHiddenState ? "Button_Unhide_Jailbreak" : "Button_Hide_Jailbreak")
                                     .lineLimit(1)
                             }
                             .padding(8)
