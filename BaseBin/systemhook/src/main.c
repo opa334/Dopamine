@@ -220,7 +220,9 @@ void* dlopen_hook(const char* path, int mode)
 	if (path) {
 		jbdswProcessLibrary(path);
 	}
-	return dlopen(path, mode);
+	
+	void* callerAddress = __builtin_return_address(0);
+    return dlopen_from(path, mode, callerAddress);
 }
 
 void* dlopen_from_hook(const char* path, int mode, void* addressInCaller)
