@@ -1,173 +1,115 @@
-/* (Без комментариев) */
 "Bootstrapping" = "Инициализация запуска";
 
-/* Кнопка Отмена */
 "Button_Cancel" = "Отмена";
 
-/* Кнопка Скрыть джейлбрейк */
 "Button_Hide_Jailbreak" = "Скрыть джейлбрейк";
 
-/* Кнопка Скрыть журналы */
 "Button_Hide_Logs_Title" = "Скрыть журналы";
 
-/* Кнопка Джейлбрейк */
 "Button_Jailbreak_Title" = "Джейлбрейк";
 
-/* Кнопка Удалить джейлбрейк */
 "Button_Remove_Jailbreak" = "Удалить джейлбрейк";
 
-/* Кнопка Установить пароль Root */
 "Button_Set_Root_Password" = "Установить пароль Root";
 
-/* Кнопка Показать журналы */
 "Button_Show_Logs_Title" = "Показать журналы";
 
-/* Кнопка Открыть джейлбрейк */
-"Button_Unhide_Jailbreak" = "Открыть джейлбрейк";
+"Button_Unhide_Jailbreak" = "Раскрыть джейлбрейк";
 
-/* Кнопка Обновить */
 "Button_Update" = "Обновить";
 
-/* Кнопка Доступно обновление */
 "Button_Update_Available" = "Доступно обновление";
 
-/* (Без комментариев) */
 "Bypassing PAC" = "Обход PAC";
 
-/* (Без комментариев) */
 "Bypassing PPL" = "Обход PPL";
 
-/* Текст не доступен */
-"Changelog_Unavailable_Text" = "Недоступен список изменений";
+"Changelog_Unavailable_Text" = "Ссписок изменений не доступен";
 
-/* Контекстное меню: копировать в буфер обмена */
 "Context_Menu_Copy_To_Clipboard" = "Копировать в буфер обмена";
 
-/* Кнопка Лицензия */
 "Credits_Button_License" = "Лицензия";
 
-/* Кнопка Исходный код */
 "Credits_Button_Source_Code" = "Исходный код";
 
-/* Dopamine версия %@\nОС:%@ */
 "Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine версия %@\n%@";
 
-/* Название благодарности */
 "Credits_Header_Special_Thanks" = "Особая благодарность:";
 
-/* Сделано opa334, évelyne */
 "Credits_Made_By" = "Сделано opa334, évelyne";
 
-/* Интерфейс sourcelocation, логотип и иконка xerus */
-"Credits_Made_By_Subheadline" = "Интерфейс sourcelocation\nЛоготип и иконка от xerus";
+"Credits_Made_By_Subheadline" = "UI от sourcelocation\nЛоготип и иконка от xerus";
 
-/* (Без комментариев) */
 "Finalizing Bootstrap" = "Завершение инициализации запуска";
 
-/* (Без комментариев) */
 "Gaining r/w" = "Получение прав на чтение/запись";
 
-/* Комментарий инженера не предоставлен. */
 "Hint_Hide_Jailbreak" = "\"Скрыть джейлбрейк\" временно удаляет файлы, связанные с джейлбрейком, до следующего джейлбрейка";
 
-/* (Нет комментариев) */
 "Initializing Environment" = "Инициализация окружения";
 
-/* (Нет комментариев) */
 "Initializing System Hook" = "Инициализация системного хука";
 
-/* Комментарий инженера не предоставлен. */
 "Jailbreak_Done" = "Готово!";
 
-/* (Нет комментариев) */
 "Launching kexploitd" = "Запуск kexploitd";
 
-/* (Нет комментариев) */
 "Launching oobPCI" = "Запуск oobPCI";
 
-/* (Нет комментариев) */
 "Loading Basebin Trustcache" = "Загрузка Basebin Trustcache";
 
-/* Комментарий инженера не предоставлен. */
-"Menu_Credits_Title" = "О нас";
+"Menu_Credits_Title" = "Благодарности";
 
-/* Комментарий инженера не предоставлен. */
 "Menu_Options_Title" = "Настройки";
 
-/* Комментарий инженера не предоставлен. */
-"Menu_Reboot_Userspace_Title" = "Перезагрузить пользовательское пространство";
+"Menu_Reboot_Userspace_Title" = "Перезагрузить Userspace";
 
-/* Комментарий инженера не предоставлен. */
 "Menu_Restart_SpringBoard_Title" = "Перезапустить SpringBoard";
 
-/* Комментарий инженера не предоставлен. */
 "Options_iDownload" = "iDownload";
 
-/* Комментарий инженера не предоставлен. */
 "Options_Tweak_Injection" = "Внедрение твиков";
 
-/* Комментарий инженера не предоставлен. */
 "Options_Verbose_Logs" = "Расширенные журналы";
 
-/* (Нет комментариев) */
 "Patchfinding" = "Поиск патчей";
 
-/* (Нет комментариев) */
 "Rebuilding TrustCache" = "Обновление TrustCache";
 
-/* (Нет комментариев) */
 "Refreshing Icon Cache" = "Обновление кэша иконок";
 
-/* Комментарий инженера не предоставлен. */
 "Settings_Footer_Device_Bootstrapped" = "Устройство Bootstrapped";
 
-/* Комментарий инженера не предоставлен. */
 "Settings_Footer_Device_Not_Bootstrapped" = "Устройство не Bootstrapped";
 
-/* Комментарий инженера не предоставлен. */
 "Settings_Title" = "Настройки";
 
-/* (Нет комментариев) */
 "Starting jailbreakd" = "Запуск jailbreakd";
 
-/* (Нет комментариев) */
 "Starting Launch Daemons" = "Запуск Launch Daemons";
 
-/* Комментарий инженера не предоставлен. */
 "Status_Title_Jailbreaking" = "Джейлбрейк";
 
-/* Комментарий инженера не предоставлен. */
 "Status_Title_Jailbroken" = "Джейлбрейк выполнен";
 
-/* Комментарий инженера не предоставлен. */
 "Status_Title_Select_Package_Managers" = "Выберите менеджер(ы) пакетов";
 
-/* Комментарий инженера не предоставлен. */
 "Status_Title_Unsuccessful" = "Неудачно";
 
-/* Комментарий инженера не предоставлен. */
 "Success_Rate %@%% (%lld/%lld)" = "Успешность: %@%% (%lld/%lld)";
 
-/* Комментарий инженера не предоставлен. */
 "Title_Changelog" = "Изменения";
 
-/* Комментарий инженера не предоставлен. */
 "Title_Made_By" = "от opa334, évelyne, UI от sourceloc";
 
-/* Комментарий инженера не предоставлен. */
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
 
-/* Комментарий инженера не предоставлен. */
 "Update_Log_Hint_Scrollable" = "Журнал может прокручиваться";
 
-/* Комментарий инженера не предоставлен. */
 "Update_Status_Downloading" = "Загрузка обновления...";
 
-/* Комментарий инженера не предоставлен. */
 "Update_Status_Installing" = "Установка обновления...";
 
-/* Комментарий инженера не предоставлен. */
 "Update_Status_Subtitle_Please_Wait" = "Пожалуйста, подождите, пока файлы будут загружены.";
 
-/* Комментарий инженера не предоставлен. */
 "Update_Status_Subtitle_Restart_Soon" = "Устройство скоро перезагрузится";
