@@ -57,12 +57,12 @@ class Logger: ObservableObject {
      * - Parameter isContinuous: Determines whether the action is instant or continuous, and if a spinner next to text should be shown
      * - Parameter isUserFriendly: Should the log be displayed to users who have "Simple Logs" option turned on
      */
-    static func log(_ obj: Any, type: LogMessage.LogType = .continuous, isUserFriendly: Bool = false) {
+    static func log(_ obj: Any, type: LogMessage.LogType = .continuous, isStatus: Bool = false) {
         let text = String(describing: obj)
         print(text)
         shared.log += "\n\(type.rawValue) \(text)"
-        if isUserFriendly {
-            shared.userFriendlyLogs.append(.init(text: String(describing: text), type: type))
+        if isStatus {
+            shared.userFriendlyLogs.append(.init(text: NSLocalizedString(text, comment: "Jailbreak Status"), type: type))
         }
     }
 }

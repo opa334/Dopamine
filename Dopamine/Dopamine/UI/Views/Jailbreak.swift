@@ -51,7 +51,7 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
     let shouldInstallSileo = selectedPackageManagers.contains("Sileo")
 
     do {
-        Logger.log("Launching kexploitd", isUserFriendly: true)
+        Logger.log("Launching kexploitd", isStatus: true)
         
         try Fugu15.launchKernelExploit(oobPCI: Bundle.main.bundleURL.appendingPathComponent("oobPCI")) { msg in
             DispatchQueue.main.async {
@@ -64,19 +64,19 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
                     toPrint = msg
                 }
 
-                Logger.log(toPrint, isUserFriendly: !verbose)
+                Logger.log(toPrint, isStatus: !verbose)
             }
         }
         
         try Fugu15.startEnvironment()
         
         DispatchQueue.main.async {
-            Logger.log("Done!", type: .success, isUserFriendly: true)
+            Logger.log(NSLocalizedString("Jailbreak_Done", comment: ""), type: .success, isStatus: true)
             completion(nil)
         }
     } catch {
         DispatchQueue.main.async {
-            Logger.log("\(error.localizedDescription)", type: .error, isUserFriendly: true)
+            Logger.log("\(error.localizedDescription)", type: .error, isStatus: true)
             completion(error)
             NSLog("Fugu15 error: \(error)")
         }

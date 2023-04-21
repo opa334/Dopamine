@@ -25,6 +25,7 @@
 		8C8D956229D0B27100A482A8 /* master.rootalpine.passwd in Resources */ = {isa = PBXBuildFile; fileRef = 8C8D956129D0B27100A482A8 /* master.rootalpine.passwd */; };
 		9380BFFE29E6F1FA00C0121A /* UpdateDownloadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9380BFFD29E6F1FA00C0121A /* UpdateDownloadingView.swift */; };
 		9380C00129EAE9C600C0121A /* PackageManagerSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9380C00029EAE9C600C0121A /* PackageManagerSelectionView.swift */; };
+		938DADDE29F2993400C37952 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 938DADDD29F20ACA00C37952 /* Localizable.strings */; };
 		93D2565929ED68B100B549BA /* Error++.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D2565829ED68B100B549BA /* Error++.swift */; };
 		93D2565B29ED6EDE00B549BA /* URLExtension+download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D2565A29ED6EDE00B549BA /* URLExtension+download.swift */; };
 		CE27798929D459220030E28D /* SwiftfulLoadingIndicators in Frameworks */ = {isa = PBXBuildFile; productRef = CE27798829D459220030E28D /* SwiftfulLoadingIndicators */; };
@@ -65,6 +66,8 @@
 		9380BFFD29E6F1FA00C0121A /* UpdateDownloadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateDownloadingView.swift; sourceTree = "<group>"; };
 		9380BFFF29E8601600C0121A /* Fugu15KernelExploit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Fugu15KernelExploit; path = ../Packages/Fugu15KernelExploit; sourceTree = "<group>"; };
 		9380C00029EAE9C600C0121A /* PackageManagerSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageManagerSelectionView.swift; sourceTree = "<group>"; };
+		938DADDC29F20ACA00C37952 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		938DADDF29F2A08E00C37952 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		93D2565829ED68B100B549BA /* Error++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error++.swift"; sourceTree = "<group>"; };
 		93D2565A29ED6EDE00B549BA /* URLExtension+download.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLExtension+download.swift"; sourceTree = "<group>"; };
 		CE284DE429D4777A0096D99D /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
@@ -96,6 +99,7 @@
 		1502A3FF2891B03F0011CB6E = {
 			isa = PBXGroup;
 			children = (
+				938DADDD29F20ACA00C37952 /* Localizable.strings */,
 				9380BFFF29E8601600C0121A /* Fugu15KernelExploit */,
 				1502A42A2891BF130011CB6E /* Makefile */,
 				1502A40A2891B03F0011CB6E /* Dopamine */,
@@ -262,6 +266,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = 1502A3FF2891B03F0011CB6E;
 			packageReferences = (
@@ -283,6 +288,7 @@
 			files = (
 				8C8D956229D0B27100A482A8 /* master.rootalpine.passwd in Resources */,
 				8C8D955F29D04CD100A482A8 /* zebra.deb in Resources */,
+				938DADDE29F2993400C37952 /* Localizable.strings in Resources */,
 				8C8D955B29D04B4C00A482A8 /* tar in Resources */,
 				8C2EDE1929F0AAF70060D192 /* oobPCI in Resources */,
 				15372EA728DDFF9A00514A73 /* sileo.deb in Resources */,
@@ -320,11 +326,24 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXVariantGroup section */
+		938DADDD29F20ACA00C37952 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				938DADDC29F20ACA00C37952 /* en */,
+				938DADDF29F2A08E00C37952 /* ru */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		1502A4142891B0410011CB6E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -385,6 +404,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";

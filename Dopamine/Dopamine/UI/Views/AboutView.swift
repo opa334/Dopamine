@@ -27,8 +27,8 @@ struct AboutView: View {
     var body: some View {
         VStack {
             VStack(spacing: 4) {
-                Text("Made by by opa334, évelyne")
-                Text("UI by sourcelocation\n Logo and icon by xerus")
+                Text("Credits_Made_By")
+                Text("Credits_Made_By_Subheadline")
                     .font(.footnote)
                     .opacity(0.6)
             }
@@ -44,7 +44,7 @@ struct AboutView: View {
                     HStack {
                         Spacer()
                         Image("github")
-                        Text("Source Code")
+                        Text("Credits_Button_Source_Code")
                         Spacer()
                     }
                     .padding(8)
@@ -60,7 +60,7 @@ struct AboutView: View {
                     HStack {
                         Spacer()
                         Image(systemName: "scroll")
-                        Text("License")
+                        Text("Credits_Button_License")
                         Spacer()
                     }
                     .padding(8)
@@ -90,7 +90,7 @@ struct AboutView: View {
             .padding(.horizontal, 16)
             
             
-            Text("Special thanks:")
+            Text("Credits_Header_Special_Thanks")
                 .fixedSize()
                 .font(.footnote)
                 .opacity(0.6)
@@ -117,7 +117,7 @@ struct AboutView: View {
                 }
             }
             .padding(.bottom)
-            Text("\(sfw ? "OpaA15" : "Dopamine") version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")\n\(ProcessInfo.processInfo.operatingSystemVersionString)")
+            Text("Credits_Footer_Dopamine_Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")\nOS:\(ProcessInfo.processInfo.operatingSystemVersionString)")
                 .fixedSize()
                 .font(.footnote)
                 .opacity(0.6)

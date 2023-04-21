@@ -160,7 +160,7 @@ struct LogView: View {
                         Button {
                             UIPasteboard.general.string = logger.log
                         } label: {
-                            Label("Copy", systemImage: "doc.on.doc")
+                            Label("Context_Menu_Copy_To_Clipboard", systemImage: "doc.on.doc")
                         }
                     }
                 }

@@ -60,10 +60,10 @@ struct ContentView: View {
     
     init() {
         menuOptions = [
-            .init(imageName: "gearshape", title: "Settings", view: AnyView(SettingsView())),
-            .init(imageName: "arrow.clockwise", title: "Restart SpringBoard", showUnjailbroken: false, action: respring),
-            .init(imageName: "arrow.clockwise.circle", title: "Reboot Userspace", showUnjailbroken: false, action: userspaceReboot),
-            .init(imageName: "info.circle", title: "Credits", view: AnyView(AboutView())),
+            .init(imageName: "gearshape", title: NSLocalizedString("Menu_Options_Title", comment: ""), view: AnyView(SettingsView())),
+            .init(imageName: "arrow.clockwise", title: NSLocalizedString("Menu_Restart_SpringBoard_Title", comment: ""), showUnjailbroken: false, action: respring),
+            .init(imageName: "arrow.clockwise.circle", title: NSLocalizedString("Menu_Reboot_Userspace_Title", comment: ""), showUnjailbroken: false, action: userspaceReboot),
+            .init(imageName: "info.circle", title: NSLocalizedString("Menu_Credits_Title", comment: ""), view: AnyView(AboutView())),
         ]
         
         UserDefaults.standard.register(defaults: [
@@ -130,7 +130,7 @@ struct ContentView: View {
                             .animation(.spring().speed(1.5), value: optionPresentedID != nil)
                     }
                     
-                    UpdateDownloadingView(shown: $showingUpdatePopup, changelog: updateChangelog ?? "No changelog available"/*"""
+                    UpdateDownloadingView(shown: $showingUpdatePopup, changelog: updateChangelog ?? NSLocalizedString("Changelog_Unavailable_Text", comment: "")/*"""
         Added support for iOS 15.0 - 15.1.
         Improved the app's compatibility with various iOS devices.
         Fixed bugs related to the installation of certain tweaks and packages.
@@ -150,7 +150,7 @@ struct ContentView: View {
                 do {
                     try await checkForUpdates()
                 } catch {
-                    Logger.log(error, type: .error, isUserFriendly: false)
+                    Logger.log(error, type: .error, isStatus: false)
                 }
             }
         }
@@ -167,10 +167,10 @@ struct ContentView: View {
                     .frame(maxWidth: 200)
                     .padding(.top)
                 
-                Text("iOS 15.0 - 15.4.1, A12 - A15")
+                Text("Title_Supported_iOS_Versions")
                     .font(.subheadline)
                     .foregroundColor(.white)
-                Text("by opa334, évelyne, UI by sourceloc")
+                Text("Title_Made_By")
                     .font(.subheadline)
                     .foregroundColor(.white.opacity(0.5))
             }
@@ -243,20 +243,20 @@ struct ContentView: View {
             } label: {
                 Label(title: {
                     if isJailbroken() {
-                        Text("Jailbroken")
+                        Text("Status_Title_Jailbroken")
                     } else {
                         switch jailbreakingProgress {
                         case .idle:
-                            Text("Jailbreak")
+                            Text("Button_Jailbreak_Title")
                         case .jailbreaking:
-                            Text("Jailbreaking")
+                            Text("Status_Title_Jailbreaking")
                         case .selectingPackageManager:
-                            Text("Select Package Manager(s)")
+                            Text("Status_Title_Select_Package_Managers")
                         case .finished:
                             if jailbreakingError == nil {
-                                Text("Jailbroken")
+                                Text("Status_Title_Jailbroken")
                             } else {
-                                Text("Unsuccessful")
+                                Text("Status_Title_Unsuccessful")
                             }
                         }
                     }}, icon: {
@@ -330,7 +330,7 @@ struct ContentView: View {
                 Button {
                     advancedLogsTemporarilyEnabled.toggle()
                 } label: {
-                    Label(title: { Text(advancedLogsTemporarilyEnabled ? "Hide Logs" : "Show Logs") }, icon: {
+                    Label(title: { Text(advancedLogsTemporarilyEnabled ? "Button_Hide_Logs_Title" : "Button_Show_Logs_Title") }, icon: {
                         Image(systemName: "scroll")
                     })
                     .foregroundColor(.white)
@@ -358,7 +358,7 @@ struct ContentView: View {
             //            UserDefaults.standard.set(nil, forKey: "selectedPackageManagers")
             showingUpdatePopup = true
         } label: {
-            Label(title: { Text("Update available") }, icon: {
+            Label(title: { Text("Button_Update_Available") }, icon: {
                 ZStack {
                     if jailbreakingProgress == .jailbreaking {
                         LoadingIndicator(animation: .doubleHelix, color: .white, size: .small)

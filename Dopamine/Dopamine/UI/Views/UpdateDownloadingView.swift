@@ -27,7 +27,7 @@ struct UpdateDownloadingView: View {
         ZStack {
             VStack(spacing: 16) {
                 VStack(spacing: 10) {
-                    Text("Changelog")
+                    Text("Title_Changelog")
                         .font(.title2)
                     
                     Divider()
@@ -63,7 +63,7 @@ struct UpdateDownloadingView: View {
                     }
                     
                 } label: {
-                    Label(title: { Text("Update")  }, icon: { Image(systemName: "arrow.down") })
+                    Label(title: { Text("Button_Update")  }, icon: { Image(systemName: "arrow.down") })
                         .foregroundColor(.white)
                         .padding()
                         .frame(maxWidth: 280)
@@ -78,7 +78,7 @@ struct UpdateDownloadingView: View {
                 Button {
                     shown = false
                 } label: {
-                    Label(title: { Text("Cancel")  }, icon: { Image(systemName: "xmark") })
+                    Label(title: { Text("Button_Cancel")  }, icon: { Image(systemName: "xmark") })
                         .foregroundColor(.white)
                         .padding()
                         .frame(maxWidth: 280)
@@ -92,10 +92,11 @@ struct UpdateDownloadingView: View {
                 VStack(spacing: 150) {
                     VStack(spacing: 10) {
                         Spacer()
-                        Text(updateState != .updating ? "Downloading update..." : "Installing update...")
+                        Text(updateState != .updating ? NSLocalizedString("Update_Status_Downloading", comment: "") : NSLocalizedString("Update_Status_Installing", comment: ""))
                             .font(.title2)
+                            .multilineTextAlignment(.center)
                             .drawingGroup()
-                        Text(updateState == .downloading ? "Please wait while files finish downloading" : "The device will restart soon")
+                        Text(updateState == .downloading ? NSLocalizedString("Update_Status_Subtitle_Please_Wait", comment: "") : NSLocalizedString("Update_Status_Subtitle_Restart_Soon", comment: ""))
                             .opacity(0.5)
                             .multilineTextAlignment(.center)
                             .padding(.bottom, 32)
@@ -106,7 +107,7 @@ struct UpdateDownloadingView: View {
                     VStack {
                         if showLogView {
                             LogView(advancedLogsTemporarilyEnabled: .constant(true), advancedLogsByDefault: .constant(true))
-                            Text("Log view can be scrolled")
+                            Text("Update_Log_Hint_Scrollable")
                                 .foregroundColor(.white.opacity(0.5))
                                 .padding()
                         }

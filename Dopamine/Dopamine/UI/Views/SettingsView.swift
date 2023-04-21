@@ -21,16 +21,16 @@ struct SettingsView: View {
     
     var body: some View {
         VStack {
-            Text("Settings")
+            Text("Settings_Title")
             Divider()
                 .background(.white)
                 .padding(.horizontal, 32)
                 .opacity(0.25)
             
             VStack(spacing: 10) {
-                Toggle("Tweak Injection", isOn: $tweakInjection)
-                Toggle("iDownload", isOn: $enableiDownload)
-                Toggle("Verbose Logs", isOn: $verboseLogs)
+                Toggle("Options_Tweak_Injection", isOn: $tweakInjection)
+                Toggle("Options_iDownload", isOn: $enableiDownload)
+                Toggle("Options_Verbose_Logs", isOn: $verboseLogs)
                 
                 VStack {
                     if isJailbroken() {
@@ -39,7 +39,7 @@ struct SettingsView: View {
                         }) {
                             HStack {
                                 Image(systemName: "key")
-                                Text("Set Root Password")
+                                Text("Button_Set_Root_Password")
                                     .lineLimit(1)
                             }
                             .padding(8)
@@ -57,7 +57,7 @@ struct SettingsView: View {
                         }) {
                             HStack {
                                 Image(systemName: isEnvironmentHidden() ? "eye" : "eye.slash")
-                                Text("\(isEnvironmentHidden() ? "Unhide" : "Hide") Jailbreak")
+                                Text(isEnvironmentHidden() ? "Button_Unhide_Jailbreak" : "Button_Hide_Jailbreak")
                                     .lineLimit(1)
                             }
                             .padding(8)
@@ -72,7 +72,7 @@ struct SettingsView: View {
                         }) {
                             HStack {
                                 Image(systemName: "trash")
-                                Text("Remove Jailbreak")
+                                Text("Button_Remove_Jailbreak")
                                     .lineLimit(1)
                             }
                             .padding(8)
@@ -82,7 +82,7 @@ struct SettingsView: View {
                                     .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
                             )
                         }
-                        Text("\"Hide Jailbreak\" temporarily removes jailbreak-related files until next jailbreak")
+                        Text("Hint_Hide_Jailbreak")
                             .font(.footnote)
                             .opacity(0.6)
                             .padding(.top, 2)
@@ -99,10 +99,10 @@ struct SettingsView: View {
                 .padding(.horizontal, 32)
                 .opacity(0.25)
             VStack(spacing: 6) {
-                Text("Device is \(isBootstrapped() ? "" : "not ")bootstrapped")
+                Text(isBootstrapped() ? "Settings_Footer_Device_Bootstrapped" :  "Settings_Footer_Device_Not_Bootstrapped")
                     .font(.footnote)
                     .opacity(0.6)
-                Text("Success rate: \(successRate())% (\(successfulJailbreaks)/\(totalJailbreaks))")
+                Text("Success_Rate \(successRate())% (\(successfulJailbreaks)/\(totalJailbreaks))")
                     .font(.footnote)
                     .opacity(0.6)
             }
@@ -111,7 +111,7 @@ struct SettingsView: View {
             
             ZStack {}
                 .textFieldAlert(isPresented: $rootPasswordChangeAlertShown) { () -> TextFieldAlert in
-                    TextFieldAlert(title: "Change root password", message: "", text: Binding<String?>($rootPasswordInput))
+                    TextFieldAlert(title: "Popup_Change_Root_Password_Title", message: "", text: Binding<String?>($rootPasswordInput))
                 }
                 .frame(maxHeight: 0)
             
