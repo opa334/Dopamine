@@ -287,6 +287,10 @@ pid_t vfork_hook(void)
 
 bool shouldEnableTweaks(void)
 {
+	if (access("/var/jb/basebin/.safe_mode", F_OK) == 0) {
+		return false;
+	}
+
 	char *tweaksDisabledEnv = getenv("DISABLE_TWEAKS");
 	if (tweaksDisabledEnv) {
 		if (!strcmp(tweaksDisabledEnv, "1")) {
