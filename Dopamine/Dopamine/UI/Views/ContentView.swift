@@ -233,12 +233,8 @@ struct ContentView: View {
     var bottomSection: some View {
         VStack {
             Button {
-<<<<<<< Updated upstream
                 UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                if (UserDefaults.standard.array(forKey: "selectedPackageManagers") as? [String] ?? []).isEmpty {
-=======
                 if (dopamineDefaults().array(forKey: "selectedPackageManagers") as? [String] ?? []).isEmpty {
->>>>>>> Stashed changes
                     jailbreakingProgress = .selectingPackageManager
                 } else {
                     uiJailbreak()

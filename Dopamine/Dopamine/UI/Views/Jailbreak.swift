@@ -61,7 +61,7 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
 
         if wifiFixupNeeded {
             setWifiEnabled(false)
-            Logger.log("Disabling Wi-Fi", isUserFriendly: true)
+            Logger.log("Disabling Wi-Fi", isStatus: true)
             sleep(1)
         }
 
@@ -84,7 +84,7 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
 
         if wifiFixupNeeded {
             setWifiEnabled(true)
-            Logger.log("Enabling Wi-Fi", isUserFriendly: true)
+            Logger.log("Enabling Wi-Fi", isStatus: true)
         }
         
         try Fugu15.startEnvironment()

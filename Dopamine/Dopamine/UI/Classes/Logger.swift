@@ -55,7 +55,7 @@ class Logger: ObservableObject {
      *
      * - Parameter text: The text to display
      * - Parameter isContinuous: Determines whether the action is instant or continuous, and if a spinner next to text should be shown
-     * - Parameter isUserFriendly: Should the log be displayed to users who have "Simple Logs" option turned on
+     * - Parameter isStatus: Should the log be displayed to users who have "Simple Logs" option turned on
      */
     static func log(_ obj: Any, type: LogMessage.LogType = .continuous, isStatus: Bool = false) {
         let text = String(describing: obj)
