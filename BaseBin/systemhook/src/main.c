@@ -310,6 +310,9 @@ bool shouldEnableTweaks(void)
 		else if (stringEndsWith(gExecutablePath, "/usr/bin/apt-config")) {
 			tweaksEnabled = false;
 		}
+		else if (stringEndsWith(gExecutablePath, "/usr/bin/apt-get")) {
+			tweaksEnabled = false;
+		}
 	}
 
 	return tweaksEnabled;
