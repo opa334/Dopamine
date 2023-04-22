@@ -60,17 +60,15 @@
 
 "Menu_Credits_Title" = "الاعتمادات";
 
-"Menu_Options_Title" = "الخيارات";
-
 "Menu_Reboot_Userspace_Title" = "إعادة تشغيل Userspace";
 
 "Menu_Restart_SpringBoard_Title" = "إعادة تشغيل واجهة النظام";
 
-"Options_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "وصول الأدوات";
+"Settings_Tweak_Injection" = "وصول الأدوات";
 
-"Options_Verbose_Logs" = "السجلات المطولة";
+"Settings_Verbose_Logs" = "السجلات المطولة";
 
 "Patchfinding" = "العثور على التصحيح";
 
@@ -82,7 +80,7 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "لم يتم تمهيد الجهاز";
 
-"Settings_Title" = "الإعدادات";
+"Menu_Settings_Title" = "الإعدادات";
 
 "Starting jailbreakd" = "بدء jailbreakd";
 

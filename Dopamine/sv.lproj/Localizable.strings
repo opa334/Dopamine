@@ -60,17 +60,15 @@
 
 "Menu_Credits_Title" = "Om";
 
-"Menu_Options_Title" = "alternativ";
-
 "Menu_Reboot_Userspace_Title" = "Starta om Userspace";
 
 "Menu_Restart_SpringBoard_Title" = "Starta om SpringBoard";
 
-"Options_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Tweak Injection";
+"Settings_Tweak_Injection" = "Tweak Injection";
 
-"Options_Verbose_Logs" = "Omfattande loggar";
+"Settings_Verbose_Logs" = "Omfattande loggar";
 
 "Patchfinding" = "Patchfinding";
 
@@ -82,7 +80,7 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Enheten är inte bootstrapsed";
 
-"Settings_Title" = "Inställningar";
+"Menu_Settings_Title" = "Inställningar";
 
 "Starting jailbreakd" = "Börjar jailbreakad";
 

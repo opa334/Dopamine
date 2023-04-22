@@ -60,17 +60,15 @@
 
 "Menu_Credits_Title" = "Благодарности";
 
-"Menu_Options_Title" = "Настройки";
-
 "Menu_Reboot_Userspace_Title" = "Перезагрузить Userspace";
 
 "Menu_Restart_SpringBoard_Title" = "Перезапустить SpringBoard";
 
-"Options_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Внедрение твиков";
+"Settings_Tweak_Injection" = "Внедрение твиков";
 
-"Options_Verbose_Logs" = "Расширенные журналы";
+"Settings_Verbose_Logs" = "Расширенные журналы";
 
 "Patchfinding" = "Поиск патчей";
 
@@ -82,7 +80,7 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Устройство не Bootstrapped";
 
-"Settings_Title" = "Настройки";
+"Menu_Settings_Title" = "Настройки";
 
 "Starting jailbreakd" = "Запуск jailbreakd";
 

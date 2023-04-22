@@ -60,17 +60,15 @@
 
 "Menu_Credits_Title" = "Credits";
 
-"Menu_Options_Title" = "Opties";
-
 "Menu_Reboot_Userspace_Title" = "Userspace herstarten";
 
 "Menu_Restart_SpringBoard_Title" = "SpringBoard herstarten";
 
-"Options_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Tweak Injection";
+"Settings_Tweak_Injection" = "Tweak Injection";
 
-"Options_Verbose_Logs" = "Uitgebreide logs";
+"Settings_Verbose_Logs" = "Uitgebreide logs";
 
 "Patchfinding" = "Patchfinding";
 
@@ -82,7 +80,7 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Apparaat is niet gebootstrapped";
 
-"Settings_Title" = "Instellingen";
+"Menu_Settings_Title" = "Instellingen";
 
 "Starting jailbreakd" = "jailbreakd aan het starten";
 

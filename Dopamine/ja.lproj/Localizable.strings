@@ -60,17 +60,15 @@
 
 "Menu_Credits_Title" = "クレジット";
 
-"Menu_Options_Title" = "オプション";
-
 "Menu_Reboot_Userspace_Title" = "Userspaceを再起動";
 
 "Menu_Restart_SpringBoard_Title" = "SpringBoardを再起動";
 
-"Options_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Tweak Injection";
+"Settings_Tweak_Injection" = "Tweak Injection";
 
-"Options_Verbose_Logs" = "詳細なログ";
+"Settings_Verbose_Logs" = "詳細なログ";
 
 "Patchfinding" = "Patchfinderを実行中";
 
@@ -82,7 +80,7 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "bootstrapはインストールされていません";
 
-"Settings_Title" = "設定";
+"Menu_Settings_Title" = "設定";
 
 "Starting jailbreakd" = "jailbreakdを開始中";
 

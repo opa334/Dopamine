@@ -64,17 +64,17 @@
 
 "Menu_Credits_Title" = "Credits";
 
-"Menu_Options_Title" = "Options";
+"Menu_Settings_Title" = "Settings";
 
 "Menu_Reboot_Userspace_Title" = "Reboot Userspace";
 
 "Menu_Restart_SpringBoard_Title" = "Restart SpringBoard";
 
-"Options_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Tweak Injection";
+"Settings_Tweak_Injection" = "Tweak Injection";
 
-"Options_Verbose_Logs" = "Verbose Logs";
+"Settings_Verbose_Logs" = "Verbose Logs";
 
 "Patchfinding" = "Patchfinding";
 
@@ -91,8 +91,6 @@
 "Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
 
 "Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
-
-"Settings_Title" = "Settings";
 
 "Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
 

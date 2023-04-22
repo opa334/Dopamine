@@ -60,17 +60,15 @@
 
 "Menu_Credits_Title" = "Tác giả";
 
-"Menu_Options_Title" = "Tùy chọn";
-
 "Menu_Reboot_Userspace_Title" = "Khởi động lại Userspace";
 
 "Menu_Restart_SpringBoard_Title" = "Khởi động lại SpringBoard";
 
-"Options_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Bật Tweak Injection";
+"Settings_Tweak_Injection" = "Bật Tweak Injection";
 
-"Options_Verbose_Logs" = "Log Verbose";
+"Settings_Verbose_Logs" = "Log Verbose";
 
 "Patchfinding" = "Đang tìm bản vá";
 
@@ -82,7 +80,7 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Thiết bị chưa được bootstrap";
 
-"Settings_Title" = "Cài đặt";
+"Menu_Settings_Title" = "Cài đặt";
 
 "Starting jailbreakd" = "Đang chạy jailbreakd";
 

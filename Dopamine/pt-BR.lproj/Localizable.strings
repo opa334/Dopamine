@@ -60,17 +60,15 @@
 
 "Menu_Credits_Title" = "Sobre";
 
-"Menu_Options_Title" = "Opções";
-
 "Menu_Reboot_Userspace_Title" = "Reiniciar Userspace";
 
 "Menu_Restart_SpringBoard_Title" = "Reiniciar SpringBoard";
 
-"Options_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Injetar Ajustes";
+"Settings_Tweak_Injection" = "Injetar Ajustes";
 
-"Options_Verbose_Logs" = "Verbose Logs";
+"Settings_Verbose_Logs" = "Verbose Logs";
 
 "Patchfinding" = "Patchfinding";
 
@@ -82,7 +80,7 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Sem bootstrap no dispositivo";
 
-"Settings_Title" = "Configurações";
+"Menu_Settings_Title" = "Configurações";
 
 "Starting jailbreakd" = "Iniciando jailbreakd";
 
