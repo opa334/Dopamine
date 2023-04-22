@@ -64,8 +64,6 @@
 
 "Menu_Credits_Title" = "Ειδική μνεία";
 
-"Menu_Settings_Title" = "Επιλογές";
-
 "Menu_Reboot_Userspace_Title" = "Επανεκκίνηση Userspace";
 
 "Menu_Restart_SpringBoard_Title" = "Επανεκκίνηση SpringBoard";
@@ -92,7 +90,7 @@
 
 "Settings_Remove_Jailbreak_Alert_Title" = "Αφαίρεση Jailbreak";
 
-"Settings_Title" = "Ρυθμίσεις";
+"Menu_Settings_Title" = "Ρυθμίσεις";
 
 "Settings_Tweak_Injection_Toggled_Alert_Title" = "Απαραίτητη επανεκκίνηση Userspace";
 

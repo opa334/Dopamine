@@ -60,8 +60,6 @@
 
 "Menu_Credits_Title" = "Алғыс";
 
-"Menu_Settings_Title" = "Опциялар";
-
 "Menu_Reboot_Userspace_Title" = "Userspace қайта іске қосу";
 
 "Menu_Restart_SpringBoard_Title" = "SpringBoard қайта іске қосу";
@@ -82,7 +80,7 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Bootstrap жүктелмеген";
 
-"Settings_Title" = "Реттеулер";
+"Menu_Settings_Title" = "Реттеулер";
 
 "Starting jailbreakd" = "jailbreakd іске қосу";
 
