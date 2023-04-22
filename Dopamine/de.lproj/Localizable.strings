@@ -62,7 +62,7 @@
 
 "Menu_Options_Title" = "Optionen";
 
-"Menu_Reboot_Userspace_Title" = "Userspace neustarten";
+"Menu_Reboot_Userspace_Title" = "Userspace-Neustart";
 
 "Menu_Restart_SpringBoard_Title" = "SpringBoard neustarten";
 
@@ -72,7 +72,7 @@
 
 "Options_Verbose_Logs" = "Detaillierte Logs";
 
-"Patchfinding" = "Patchfinding";
+"Patchfinding" = "Finde Patches";
 
 "Rebuilding TrustCache" = "Baue TrustCache neu auf";
 
