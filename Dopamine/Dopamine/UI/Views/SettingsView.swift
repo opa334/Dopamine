@@ -6,15 +6,16 @@
 //
 
 import SwiftUI
+import Fugu15KernelExploit
 
 struct SettingsView: View {
     
-    @AppStorage("totalJailbreaks") var totalJailbreaks: Int = 0
-    @AppStorage("successfulJailbreaks") var successfulJailbreaks: Int = 0
+    @AppStorage("totalJailbreaks", store: dopamineDefaults()) var totalJailbreaks: Int = 0
+    @AppStorage("successfulJailbreaks", store: dopamineDefaults()) var successfulJailbreaks: Int = 0
     
-    @AppStorage("verboseLogsEnabled") var verboseLogs: Bool = false
-    @AppStorage("tweakInjectionEnabled") var tweakInjection: Bool = true
-    @AppStorage("iDownloadEnabled") var enableiDownload: Bool = false
+    @AppStorage("verboseLogsEnabled", store: dopamineDefaults()) var verboseLogs: Bool = false
+    @AppStorage("tweakInjectionEnabled", store: dopamineDefaults()) var tweakInjection: Bool = true
+    @AppStorage("iDownloadEnabled", store: dopamineDefaults()) var enableiDownload: Bool = false
     
     @State var rootPasswordChangeAlertShown = false
     @State var rootPasswordInput = "alpine"
@@ -30,7 +31,7 @@ struct SettingsView: View {
     
     var body: some View {
         VStack {
-            Text("Settings_Title")
+            Text("Menu_Settings_Title")
             Divider()
                 .background(.white)
                 .padding(.horizontal, 32)
@@ -38,13 +39,16 @@ struct SettingsView: View {
             
             VStack(spacing: 20) {
                 VStack(spacing: 10) {
-                    Toggle("Options_Tweak_Injection", isOn: $tweakInjection)
+                    Toggle("Settings_Tweak_Injection", isOn: $tweakInjection)
                         .onChange(of: tweakInjection) { newValue in
-                            tweakInjectionToggledAlertShown = isJailbroken()
+                            if isJailbroken() {
+                                jailbrokenUpdateTweakInjectionPreference()
+                                tweakInjectionToggledAlertShown = true
+                            }
                         }
                     if !isJailbroken() {
-                        Toggle("Options_iDownload", isOn: $enableiDownload)
-                        Toggle("Options_Verbose_Logs", isOn: $verboseLogs)
+                        Toggle("Settings_iDownload", isOn: $enableiDownload)
+                        Toggle("Settings_Verbose_Logs", isOn: $verboseLogs)
                     }
                 }
                 if isBootstrapped() {
@@ -162,7 +166,7 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        JailbreakView()
     }
 }
 

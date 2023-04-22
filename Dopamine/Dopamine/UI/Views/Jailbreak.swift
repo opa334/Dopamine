@@ -114,6 +114,10 @@ func removeJailbreak() {
     }
 }
 
+func jailbrokenUpdateTweakInjectionPreference() {
+    _ = execCmd(args: [CommandLine.arguments[0], "update_tweak_injection"])
+}
+
 func changeRootPassword(newPassword: String) {
     
 }
@@ -139,5 +143,5 @@ func update(tipaURL: URL) {
 
 // debugging
 func isSandboxed() -> Bool {
-    !FileManager.default.isWritableFile(atPath: "/var")
+    !FileManager.default.isWritableFile(atPath: "/var/mobile/")
 }

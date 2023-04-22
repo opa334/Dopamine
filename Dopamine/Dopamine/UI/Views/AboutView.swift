@@ -78,7 +78,7 @@ struct AboutView: View {
                     Link(destination: URL(string: contributor.1)!) {
                         HStack {
                             Text(contributor.0)
-                            Image(systemName: "chevron.right")
+                            Image(systemName: Locale.characterDirection(forLanguage: Locale.current.languageCode ?? "") == .rightToLeft ? "chevron.left" : "chevron.right")
                         }
                         .padding(.vertical, 4)
                     }
@@ -140,6 +140,6 @@ struct AboutView: View {
 
 struct AboutView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        JailbreakView()
     }
 }

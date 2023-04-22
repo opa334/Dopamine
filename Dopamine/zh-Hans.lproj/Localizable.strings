@@ -29,18 +29,17 @@
 "Launching oobPCI" = "正在启动oobPCI";
 "Loading Basebin Trustcache" = "正在加载Basebin Trustcache";
 "Menu_Credits_Title" = "关于";
-"Menu_Options_Title" = "选项";
 "Menu_Reboot_Userspace_Title" = "重启用户空间";
 "Menu_Restart_SpringBoard_Title" = "注销";
-"Options_Tweak_Injection" = "插件注入";
-"Options_Verbose_Logs" = "详细日志";
-"Options_iDownload" = "iDownload";
+"Settings_Tweak_Injection" = "插件注入";
+"Settings_Verbose_Logs" = "详细日志";
+"Settings_iDownload" = "iDownload";
 "Patchfinding" = "正在Patchfinding";
 "Rebuilding TrustCache" = "重建TrustCache";
 "Refreshing Icon Cache" = "刷新图标缓存";
 "Settings_Footer_Device_Bootstrapped" = "设备已引导启动";
 "Settings_Footer_Device_Not_Bootstrapped" = "设备未引导启动";
-"Settings_Title" = "设置";
+"Menu_Settings_Title" = "设置";
 "Starting Launch Daemons" = "正在启动守护程序";
 "Starting jailbreakd" = "正在启动jailbreakd";
 "Status_Title_Jailbreaking" = "正在越狱";
@@ -56,3 +55,15 @@
 "Update_Status_Installing" = "安装更新中...";
 "Update_Status_Subtitle_Please_Wait" = "请等待文件下载完成";
 "Update_Status_Subtitle_Restart_Soon" = "设备将很快重新启动";
+
+"Alert_Button_Uninstall" = "Uninstall";
+
+"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+
+"Popup_Change_Root_Password_Title" = "Change Root Password";
+
+"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+
+"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";

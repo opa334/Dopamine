@@ -60,17 +60,15 @@
 
 "Menu_Credits_Title" = "Credits";
 
-"Menu_Options_Title" = "Opties";
-
 "Menu_Reboot_Userspace_Title" = "Userspace herstarten";
 
 "Menu_Restart_SpringBoard_Title" = "SpringBoard herstarten";
 
-"Options_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Tweak Injection";
+"Settings_Tweak_Injection" = "Tweak Injection";
 
-"Options_Verbose_Logs" = "Uitgebreide logs";
+"Settings_Verbose_Logs" = "Uitgebreide logs";
 
 "Patchfinding" = "Patchfinding";
 
@@ -82,7 +80,7 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Apparaat is niet gebootstrapped";
 
-"Settings_Title" = "Instellingen";
+"Menu_Settings_Title" = "Instellingen";
 
 "Starting jailbreakd" = "jailbreakd aan het starten";
 
@@ -113,3 +111,15 @@
 "Update_Status_Subtitle_Please_Wait" = "Een ogenblik geduld tot de bestanden zijn gedownload";
 
 "Update_Status_Subtitle_Restart_Soon" = "Het apparaat zal binnenkort worden herstart";
+
+"Alert_Button_Uninstall" = "Uninstall";
+
+"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+
+"Popup_Change_Root_Password_Title" = "Change Root Password";
+
+"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+
+"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";

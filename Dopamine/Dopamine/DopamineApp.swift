@@ -10,7 +10,7 @@ import SwiftUI
 struct Fugu15App: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            JailbreakView()
         }
     }
 }
