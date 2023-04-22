@@ -90,8 +90,7 @@ struct UpdateDownloadingView: View {
             }
             .opacity(updateState == .changelog ? 1 : 0)
             .animation(.spring(), value: updateState)
-            .padding(.top, 64)
-            .padding(.bottom)
+            .padding(.vertical, 64)
             
             ZStack {
                 VStack(spacing: 150) {

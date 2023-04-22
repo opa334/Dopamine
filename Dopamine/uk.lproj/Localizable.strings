@@ -29,18 +29,17 @@
 "Launching oobPCI" = "Запуск oobPCI";
 "Loading Basebin Trustcache" = "Завантаження Basebin Trustcache";
 "Menu_Credits_Title" = "Титри";
-"Menu_Options_Title" = "Параметри";
 "Menu_Reboot_Userspace_Title" = "Перезавантажити простір користувача";
 "Menu_Restart_SpringBoard_Title" = "Перезапустити SpringBoard";
-"Options_Tweak_Injection" = "ін'єкція твiков";
-"Options_Verbose_Logs" = "Докладні логи";
-"Options_iDownload" = "iDownload";
+"Settings_Tweak_Injection" = "ін'єкція твiков";
+"Settings_Verbose_Logs" = "Докладні логи";
+"Settings_iDownload" = "iDownload";
 "Patchfinding" = "Пошук патчів";
 "Rebuilding TrustCache" = "Перебудова кешу довіри";
 "Refreshing Icon Cache" = "Оновлення кешу іконок";
 "Settings_Footer_Device_Bootstrapped" = "Пристрій перезавантажено";
 "Settings_Footer_Device_Not_Bootstrapped" = "Пристрій не перебуває у стані перезавантаження";
-"Settings_Title" = "Налаштування";
+"Menu_Settings_Title" = "Налаштування";
 "Starting Launch Daemons" = "Запуск демонів запуску";
 "Starting jailbreakd" = "Запуск джейлбрейку";
 "Status_Title_Jailbreaking" = "Джейлбрейк";
@@ -56,3 +55,15 @@
 "Update_Status_Installing" = "Встановлення оновлення...";
 "Update_Status_Subtitle_Please_Wait" = "Будь ласка, зачекайте, поки файли завершать завантаження";
 "Update_Status_Subtitle_Restart_Soon" = "Пристрій буде перезавантажено найближчим часом";
+
+"Alert_Button_Uninstall" = "Uninstall";
+
+"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+
+"Popup_Change_Root_Password_Title" = "Change Root Password";
+
+"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+
+"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";

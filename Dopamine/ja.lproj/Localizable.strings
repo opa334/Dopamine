@@ -60,17 +60,15 @@
 
 "Menu_Credits_Title" = "クレジット";
 
-"Menu_Options_Title" = "オプション";
-
 "Menu_Reboot_Userspace_Title" = "Userspaceを再起動";
 
 "Menu_Restart_SpringBoard_Title" = "SpringBoardを再起動";
 
-"Options_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Tweak Injection";
+"Settings_Tweak_Injection" = "Tweak Injection";
 
-"Options_Verbose_Logs" = "詳細なログ";
+"Settings_Verbose_Logs" = "詳細なログ";
 
 "Patchfinding" = "Patchfinderを実行中";
 
@@ -82,7 +80,7 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "bootstrapはインストールされていません";
 
-"Settings_Title" = "設定";
+"Menu_Settings_Title" = "設定";
 
 "Starting jailbreakd" = "jailbreakdを開始中";
 
@@ -114,3 +112,14 @@
 
 "Update_Status_Subtitle_Restart_Soon" = "デバイスはすぐに再起動します";
 
+"Alert_Button_Uninstall" = "Uninstall";
+
+"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+
+"Popup_Change_Root_Password_Title" = "Change Root Password";
+
+"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+
+"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";

@@ -60,17 +60,15 @@
 
 "Menu_Credits_Title" = "Tác giả";
 
-"Menu_Options_Title" = "Tùy chọn";
-
 "Menu_Reboot_Userspace_Title" = "Khởi động lại Userspace";
 
 "Menu_Restart_SpringBoard_Title" = "Khởi động lại SpringBoard";
 
-"Options_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Bật Tweak Injection";
+"Settings_Tweak_Injection" = "Bật Tweak Injection";
 
-"Options_Verbose_Logs" = "Log Verbose";
+"Settings_Verbose_Logs" = "Log Verbose";
 
 "Patchfinding" = "Đang tìm bản vá";
 
@@ -82,7 +80,7 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Thiết bị chưa được bootstrap";
 
-"Settings_Title" = "Cài đặt";
+"Menu_Settings_Title" = "Cài đặt";
 
 "Starting jailbreakd" = "Đang chạy jailbreakd";
 
@@ -114,3 +112,14 @@
 
 "Update_Status_Subtitle_Restart_Soon" = "Thiết bị sẽ khởi động lại";
 
+"Alert_Button_Uninstall" = "Uninstall";
+
+"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+
+"Popup_Change_Root_Password_Title" = "Change Root Password";
+
+"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+
+"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";

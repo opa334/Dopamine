@@ -34,7 +34,7 @@
 		CEBBF6DB29D9DCD900AD7299 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBBF6DA29D9DCD900AD7299 /* SettingsView.swift */; };
 		CEBBF6DD29DB04FA00AD7299 /* Jailbreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBBF6DC29DB04FA00AD7299 /* Jailbreak.swift */; };
 		CEBBF6E129DB422500AD7299 /* TextField++.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBBF6E029DB422500AD7299 /* TextField++.swift */; };
-		CEC4159C29D30D3100D79EE9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC4159929D30D3100D79EE9 /* ContentView.swift */; };
+		CEC4159C29D30D3100D79EE9 /* JailbreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC4159929D30D3100D79EE9 /* JailbreakView.swift */; };
 		CEC4159F29D3590800D79EE9 /* MaterialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC4159E29D3590800D79EE9 /* MaterialView.swift */; };
 /* End PBXBuildFile section */
 
@@ -62,6 +62,7 @@
 		15372EA528DDFF9000514A73 /* sileo.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = sileo.deb; sourceTree = "<group>"; };
 		21AFE72F29F32AF8008B4B4C /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
 		21AFE73029F33538008B4B4C /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
+		21C376B329F43EA0001ECD18 /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8C2EDE1829F0AAF70060D192 /* oobPCI */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = oobPCI; path = ../../Exploits/oobPCI/oobPCI; sourceTree = "<group>"; };
 		8C2EDE1A29F0ACA60060D192 /* basebin.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = basebin.tar; sourceTree = "<group>"; };
 		8C2EDE1C29F0ACC80060D192 /* basebin.tc */ = {isa = PBXFileReference; lastKnownFileType = file; name = basebin.tc; path = ../../../BaseBin/basebin.tc; sourceTree = "<group>"; };
@@ -82,7 +83,6 @@
 		938DADE829F2CB1500C37952 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/Localizable.strings; sourceTree = "<group>"; };
 		938DADE929F2CE2200C37952 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		938DADEA29F2CE3800C37952 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
-		938DADEB29F2DAEA00C37952 /* sl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sl; path = sl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		938DADEC29F2DBE100C37952 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		938DADEE29F2E0FA00C37952 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		938DADEF29F2FCE400C37952 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -94,7 +94,7 @@
 		CEBBF6DA29D9DCD900AD7299 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		CEBBF6DC29DB04FA00AD7299 /* Jailbreak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Jailbreak.swift; sourceTree = "<group>"; };
 		CEBBF6E029DB422500AD7299 /* TextField++.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TextField++.swift"; sourceTree = "<group>"; };
-		CEC4159929D30D3100D79EE9 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		CEC4159929D30D3100D79EE9 /* JailbreakView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JailbreakView.swift; sourceTree = "<group>"; };
 		CEC4159E29D3590800D79EE9 /* MaterialView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -225,7 +225,7 @@
 			isa = PBXGroup;
 			children = (
 				CE6CA69229D6D7C100A6E513 /* AboutView.swift */,
-				CEC4159929D30D3100D79EE9 /* ContentView.swift */,
+				CEC4159929D30D3100D79EE9 /* JailbreakView.swift */,
 				CEC4159E29D3590800D79EE9 /* MaterialView.swift */,
 				CE284DE629D478620096D99D /* LogView.swift */,
 				CEBBF6DA29D9DCD900AD7299 /* SettingsView.swift */,
@@ -294,7 +294,6 @@
 				ur,
 				fr,
 				vi,
-				sl,
 				"zh-Hans",
 				"pt-BR",
 				nl,
@@ -303,6 +302,7 @@
 				zh_CN,
 				zh_HK,
 				zh_TW,
+				kk,
 			);
 			mainGroup = 1502A3FF2891B03F0011CB6E;
 			packageReferences = (
@@ -343,7 +343,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9380C00129EAE9C600C0121A /* PackageManagerSelectionView.swift in Sources */,
-				CEC4159C29D30D3100D79EE9 /* ContentView.swift in Sources */,
+				CEC4159C29D30D3100D79EE9 /* JailbreakView.swift in Sources */,
 				CEBBF6DD29DB04FA00AD7299 /* Jailbreak.swift in Sources */,
 				151CAFB32894041D00B2A6BA /* main.swift in Sources */,
 				CEC4159F29D3590800D79EE9 /* MaterialView.swift in Sources */,
@@ -377,7 +377,6 @@
 				938DADE829F2CB1500C37952 /* ur */,
 				938DADE929F2CE2200C37952 /* fr */,
 				938DADEA29F2CE3800C37952 /* vi */,
-				938DADEB29F2DAEA00C37952 /* sl */,
 				938DADEC29F2DBE100C37952 /* zh-Hans */,
 				938DADEE29F2E0FA00C37952 /* pt-BR */,
 				938DADEF29F2FCE400C37952 /* nl */,
@@ -386,6 +385,7 @@
 				0C5D3B0829F2D5C7002924C0 /* zh_CN */,
 				0C5D3B0929F2DA27002924C0 /* zh_HK */,
 				0C5D3B0A29F2DA3C002924C0 /* zh_TW */,
+				21C376B329F43EA0001ECD18 /* kk */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
