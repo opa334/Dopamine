@@ -388,11 +388,13 @@ struct JailbreakView: View {
                     dpDefaults.set(dpDefaults.integer(forKey: "successfulJailbreaks") + 1, forKey: "successfulJailbreaks")
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                     let tweakInjectionEnabled = dpDefaults.bool(forKey: "tweakInjectionEnabled")
-                    DispatchQueue.main.async {
+                    
+                    Logger.log(NSLocalizedString("Restarting Userspace", comment: ""), type: .continuous, isStatus: true)
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         if tweakInjectionEnabled {
                             userspaceReboot()
-                        }
-                        else {
+                        } else {
                             respring()
                         }
                     }

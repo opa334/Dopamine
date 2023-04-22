@@ -40,7 +40,7 @@ func reboot() {
 }
 
 func isJailbroken() -> Bool {
-    //if isSandboxed() { return true } // ui debugging
+    if isSandboxed() { return true } // ui debugging
     
     var jbdPid: pid_t = 0
     jbdGetStatus(nil, nil, &jbdPid)
@@ -48,7 +48,7 @@ func isJailbroken() -> Bool {
 }
 
 func isBootstrapped() -> Bool {
-    //if isSandboxed() { return true } // ui debugging
+    if isSandboxed() { return true } // ui debugging
     
     return Bootstrapper.isBootstrapped()
 }
@@ -143,5 +143,5 @@ func update(tipaURL: URL) {
 
 // debugging
 func isSandboxed() -> Bool {
-    !FileManager.default.isWritableFile(atPath: "/var")
+    !FileManager.default.isWritableFile(atPath: "/var/mobile/")
 }
