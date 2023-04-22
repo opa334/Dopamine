@@ -16,9 +16,9 @@
 
 "Button_Unhide_Jailbreak" = "Odkryj Jailbreak";
 
-"Button_Update" = "Aktualizacja";
+"Button_Update" = "Aktualizuj";
 
-"Button_Update_Available" = "Aktualizacja dostępna";
+"Button_Update_Available" = "Dostępna aktualizacja";
 
 "Bypassing PAC" = "Omijanie PAC";
 
@@ -36,9 +36,9 @@
 
 "Credits_Header_Special_Thanks" = "Podziękowania:";
 
-"Credits_Made_By" = "Zrobione przez: opa334, évelyne";
+"Credits_Made_By" = "Stworzone przez: opa334, évelyne";
 
-"Credits_Made_By_Subheadline" = "Interfejs zzrobiony przez sourcelocation\nLogo i ikona przez xerus";
+"Credits_Made_By_Subheadline" = "Interfejs stworzony przez sourcelocation\na logo i ikona przez xerus";
 
 "Finalizing Bootstrap" = "Finalizowanie Bootstrapu";
 
@@ -50,7 +50,7 @@
 
 "Initializing System Hook" = "Inicjowanie System Hook";
 
-"Jailbreak_Done" = "Zrobione!";
+"Jailbreak_Done" = "Gotowe!";
 
 "Launching kexploitd" = "Uruchamianie kexploitd";
 
@@ -58,7 +58,7 @@
 
 "Loading Basebin Trustcache" = "Ładowanie Basebin Trustcache";
 
-"Menu_Credits_Title" = "Na temat";
+"Menu_Credits_Title" = "Podziękowania";
 
 "Menu_Options_Title" = "Opcje";
 
@@ -72,7 +72,7 @@
 
 "Options_Verbose_Logs" = "Logi Verbose";
 
-"Patchfinding" = "Odnajdywanie Poprawek";
+"Patchfinding" = "Patchfindinding";
 
 "Rebuilding TrustCache" = "Odbudowywanie TrustCache";
 
@@ -96,7 +96,7 @@
 
 "Status_Title_Unsuccessful" = "Niepowodzenie";
 
-"Success_Rate %@%% (%lld/%lld)" = "Szansa na sukces: %@%% (%lld/%lld)";
+"Success_Rate %@%% (%lld/%lld)" = "Szansa powodzenia: %@%% (%lld/%lld)";
 
 "Title_Changelog" = "Dziennik Zmian";
 
@@ -110,7 +110,7 @@
 
 "Update_Status_Installing" = "Instalowanie aktualizacji...";
 
-"Update_Status_Subtitle_Please_Wait" = "Proszę zaczekać dopóki pliki są pobierane";
+"Update_Status_Subtitle_Please_Wait" = "Proszę czekać, aż pliki skończą się pobierać";
 
-"Update_Status_Subtitle_Restart_Soon" = "Urządznie niedługo uruchomi się ponownie";
+"Update_Status_Subtitle_Restart_Soon" = "Urządzenie wkrótce uruchomi się ponownie";
 
