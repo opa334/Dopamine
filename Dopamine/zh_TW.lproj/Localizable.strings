@@ -1,0 +1,76 @@
+"Alert_Button_Uninstall" = "清除越獄";
+"Alert_Tweak_Injection_Toggled_Body" = "為使變更生效需用戶空間重啟，即可執行否？";
+"Bootstrapping" = "引導中";
+"Button_Cancel" = "取消";
+"Button_Hide_Jailbreak" = "隱藏越獄";
+"Button_Hide_Logs_Title" = "隱藏日誌";
+"Button_Jailbreak_Title" = "越獄";
+"Button_Remove_Jailbreak" = "清除越獄";
+"Button_Set_Root_Password" = "設定 root 用戶口令";
+"Button_Show_Logs_Title" = "展現日誌";
+"Button_Unhide_Jailbreak" = "解除隱藏越獄";
+"Button_Update" = "更新";
+"Button_Update_Available" = "可更新";
+"Bypassing PAC" = "繞過 PAC";
+"Bypassing PPL" = "繞過 PPL";
+"Changelog_Unavailable_Text" = "變更日誌不可用";
+"Context_Menu_Copy_To_Clipboard" = "拷貝";
+"Credits_Button_License" = "許可證";
+"Credits_Button_Source_Code" = "原始碼";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine 版本 %@\n%@";
+"Credits_Header_Special_Thanks" = "特別緻謝：";
+"Credits_Made_By" = "作者：opa334, évelyne";
+"Credits_Made_By_Subheadline" = "UI：sourcelocation\nLogo 及 icon 作者：xerus";
+"Finalizing Bootstrap" = "完成引導";
+"Gaining r/w" = "取得 r/w 權限";
+"Hint_Hide_Jailbreak" = "「隱藏越獄」將在下次越獄前臨時移除越獄相關的文件";
+"Initializing Environment" = "初始化環境";
+"Initializing System Hook" = "初始化系統 hook";
+"Jailbreak_Done" = "完成！";
+"Launching kexploitd" = "啟動 kexploitd";
+"Launching oobPCI" = "啟動 oobPCI";
+"Loading Basebin Trustcache" = "加載 Basebin Trustcache";
+"Menu_Credits_Title" = "關於";
+"Menu_Options_Title" = "選項";
+"Menu_Reboot_Userspace_Title" = "用戶空間重啟";
+"Menu_Restart_SpringBoard_Title" = "註銷";
+"Options_iDownload" = "iDownload";
+"Options_Tweak_Injection" = "插件注入";
+"Options_Verbose_Logs" = "詳細日誌";
+"Patchfinding" = "Patchfinding";
+"Rebuilding TrustCache" = "重建 TrustCache";
+"Refreshing Icon Cache" = "更新圖示緩存";
+"Settings_Footer_Device_Bootstrapped" = "裝置已安裝越獄環境";
+"Settings_Footer_Device_Not_Bootstrapped" = "裝置未安裝越獄環境";
+"Settings_Remove_Jailbreak_Alert_Body" = "清除越獄將移除所有和越獄相關的檔案，但將保留普通 App、檔案、數據。請注意，此操作無法撤銷。確認清除越獄嗎？";
+"Settings_Remove_Jailbreak_Alert_Title" = "清除越獄";
+"Settings_Title" = "設置";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "需要用户空间重启";
+"Starting jailbreakd" = "啟動 jailbreakd";
+"Starting Launch Daemons" = "啟動 Launch Daemons";
+"Status_Title_Jailbreaking" = "正在越獄";
+"Status_Title_Jailbroken" = "已越獄";
+"Status_Title_Select_Package_Managers" = "選定包管理器（越獄商店）";
+"Status_Title_Unsuccessful" = "失敗";
+"Success_Rate %@%% (%lld/%lld)" = "成功率：%@%% (%lld/%lld)";
+"Title_Changelog" = "變更日誌";
+"Title_Made_By" = "作者：opa334, évelyne；UI：sourceloc";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+"Update_Log_Hint_Scrollable" = "滑動以查看日誌";
+"Update_Status_Downloading" = "正在下載更新…";
+"Update_Status_Installing" = "正在安裝更新…";
+"Update_Status_Subtitle_Please_Wait" = "請等待完成下載";
+"Update_Status_Subtitle_Restart_Soon" = "裝置即將重新啟動";
+"Popup_Change_Root_Password_Title" = "修改 root 用戶口令";
+
+"Alert_Button_Uninstall" = "Uninstall";
+
+"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+
+"Popup_Change_Root_Password_Title" = "Change Root Password";
+
+"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+
+"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
