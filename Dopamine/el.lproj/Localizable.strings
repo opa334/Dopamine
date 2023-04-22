@@ -72,13 +72,13 @@
 
 "Options_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Tweak Injection";
+"Options_Tweak_Injection" = "Ενσωμάτωση Tweak";
 
 "Options_Verbose_Logs" = "Λεπτομερής καταγραφή";
 
 "Patchfinding" = "Patchfinding";
 
-"Popup_Change_Root_Password_Title" = "Αλλαγή κωδικού Root";
+"Popup_Change_Root_Password_Title" = "Ορισμός κωδικού Root";
 
 "Rebuilding TrustCache" = "Ανανέωση TrustCache";
 
@@ -88,7 +88,7 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Η προσπάθεια για bootstrap της συσκευής απέτυχε";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "Η αφαίρεση του jailbreak θα διαγράψει όλα τα αρχεία που σχετίζονται με το jailbreak, αλλά όλες οι συνήθεις  εφαρμογές, αρχεία και δεδομένα θα διατηρηθούν. Είστε σίγουροι πως θέλετε να συνεχίσετε; Δεν μπορείτε να αντιστρέψετε αυτή την ενέργεια.";
+"Settings_Remove_Jailbreak_Alert_Body" = "Η αφαίρεση του jailbreak θα διαγράψει όλα τα αρχεία που σχετίζονται με το jailbreak, αλλά όλες οι συνήθεις εφαρμογές, αρχεία και δεδομένα θα διατηρηθούν. Είστε σίγουροι πως θέλετε να συνεχίσετε; Δεν μπορείτε να αντιστρέψετε αυτή την ενέργεια.";
 
 "Settings_Remove_Jailbreak_Alert_Title" = "Αφαίρεση Jailbreak";
 
