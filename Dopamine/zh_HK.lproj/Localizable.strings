@@ -31,12 +31,12 @@
 "Launching oobPCI" = "啟動 oobPCI";
 "Loading Basebin Trustcache" = "加載 Basebin Trustcache";
 "Menu_Credits_Title" = "關於";
-"Menu_Options_Title" = "選項";
+"Menu_Settings_Title" = "選項";
 "Menu_Reboot_Userspace_Title" = "用戶空間重啟";
 "Menu_Restart_SpringBoard_Title" = "註銷";
-"Options_iDownload" = "iDownload";
-"Options_Tweak_Injection" = "插件注入";
-"Options_Verbose_Logs" = "詳細日誌";
+"Settings_iDownload" = "iDownload";
+"Settings_Tweak_Injection" = "插件注入";
+"Settings_Verbose_Logs" = "詳細日誌";
 "Patchfinding" = "Patchfinding";
 "Rebuilding TrustCache" = "重建 TrustCache";
 "Refreshing Icon Cache" = "更新圖標緩存";
@@ -62,15 +62,3 @@
 "Update_Status_Subtitle_Please_Wait" = "請等待完成下載";
 "Update_Status_Subtitle_Restart_Soon" = "裝置即將重新啟動";
 "Popup_Change_Root_Password_Title" = "修改 root 用戶口令";
-
-"Alert_Button_Uninstall" = "Uninstall";
-
-"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
-
-"Popup_Change_Root_Password_Title" = "Change Root Password";
-
-"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
-
-"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
-
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
