@@ -1,0 +1,127 @@
+"Alert_Button_Uninstall" = "Απεγκατάσταση";
+
+"Alert_Tweak_Injection_Toggled_Body" = "Για να εφαρμοστούν οι αλλαγές, πρέπει να γίνει εκανεκκίνηση Userspace. Θέλεις να γίνει επανεκκίνηση τώρα;";
+
+"Bootstrapping" = "Bootstrapping";
+
+"Button_Cancel" = "Ακύρωση";
+
+"Button_Hide_Jailbreak" = "Απόκρυψη Jailbreak";
+
+"Button_Hide_Logs_Title" = "Απόκρυψη αρχείου καταγραφής";
+
+"Button_Jailbreak_Title" = "Jailbreak";
+
+"Button_Remove_Jailbreak" = "Αφαίρεση Jailbreak";
+
+"Button_Set_Root_Password" = "Εισαγωγή κωδικού Root";
+
+"Button_Show_Logs_Title" = "Εμφάνιση αρχείου καταγραφής";
+
+"Button_Unhide_Jailbreak" = "Επανεμφάνιση Jailbreak";
+
+"Button_Update" = "Ενημέρωση";
+
+"Button_Update_Available" = "Διαθέσιμη ενημέρωση";
+
+"Bypassing PAC" = "Παράκαμψη PAC";
+
+"Bypassing PPL" = "Παράκαμψη PPL";
+
+"Changelog_Unavailable_Text" = "Αρχείο αλλαγών μη διαθέσιμο";
+
+"Context_Menu_Copy_To_Clipboard" = "Αντιγραφή";
+
+"Credits_Button_License" = "Άδεια χρήσης";
+
+"Credits_Button_Source_Code" = "Πηγαίος κώδικας";
+
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Έκδοση Dopamine %@\n%@";
+
+"Credits_Header_Special_Thanks" = "Ιδιαίτερες ευχαριστίες:";
+
+"Credits_Made_By" = "Δημιουργήθηκε από opa334 και évelyne";
+
+"Credits_Made_By_Subheadline" = "Γραφικό περιβάλλον από sourcelocation\nΛογότυπο και εικονίδιο από xerus";
+
+"Finalizing Bootstrap" = "Ολοκλήρωση Bootstrap";
+
+"Gaining r/w" = "Απόκτηση δικαιωμάτων r/w";
+
+"Hint_Hide_Jailbreak" = "\"Απόκρυψη Jailbreak\" Αφαιρεί προσωρινά τα αρχεία που σχετίζονται με το jailbreak μέχρι το απόμενο jailbreak";
+
+"Initializing Environment" = "Αρχικοποίηση Περιβάλλοντος";
+
+"Initializing System Hook" = "Αρχικοποίηση System Hook";
+
+"Jailbreak_Done" = "Έτοιμο!";
+
+"Launching kexploitd" = "Εκκίνηση kexploitd";
+
+"Launching oobPCI" = "Εκκίνηση oobPCI";
+
+"Loading Basebin Trustcache" = "Φόρτωση Basebin Trustcache";
+
+"Menu_Credits_Title" = "Ειδική μνεία";
+
+"Menu_Settings_Title" = "Επιλογές";
+
+"Menu_Reboot_Userspace_Title" = "Επανεκκίνηση Userspace";
+
+"Menu_Restart_SpringBoard_Title" = "Επανεκκίνηση SpringBoard";
+
+"Settings_iDownload" = "iDownload";
+
+"Settings_Tweak_Injection" = "Ενσωμάτωση Tweak";
+
+"Settings_Verbose_Logs" = "Λεπτομερής καταγραφή";
+
+"Patchfinding" = "Patchfinding";
+
+"Popup_Change_Root_Password_Title" = "Ορισμός κωδικού Root";
+
+"Rebuilding TrustCache" = "Ανανέωση TrustCache";
+
+"Refreshing Icon Cache" = "Ανανέωση Icon Cache";
+
+"Settings_Footer_Device_Bootstrapped" = "Το bootstrap της συσκευής ολοκληρώθηκε επιτυχώς";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "Η προσπάθεια για bootstrap της συσκευής απέτυχε";
+
+"Settings_Remove_Jailbreak_Alert_Body" = "Η αφαίρεση του jailbreak θα διαγράψει όλα τα αρχεία που σχετίζονται με το jailbreak, αλλά όλες οι συνήθεις εφαρμογές, αρχεία και δεδομένα θα διατηρηθούν. Είστε σίγουροι πως θέλετε να συνεχίσετε; Δεν μπορείτε να αντιστρέψετε αυτή την ενέργεια.";
+
+"Settings_Remove_Jailbreak_Alert_Title" = "Αφαίρεση Jailbreak";
+
+"Settings_Title" = "Ρυθμίσεις";
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Απαραίτητη επανεκκίνηση Userspace";
+
+"Starting jailbreakd" = "Εκκίνηση jailbreakd";
+
+"Starting Launch Daemons" = "Εκκίνηση Launch Daemons";
+
+"Status_Title_Jailbreaking" = "Jailbreaking";
+
+"Status_Title_Jailbroken" = "Jailbroken";
+
+"Status_Title_Select_Package_Managers" = "Επιλογή εφαρμογής/ών διαχείρισης πακέτων";
+
+"Status_Title_Unsuccessful" = "Αποτυχία";
+
+"Success_Rate %@%% (%lld/%lld)" = "Ποσοστό επιτυχίας: %@%% (%lld/%lld)";
+
+"Title_Changelog" = "Αρχείο αλλαγών";
+
+"Title_Made_By" = "από opa334, évelyne, γραφικό περιβάλλον από sourceloc";
+
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+
+"Update_Log_Hint_Scrollable" = "Η οθόνη καταγραφής μπορεί να μετακινηθεί";
+
+"Update_Status_Downloading" = "Λήψη αναβάθμισης...";
+
+"Update_Status_Installing" = "Εγκατάσταση αναβάθμισης...";
+
+"Update_Status_Subtitle_Please_Wait" = "Παρακαλώ αναμείνατε την ολοκλήρωση λήψης των αρχείων";
+
+"Update_Status_Subtitle_Restart_Soon" = "Η συσκευή θα επανεκκινήσει σύντομα";
