@@ -1,0 +1,127 @@
+"Bootstrapping" = "Bootstrap орнату";
+
+"Button_Cancel" = "Болдырмау";
+
+"Button_Hide_Jailbreak" = "Джейлбрейкті жасыру";
+
+"Button_Hide_Logs_Title" = "Журналдарды жасыру";
+
+"Button_Jailbreak_Title" = "Джейлбрейк";
+
+"Button_Remove_Jailbreak" = "Джейлбрейкті жою";
+
+"Button_Set_Root_Password" = "Root құпия сөзді өзгерту";
+
+"Button_Show_Logs_Title" = "Журналды көрсету";
+
+"Button_Unhide_Jailbreak" = "Джейлбрейкті жасырмау";
+
+"Button_Update" = "Жаңарту";
+
+"Button_Update_Available" = "Жаңа жаңарту қол жетімді";
+
+"Bypassing PAC" = "PAC айналып өту";
+
+"Bypassing PPL" = "PPL айналып өту";
+
+"Changelog_Unavailable_Text" = "Өзгерістер тізімі қол жетімді емес";
+
+"Context_Menu_Copy_To_Clipboard" = "Көшіру";
+
+"Credits_Button_License" = "Лицензия";
+
+"Credits_Button_Source_Code" = "Бастапқы код";
+
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine версиясы %@\n%@";
+
+"Credits_Header_Special_Thanks" = "Ерекше алғыс:";
+
+"Credits_Made_By" = "Жасағандар: opa334, évelyne";
+
+"Credits_Made_By_Subheadline" = "sourcelocation - интерфейс\nxerus - логотип және белгіше";
+
+"Finalizing Bootstrap" = "Іске қосуды инициализациялауды аяқтау";
+
+"Gaining r/w" = "Оқу/жазу құқығын алу";
+
+"Hint_Hide_Jailbreak" = "\"Джейлбрейкті жасыру\" келесі джейлбрейкке дейін джейлбрейкпен байланысты файлдарды уақытша жояды";
+
+"Initializing Environment" = "Ортаны инициализациялау";
+
+"Initializing System Hook" = "Жүйелік хукты инициализациялау";
+
+"Jailbreak_Done" = "Дайын!";
+
+"Launching kexploitd" = "kexploitd іске қосу";
+
+"Launching oobPCI" = "oobPCI іске қосу";
+
+"Loading Basebin Trustcache" = "Basebin Trustcache жүктеу";
+
+"Menu_Credits_Title" = "Алғыс";
+
+"Menu_Options_Title" = "Опциялар";
+
+"Menu_Reboot_Userspace_Title" = "Userspace қайта іске қосу";
+
+"Menu_Restart_SpringBoard_Title" = "SpringBoard қайта іске қосу";
+
+"Options_iDownload" = "iDownload";
+
+"Options_Tweak_Injection" = "Твиктерді енгізу";
+
+"Options_Verbose_Logs" = "Кеңейтілген журналдар";
+
+"Patchfinding" = "Патчтарды іздеу";
+
+"Rebuilding TrustCache" = "Trustcache жаңартуы";
+
+"Refreshing Icon Cache" = "Белгіше кэшін жаңарту";
+
+"Settings_Footer_Device_Bootstrapped" = "Bootstrap жүктелген";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "Bootstrap жүктелмеген";
+
+"Settings_Title" = "Реттеулер";
+
+"Starting jailbreakd" = "jailbreakd іске қосу";
+
+"Starting Launch Daemons" = "Іске қосу демондарын іске қосу";
+
+"Status_Title_Jailbreaking" = "Джейлбрейк жасау";
+
+"Status_Title_Jailbroken" = "Джейлбрейк орындалды";
+
+"Status_Title_Select_Package_Managers" = "Пакет менеджерін таңдаңыз";
+
+"Status_Title_Unsuccessful" = "Сәтсіз";
+
+"Success_Rate %@%% (%lld/%lld)" = "Табыс көрсеткіші: %@%% (%lld/%lld)";
+
+"Title_Changelog" = "Нұсқалар журналы";
+
+"Title_Made_By" = "opa334 және évelyne, sourceloc дизайны";
+
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+
+"Update_Log_Hint_Scrollable" = "Журнал айналдыра алады";
+
+"Update_Status_Downloading" = "Жаңартуды жүктеу...";
+
+"Update_Status_Installing" = "Жаңартуды орнату...";
+
+"Update_Status_Subtitle_Please_Wait" = "Файлдар жүктелгенше күтіңіз";
+
+"Update_Status_Subtitle_Restart_Soon" = "Жақында құрылғы қайта іске қосылады";
+
+//"Alert_Button_Uninstall" = "Alert_Button_Uninstall";
+//
+//"Alert_Tweak_Injection_Toggled_Body" = "Alert_Tweak_Injection_Toggled_Body";
+//
+//"Popup_Change_Root_Password_Title" = "Popup_Change_Root_Password_Title";
+//
+//"Settings_Remove_Jailbreak_Alert_Body" = "Settings_Remove_Jailbreak_Alert_Body";
+//
+//"Settings_Remove_Jailbreak_Alert_Title" = "Settings_Remove_Jailbreak_Alert_Title";
+//
+//"Settings_Tweak_Injection_Toggled_Alert_Title" = "Settings_Tweak_Injection_Toggled_Alert_Title";
