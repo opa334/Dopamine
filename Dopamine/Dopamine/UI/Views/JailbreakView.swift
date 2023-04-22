@@ -17,7 +17,7 @@ import AppKit
 import Fugu15KernelExploit
 import SwiftfulLoadingIndicators
 
-struct ContentView: View {
+struct JailbreakView: View {
     
     enum JailbreakingProgress: Equatable {
         case idle, jailbreaking, selectingPackageManager, finished
@@ -25,7 +25,7 @@ struct ContentView: View {
     
     struct MenuOption: Identifiable, Equatable {
         
-        static func == (lhs: ContentView.MenuOption, rhs: ContentView.MenuOption) -> Bool {
+        static func == (lhs: JailbreakView.MenuOption, rhs: JailbreakView.MenuOption) -> Bool {
             lhs.id == rhs.id
         }
         
@@ -423,8 +423,8 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct JailbreakView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        JailbreakView()
     }
 }
