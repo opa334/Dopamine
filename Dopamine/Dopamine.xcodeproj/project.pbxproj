@@ -78,7 +78,6 @@
 		938DADE829F2CB1500C37952 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/Localizable.strings; sourceTree = "<group>"; };
 		938DADE929F2CE2200C37952 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		938DADEA29F2CE3800C37952 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
-		938DADEB29F2DAEA00C37952 /* sl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sl; path = sl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		938DADEC29F2DBE100C37952 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		938DADEE29F2E0FA00C37952 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		938DADEF29F2FCE400C37952 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -290,7 +289,6 @@
 				ur,
 				fr,
 				vi,
-				sl,
 				"zh-Hans",
 				"pt-BR",
 				nl,
@@ -370,7 +368,6 @@
 				938DADE829F2CB1500C37952 /* ur */,
 				938DADE929F2CE2200C37952 /* fr */,
 				938DADEA29F2CE3800C37952 /* vi */,
-				938DADEB29F2DAEA00C37952 /* sl */,
 				938DADEC29F2DBE100C37952 /* zh-Hans */,
 				938DADEE29F2E0FA00C37952 /* pt-BR */,
 				938DADEF29F2FCE400C37952 /* nl */,

@@ -1,7 +1,3 @@
-"Alert_Button_Uninstall" = "Uninstall";
-
-"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
-
 "Bootstrapping" = "Bootstrapping";
 
 "Button_Cancel" = "Cancel";
@@ -78,8 +74,6 @@
 
 "Patchfinding" = "Patchfinding";
 
-"Popup_Change_Root_Password_Title" = "Change Root Password";
-
 "Rebuilding TrustCache" = "Rebuilding TrustCache";
 
 "Refreshing Icon Cache" = "Refreshing Icon Cache";
@@ -87,12 +81,6 @@
 "Settings_Footer_Device_Bootstrapped" = "Device is bootstrapped";
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Device is not bootstrapped";
-
-"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
-
-"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
-
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
 
 "Starting jailbreakd" = "Starting jailbreakd";
 
@@ -124,3 +112,14 @@
 
 "Update_Status_Subtitle_Restart_Soon" = "The device will restart soon";
 
+"Alert_Button_Uninstall" = "Uninstall";
+
+"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+
+"Popup_Change_Root_Password_Title" = "Change Root Password";
+
+"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+
+"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
