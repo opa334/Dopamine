@@ -40,7 +40,7 @@ func reboot() {
 }
 
 func isJailbroken() -> Bool {
-    if isSandboxed() { return true } // ui debugging
+    //if isSandboxed() { return true } // ui debugging
     
     var jbdPid: pid_t = 0
     jbdGetStatus(nil, nil, &jbdPid)
@@ -48,7 +48,7 @@ func isJailbroken() -> Bool {
 }
 
 func isBootstrapped() -> Bool {
-    if isSandboxed() { return true } // ui debugging
+    //if isSandboxed() { return true } // ui debugging
     
     return Bootstrapper.isBootstrapped()
 }
@@ -112,6 +112,10 @@ func removeJailbreak() {
     if isJailbroken() {
         reboot()
     }
+}
+
+func jailbrokenUpdateTweakInjectionPreference() {
+    _ = execCmd(args: [CommandLine.arguments[0], "update_tweak_injection"])
 }
 
 func changeRootPassword(newPassword: String) {

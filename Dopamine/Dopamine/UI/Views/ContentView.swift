@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Fugu15KernelExploit
 
 #if os(iOS)
 import UIKit
@@ -47,14 +48,14 @@ struct ContentView: View {
     @State var showingUpdatePopup = false
     @State var updateChangelog: String? = nil
     
-    @AppStorage("verboseLogsEnabled") var advancedLogsByDefault: Bool = false
+    @AppStorage("verboseLogsEnabled", store: dopamineDefaults()) var advancedLogsByDefault: Bool = false
     @State var advancedLogsTemporarilyEnabled: Bool = false
     
     var isJailbreaking: Bool {
         jailbreakingProgress != .idle
     }
     
-    @AppStorage("sfw") var sfw = false
+    @AppStorage("sfw", store: dopamineDefaults()) var sfw = false
     
     var menuOptions: [MenuOption] = []
     
