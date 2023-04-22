@@ -63,6 +63,7 @@
 		21AFE72F29F32AF8008B4B4C /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
 		21AFE73029F33538008B4B4C /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
 		21C376B329F43EA0001ECD18 /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/Localizable.strings; sourceTree = "<group>"; };
+		21BFE80B29F4447E00F0ABCD /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8C2EDE1829F0AAF70060D192 /* oobPCI */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = oobPCI; path = ../../Exploits/oobPCI/oobPCI; sourceTree = "<group>"; };
 		8C2EDE1A29F0ACA60060D192 /* basebin.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = basebin.tar; sourceTree = "<group>"; };
 		8C2EDE1C29F0ACC80060D192 /* basebin.tc */ = {isa = PBXFileReference; lastKnownFileType = file; name = basebin.tc; path = ../../../BaseBin/basebin.tc; sourceTree = "<group>"; };
@@ -303,6 +304,7 @@
 				zh_HK,
 				zh_TW,
 				kk,
+				el,
 			);
 			mainGroup = 1502A3FF2891B03F0011CB6E;
 			packageReferences = (
@@ -386,6 +388,7 @@
 				0C5D3B0929F2DA27002924C0 /* zh_HK */,
 				0C5D3B0A29F2DA3C002924C0 /* zh_TW */,
 				21C376B329F43EA0001ECD18 /* kk */,
+				21BFE80B29F4447E00F0ABCD /* el */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";

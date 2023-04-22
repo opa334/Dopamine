@@ -64,17 +64,17 @@
 
 "Menu_Credits_Title" = "Ειδική μνεία";
 
-"Menu_Options_Title" = "Επιλογές";
+"Menu_Settings_Title" = "Επιλογές";
 
 "Menu_Reboot_Userspace_Title" = "Επανεκκίνηση Userspace";
 
 "Menu_Restart_SpringBoard_Title" = "Επανεκκίνηση SpringBoard";
 
-"Options_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Ενσωμάτωση Tweak";
+"Settings_Tweak_Injection" = "Ενσωμάτωση Tweak";
 
-"Options_Verbose_Logs" = "Λεπτομερής καταγραφή";
+"Settings_Verbose_Logs" = "Λεπτομερής καταγραφή";
 
 "Patchfinding" = "Patchfinding";
 
@@ -122,6 +122,6 @@
 
 "Update_Status_Installing" = "Εγκατάσταση αναβάθμισης...";
 
-"Update_Status_Subtitle_Please_Wait" = "Παρακαλώ αναμείνατε την ολοκλήρωση λήψης των αρχείων;
+"Update_Status_Subtitle_Please_Wait" = "Παρακαλώ αναμείνατε την ολοκλήρωση λήψης των αρχείων";
 
 "Update_Status_Subtitle_Restart_Soon" = "Η συσκευή θα επανεκκινήσει σύντομα";
