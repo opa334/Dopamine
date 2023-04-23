@@ -82,7 +82,7 @@
 
 "Menu_Settings_Title" = "الإعدادات";
 
-"Starting jailbreakd" = "بدء jailbreakd";
+"Starting jailbreakd" = "بدء عملية الجلبريك";
 
 "Starting Launch Daemons" = "بدء تشغيل العمليات الخفية";
 
@@ -112,14 +112,14 @@
 
 "Update_Status_Subtitle_Restart_Soon" = "سيتم إعادة تشغيل الجهاز خلال لحظات";
 
-"Alert_Button_Uninstall" = "Uninstall";
+"Alert_Button_Uninstall" = "الغاء التثبيت";
 
-"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+"Alert_Tweak_Injection_Toggled_Body" = "لحفظ التغيرات عليك اعادة تشغيل Userspace ,هل تريد اعادة التشغيل?";
 
-"Popup_Change_Root_Password_Title" = "Change Root Password";
+"Popup_Change_Root_Password_Title" = "تغير الرقم السري للروت";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+"Settings_Remove_Jailbreak_Alert_Body" = "ستؤدي إزالة جيلبريك إلى حذف جميع الملفات المتعلقة بكسر الحماية ، ولكن سيتم الاحتفاظ بجميع التطبيقات والملفات والبيانات العادية. هل أنت متأكد أنك تريد الاستمرار؟ لا يمكنك التراجع عن هذا الإجراء.";
 
-"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+"Settings_Remove_Jailbreak_Alert_Title" = "ازالة الجلبريك";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace مطلبو اعادة التشغيل";
