@@ -48,6 +48,8 @@ struct JailbreakView: View {
     @State var showingUpdatePopup = false
     @State var updateChangelog: String? = nil
     
+    @State var aprilFirstAlert = whatCouldThisVariablePossiblyEvenMean
+    
     @AppStorage("verboseLogsEnabled", store: dopamineDefaults()) var advancedLogsByDefault: Bool = false
     @State var advancedLogsTemporarilyEnabled: Bool = false
     
@@ -75,7 +77,7 @@ struct JailbreakView: View {
                 
                 let shouldShowBackground = optionPresentedID != nil || showingUpdatePopup
                 
-                Image("Wallpaper")
+                Image(whatCouldThisVariablePossiblyEvenMean ? "Clouds" : "Wallpaper")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .edgesIgnoringSafeArea(.all)
@@ -151,14 +153,21 @@ struct JailbreakView: View {
                 }
             }
         }
+        .alert("🤑 NEW SPONSORSHIP OFFER 🤑 \n\n⚠️ Hello iOS \(UIDevice.current.systemVersion) user! 💵 You've just received a new\n\nRAID: Shadow Legends\n\nsponsorship offer 💰💰💰 Would you like to accept it? 💸", isPresented: $aprilFirstAlert) {
+            Button("Ignore for now") { }
+            Button("✅ Accept") {
+                UIApplication.shared.open(.init(string: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")!)
+            }
+        }
     }
     
     
     @ViewBuilder
     var header: some View {
+        let tint = whatCouldThisVariablePossiblyEvenMean ? Color.black : .white
         HStack {
             VStack(alignment: .leading) {
-                Image(sfw ? "OpaA15Logo" : "DopamineLogo")
+                Image(whatCouldThisVariablePossiblyEvenMean ? "DopamineLogo2" : "DopamineLogo")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(maxWidth: 200)
@@ -166,10 +175,10 @@ struct JailbreakView: View {
                 
                 Text("Title_Supported_iOS_Versions")
                     .font(.subheadline)
-                    .foregroundColor(.white)
+                    .foregroundColor(tint)
                 Text("Title_Made_By")
                     .font(.subheadline)
-                    .foregroundColor(.white.opacity(0.5))
+                    .foregroundColor(tint.opacity(0.5))
             }
             Spacer()
         }
@@ -275,7 +284,7 @@ struct JailbreakView: View {
                             }
                         }
                     })
-                .foregroundColor(.white)
+                .foregroundColor(whatCouldThisVariablePossiblyEvenMean ? .black : .white)
                 .padding()
                 .frame(maxWidth: isJailbreaking ? .infinity : 280)
             }
@@ -365,7 +374,7 @@ struct JailbreakView: View {
                     }
                 }
             })
-            .foregroundColor(.white)
+            .foregroundColor(whatCouldThisVariablePossiblyEvenMean ? .black : .white)
             .padding()
         }
         .frame(maxHeight: updateAvailable && jailbreakingProgress == .idle ? nil : 0)
