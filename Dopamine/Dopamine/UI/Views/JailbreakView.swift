@@ -362,7 +362,6 @@ struct JailbreakView: View {
     @ViewBuilder
     var updateButton: some View {
         Button {
-            //            dopamineDefaults().set(nil, forKey: "selectedPackageManagers")
             showingUpdatePopup = true
         } label: {
             Label(title: { Text("Button_Update_Available") }, icon: {
@@ -418,7 +417,7 @@ struct JailbreakView: View {
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
            
             let owner = "opa334"
-            let repo = "Fugu15"
+            let repo = "Dopamine"
             
             // Get the releases
             let releasesURL = URL(string: "https://api.github.com/repos/\(owner)/\(repo)/releases")!

@@ -98,9 +98,9 @@
 
 "Title_Changelog" = "سجل التغييرات";
 
-"Title_Made_By" = "بواسطة opa334 و évelyne، واجهة المستخدم بواسطة sourceloc";
+"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
 
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
 "Update_Log_Hint_Scrollable" = "يمكن التمرير في هذه الواجهة";
 
@@ -116,7 +116,7 @@
 
 "Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
 
-"Popup_Change_Root_Password_Title" = "Change Root Password";
+"Popup_Change_Root_Password_Title" = "Change Mobile Password";
 
 "Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
 

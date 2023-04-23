@@ -118,8 +118,8 @@ func jailbrokenUpdateTweakInjectionPreference() {
     _ = execCmd(args: [CommandLine.arguments[0], "update_tweak_injection"])
 }
 
-func changeRootPassword(newPassword: String) {
-    
+func changeMobilePassword(newPassword: String) {
+    _ = execCmd(args: ["/var/jb/bin/dash", "-c", String(format:"\"printf \\\"%s\n\\\" \\\"\(newPassword)\\\" | /var/jb/usr/sbin/pw usermod 501 -h 0\"")])
 }
 
 

@@ -4,7 +4,9 @@
 "Button_Hide_Logs_Title" = "Log'u Sakla";
 "Button_Jailbreak_Title" = "Jailbreak";
 "Button_Remove_Jailbreak" = "Jailbreak'i Sil";
-"Button_Set_Root_Password" = "Root Şifresini Değiştir";
+"Button_Set_Mobile_Password" = "Mobile Şifresini Değiştir";
+"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+"Button_Set" = "Set";
 "Button_Show_Logs_Title" = "Log'u Göster";
 "Button_Unhide_Jailbreak" = "Jailbreak'i Göster";
 "Button_Update" = "Güncelle";
@@ -48,8 +50,8 @@
 "Status_Title_Unsuccessful" = "Başarısız";
 "Success_Rate %@%% (%lld/%lld)" = "Başarı oranı: %@%% (%lld/%lld)";
 "Title_Changelog" = "Sürüm Günlüğü";
-"Title_Made_By" = "opa334 ve évelyne tarafından, Tasarım sourceloc tarafından";
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 "Update_Log_Hint_Scrollable" = "Log görünümü kaydırılabilir";
 "Update_Status_Downloading" = "Güncelleme indiriliyor...";
 "Update_Status_Installing" = "Güncelleme yükleniyor...";
@@ -60,7 +62,7 @@
 
 "Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
 
-"Popup_Change_Root_Password_Title" = "Change Root Password";
+"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
 
 "Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
 

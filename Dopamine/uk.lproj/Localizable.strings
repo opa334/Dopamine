@@ -4,7 +4,9 @@
 "Button_Hide_Logs_Title" = "Приховати логи";
 "Button_Jailbreak_Title" = "Зробити джейлбрейк";
 "Button_Remove_Jailbreak" = "Видалити джейлбрейк";
-"Button_Set_Root_Password" = "Встановити пароль root";
+"Button_Set_Mobile_Password" = "Встановити пароль mobile";
+"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+"Button_Set" = "Set";
 "Button_Show_Logs_Title" = "Показати логи";
 "Button_Unhide_Jailbreak" = "Розкрити джейлбрейк";
 "Button_Update" = "Оновити";
@@ -48,8 +50,8 @@
 "Status_Title_Unsuccessful" = "Не вдалося";
 "Success_Rate %@%% (%lld/%lld)" = "Рівень успішності: %@%% (%lld/%lld)";
 "Title_Changelog" = "Журнал змін";
-"Title_Made_By" = "Зброблено opa334, évelyne, UI зроблен sourceloc";
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 "Update_Log_Hint_Scrollable" = "Перегляд журналу можна прокручувати";
 "Update_Status_Downloading" = "Завантаження оновлення...";
 "Update_Status_Installing" = "Встановлення оновлення...";
@@ -60,7 +62,7 @@
 
 "Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
 
-"Popup_Change_Root_Password_Title" = "Change Root Password";
+"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
 
 "Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
 

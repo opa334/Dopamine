@@ -6,7 +6,9 @@
 "Button_Hide_Logs_Title" = "隱藏日誌";
 "Button_Jailbreak_Title" = "越獄";
 "Button_Remove_Jailbreak" = "清除越獄";
-"Button_Set_Root_Password" = "設定 root 用戶口令";
+"Button_Set_Mobile_Password" = "設定 mobile 用戶口令";
+"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+"Button_Set" = "Set";
 "Button_Show_Logs_Title" = "展現日誌";
 "Button_Unhide_Jailbreak" = "解除隱藏越獄";
 "Button_Update" = "更新";
@@ -53,11 +55,11 @@
 "Status_Title_Unsuccessful" = "失敗";
 "Success_Rate %@%% (%lld/%lld)" = "成功率：%@%% (%lld/%lld)";
 "Title_Changelog" = "變更日誌";
-"Title_Made_By" = "作者：opa334, évelyne；UI：sourceloc";
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 "Update_Log_Hint_Scrollable" = "滑動以查看日誌";
 "Update_Status_Downloading" = "正在下載更新…";
 "Update_Status_Installing" = "正在安裝更新…";
 "Update_Status_Subtitle_Please_Wait" = "請等待完成下載";
 "Update_Status_Subtitle_Restart_Soon" = "裝置即將重新啟動";
-"Popup_Change_Root_Password_Title" = "修改 root 用戶口令";
+"Popup_Change_Mobile_Password_Title" = "修改 mobile 用戶口令";

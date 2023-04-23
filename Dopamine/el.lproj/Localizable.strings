@@ -14,7 +14,11 @@
 
 "Button_Remove_Jailbreak" = "Αφαίρεση Jailbreak";
 
-"Button_Set_Root_Password" = "Εισαγωγή κωδικού Root";
+"Button_Set_Mobile_Password" = "Εισαγωγή κωδικού Mobile";
+
+"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+
+"Button_Set" = "Set";
 
 "Button_Show_Logs_Title" = "Εμφάνιση αρχείου καταγραφής";
 
@@ -76,7 +80,7 @@
 
 "Patchfinding" = "Patchfinding";
 
-"Popup_Change_Root_Password_Title" = "Ορισμός κωδικού Root";
+"Popup_Change_Mobile_Password_Title" = "Ορισμός κωδικού Mobile";
 
 "Rebuilding TrustCache" = "Ανανέωση TrustCache";
 
@@ -110,9 +114,9 @@
 
 "Title_Changelog" = "Αρχείο αλλαγών";
 
-"Title_Made_By" = "από opa334, évelyne, γραφικό περιβάλλον από sourceloc";
+"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
 
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
 "Update_Log_Hint_Scrollable" = "Η οθόνη καταγραφής μπορεί να μετακινηθεί";
 
