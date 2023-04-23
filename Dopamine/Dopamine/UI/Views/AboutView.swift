@@ -20,8 +20,14 @@ struct AboutView: View {
         ("evelyneee", "http://github.com/evelyneee"),
         ("sourcelocation", "http://github.com/sourcelocation"),
         ("LinusHenze", "http://github.com/LinusHenze"),
-        ("anotherperson", "http://github.com/opa334"),
-        ("randomperson", "http://github.com/opa334"),
+        ("Cryptic", "http://github.com/Cryptiiiic"),
+        ("Clarity", "http://github.com/TheRealClarity"),
+        ("Dhinakg", "http://github.com/dhinakg"),
+        ("Capt Inc", "http://github.com/captinc"),
+        ("Sam Bingner", "http://github.com/sbingner"),
+        ("ProcursusTeam", "http://github.com/ProcursusTeam"),
+        ("kirb", "http://github.com/kirb"),
+        ("Amy While", "http://github.com/elihwyma"),
     ]
     
     var body: some View {
