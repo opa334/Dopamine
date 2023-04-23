@@ -17,7 +17,7 @@ struct AboutView: View {
     
     let contributors = [
         ("opa334", "http://github.com/opa334"),
-        ("evelyneee", "http://github.com/evelyneee"),
+        ("Évelyne", "http://github.com/evelyneee"),
         ("sourcelocation", "http://github.com/sourcelocation"),
         ("LinusHenze", "http://github.com/LinusHenze"),
         ("Cryptic", "http://github.com/Cryptiiiic"),
