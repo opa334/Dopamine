@@ -8,6 +8,9 @@
 
 extern bool swh_is_debugged;
 
+int reboot3(uint64_t flags, ...);
+#define RB2_USERREBOOT (0x2000000000000000llu)
+
 void* dlopen_from(const char* path, int mode, void* addressInCaller);
 void* dlopen_audited(const char* path, int mode);
 bool dlopen_preflight(const char* path);
@@ -342,6 +345,9 @@ __attribute__((constructor)) static void initializer(void)
 		if (strcmp(gExecutablePath, "/System/Library/CoreServices/SpringBoard.app/SpringBoard") == 0) {
 			applyKbdFix();
 		}
+		/*if (strcmp(gExecutablePath, "/usr/libexec/installd") == 0 || strcmp(gExecutablePath, "/usr/sbin/cfprefsd") == 0) {
+			dlopen_hook("/var/jb/basebin/rootlesshooks.dylib", RTLD_NOW);
+		}*/
 	}
 
 	if (shouldEnableTweaks()) {
@@ -354,6 +360,14 @@ __attribute__((constructor)) static void initializer(void)
 		}
 	}
 	freeExecutablePath();
+}
+
+void _os_crash(void);
+void _os_crash_hook(void)
+{
+	// Normally this function is used to trigger a userspace panic
+	// We overwrite it to do a userspace reboot instead, so that the jailbreak environment stays alive
+	reboot3(RB2_USERREBOOT);
 }
 
 DYLD_INTERPOSE(posix_spawn_hook, posix_spawn)
@@ -370,3 +384,4 @@ DYLD_INTERPOSE(dlopen_audited_hook, dlopen_audited)
 DYLD_INTERPOSE(dlopen_preflight_hook, dlopen_preflight)
 DYLD_INTERPOSE(fork_hook, fork)
 DYLD_INTERPOSE(vfork_hook, vfork)
+DYLD_INTERPOSE(_os_crash_hook, _os_crash)
