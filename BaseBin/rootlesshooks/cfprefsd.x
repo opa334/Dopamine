@@ -4,7 +4,7 @@
 
 BOOL preferencePlistNeedsRedirection(NSString *plistPath)
 {
-	if ([plistPath hasPrefix:@"/private/var/mobile/Containers"] || [plistPath hasPrefix:@"/var/db"]) return NO;
+	if ([plistPath hasPrefix:@"/private/var/mobile/Containers"] || [plistPath hasPrefix:@"/var/db"] || [plistPath hasPrefix:@"/var/jb"]) return NO;
 
 	NSString *plistName = plistPath.lastPathComponent;
 
