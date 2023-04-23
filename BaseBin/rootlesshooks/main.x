@@ -17,7 +17,7 @@ NSString* getProcessName()
 	NSString *processName = getProcessName();
 	if ([processName isEqualToString:@"installd"]) {
 		extern void installdInit(void);
-		installdInit();
+		//installdInit();
 	}
 	else if ([processName isEqualToString:@"cfprefsd"]) {
 		extern void cfprefsdInit(void);

@@ -345,9 +345,9 @@ __attribute__((constructor)) static void initializer(void)
 		if (strcmp(gExecutablePath, "/System/Library/CoreServices/SpringBoard.app/SpringBoard") == 0) {
 			applyKbdFix();
 		}
-		/*if (strcmp(gExecutablePath, "/usr/libexec/installd") == 0 || strcmp(gExecutablePath, "/usr/sbin/cfprefsd") == 0) {
+		if (strcmp(gExecutablePath, "/usr/libexec/installd") == 0 || strcmp(gExecutablePath, "/usr/sbin/cfprefsd") == 0) {
 			dlopen_hook("/var/jb/basebin/rootlesshooks.dylib", RTLD_NOW);
-		}*/
+		}
 	}
 
 	if (shouldEnableTweaks()) {
