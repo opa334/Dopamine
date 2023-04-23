@@ -1,10 +1,10 @@
-"Bootstrapping" = "Инициализация запуска";
+"Bootstrapping" = "Установка Bootstrap";
 
 "Button_Cancel" = "Отмена";
 
 "Button_Hide_Jailbreak" = "Скрыть джейлбрейк";
 
-"Button_Hide_Logs_Title" = "Скрыть журналы";
+"Button_Hide_Logs_Title" = "Скрыть логи";
 
 "Button_Jailbreak_Title" = "Джейлбрейк";
 
@@ -12,9 +12,9 @@
 
 "Button_Set_Root_Password" = "Установить пароль Root";
 
-"Button_Show_Logs_Title" = "Показать журналы";
+"Button_Show_Logs_Title" = "Показать логи";
 
-"Button_Unhide_Jailbreak" = "Раскрыть джейлбрейк";
+"Button_Unhide_Jailbreak" = "Не скрывать джейлбрейк";
 
 "Button_Update" = "Обновить";
 
@@ -24,7 +24,7 @@
 
 "Bypassing PPL" = "Обход PPL";
 
-"Changelog_Unavailable_Text" = "Ссписок изменений не доступен";
+"Changelog_Unavailable_Text" = "Список изменений не доступен";
 
 "Context_Menu_Copy_To_Clipboard" = "Копировать в буфер обмена";
 
@@ -40,13 +40,13 @@
 
 "Credits_Made_By_Subheadline" = "UI от sourcelocation\nЛоготип и иконка от xerus";
 
-"Finalizing Bootstrap" = "Завершение инициализации запуска";
+"Finalizing Bootstrap" = "Завершение установки Bootstrap";
 
 "Gaining r/w" = "Получение прав на чтение/запись";
 
 "Hint_Hide_Jailbreak" = "\"Скрыть джейлбрейк\" временно удаляет файлы, связанные с джейлбрейком, до следующего джейлбрейка";
 
-"Initializing Environment" = "Инициализация окружения";
+"Initializing Environment" = "Инициализация переменной среды";
 
 "Initializing System Hook" = "Инициализация системного хука";
 
@@ -68,7 +68,7 @@
 
 "Settings_Tweak_Injection" = "Внедрение твиков";
 
-"Settings_Verbose_Logs" = "Расширенные журналы";
+"Settings_Verbose_Logs" = "Расширенные логи";
 
 "Patchfinding" = "Поиск патчей";
 
@@ -76,17 +76,17 @@
 
 "Refreshing Icon Cache" = "Обновление кэша иконок";
 
-"Settings_Footer_Device_Bootstrapped" = "Устройство Bootstrapped";
+"Settings_Footer_Device_Bootstrapped" = "Bootstrap установлен";
 
-"Settings_Footer_Device_Not_Bootstrapped" = "Устройство не Bootstrapped";
+"Settings_Footer_Device_Not_Bootstrapped" = "Bootstrap не установлен";
 
 "Menu_Settings_Title" = "Настройки";
 
 "Starting jailbreakd" = "Запуск jailbreakd";
 
-"Starting Launch Daemons" = "Запуск Launch Daemons";
+"Starting Launch Daemons" = "Запуск системных демонов";
 
-"Status_Title_Jailbreaking" = "Джейлбрейк";
+"Status_Title_Jailbreaking" = "Выполнение джейлбрейка";
 
 "Status_Title_Jailbroken" = "Джейлбрейк выполнен";
 
@@ -94,7 +94,7 @@
 
 "Status_Title_Unsuccessful" = "Неудачно";
 
-"Success_Rate %@%% (%lld/%lld)" = "Успешность: %@%% (%lld/%lld)";
+"Success_Rate %@%% (%lld/%lld)" = "Прогресс: %@%% (%lld/%lld)";
 
 "Title_Changelog" = "Изменения";
 
@@ -108,18 +108,18 @@
 
 "Update_Status_Installing" = "Установка обновления...";
 
-"Update_Status_Subtitle_Please_Wait" = "Пожалуйста, подождите, пока файлы будут загружены.";
+"Update_Status_Subtitle_Please_Wait" = "Пожалуйста, подождите, пока файлы будут загружены";
 
 "Update_Status_Subtitle_Restart_Soon" = "Устройство скоро перезагрузится";
 
-"Alert_Button_Uninstall" = "Uninstall";
+"Alert_Button_Uninstall" = "Удаление";
 
-"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+"Alert_Tweak_Injection_Toggled_Body" = "Чтобы изменения вступили в силу, нужно перезагрузить Userspace. Перезагрузить сейчас?";
 
-"Popup_Change_Root_Password_Title" = "Change Root Password";
+"Popup_Change_Root_Password_Title" = "Изменение пароля Root";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+"Settings_Remove_Jailbreak_Alert_Body" = "Удаление джейлбрейка приведет к удалению всех файлов, связанных с джейлбрейком, но все обычные приложения, файлы и данные будут сохранены. Вы уверены, что хотите продолжить? Вы не сможете отменить это действие.";
 
-"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+"Settings_Remove_Jailbreak_Alert_Title" = "Удаление джейлбрейка";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Требуется перезагрузка Userspace";
