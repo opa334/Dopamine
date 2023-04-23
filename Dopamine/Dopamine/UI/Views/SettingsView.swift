@@ -31,7 +31,7 @@ struct SettingsView: View {
     
     var body: some View {
         VStack {
-            Text("Settings_Title")
+            Text("Menu_Settings_Title")
             Divider()
                 .background(.white)
                 .padding(.horizontal, 32)
@@ -39,7 +39,7 @@ struct SettingsView: View {
             
             VStack(spacing: 20) {
                 VStack(spacing: 10) {
-                    Toggle("Options_Tweak_Injection", isOn: $tweakInjection)
+                    Toggle("Settings_Tweak_Injection", isOn: $tweakInjection)
                         .onChange(of: tweakInjection) { newValue in
                             if isJailbroken() {
                                 jailbrokenUpdateTweakInjectionPreference()
@@ -47,8 +47,8 @@ struct SettingsView: View {
                             }
                         }
                     if !isJailbroken() {
-                        Toggle("Options_iDownload", isOn: $enableiDownload)
-                        Toggle("Options_Verbose_Logs", isOn: $verboseLogs)
+                        Toggle("Settings_iDownload", isOn: $enableiDownload)
+                        Toggle("Settings_Verbose_Logs", isOn: $verboseLogs)
                     }
                 }
                 if isBootstrapped() {
@@ -166,7 +166,7 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        JailbreakView()
     }
 }
 

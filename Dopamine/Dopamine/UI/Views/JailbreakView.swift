@@ -17,7 +17,7 @@ import AppKit
 import Fugu15KernelExploit
 import SwiftfulLoadingIndicators
 
-struct ContentView: View {
+struct JailbreakView: View {
     
     enum JailbreakingProgress: Equatable {
         case idle, jailbreaking, selectingPackageManager, finished
@@ -25,7 +25,7 @@ struct ContentView: View {
     
     struct MenuOption: Identifiable, Equatable {
         
-        static func == (lhs: ContentView.MenuOption, rhs: ContentView.MenuOption) -> Bool {
+        static func == (lhs: JailbreakView.MenuOption, rhs: JailbreakView.MenuOption) -> Bool {
             lhs.id == rhs.id
         }
         
@@ -61,7 +61,7 @@ struct ContentView: View {
     
     init() {
         menuOptions = [
-            .init(imageName: "gearshape", title: NSLocalizedString("Menu_Options_Title", comment: ""), view: AnyView(SettingsView())),
+            .init(imageName: "gearshape", title: NSLocalizedString("Menu_Settings_Title", comment: ""), view: AnyView(SettingsView())),
             .init(imageName: "arrow.clockwise", title: NSLocalizedString("Menu_Restart_SpringBoard_Title", comment: ""), showUnjailbroken: false, action: respring),
             .init(imageName: "arrow.clockwise.circle", title: NSLocalizedString("Menu_Reboot_Userspace_Title", comment: ""), showUnjailbroken: false, action: userspaceReboot),
             .init(imageName: "info.circle", title: NSLocalizedString("Menu_Credits_Title", comment: ""), view: AnyView(AboutView())),
@@ -197,7 +197,7 @@ struct ContentView: View {
                         Spacer()
                         
                         if option.view != nil {
-                            Image(systemName: "chevron.right")
+                            Image(systemName: Locale.characterDirection(forLanguage: Locale.current.languageCode ?? "") == .rightToLeft ? "chevron.left" : "chevron.right")
                                 .font(.body)
                                 .symbolRenderingMode(.palette)
                                 .foregroundStyle(.white.opacity(0.5))
@@ -388,11 +388,13 @@ struct ContentView: View {
                     dpDefaults.set(dpDefaults.integer(forKey: "successfulJailbreaks") + 1, forKey: "successfulJailbreaks")
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                     let tweakInjectionEnabled = dpDefaults.bool(forKey: "tweakInjectionEnabled")
-                    DispatchQueue.main.async {
+                    
+                    Logger.log(NSLocalizedString("Restarting Userspace", comment: ""), type: .continuous, isStatus: true)
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         if tweakInjectionEnabled {
                             userspaceReboot()
-                        }
-                        else {
+                        } else {
                             respring()
                         }
                     }
@@ -423,8 +425,8 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct JailbreakView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        JailbreakView()
     }
 }

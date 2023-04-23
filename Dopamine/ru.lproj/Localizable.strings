@@ -60,17 +60,15 @@
 
 "Menu_Credits_Title" = "Благодарности";
 
-"Menu_Options_Title" = "Настройки";
-
 "Menu_Reboot_Userspace_Title" = "Перезагрузить Userspace";
 
 "Menu_Restart_SpringBoard_Title" = "Перезапустить SpringBoard";
 
-"Options_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Внедрение твиков";
+"Settings_Tweak_Injection" = "Внедрение твиков";
 
-"Options_Verbose_Logs" = "Расширенные журналы";
+"Settings_Verbose_Logs" = "Расширенные журналы";
 
 "Patchfinding" = "Поиск патчей";
 
@@ -82,7 +80,7 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Устройство не Bootstrapped";
 
-"Settings_Title" = "Настройки";
+"Menu_Settings_Title" = "Настройки";
 
 "Starting jailbreakd" = "Запуск jailbreakd";
 
@@ -113,3 +111,15 @@
 "Update_Status_Subtitle_Please_Wait" = "Пожалуйста, подождите, пока файлы будут загружены.";
 
 "Update_Status_Subtitle_Restart_Soon" = "Устройство скоро перезагрузится";
+
+"Alert_Button_Uninstall" = "Uninstall";
+
+"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+
+"Popup_Change_Root_Password_Title" = "Change Root Password";
+
+"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+
+"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
