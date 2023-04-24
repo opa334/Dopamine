@@ -108,7 +108,7 @@ void proc_iterate(void (^itBlock)(uint64_t, BOOL*))
 	}
 }
 
-uint64_t proc_for_pid(pid_t pidToFind)
+static uint64_t proc_for_pid_unsafe(pid_t pidToFind)
 {
 	__block uint64_t foundProc = 0;
 
@@ -122,6 +122,59 @@ uint64_t proc_for_pid(pid_t pidToFind)
 	});
 	
 	return foundProc;
+}
+
+uint64_t proc_for_pid(pid_t pidToFind) {
+	static uint64_t task_offset_itk_space;
+	static uint64_t port_offset_kobject;
+	static dispatch_once_t once;
+	dispatch_once(&once, ^{
+		task_offset_itk_space = bootInfo_getUInt64(@"ITK_SPACE");
+		port_offset_kobject = bootInfo_getUInt64(@"PORT_KOBJECT");
+	});
+	if (pidToFind == getpid()) {
+		return self_proc();
+	} else if (pidToFind == 0 || 
+			   task_offset_itk_space == 0 || 
+			   port_offset_kobject == 0 || 
+			   getpid() == 1) { // launchd don't has task_for_pid-allow
+		return proc_for_pid_unsafe(pidToFind);
+	}
+	
+	mach_port_t port = MACH_PORT_NULL;
+	kern_return_t kr = task_for_pid(mach_task_self(), pidToFind, &port);
+	if (kr != KERN_SUCCESS || port == MACH_PORT_NULL) {
+		if (port != MACH_PORT_NULL) {
+			mach_port_deallocate(mach_task_self(), port);
+		}
+		return proc_for_pid_unsafe(pidToFind);
+	}
+	
+	uint64_t task_addr = self_task();
+	uint64_t proc_addr = self_proc();
+
+	static uint64_t gTaskBsdInfo = 0;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		uint64_t proc;
+		uint64_t offset = 0;
+		while (true) {
+			proc = kread_ptr(task_addr + offset);
+			if (proc == proc_addr) {
+				gTaskBsdInfo = offset;
+				break;
+			}
+			offset += 8;
+		}
+	});
+
+	uint64_t itk_space = kread_ptr(task_addr + task_offset_itk_space);
+	uint64_t is_table = kread_ptr(itk_space + 0x20ULL);
+	uint64_t port_addr = kread_ptr(is_table + (((uint64_t) port >> 8ULL) * 0x18ULL));
+	uint64_t task = kread_ptr(port_addr + port_offset_kobject);
+	uint64_t proc = kread_ptr(task + gTaskBsdInfo);
+	mach_port_deallocate(mach_task_self(), port);
+	return proc;
 }
 
 uint64_t proc_get_proc_ro(uint64_t proc_ptr)
@@ -267,7 +320,7 @@ uint64_t self_proc(void)
 	static uint64_t gSelfProc = 0;
 	static dispatch_once_t onceToken;
 	dispatch_once (&onceToken, ^{
-		gSelfProc = proc_for_pid(getpid());
+		gSelfProc = proc_for_pid_unsafe(getpid());
 	});
 	return gSelfProc;
 }
@@ -346,6 +399,7 @@ uint64_t self_task(void)
 	static uint64_t gSelfTask = 0;
 	static dispatch_once_t onceToken;
 	dispatch_once (&onceToken, ^{
+		uint64_t _self_proc = self_proc();
 		gSelfTask = proc_get_task(self_proc());
 	});
 	return gSelfTask;
