@@ -9,26 +9,26 @@ import SwiftUI
 import Fugu15KernelExploit
 
 struct PackageManagerSelectionView: View {
-    
+
     @State var selectedNames: [String] = []
-    
+
     var onContinue: () -> Void
-    
+
     var packageManagers: [(String, String)] = [
         ("Sileo", "Sileo"),
         ("Zebra", "Zebra")
     ]
-    
+
     var body: some View {
         VStack {
             Spacer()
-            
+
             HStack(spacing: 64) {
                 ForEach(packageManagers.indices, id: \.self) { pmI in
                     let pm = packageManagers[pmI]
                     let name = pm.0
                     let imageName = pm.1
-                    
+
                     Button {
                         if selectedNames.contains(name) {
                             selectedNames.removeAll(where: { $0 == name })
@@ -42,10 +42,10 @@ struct PackageManagerSelectionView: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 64)
                                 .cornerRadius(14)
-                            
+
                             HStack {
                                 Text(name)
-                                
+
                                 let isSelected = selectedNames.contains(name)
                                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                                     .foregroundColor(isSelected ? .white : .white.opacity(0.5))
@@ -54,20 +54,20 @@ struct PackageManagerSelectionView: View {
                     }
                 }
             }
-            
-            Text("If you are unsure which one to select, use Sileo")
+
+            Text("Prompt_How_To_Select_Package_Manager")
                 .foregroundColor(.white.opacity(0.5))
                 .padding(.vertical)
                 .padding(.horizontal, 64)
                 .multilineTextAlignment(.center)
-            
+
             Spacer()
-            
+
             Button {
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 onContinue()
             } label: {
-                Label(title: { Text("Continue") }, icon: {
+                Label(title: { Text("Button_Continue") }, icon: {
                     Image(systemName: "arrow.right")
                 })
                 .foregroundColor(.white)
@@ -78,7 +78,7 @@ struct PackageManagerSelectionView: View {
                     .cornerRadius(8)
                 )
                 .opacity(selectedNames.isEmpty ? 0.5 : 1)
-                
+
             }
             .disabled(selectedNames.isEmpty)
             .animation(.spring(), value: selectedNames)
@@ -104,7 +104,7 @@ struct PackageManagerSelectionView_Previews: PreviewProvider {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .ignoresSafeArea()
             PackageManagerSelectionView(onContinue: {
-                
+
             })
                 .frame(maxHeight: 300)
         }

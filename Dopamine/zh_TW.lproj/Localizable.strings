@@ -63,3 +63,5 @@
 "Update_Status_Subtitle_Please_Wait" = "請等待完成下載";
 "Update_Status_Subtitle_Restart_Soon" = "裝置即將重新啟動";
 "Popup_Change_Mobile_Password_Title" = "修改 mobile 用戶口令";
+"Prompt_How_To_Select_Package_Manager" = "若不確定使用哪一個，請選擇 Sileo。";
+"Button_Continue" = "繼續";

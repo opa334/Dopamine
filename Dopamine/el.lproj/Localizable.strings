@@ -127,3 +127,7 @@
 "Update_Status_Subtitle_Please_Wait" = "Παρακαλώ αναμείνατε την ολοκλήρωση λήψης των αρχείων";
 
 "Update_Status_Subtitle_Restart_Soon" = "Η συσκευή θα επανεκκινήσει σύντομα";
+
+"Prompt_How_To_Select_Package_Manager" = "If you are unsure which one to select, use Sileo.";
+
+"Button_Continue" = "Continue";

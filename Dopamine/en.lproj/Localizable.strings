@@ -127,3 +127,7 @@
 "Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
 
 "Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace Reboot Required";
+
+"Prompt_How_To_Select_Package_Manager" = "If you are unsure which one to select, use Sileo.";
+
+"Button_Continue" = "Continue";
