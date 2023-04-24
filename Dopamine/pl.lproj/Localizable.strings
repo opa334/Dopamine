@@ -10,11 +10,11 @@
 
 "Button_Remove_Jailbreak" = "Usuń Jailbreak";
 
-"Button_Set_Mobile_Password" = "Ustaw Hasło Mobileu";
+"Button_Set_Mobile_Password" = "Ustaw hasło telefonu";
 
-"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+"Popup_Change_Mobile_Password_Message" = "Ustaw hasło swojego urządzenia, które można również użyć do uzyskania dostępu do konta root za pomocą sudo. Jeśli chcesz ustawić hasło roota, możesz to zrobić w wierszu poleceń, używając komendy \"sudo passwd root\"";
 
-"Button_Set" = "Set";
+"Button_Set" = "Ustaw";
 
 "Button_Show_Logs_Title" = "Pokaż Logi";
 
@@ -116,14 +116,14 @@
 
 "Update_Status_Subtitle_Restart_Soon" = "Urządzenie wkrótce uruchomi się ponownie";
 
-"Alert_Button_Uninstall" = "Uninstall";
+"Alert_Button_Uninstall" = "Odinstaluj";
 
-"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+"Alert_Tweak_Injection_Toggled_Body" = "Aby zmiany zostały zastosowane, musisz zrestartować Userspace. Czy chcesz zrestartować urządzenie?";
 
-"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
+"Popup_Change_Mobile_Password_Title" = "Zmień hasło do telefonu";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+"Settings_Remove_Jailbreak_Alert_Body" = "Usunięcie jailbreak spowoduje usunięcie wszystkich plików związanych z jailbreakiem, ale wszystkie zwykłe aplikacje, pliki i dane zostaną zachowane. Jesteś pewien, że chcesz kontynuować? Tej czynności nie można cofnąć.";
 
-"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+"Settings_Remove_Jailbreak_Alert_Title" = "Usuń Jailbreak";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Ponowne uruchomienie userspace wymagane";
