@@ -355,7 +355,10 @@ __attribute__((constructor)) static void initializer(void)
 		if (debugErr == 0) {
 			if(access("/var/jb/usr/lib/TweakLoader.dylib", F_OK) == 0)
 			{
-				dlopen_hook("/var/jb/usr/lib/TweakLoader.dylib", RTLD_NOW);
+				void *tweakLoaderHandle = dlopen_hook("/var/jb/usr/lib/TweakLoader.dylib", RTLD_NOW);
+				if (tweakLoaderHandle != NULL) {
+					dlclose(tweakLoaderHandle);
+				}
 			}
 		}
 	}
