@@ -1,6 +1,6 @@
 "Bootstrapping" = "Bootstrapping";
 
-"Button_Cancel" = "Hủy";
+"Button_Cancel" = "Hủy bỏ";
 
 "Button_Hide_Jailbreak" = "Ẩn Jailbreak";
 
@@ -12,9 +12,9 @@
 
 "Button_Set_Mobile_Password" = "Đặt mật khẩu mobile";
 
-"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+"Popup_Change_Mobile_Password_Message" = "Đặt mật khẩu thiết bị của bạn, điều này cũng có thể được sử dụng cho truy cập root bằng cách sử dụng "sudo". Nếu bạn muốn đặt mật khẩu root, bạn có thể làm điều đó từ mobile shell bằng cách sử dụng \"sudo passwd root\"";
 
-"Button_Set" = "Set";
+"Button_Set" = "Đặt";
 
 "Button_Show_Logs_Title" = "Hiện tệp Log";
 
@@ -30,13 +30,13 @@
 
 "Changelog_Unavailable_Text" = "Không có Log thay đổi";
 
-"Context_Menu_Copy_To_Clipboard" = "Sao chép vào Bộ nhớ đệm";
+"Context_Menu_Copy_To_Clipboard" = "Chép vào bộ nhớ tạm";
 
 "Credits_Button_License" = "Giấy phép";
 
 "Credits_Button_Source_Code" = "Mã nguồn";
 
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine bản %@\n%@";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine phiên bản %@\n%@";
 
 "Credits_Header_Special_Thanks" = "Đặc biệt cảm ơn:";
 
@@ -46,9 +46,9 @@
 
 "Finalizing Bootstrap" = "Đang hoàn thiện Bootstrap";
 
-"Gaining r/w" = "Đang lấy quyền r/w";
+"Gaining r/w" = "Thu được quyền r/w";
 
-"Hint_Hide_Jailbreak" = "\"Ẩn Jailbreak\" sẽ tạm thời xóa các tệp tin liên quan đến Jailbreak cho đến khi bạn Jailbreak lại";
+"Hint_Hide_Jailbreak" = "\"Ẩn Jailbreak\" tạm thời loại bỏ các tệp liên quan đến jailbreak cho đến khi jailbreak tiếp theo được thực hiện";
 
 "Initializing Environment" = "Khởi tạo \"Môi trường\"";
 
@@ -56,9 +56,9 @@
 
 "Jailbreak_Done" = "Thành công!";
 
-"Launching kexploitd" = "Đang chạy kexploitd";
+"Launching kexploitd" = "Khởi chạy kexploitd";
 
-"Launching oobPCI" = "Đang chạy oobPCI";
+"Launching oobPCI" = "Khởi chạy oobPCI";
 
 "Loading Basebin Trustcache" = "Đang tải Basebin Trustcache";
 
@@ -70,15 +70,15 @@
 
 "Settings_iDownload" = "iDownload";
 
-"Settings_Tweak_Injection" = "Bật Tweak Injection";
+"Settings_Tweak_Injection" = "Tweak Injection";
 
 "Settings_Verbose_Logs" = "Log Verbose";
 
-"Patchfinding" = "Đang tìm bản vá";
+"Patchfinding" = "Patchfinding";
 
 "Rebuilding TrustCache" = "Đang build lại TrustCache";
 
-"Refreshing Icon Cache" = "Đang làm mới bộ nhớ đệm icon";
+"Refreshing Icon Cache" = "Đang làm mới Icon Cache";
 
 "Settings_Footer_Device_Bootstrapped" = "Thiết bị đã được bootstrap";
 
@@ -88,7 +88,7 @@
 
 "Starting jailbreakd" = "Đang chạy jailbreakd";
 
-"Starting Launch Daemons" = "Đang chạy các Daemons";
+"Starting Launch Daemons" = "Đang khởi chạy Daemons";
 
 "Status_Title_Jailbreaking" = "Đang Jailbreak";
 
@@ -102,7 +102,7 @@
 
 "Title_Changelog" = "Log thay đổi";
 
-"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
+"Title_Made_By" = "Do opa334, évelyne phát triển\nUI bởi sourceloc\nDựa trên Fugu15";
 
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
@@ -116,14 +116,14 @@
 
 "Update_Status_Subtitle_Restart_Soon" = "Thiết bị sẽ khởi động lại";
 
-"Alert_Button_Uninstall" = "Uninstall";
+"Alert_Button_Uninstall" = "Gỡ cài đặt";
 
-"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+"Alert_Tweak_Injection_Toggled_Body" = "Để thay đổi được áp dụng, Userspace phải khởi động lại. Bạn có muốn khởi động lại không?";
 
-"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
+"Popup_Change_Mobile_Password_Title" = "Đổi mật khẩu di động";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+"Settings_Remove_Jailbreak_Alert_Body" = "Gỡ cài đặt jailbreak sẽ xóa tất cả các tệp liên quan đến jailbreak, nhưng tất cả các ứng dụng, tệp và dữ liệu thông thường sẽ được giữ lại. Bạn có chắc muốn tiếp tục? Hành động này không thể được hoàn tác.";
 
-"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+"Settings_Remove_Jailbreak_Alert_Title" = "Xóa Jailbreak";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Yêu cầu khởi động lại Userspace";
