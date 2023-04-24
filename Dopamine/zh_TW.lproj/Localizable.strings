@@ -7,8 +7,8 @@
 "Button_Jailbreak_Title" = "越獄";
 "Button_Remove_Jailbreak" = "清除越獄";
 "Button_Set_Mobile_Password" = "設定 mobile 用戶口令";
-"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
-"Button_Set" = "Set";
+"Popup_Change_Mobile_Password_Message" = "設定裝置上 mobile 用戶之口令。該口令亦可用於經由 sudo 命令訪問 root 用戶權限。若想要修改 root 用戶口令，可在裝置 shell 中執行 \"sudo passwd root\"。";
+"Button_Set" = "設定";
 "Button_Show_Logs_Title" = "展現日誌";
 "Button_Unhide_Jailbreak" = "解除隱藏越獄";
 "Button_Update" = "更新";
