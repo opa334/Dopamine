@@ -8,11 +8,12 @@ BOOL preferencePlistNeedsRedirection(NSString *plistPath)
 
 	NSString *plistName = plistPath.lastPathComponent;
 
-	if ([plistName hasPrefix:@"com.apple."] || [plistName hasPrefix:@"systemgroup.com.apple."]) return NO;
+	if ([plistName hasPrefix:@"com.apple."] || [plistName hasPrefix:@"systemgroup.com.apple."] || [plistName hasPrefix:@"group.com.apple."]) return NO;
 
 	NSArray *additionalSystemPlistNames = @[
 		@".GlobalPreferences.plist",
 		@".GlobalPreferences_m.plist",
+		@"bluetoothaudiod.plist",
 		@"NetworkInterfaces.plist",
 		@"OSThermalStatus.plist",
 		@"preferences.plist",
@@ -31,6 +32,7 @@ BOOL preferencePlistNeedsRedirection(NSString *plistPath)
 		@"languageassetd.plist",
 		@"ptpcamerad.plist",
 		@"com.google.gmp.measurement.monitor.plist",
+		@"com.google.gmp.measurement.plist",
 	];
 
 	return ![additionalSystemPlistNames containsObject:plistName];
