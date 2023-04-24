@@ -118,7 +118,7 @@
 
 "Alert_Button_Uninstall" = "Uninstall";
 
-"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+"Alert_Tweak_Injection_Toggled_Body" = "In order for changes to apply, Userspace must be rebooted. Do you want to reboot now?";
 
 "Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
 
