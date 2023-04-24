@@ -14,11 +14,11 @@
 
 "Button_Remove_Jailbreak" = "Αφαίρεση Jailbreak";
 
-"Button_Set_Mobile_Password" = "Εισαγωγή κωδικού Mobile";
+"Button_Set_Mobile_Password" = "Ορισμός κωδικού χρήστη mobile";
 
-"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+"Popup_Change_Mobile_Password_Message" = "Όρισε τον κωδικό του χρήστη mobile της συσκευής, ο οποίος μπορεί να χρησιμοποιηθεί και για πρόσβαση ως root χρησιμοποιώντας την εντολή sudo. Αν θέλεις να ορίσεις τον κωδικό του χρήστη root, μπορείς να το κάνεις από mobile shell χρησιμοποιώντας την εντολή \"sudo passwd root\"";
 
-"Button_Set" = "Set";
+"Button_Set" = "Ορισμός";
 
 "Button_Show_Logs_Title" = "Εμφάνιση αρχείου καταγραφής";
 
@@ -80,7 +80,7 @@
 
 "Patchfinding" = "Patchfinding";
 
-"Popup_Change_Mobile_Password_Title" = "Ορισμός κωδικού Mobile";
+"Popup_Change_Mobile_Password_Title" = "Ορισμός κωδικού χρήστη mobile";
 
 "Rebuilding TrustCache" = "Ανανέωση TrustCache";
 
@@ -114,7 +114,7 @@
 
 "Title_Changelog" = "Αρχείο αλλαγών";
 
-"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
+"Title_Made_By" = "από opa334, évelyne\Γραφικό περιβάλλον από sourceloc\nΒασισμένο στο Fugu15";
 
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
