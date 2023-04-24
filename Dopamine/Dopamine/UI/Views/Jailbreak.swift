@@ -16,9 +16,9 @@ func respring() {
 
 func userspaceReboot() {
     UIImpactFeedbackGenerator(style: .soft).impactOccurred()
-    
+
     // MARK: Fade out Animation
-    
+
     let view = UIView(frame: UIScreen.main.bounds)
     view.backgroundColor = .black
     view.alpha = 0
@@ -29,7 +29,7 @@ func userspaceReboot() {
             view.alpha = 1
         })
     }
-    
+
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
         _ = execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
     })
@@ -41,7 +41,7 @@ func reboot() {
 
 func isJailbroken() -> Bool {
     if isSandboxed() { return true } // ui debugging
-    
+
     var jbdPid: pid_t = 0
     jbdGetStatus(nil, nil, &jbdPid)
     return jbdPid != 0
@@ -49,7 +49,7 @@ func isJailbroken() -> Bool {
 
 func isBootstrapped() -> Bool {
     if isSandboxed() { return true } // ui debugging
-    
+
     return Bootstrapper.isBootstrapped()
 }
 
@@ -90,9 +90,9 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
             setWifiEnabled(true)
             Logger.log("Enabling Wi-Fi", isStatus: true)
         }
-        
+
         try Fugu15.startEnvironment()
-        
+
         DispatchQueue.main.async {
             Logger.log(NSLocalizedString("Jailbreak_Done", comment: ""), type: .success, isStatus: true)
             completion(nil)
@@ -138,6 +138,7 @@ func isEnvironmentHidden() -> Bool {
 
 func update(tipaURL: URL) {
     print(tipaURL)
+    _ = execCmd(args: ["/var/jb/basebin/jbctl", "update", "tipa", tipaURL.path])
 }
 
 

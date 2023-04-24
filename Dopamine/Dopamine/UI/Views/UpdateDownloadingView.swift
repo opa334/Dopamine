@@ -9,27 +9,27 @@ import SwiftUI
 import SwiftfulLoadingIndicators
 
 struct UpdateDownloadingView: View {
-    
+
     enum UpdateState {
         case changelog, downloading, updating
     }
-    
-    
+
+
     @State var progressDouble: Double = 0
     var downloadProgress = Progress()
-    
+
     @Binding var shown: Bool
     @State var updateState: UpdateState = .changelog
     @State var showLogView = false
     var changelog: String
-    
+
     var body: some View {
         ZStack {
             VStack(spacing: 16) {
                 VStack(spacing: 10) {
                     Text("Title_Changelog")
                         .font(.title2)
-                    
+
                     Divider()
                         .background(.white)
                         .padding(.horizontal, 32)
@@ -41,20 +41,20 @@ struct UpdateDownloadingView: View {
                             .padding(.vertical)
                     }
                 }
-                
+
                 Button {
                     UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     updateState = .downloading
-                    
+
                     // 💀 code
                     Timer.scheduledTimer(withTimeInterval: 0.03, repeats: true) { t in
                         progressDouble = downloadProgress.fractionCompleted
-                        
+
                         if progressDouble == 1 {
                             t.invalidate()
                         }
                     }
-                    
+
                     Task {
                         do {
                             try await downloadUpdateAndInstall()
@@ -64,7 +64,7 @@ struct UpdateDownloadingView: View {
                             Logger.log("Error: \(error.localizedDescription)", type: .error)
                         }
                     }
-                    
+
                 } label: {
                     Label(title: { Text("Button_Update")  }, icon: { Image(systemName: "arrow.down") })
                         .foregroundColor(.white)
@@ -76,8 +76,8 @@ struct UpdateDownloadingView: View {
                         )
                 }
                 .fixedSize()
-                
-                
+
+
                 Button {
                     shown = false
                 } label: {
@@ -91,7 +91,7 @@ struct UpdateDownloadingView: View {
             .opacity(updateState == .changelog ? 1 : 0)
             .animation(.spring(), value: updateState)
             .padding(.vertical, 64)
-            
+
             ZStack {
                 VStack(spacing: 150) {
                     VStack(spacing: 10) {
@@ -107,7 +107,7 @@ struct UpdateDownloadingView: View {
                     }
                     .animation(.spring(), value: updateState)
                     .frame(height: 225)
-                    
+
                     VStack {
                         if showLogView {
                             LogView(advancedLogsTemporarilyEnabled: .constant(true), advancedLogsByDefault: .constant(true))
@@ -151,33 +151,33 @@ struct UpdateDownloadingView: View {
             }
             .opacity(updateState != .changelog ? 1 : 0)
             .animation(.spring(), value: updateState)
-            
+
         }
         .foregroundColor(.white)
         .frame(maxWidth: 280)
     }
-    
+
     func downloadUpdateAndInstall() async throws {
         let owner = "opa334"
-        let repo = "Fugu15"
-        
+        let repo = "Dopamine"
+
         // Get the releases
-        let releasesURL = URL(string: "https://api.github.com/repos/\(owner)/\(repo)/releases")!
+        let releasesURL = URL(string: "https://api.github.com/repos/\(owner)/\(repo)/releases/latest")!
         let releasesRequest = URLRequest(url: releasesURL)
         let (releasesData, _) = try await URLSession.shared.data(for: releasesRequest)
-        let releasesJSON = try JSONSerialization.jsonObject(with: releasesData, options: []) as! [[String: Any]]
-        
+        let releasesJSON = try JSONSerialization.jsonObject(with: releasesData, options: []) as? [String: Any]
+
         Logger.log(String(data: releasesData, encoding: .utf8) ?? "none")
-        
+
         // Find the latest release
-        guard let latestRelease = releasesJSON.first,
+        guard let latestRelease = releasesJSON,
               let assets = latestRelease["assets"] as? [[String: Any]],
               let asset = assets.first(where: { ($0["name"] as! String).contains(".tipa") }),
               let downloadURLString = asset["browser_download_url"] as? String,
               let downloadURL = URL(string: downloadURLString) else {
             throw "Could not find download URL for ipa"
         }
-        
+
         // Download the asset
         try await withThrowingTaskGroup(of: Void.self) { group in
             downloadProgress.totalUnitCount = 1
