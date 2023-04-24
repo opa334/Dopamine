@@ -119,6 +119,7 @@ int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid, bool mightHaveDirtyPag
 			}
 			mach_port_deallocate(mach_task_self(), parentTaskPort);
 		}
+		NSLog(@"fork fixup done for %@", childPath);
 		return r;
 	}
 	else {

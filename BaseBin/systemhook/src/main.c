@@ -362,13 +362,13 @@ __attribute__((constructor)) static void initializer(void)
 	freeExecutablePath();
 }
 
-void _os_crash(void);
+/*void _os_crash(void);
 void _os_crash_hook(void)
 {
 	// Normally this function is used to trigger a userspace panic
 	// We overwrite it to do a userspace reboot instead, so that the jailbreak environment stays alive
 	reboot3(RB2_USERREBOOT);
-}
+}*/
 
 DYLD_INTERPOSE(posix_spawn_hook, posix_spawn)
 DYLD_INTERPOSE(posix_spawnp_hook, posix_spawnp)
@@ -384,4 +384,4 @@ DYLD_INTERPOSE(dlopen_audited_hook, dlopen_audited)
 DYLD_INTERPOSE(dlopen_preflight_hook, dlopen_preflight)
 DYLD_INTERPOSE(fork_hook, fork)
 DYLD_INTERPOSE(vfork_hook, vfork)
-DYLD_INTERPOSE(_os_crash_hook, _os_crash)
+//DYLD_INTERPOSE(_os_crash_hook, _os_crash)
