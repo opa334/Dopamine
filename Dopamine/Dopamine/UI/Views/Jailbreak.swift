@@ -140,6 +140,18 @@ func update(tipaURL: URL) {
     print(tipaURL)
 }
 
+func installedEnvironmentVersion() -> String {
+    return "implementationGoesHere"
+}
+
+func isInstalledEnvironmentVersionMismatching() -> Bool {
+    return installedEnvironmentVersion() != Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+}
+
+func updateEnvironment() {
+    
+}
+
 
 // debugging
 func isSandboxed() -> Bool {
