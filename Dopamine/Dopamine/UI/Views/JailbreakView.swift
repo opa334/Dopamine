@@ -130,11 +130,11 @@ struct JailbreakView: View {
                     }
                     
                     UpdateDownloadingView(shown: $showingUpdatePopup, changelog: updateChangelog ?? NSLocalizedString("Changelog_Unavailable_Text", comment: "")/*"""
-        Added support for iOS 15.0 - 15.1.
-        Improved the app's compatibility with various iOS devices.
-        Fixed bugs related to the installation of certain tweaks and packages.
-        Added new options for customizing the app's interface and settings.
-        """*/)
+                                                                                                                                                                 Added support for iOS 15.0 - 15.1.
+                                                                                                                                                                 Improved the app's compatibility with various iOS devices.
+                                                                                                                                                                 Fixed bugs related to the installation of certain tweaks and packages.
+                                                                                                                                                                 Added new options for customizing the app's interface and settings.
+                                                                                                                                                                 """*/)
                     .opacity(showingUpdatePopup ? 1 : 0)
                     .animation(.spring().speed(1.5), value: showingUpdatePopup)
                 }
@@ -153,7 +153,7 @@ struct JailbreakView: View {
                 }
             }
         }
-        .alert("🤑 NEW SPONSORSHIP OFFER 🤑 \n\n⚠️ Hello iOS \(UIDevice.current.systemVersion) user! 💵 You've just received a new\n\nPHONE REBEL CASE\n\nsponsorship offer 💰💰💰 Would you like to accept it? 💸", isPresented: $aprilFirstAlert) {
+        .alert("🤑 NEW SPONSORSHIP OFFER 🤑 \n\n⚠️ Hello iOS \(UIDevice.current.systemVersion) user! 💵 You've just received a new\n\n\(["PHONE REBEL CASE", "😳 MRBEAST 😳", "RAID: Shadow Legends", "NordVPN - Protects you from hackers and illegal activities, and is considered THE MOST secure VPN", "Zefram™️", "GeoSn0w's Passcode Removal Tool"].randomElement()!)\n\nsponsorship offer 💰💰💰 Would you like to accept it? 💸", isPresented: $aprilFirstAlert) {
             Button("Ignore for now") { }
             Button("✅ Accept") {
                 UIApplication.shared.open(.init(string: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")!)
@@ -240,7 +240,7 @@ struct JailbreakView: View {
         VStack {
             Button {
                 UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-
+                
                 if (dopamineDefaults().array(forKey: "selectedPackageManagers") as? [String] ?? []).isEmpty && !isBootstrapped() {
                     jailbreakingProgress = .selectingPackageManager
                 } else {
@@ -318,21 +318,21 @@ struct JailbreakView: View {
     var endButtons: some View {
         switch jailbreakingProgress {
         case .finished:
-//            Button {
-//                userspaceReboot()
-//            } label: {
-//                Label(title: { Text("Reboot Userspace (Finish)") }, icon: {
-//                    Image(systemName: "arrow.clockwise")
-//                })
-//                .foregroundColor(.white)
-//                .padding()
-//                .frame(maxWidth: 280, maxHeight: jailbreakingError != nil ? 0 : nil)
-//                .background(MaterialView(.light)
-//                    .opacity(0.5)
-//                    .cornerRadius(8)
-//                )
-//                .opacity(jailbreakingError != nil ? 0 : 1)
-//            }
+            //            Button {
+            //                userspaceReboot()
+            //            } label: {
+            //                Label(title: { Text("Reboot Userspace (Finish)") }, icon: {
+            //                    Image(systemName: "arrow.clockwise")
+            //                })
+            //                .foregroundColor(.white)
+            //                .padding()
+            //                .frame(maxWidth: 280, maxHeight: jailbreakingError != nil ? 0 : nil)
+            //                .background(MaterialView(.light)
+            //                    .opacity(0.5)
+            //                    .cornerRadius(8)
+            //                )
+            //                .opacity(jailbreakingError != nil ? 0 : 1)
+            //            }
             if !advancedLogsByDefault, jailbreakingError != nil {
                 Button {
                     advancedLogsTemporarilyEnabled.toggle()
@@ -387,7 +387,7 @@ struct JailbreakView: View {
         dpDefaults.set(dpDefaults.integer(forKey: "totalJailbreaks") + 1, forKey: "totalJailbreaks")
         DispatchQueue(label: "Dopamine").async {
             sleep(1)
-
+            
             jailbreak { e in
                 jailbreakingProgress = .finished
                 jailbreakingError = e
@@ -415,7 +415,7 @@ struct JailbreakView: View {
     
     func checkForUpdates() async throws {
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-           
+            
             let owner = "opa334"
             let repo = "Dopamine"
             
