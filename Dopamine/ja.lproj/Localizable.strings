@@ -1,129 +1,195 @@
-"Bootstrapping" = "Bootstrapをインストール中";
+
+
+"Alert_Button_Uninstall" = "アンインストール";
+
+
+"Alert_Tweak_Injection_Toggled_Body" = "変化が完了になるために、ユーザースペースを再起動することが必要です。今再起動したいですか？";
+
+
+"Bootstrapping" = "ブートストラップをインストール中";
+
 
 "Button_Cancel" = "キャンセル";
 
+
 "Button_Hide_Jailbreak" = "Jailbreakを隠す";
+
 
 "Button_Hide_Logs_Title" = "ログを隠す";
 
-"Button_Jailbreak_Title" = "Jailbreak";
+
+"Button_Jailbreak_Title" = "Jailbreakします";
+
 
 "Button_Remove_Jailbreak" = "Jailbreak環境を削除";
 
-"Button_Set_Mobile_Password" = "Mobileのパスワードを設定";
 
-"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+"Button_Set" = "セットします";
 
-"Button_Set" = "Set";
+
+"Button_Set_Mobile_Password" = "モバイルパスワードを設定";
+
 
 "Button_Show_Logs_Title" = "ログを表示";
 
+
 "Button_Unhide_Jailbreak" = "Jailbreak環境を戻す";
+
 
 "Button_Update" = "アップデート";
 
+
 "Button_Update_Available" = "アップデートがあります";
+
 
 "Bypassing PAC" = "PAC bypassを実行中";
 
+
 "Bypassing PPL" = "PPL bypassを実行中";
+
 
 "Changelog_Unavailable_Text" = "更新履歴は利用できません";
 
+
 "Context_Menu_Copy_To_Clipboard" = "クリップボードにコピー";
+
 
 "Credits_Button_License" = "ライセンス";
 
+
 "Credits_Button_Source_Code" = "ソースコード";
 
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
 
-"Credits_Header_Special_Thanks" = "Special thanks:";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine バージョン %@\n%@";
 
-"Credits_Made_By" = "Made by by opa334, évelyne";
 
-"Credits_Made_By_Subheadline" = "UI by sourcelocation\nLogo and icon by xerus";
+"Credits_Header_Special_Thanks" = "スペシャル・サンクス：:";
+
+
+"Credits_Made_By" = "作者： opa334, évelyne";
+
+
+"Credits_Made_By_Subheadline" = "UIの作者： sourcelocation\nロゴとアイコンの作者： xerus";
+
 
 "Finalizing Bootstrap" = "Bootstrapのファイナライズ中";
 
+
 "Gaining r/w" = "r/wを取得中";
 
-"Hint_Hide_Jailbreak" = "\"Jailbreakを隠す\"は、次のjailbreakの実行までjailbreak関連のファイルを一時的に隠します";
+
+"Hint_Hide_Jailbreak" = "「Jailbreakを隠す」は、次のjailbreakの実行までjailbreak関連のファイルを一時的に隠します";
+
 
 "Initializing Environment" = "Jailbreak環境の初期設定中";
 
+
 "Initializing System Hook" = "System Hookの初期設定中";
+
 
 "Jailbreak_Done" = "完了！";
 
+
 "Launching kexploitd" = "kexploitdを起動中";
+
 
 "Launching oobPCI" = "oobPCIを起動中";
 
+
 "Loading Basebin Trustcache" = "BasebinのTrustCacheをロード中";
+
 
 "Menu_Credits_Title" = "クレジット";
 
+
 "Menu_Reboot_Userspace_Title" = "Userspaceを再起動";
+
 
 "Menu_Restart_SpringBoard_Title" = "SpringBoardを再起動";
 
-"Settings_iDownload" = "iDownload";
-
-"Settings_Tweak_Injection" = "Tweak Injection";
-
-"Settings_Verbose_Logs" = "詳細なログ";
-
-"Patchfinding" = "Patchfinderを実行中";
-
-"Rebuilding TrustCache" = "TrustCacheを再構築中";
-
-"Refreshing Icon Cache" = "アイコンキャッシュを更新中";
-
-"Settings_Footer_Device_Bootstrapped" = "bootstrapはインストールされています";
-
-"Settings_Footer_Device_Not_Bootstrapped" = "bootstrapはインストールされていません";
 
 "Menu_Settings_Title" = "設定";
 
-"Starting jailbreakd" = "jailbreakdを開始中";
+
+"Patchfinding" = "Patchfinderを実行中";
+
+
+"Popup_Change_Mobile_Password_Message" = "あなたのデバイスのモバイルパスワードを設定してください。sudoを使って、モバイルパスワードでデバイスのrootがアクセスできます。rootのパスワードを設定したいなら、モバイルshellで「sudo passwd root」を入れたらできます。";
+
+
+"Popup_Change_Mobile_Password_Title" = "モバイルパスワードを変化します";
+
+
+"Rebuilding TrustCache" = "TrustCacheを再構築中";
+
+
+"Refreshing Icon Cache" = "アイコンキャッシュを更新中";
+
+
+"Settings_Footer_Device_Bootstrapped" = "bootstrapはインストールされています";
+
+
+"Settings_Footer_Device_Not_Bootstrapped" = "bootstrapはインストールされていません";
+
+
+"Settings_Remove_Jailbreak_Alert_Body" = "Jailbreakを取り除くことは全部のjailbreak関係ファイルを消しますが、普通のアプリやファイルやデータが消しません。本当にjailbreakの全てのファイルを取り除きたいですか？元に返せません。";
+
+
+"Settings_Remove_Jailbreak_Alert_Title" = "Jailbreakを取り除きます";
+
+
+"Settings_Tweak_Injection" = "ツィークインジェクション";
+
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "ユーザースペースの再起動は必要です";
+
+
+"Settings_Verbose_Logs" = "詳細なログ";
+
+
+"Settings_iDownload" = "iDownload";
+
 
 "Starting Launch Daemons" = "Launch Daemonを開始中";
 
-"Status_Title_Jailbreaking" = "Jailbreaking";
 
-"Status_Title_Jailbroken" = "Jailbroken";
+"Starting jailbreakd" = "jailbreakdを開始中";
+
+
+"Status_Title_Jailbreaking" = "Jailbreak中";
+
+
+"Status_Title_Jailbroken" = "Jailbreakされました";
+
 
 "Status_Title_Select_Package_Managers" = "パッケージマネージャーを選択";
 
+
 "Status_Title_Unsuccessful" = "失敗";
+
 
 "Success_Rate %@%% (%lld/%lld)" = "成功率: %@%% (%lld/%lld)";
 
+
 "Title_Changelog" = "更新履歴";
 
-"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
+
+"Title_Made_By" = "作者： opa334, évelyne\nUIの作者： sourceloc\nFugu15基づくきました";
+
 
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
+
 "Update_Log_Hint_Scrollable" = "ログビューはスクロール可能です";
+
 
 "Update_Status_Downloading" = "アップデートをダウンロード中...";
 
+
 "Update_Status_Installing" = "アップデートをインストール中...";
+
 
 "Update_Status_Subtitle_Please_Wait" = "ファイルのダウンロードが完了するまでお待ちください";
 
+
 "Update_Status_Subtitle_Restart_Soon" = "デバイスはすぐに再起動します";
-
-"Alert_Button_Uninstall" = "Uninstall";
-
-"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
-
-"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
-
-"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
-
-"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
-
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
