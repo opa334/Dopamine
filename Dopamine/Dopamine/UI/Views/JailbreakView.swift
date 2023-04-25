@@ -57,7 +57,7 @@ struct JailbreakView: View {
         jailbreakingProgress != .idle
     }
     
-    @AppStorage("sfw", store: dopamineDefaults()) var sfw = false
+    var requiresEnvironmentUpdate = isInstalledEnvironmentVersionMismatching()
     
     var menuOptions: [MenuOption] = []
     
@@ -249,7 +249,7 @@ struct JailbreakView: View {
                 print(jailbreakingProgress)
             } label: {
                 Label(title: {
-                    if !isInstalledEnvironmentVersionMismatching() {
+                    if !requiresEnvironmentUpdate {
                         if isJailbroken() {
                             Text("Status_Title_Jailbroken")
                         } else {
@@ -273,7 +273,7 @@ struct JailbreakView: View {
                     }
                     
                 }, icon: {
-                    if !isInstalledEnvironmentVersionMismatching() {
+                    if !requiresEnvironmentUpdate {
                         ZStack {
                             switch jailbreakingProgress {
                             case .jailbreaking:
@@ -298,7 +298,7 @@ struct JailbreakView: View {
                 .padding()
                 .frame(maxWidth: isJailbreaking ? .infinity : 280)
             }
-            .disabled(isJailbroken() || isJailbreaking || isInstalledEnvironmentVersionMismatching())
+            .disabled(isJailbroken() || isJailbreaking || requiresEnvironmentUpdate)
             .drawingGroup()
             
             if jailbreakingProgress == .finished || jailbreakingProgress == .jailbreaking {
