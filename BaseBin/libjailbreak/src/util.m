@@ -59,7 +59,7 @@ __TEXT_EXEC:__text:FFFFFFF007AD072C                 RET
 
 In iPad 8 15.4.1 kernel
 */
-uint64_t kpacda(uint64_t pointer, uint64_t modifier)
+/*uint64_t kpacda(uint64_t pointer, uint64_t modifier)
 {
 	uint64_t kernelslide = bootInfo_getUInt64(@"kernelslide");
 
@@ -84,7 +84,7 @@ uint64_t kptr_sign(uint64_t kaddr, uint64_t pointer, uint16_t salt)
 void kwrite_ptr(uint64_t kaddr, uint64_t pointer, uint16_t salt)
 {
 	kwrite64(kaddr, kptr_sign(kaddr, pointer, salt));
-}
+}*/
 
 uint64_t proc_get_task(uint64_t proc_ptr)
 {
@@ -108,20 +108,33 @@ void proc_iterate(void (^itBlock)(uint64_t, BOOL*))
 	}
 }
 
-uint64_t proc_for_pid(pid_t pidToFind)
+uint64_t proc_for_pid(pid_t pidToFind, bool *needsRelease)
 {
 	__block uint64_t foundProc = 0;
 
-	proc_iterate(^(uint64_t proc, BOOL* stop) {
-		pid_t pid = proc_get_pid(proc);
-		if(pid == pidToFind)
-		{
-			foundProc = proc;
-			*stop = YES;
-		}
-	});
-	
+	if (gKCallStatus == kKcallStatusFinalized) {
+		foundProc = kcall(bootInfo_getSlidUInt64(@"proc_find"), 1, (uint64_t[]){pidToFind});
+		if (needsRelease) *needsRelease = foundProc != 0;
+	}
+	else {
+		proc_iterate(^(uint64_t proc, BOOL* stop) {
+			pid_t pid = proc_get_pid(proc);
+			if(pid == pidToFind)
+			{
+				foundProc = proc;
+				*stop = YES;
+			}
+		});
+		if (needsRelease) *needsRelease = false;
+	}
+
 	return foundProc;
+}
+
+int proc_rele(uint64_t proc)
+{
+	if (!proc || gKCallStatus != kKcallStatusFinalized) return -1;
+	return kcall(bootInfo_getSlidUInt64(@"proc_rele"), 1, (uint64_t[]){proc});
 }
 
 uint64_t proc_get_proc_ro(uint64_t proc_ptr)
@@ -267,7 +280,12 @@ uint64_t self_proc(void)
 	static uint64_t gSelfProc = 0;
 	static dispatch_once_t onceToken;
 	dispatch_once (&onceToken, ^{
-		gSelfProc = proc_for_pid(getpid());
+		bool needsRelease = false;
+		gSelfProc = proc_for_pid(getpid(), &needsRelease);
+		if (needsRelease) {
+			// decrement ref count again, we assume self_proc will exist for the whole lifetime of this process
+			proc_rele(gSelfProc);
+		}
 	});
 	return gSelfProc;
 }
@@ -766,7 +784,8 @@ NSMutableDictionary *proc_dump_entitlements(uint64_t proc_ptr)
 bool proc_set_debugged(pid_t pid)
 {
 	if (pid > 0) {
-		uint64_t proc = proc_for_pid(pid);
+		bool proc_needs_release = false;
+		uint64_t proc = proc_for_pid(pid, &proc_needs_release);
 		if (proc != 0) {
 			uint64_t task = proc_get_task(proc);
 			uint64_t vm_map = task_get_vm_map(task);
@@ -790,6 +809,8 @@ bool proc_set_debugged(pid_t pid)
 			printf("after f1: %X, f2: %X\n", f1, f2);
 			kwrite32(vm_map + 0x94, f1);
 			kwrite32(vm_map + 0x98, f2);*/
+
+			if (proc_needs_release) proc_rele(proc);
 		}
 	}
 	return 0;
@@ -809,7 +830,8 @@ int64_t proc_fix_setuid(pid_t pid)
 	struct stat sb;
 	if(stat(procPath.fileSystemRepresentation, &sb) == 0) {
 		if (S_ISREG(sb.st_mode) && (sb.st_mode & (S_ISUID | S_ISGID))) {
-			uint64_t proc = proc_for_pid(pid);
+			bool proc_needs_release = false;
+			uint64_t proc = proc_for_pid(pid, &proc_needs_release);
 			uint64_t ucred = proc_get_ucred(proc);
 			if ((sb.st_mode & (S_ISUID))) {
 				proc_set_svuid(proc, sb.st_uid);
@@ -826,6 +848,7 @@ int64_t proc_fix_setuid(pid_t pid)
 				p_flag &= ~P_SUGID;
 				proc_set_p_flag(proc, p_flag);
 			}
+			if (proc_needs_release) proc_rele(proc);
 			return 0;
 		}
 		else {

