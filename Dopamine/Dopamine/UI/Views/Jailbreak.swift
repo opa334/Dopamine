@@ -119,7 +119,7 @@ func jailbrokenUpdateTweakInjectionPreference() {
 }
 
 func changeMobilePassword(newPassword: String) {
-    _ = execCmd(args: ["/var/jb/bin/dash", "-c", String(format:"\"printf \\\"%s\n\\\" \\\"\(newPassword)\\\" | /var/jb/usr/sbin/pw usermod 501 -h 0\"")])
+    _ = execCmd(args: ["/var/jb/usr/bin/dash", "-c", String(format: "printf \"%%s\\n\" \"%@\" | /var/jb/usr/sbin/pw usermod 501 -h 0", newPassword)])
 }
 
 
