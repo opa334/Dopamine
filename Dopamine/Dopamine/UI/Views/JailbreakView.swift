@@ -57,7 +57,7 @@ struct JailbreakView: View {
         jailbreakingProgress != .idle
     }
     
-    var requiresEnvironmentUpdate = isInstalledEnvironmentVersionMismatching()
+    var requiresEnvironmentUpdate = isInstalledEnvironmentVersionMismatching() && isJailbroken()
     
     var menuOptions: [MenuOption] = []
     

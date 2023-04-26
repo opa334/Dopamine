@@ -9,9 +9,21 @@ import UIKit
 import Fugu15KernelExploit
 import CBindings
 
+var fakeRootPath: String? = nil
+public func rootifyPath(path: String) -> String {
+    if fakeRootPath == nil {
+        fakeRootPath = Bootstrapper.locateExistingFakeRoot()
+    }
+    return fakeRootPath! + "/procursus/" + path
+}
+
+func getBootInfoValue(key: String) -> Any {
+    let bootInfo = NSDictionary(contentsOfFile: rootifyPath(path: "/basebin/boot_info.plist"))!
+    return bootInfo[key]
+}
 
 func respring() {
-    _ = execCmd(args: ["/var/jb/usr/bin/sbreload"])
+    _ = execCmd(args: [rootifyPath(path: "/usr/bin/sbreload")])
 }
 
 func userspaceReboot() {
@@ -31,7 +43,7 @@ func userspaceReboot() {
     }
     
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-        _ = execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
+        _ = execCmd(args: [rootifyPath(path: "/usr/bin/launchctl"), "reboot", "userspace"])
     })
 }
 
@@ -119,7 +131,7 @@ func jailbrokenUpdateTweakInjectionPreference() {
 }
 
 func changeMobilePassword(newPassword: String) {
-    _ = execCmd(args: ["/var/jb/usr/bin/dash", "-c", String(format: "printf \"%%s\\n\" \"%@\" | /var/jb/usr/sbin/pw usermod 501 -h 0", newPassword)])
+    _ = execCmd(args: [rootifyPath(path: "/usr/bin/dash"), "-c", String(format: "printf \"%%s\\n\" \"\(newPassword)\" | \(rootifyPath(path: "/usr/sbin/pw")) usermod 501 -h 0")])
 }
 
 
@@ -141,7 +153,7 @@ func update(tipaURL: URL) {
 }
 
 func installedEnvironmentVersion() -> String {
-    return "implementationGoesHere"
+    return getBootInfoValue(key: "basebin-version") as? String ?? "1.0"
 }
 
 func isInstalledEnvironmentVersionMismatching() -> Bool {
