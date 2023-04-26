@@ -46,6 +46,11 @@ cd "systemhook"
 make clean
 cd -
 
+# rootlesshooks
+cd "rootlesshooks"
+make clean
+cd -
+
 # forkfix
 cd "forkfix"
 make clean

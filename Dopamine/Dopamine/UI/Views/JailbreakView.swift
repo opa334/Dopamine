@@ -48,6 +48,8 @@ struct JailbreakView: View {
     @State var showingUpdatePopup = false
     @State var updateChangelog: String? = nil
     
+    @State var aprilFirstAlert = whatCouldThisVariablePossiblyEvenMean
+    
     @AppStorage("verboseLogsEnabled", store: dopamineDefaults()) var advancedLogsByDefault: Bool = false
     @State var advancedLogsTemporarilyEnabled: Bool = false
     
@@ -55,7 +57,7 @@ struct JailbreakView: View {
         jailbreakingProgress != .idle
     }
     
-    @AppStorage("sfw", store: dopamineDefaults()) var sfw = false
+    var requiresEnvironmentUpdate = isInstalledEnvironmentVersionMismatching() && isJailbroken()
     
     var menuOptions: [MenuOption] = []
     
@@ -75,7 +77,7 @@ struct JailbreakView: View {
                 
                 let shouldShowBackground = optionPresentedID != nil || showingUpdatePopup
                 
-                Image("Wallpaper")
+                Image(whatCouldThisVariablePossiblyEvenMean ? "Clouds" : "Wallpaper")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .edgesIgnoringSafeArea(.all)
@@ -128,11 +130,11 @@ struct JailbreakView: View {
                     }
                     
                     UpdateDownloadingView(shown: $showingUpdatePopup, changelog: updateChangelog ?? NSLocalizedString("Changelog_Unavailable_Text", comment: "")/*"""
-        Added support for iOS 15.0 - 15.1.
-        Improved the app's compatibility with various iOS devices.
-        Fixed bugs related to the installation of certain tweaks and packages.
-        Added new options for customizing the app's interface and settings.
-        """*/)
+                                                                                                                                                                 Added support for iOS 15.0 - 15.1.
+                                                                                                                                                                 Improved the app's compatibility with various iOS devices.
+                                                                                                                                                                 Fixed bugs related to the installation of certain tweaks and packages.
+                                                                                                                                                                 Added new options for customizing the app's interface and settings.
+                                                                                                                                                                 """*/)
                     .opacity(showingUpdatePopup ? 1 : 0)
                     .animation(.spring().speed(1.5), value: showingUpdatePopup)
                 }
@@ -151,14 +153,21 @@ struct JailbreakView: View {
                 }
             }
         }
+        .alert("🤑 NEW SPONSORSHIP OFFER 🤑 \n\n⚠️ Hello iOS \(UIDevice.current.systemVersion) user! 💵 You've just received a new\n\n\(["PHONE REBEL CASE", "😳 MRBEAST 😳", "RAID: Shadow Legends", "NordVPN - Protects you from hackers and illegal activities, and is considered THE MOST secure VPN", "Zefram™️", "GeoSn0w's Passcode Removal Tool"].randomElement()!)\n\nsponsorship offer 💰💰💰 Would you like to accept it? 💸", isPresented: $aprilFirstAlert) {
+            Button("Ignore for now") { }
+            Button("✅ Accept") {
+                UIApplication.shared.open(.init(string: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")!)
+            }
+        }
     }
     
     
     @ViewBuilder
     var header: some View {
+        let tint = whatCouldThisVariablePossiblyEvenMean ? Color.black : .white
         HStack {
             VStack(alignment: .leading) {
-                Image(sfw ? "OpaA15Logo" : "DopamineLogo")
+                Image(whatCouldThisVariablePossiblyEvenMean ? "DopamineLogo2" : "DopamineLogo")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(maxWidth: 200)
@@ -166,10 +175,10 @@ struct JailbreakView: View {
                 
                 Text("Title_Supported_iOS_Versions")
                     .font(.subheadline)
-                    .foregroundColor(.white)
+                    .foregroundColor(tint)
                 Text("Title_Made_By")
                     .font(.subheadline)
-                    .foregroundColor(.white.opacity(0.5))
+                    .foregroundColor(tint.opacity(0.5))
             }
             Spacer()
         }
@@ -231,7 +240,7 @@ struct JailbreakView: View {
         VStack {
             Button {
                 UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-
+                
                 if (dopamineDefaults().array(forKey: "selectedPackageManagers") as? [String] ?? []).isEmpty && !isBootstrapped() {
                     jailbreakingProgress = .selectingPackageManager
                 } else {
@@ -240,24 +249,31 @@ struct JailbreakView: View {
                 print(jailbreakingProgress)
             } label: {
                 Label(title: {
-                    if isJailbroken() {
-                        Text("Status_Title_Jailbroken")
-                    } else {
-                        switch jailbreakingProgress {
-                        case .idle:
-                            Text("Button_Jailbreak_Title")
-                        case .jailbreaking:
-                            Text("Status_Title_Jailbreaking")
-                        case .selectingPackageManager:
-                            Text("Status_Title_Select_Package_Managers")
-                        case .finished:
-                            if jailbreakingError == nil {
-                                Text("Status_Title_Jailbroken")
-                            } else {
-                                Text("Status_Title_Unsuccessful")
+                    if !requiresEnvironmentUpdate {
+                        if isJailbroken() {
+                            Text("Status_Title_Jailbroken")
+                        } else {
+                            switch jailbreakingProgress {
+                            case .idle:
+                                Text("Button_Jailbreak_Title")
+                            case .jailbreaking:
+                                Text("Status_Title_Jailbreaking")
+                            case .selectingPackageManager:
+                                Text("Status_Title_Select_Package_Managers")
+                            case .finished:
+                                if jailbreakingError == nil {
+                                    Text("Status_Title_Jailbroken")
+                                } else {
+                                    Text("Status_Title_Unsuccessful")
+                                }
                             }
                         }
-                    }}, icon: {
+                    } else {
+                        Text("Button_Update_Required")
+                    }
+                    
+                }, icon: {
+                    if !requiresEnvironmentUpdate {
                         ZStack {
                             switch jailbreakingProgress {
                             case .jailbreaking:
@@ -274,12 +290,15 @@ struct JailbreakView: View {
                                 Image(systemName: "lock.open")
                             }
                         }
-                    })
-                .foregroundColor(.white)
+                    } else {
+                        Image(systemName: "exclamationmark.triangle")
+                    }
+                })
+                .foregroundColor(whatCouldThisVariablePossiblyEvenMean ? .black : .white)
                 .padding()
                 .frame(maxWidth: isJailbreaking ? .infinity : 280)
             }
-            .disabled(isJailbroken() || isJailbreaking)
+            .disabled(isJailbroken() || isJailbreaking || requiresEnvironmentUpdate)
             .drawingGroup()
             
             if jailbreakingProgress == .finished || jailbreakingProgress == .jailbreaking {
@@ -309,21 +328,21 @@ struct JailbreakView: View {
     var endButtons: some View {
         switch jailbreakingProgress {
         case .finished:
-//            Button {
-//                userspaceReboot()
-//            } label: {
-//                Label(title: { Text("Reboot Userspace (Finish)") }, icon: {
-//                    Image(systemName: "arrow.clockwise")
-//                })
-//                .foregroundColor(.white)
-//                .padding()
-//                .frame(maxWidth: 280, maxHeight: jailbreakingError != nil ? 0 : nil)
-//                .background(MaterialView(.light)
-//                    .opacity(0.5)
-//                    .cornerRadius(8)
-//                )
-//                .opacity(jailbreakingError != nil ? 0 : 1)
-//            }
+            //            Button {
+            //                userspaceReboot()
+            //            } label: {
+            //                Label(title: { Text("Reboot Userspace (Finish)") }, icon: {
+            //                    Image(systemName: "arrow.clockwise")
+            //                })
+            //                .foregroundColor(.white)
+            //                .padding()
+            //                .frame(maxWidth: 280, maxHeight: jailbreakingError != nil ? 0 : nil)
+            //                .background(MaterialView(.light)
+            //                    .opacity(0.5)
+            //                    .cornerRadius(8)
+            //                )
+            //                .opacity(jailbreakingError != nil ? 0 : 1)
+            //            }
             if !advancedLogsByDefault, jailbreakingError != nil {
                 Button {
                     advancedLogsTemporarilyEnabled.toggle()
@@ -353,7 +372,6 @@ struct JailbreakView: View {
     @ViewBuilder
     var updateButton: some View {
         Button {
-            //            dopamineDefaults().set(nil, forKey: "selectedPackageManagers")
             showingUpdatePopup = true
         } label: {
             Label(title: { Text("Button_Update_Available") }, icon: {
@@ -365,7 +383,7 @@ struct JailbreakView: View {
                     }
                 }
             })
-            .foregroundColor(.white)
+            .foregroundColor(whatCouldThisVariablePossiblyEvenMean ? .black : .white)
             .padding()
         }
         .frame(maxHeight: updateAvailable && jailbreakingProgress == .idle ? nil : 0)
@@ -379,7 +397,7 @@ struct JailbreakView: View {
         dpDefaults.set(dpDefaults.integer(forKey: "totalJailbreaks") + 1, forKey: "totalJailbreaks")
         DispatchQueue(label: "Dopamine").async {
             sleep(1)
-
+            
             jailbreak { e in
                 jailbreakingProgress = .finished
                 jailbreakingError = e
@@ -407,9 +425,9 @@ struct JailbreakView: View {
     
     func checkForUpdates() async throws {
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-           
+            
             let owner = "opa334"
-            let repo = "Fugu15"
+            let repo = "Dopamine"
             
             // Get the releases
             let releasesURL = URL(string: "https://api.github.com/repos/\(owner)/\(repo)/releases")!

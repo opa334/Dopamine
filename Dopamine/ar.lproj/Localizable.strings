@@ -10,6 +10,10 @@
 
 "Button_Remove_Jailbreak" = "إزالة الجيلبريك";
 
+"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+
+"Button_Set" = "Set";
+
 "Button_Set_Root_Password" = "تعيين كلمة مرور الجذر";
 
 "Button_Show_Logs_Title" = "إظهار السجل";
@@ -98,9 +102,9 @@
 
 "Title_Changelog" = "سجل التغييرات";
 
-"Title_Made_By" = "بواسطة opa334 و évelyne، واجهة المستخدم بواسطة sourceloc";
+"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
 
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
 "Update_Log_Hint_Scrollable" = "يمكن التمرير في هذه الواجهة";
 
@@ -116,7 +120,9 @@
 
 "Alert_Tweak_Injection_Toggled_Body" = "لحفظ التغيرات عليك اعادة تشغيل Userspace ,هل تريد اعادة التشغيل?";
 
-"Popup_Change_Root_Password_Title" = "تغير الرقم السري للروت";
+
+"Popup_Change_Root_Password_Title" = "تغير الرقم السري للهاتف";
+
 
 "Settings_Remove_Jailbreak_Alert_Body" = "ستؤدي إزالة جيلبريك إلى حذف جميع الملفات المتعلقة بكسر الحماية ، ولكن سيتم الاحتفاظ بجميع التطبيقات والملفات والبيانات العادية. هل أنت متأكد أنك تريد الاستمرار؟ لا يمكنك التراجع عن هذا الإجراء.";
 

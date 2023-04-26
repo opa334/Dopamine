@@ -15,7 +15,7 @@
         "repositoryURL": "https://github.com/opa334/KernelPatchfinder",
         "state": {
           "branch": "master",
-          "revision": "e2f13068054d09ec93d405263e6076398027a9a7",
+          "revision": "fbd970deeadc45dbc4d3d9fe17a5b15a96656d64",
           "version": null
         }
       },
@@ -52,6 +52,15 @@
         "state": {
           "branch": "master",
           "revision": "1d37faabb4c58b3152394c9b6e1c1a68507646b9",
+          "version": null
+        }
+      },
+      {
+        "package": "zstd",
+        "repositoryURL": "https://github.com/facebook/zstd.git",
+        "state": {
+          "branch": "dev",
+          "revision": "e256e4327459b77b14b300a7bc72b5a931cd1e56",
           "version": null
         }
       }

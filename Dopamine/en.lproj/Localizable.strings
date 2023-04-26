@@ -10,7 +10,11 @@
 
 "Button_Remove_Jailbreak" = "Remove Jailbreak";
 
-"Button_Set_Root_Password" = "Set Root Password";
+"Button_Set_Mobile_Password" = "Set Mobile Password";
+
+"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+
+"Button_Set" = "Set";
 
 "Button_Show_Logs_Title" = "Show Logs";
 
@@ -26,7 +30,7 @@
 
 "Changelog_Unavailable_Text" = "Changelog Unavailable";
 
-"Context_Menu_Copy_To_Clipboard" = "Copy to clipboard";
+"Context_Menu_Copy_To_Clipboard" = "Copy to Clipboard";
 
 "Credits_Button_License" = "License";
 
@@ -98,9 +102,9 @@
 
 "Title_Changelog" = "Changelog";
 
-"Title_Made_By" = "by opa334, évelyne, UI by sourceloc";
+"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
 
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
 "Update_Log_Hint_Scrollable" = "Log view can be scrolled";
 
@@ -116,10 +120,10 @@
 
 "Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
 
-"Popup_Change_Root_Password_Title" = "Change Root Password";
+"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
 
 "Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
 
 "Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace Reboot Required";

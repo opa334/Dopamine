@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Fungu15Logo.pdf",
+      "filename" : "DopamineLogo@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "DopamineLogo@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "DopamineLogo@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

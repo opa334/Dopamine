@@ -23,19 +23,22 @@ struct UpdateDownloadingView: View {
     @State var showLogView = false
     var changelog: String
     
+    var requiresEnvironmentUpdate = isInstalledEnvironmentVersionMismatching()
+    
     var body: some View {
         ZStack {
             VStack(spacing: 16) {
                 VStack(spacing: 10) {
-                    Text("Title_Changelog")
+                    Text(requiresEnvironmentUpdate ? "Title_Mismatching_Environment_Version" : "Title_Changelog")
                         .font(.title2)
+                        .multilineTextAlignment(.center)
                     
                     Divider()
                         .background(.white)
                         .padding(.horizontal, 32)
                         .opacity(0.5)
                     ScrollView {
-                        Text(try! AttributedString(markdown: changelog, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)))
+                        Text(try! AttributedString(markdown: requiresEnvironmentUpdate ? "Mismatching_Environment_Version_Update_Body" : changelog, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)))
                             .opacity(0.5)
                             .multilineTextAlignment(.center)
                             .padding(.vertical)
@@ -44,25 +47,30 @@ struct UpdateDownloadingView: View {
                 
                 Button {
                     UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                    updateState = .downloading
-                    
-                    // 💀 code
-                    Timer.scheduledTimer(withTimeInterval: 0.03, repeats: true) { t in
-                        progressDouble = downloadProgress.fractionCompleted
+                    if !requiresEnvironmentUpdate {
+                        updateState = .downloading
                         
-                        if progressDouble == 1 {
-                            t.invalidate()
+                        // 💀 code
+                        Timer.scheduledTimer(withTimeInterval: 0.03, repeats: true) { t in
+                            progressDouble = downloadProgress.fractionCompleted
+                            
+                            if progressDouble == 1 {
+                                t.invalidate()
+                            }
                         }
-                    }
-                    
-                    Task {
-                        do {
-                            try await downloadUpdateAndInstall()
-                            updateState = .updating
-                        } catch {
-                            showLogView = true
-                            Logger.log("Error: \(error.localizedDescription)", type: .error)
+                        
+                        Task {
+                            do {
+                                try await downloadUpdateAndInstall()
+                                updateState = .updating
+                            } catch {
+                                showLogView = true
+                                Logger.log("Error: \(error.localizedDescription)", type: .error)
+                            }
                         }
+                    } else {
+                        updateEnvironment()
+                        updateState = .updating
                     }
                     
                 } label: {

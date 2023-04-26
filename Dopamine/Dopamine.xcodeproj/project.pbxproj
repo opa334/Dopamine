@@ -13,9 +13,12 @@
 		1502A4242891BD800011CB6E /* Fugu15KernelExploit in Frameworks */ = {isa = PBXBuildFile; productRef = 1502A4232891BD800011CB6E /* Fugu15KernelExploit */; };
 		151CAFAD2893645C00B2A6BA /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 151CAFAC2893645C00B2A6BA /* CoreServices.framework */; };
 		151CAFB32894041D00B2A6BA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151CAFB22894041D00B2A6BA /* main.swift */; };
-		15372EA328DDF5EF00514A73 /* bootstrap.tar in Resources */ = {isa = PBXBuildFile; fileRef = 15372EA028DDF5EF00514A73 /* bootstrap.tar */; };
 		15372EA628DDFF9000514A73 /* sileo.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 15372EA528DDFF9000514A73 /* sileo.deb */; };
 		15372EA728DDFF9A00514A73 /* sileo.deb in Resources */ = {isa = PBXBuildFile; fileRef = 15372EA528DDFF9000514A73 /* sileo.deb */; };
+		8C19A9AB29F54BEA00F06D21 /* libzstd in Frameworks */ = {isa = PBXBuildFile; productRef = 8C19A9AA29F54BEA00F06D21 /* libzstd */; };
+		8C19A9AD29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst in Resources */ = {isa = PBXBuildFile; fileRef = 8C19A9AC29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst */; };
+		8C19A9CC29F5608200F06D21 /* libjbdrw.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C19A9CB29F5608200F06D21 /* libjbdrw.deb */; };
+		8C19A9CD29F5659700F06D21 /* libjbdrw.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C19A9CB29F5608200F06D21 /* libjbdrw.deb */; };
 		8C2EDE1929F0AAF70060D192 /* oobPCI in Resources */ = {isa = PBXBuildFile; fileRef = 8C2EDE1829F0AAF70060D192 /* oobPCI */; };
 		8C2EDE1B29F0ACA60060D192 /* basebin.tar in Resources */ = {isa = PBXBuildFile; fileRef = 8C2EDE1A29F0ACA60060D192 /* basebin.tar */; };
 		8C2EDE1D29F0AE3A0060D192 /* basebin.tc in Resources */ = {isa = PBXBuildFile; fileRef = 8C2EDE1C29F0ACC80060D192 /* basebin.tc */; };
@@ -58,10 +61,11 @@
 		151CAFA72893622C00B2A6BA /* LSBundleProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LSBundleProxy.h; sourceTree = "<group>"; };
 		151CAFAC2893645C00B2A6BA /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		151CAFB22894041D00B2A6BA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		15372EA028DDF5EF00514A73 /* bootstrap.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = bootstrap.tar; sourceTree = "<group>"; };
 		15372EA528DDFF9000514A73 /* sileo.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = sileo.deb; sourceTree = "<group>"; };
 		21AFE72F29F32AF8008B4B4C /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
 		21AFE73029F33538008B4B4C /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8C19A9AC29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bootstrap-iphoneos-arm64.tar.zst"; sourceTree = "<group>"; };
+		8C19A9CB29F5608200F06D21 /* libjbdrw.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjbdrw.deb; sourceTree = "<group>"; };
 		21C376B329F43EA0001ECD18 /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/Localizable.strings; sourceTree = "<group>"; };
 		21BFE80B29F4447E00F0ABCD /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8C2EDE1829F0AAF70060D192 /* oobPCI */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = oobPCI; path = ../../Exploits/oobPCI/oobPCI; sourceTree = "<group>"; };
@@ -107,6 +111,8 @@
 				1502A4242891BD800011CB6E /* Fugu15KernelExploit in Frameworks */,
 				15372EA628DDFF9000514A73 /* sileo.deb in Frameworks */,
 				8C8D955E29D04C4D00A482A8 /* zebra.deb in Frameworks */,
+				8C19A9CC29F5608200F06D21 /* libjbdrw.deb in Frameworks */,
+				8C19A9AB29F54BEA00F06D21 /* libzstd in Frameworks */,
 				151CAFAD2893645C00B2A6BA /* CoreServices.framework in Frameworks */,
 				CE27798929D459220030E28D /* SwiftfulLoadingIndicators in Frameworks */,
 			);
@@ -186,7 +192,8 @@
 			children = (
 				15372EA528DDFF9000514A73 /* sileo.deb */,
 				8C8D955D29D04C4D00A482A8 /* zebra.deb */,
-				15372EA028DDF5EF00514A73 /* bootstrap.tar */,
+				8C19A9CB29F5608200F06D21 /* libjbdrw.deb */,
+				8C19A9AC29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst */,
 				8C2EDE1A29F0ACA60060D192 /* basebin.tar */,
 				8C2EDE1C29F0ACC80060D192 /* basebin.tc */,
 				8C8D955A29D04B4C00A482A8 /* tar */,
@@ -256,6 +263,7 @@
 			packageProductDependencies = (
 				1502A4232891BD800011CB6E /* Fugu15KernelExploit */,
 				CE27798829D459220030E28D /* SwiftfulLoadingIndicators */,
+				8C19A9AA29F54BEA00F06D21 /* libzstd */,
 			);
 			productName = Fugu15;
 			productReference = 1502A4082891B03F0011CB6E /* Dopamine.app */;
@@ -309,6 +317,7 @@
 			mainGroup = 1502A3FF2891B03F0011CB6E;
 			packageReferences = (
 				CE27798729D459220030E28D /* XCRemoteSwiftPackageReference "SwiftfulLoadingIndicators" */,
+				8C19A9A929F54BEA00F06D21 /* XCRemoteSwiftPackageReference "zstd" */,
 			);
 			productRefGroup = 1502A4092891B03F0011CB6E /* Products */;
 			projectDirPath = "";
@@ -324,15 +333,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C19A9CD29F5659700F06D21 /* libjbdrw.deb in Resources */,
 				8C8D955F29D04CD100A482A8 /* zebra.deb in Resources */,
 				938DADDE29F2993400C37952 /* Localizable.strings in Resources */,
+				8C19A9AD29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst in Resources */,
 				8C8D955B29D04B4C00A482A8 /* tar in Resources */,
 				8C2EDE1929F0AAF70060D192 /* oobPCI in Resources */,
 				15372EA728DDFF9A00514A73 /* sileo.deb in Resources */,
 				8C2EDE1B29F0ACA60060D192 /* basebin.tar in Resources */,
 				8C2EDE1D29F0AE3A0060D192 /* basebin.tc in Resources */,
 				1502A4132891B0410011CB6E /* Preview Assets.xcassets in Resources */,
-				15372EA328DDF5EF00514A73 /* bootstrap.tar in Resources */,
 				1502A4102891B0410011CB6E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -623,6 +633,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		8C19A9A929F54BEA00F06D21 /* XCRemoteSwiftPackageReference "zstd" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/facebook/zstd.git";
+			requirement = {
+				branch = dev;
+				kind = branch;
+			};
+		};
 		CE27798729D459220030E28D /* XCRemoteSwiftPackageReference "SwiftfulLoadingIndicators" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulLoadingIndicators";
@@ -637,6 +655,11 @@
 		1502A4232891BD800011CB6E /* Fugu15KernelExploit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Fugu15KernelExploit;
+		};
+		8C19A9AA29F54BEA00F06D21 /* libzstd */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8C19A9A929F54BEA00F06D21 /* XCRemoteSwiftPackageReference "zstd" */;
+			productName = libzstd;
 		};
 		CE27798829D459220030E28D /* SwiftfulLoadingIndicators */ = {
 			isa = XCSwiftPackageProductDependency;

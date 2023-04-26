@@ -12,7 +12,8 @@ uint64_t kptr_sign(uint64_t kaddr, uint64_t pointer, uint16_t salt);
 void kwrite_ptr(uint64_t kaddr, uint64_t pointer, uint16_t salt);
 
 void proc_iterate(void (^itBlock)(uint64_t, BOOL*));
-uint64_t proc_for_pid(pid_t pidToFind);
+uint64_t proc_for_pid(pid_t pidToFind, bool *needsRelease);
+int proc_rele(uint64_t proc);
 uint64_t proc_get_task(uint64_t proc_ptr);
 pid_t proc_get_pid(uint64_t proc_ptr);
 uint64_t proc_get_ucred(uint64_t proc_ptr);

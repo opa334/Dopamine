@@ -10,7 +10,11 @@
 
 "Button_Remove_Jailbreak" = "Jailbreak entfernen";
 
-"Button_Set_Root_Password" = "Root Passwort setzen";
+"Button_Set_Mobile_Password" = "Mobile Passwort setzen";
+
+"Popup_Change_Mobile_Password_Message" = "Setze das Mobile-Passwort deines Gerätes, dieses Passwort kann auch für Root Zugriff via \"sudo\" benutzt werden. Um das Root-Passwort zu ändern, kann in einer Mobile-Shell der Befehl \"sudo passwd root\" ausgeführt werden.";
+
+"Button_Set" = "Setzen";
 
 "Button_Show_Logs_Title" = "Logs anzeigen";
 
@@ -34,7 +38,7 @@
 
 "Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine Version %@\n%@";
 
-"Credits_Header_Special_Thanks" = "Großen Dank:";
+"Credits_Header_Special_Thanks" = "Besonderen Dank:";
 
 "Credits_Made_By" = "Von opa334, évelyne";
 
@@ -44,7 +48,7 @@
 
 "Gaining r/w" = "Erhalte Kernel Lese- und Schreiberechte";
 
-"Hint_Hide_Jailbreak" = "\"Jailbreak verstecken\" entfernt temporär Jailbreak Dateien bis zum nächsten Jailbreak";
+"Hint_Hide_Jailbreak" = "\"Jailbreak verstecken\" entfernt die Jailbreak Dateien temporär bis zum nächsten Jailbreak";
 
 "Initializing Environment" = "Initialisiere Umgebung";
 
@@ -98,9 +102,9 @@
 
 "Title_Changelog" = "Changelog";
 
-"Title_Made_By" = "von opa334, évelyne, UI von sourceloc";
+"Title_Made_By" = "von opa334, évelyne\nUI von sourceloc\nBasiert auf Fugu15";
 
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
 "Update_Log_Hint_Scrollable" = "Die Protokollansicht ist durchscrollbar";
 
@@ -108,18 +112,18 @@
 
 "Update_Status_Installing" = "Installiere Aktualisierung...";
 
-"Update_Status_Subtitle_Please_Wait" = "Bitte warte bis die Dateien heruntergeladen wurden";
+"Update_Status_Subtitle_Please_Wait" = "Bitte warte, bis die Dateien heruntergeladen wurden";
 
 "Update_Status_Subtitle_Restart_Soon" = "Das Gerät wird bald neustarten";
 
-"Alert_Button_Uninstall" = "Uninstall";
+"Alert_Button_Uninstall" = "Deinstallieren";
 
 "Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
 
-"Popup_Change_Root_Password_Title" = "Change Root Password";
+"Popup_Change_Mobile_Password_Title" = "Mobile Passwort ändern";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+"Settings_Remove_Jailbreak_Alert_Body" = "Das Entfernen des Jailbreaks wird alle mit dem Jailbreak zusammenhängenden Dateien löschen, alle regulären Apps, Datein und Daten bleiben erhalten. Diese Aktion kann nicht rückgangig gemacht werden, bist du sicher?";
 
-"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+"Settings_Remove_Jailbreak_Alert_Title" = "Jailbreak entfernen";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace-Reboot notwendig";
