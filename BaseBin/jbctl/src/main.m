@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 		if (result == 0) {
 			printf("Update applied, userspace rebooting to finalize it...\n");
 			usleep(5000);
-			execve(prebootPath(@"usr/bin/launchctl").fileSystemRepresentation, (char *const[]){ prebootPath(@"usr/bin/launchctl").fileSystemRepresentation, "reboot", "userspace", NULL }, environ);
+			execve(prebootPath(@"usr/bin/launchctl").fileSystemRepresentation, (char *const[]){ (char *const)prebootPath(@"usr/bin/launchctl").fileSystemRepresentation, "reboot", "userspace", NULL }, environ);
 		}
 		else {
 			printf("Update failed with error code %lld\n", result);
