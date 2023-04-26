@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
 
+NSString *prebootPath(NSString *path);
+
 uint64_t kalloc(uint64_t size);
 uint64_t kfree(uint64_t addr, uint64_t size);
 uint64_t stringKalloc(const char *string);

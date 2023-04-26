@@ -7,87 +7,90 @@
 #include <libarchive/archive.h>
 #include <libarchive/archive_entry.h>
 
+int reboot3(uint64_t flags, ...);
+#define RB2_USERREBOOT (0x2000000000000000llu)
+
 static int
 copy_data(struct archive *ar, struct archive *aw)
 {
-  int r;
-  const void *buff;
-  size_t size;
-  la_int64_t offset;
+	int r;
+	const void *buff;
+	size_t size;
+	la_int64_t offset;
 
-  for (;;) {
-    r = archive_read_data_block(ar, &buff, &size, &offset);
-    if (r == ARCHIVE_EOF)
-      return (ARCHIVE_OK);
-    if (r < ARCHIVE_OK)
-      return (r);
-    r = archive_write_data_block(aw, buff, size, offset);
-    if (r < ARCHIVE_OK) {
-      fprintf(stderr, "%s\n", archive_error_string(aw));
-      return (r);
-    }
-  }
+	for (;;) {
+		r = archive_read_data_block(ar, &buff, &size, &offset);
+		if (r == ARCHIVE_EOF)
+			return (ARCHIVE_OK);
+		if (r < ARCHIVE_OK)
+			return (r);
+		r = archive_write_data_block(aw, buff, size, offset);
+		if (r < ARCHIVE_OK) {
+			fprintf(stderr, "%s\n", archive_error_string(aw));
+			return (r);
+		}
+	}
 }
 
 int extract(NSString* fileToExtract, NSString* extractionPath)
 {
-    struct archive *a;
-    struct archive *ext;
-    struct archive_entry *entry;
-    int flags;
-    int r;
+	struct archive *a;
+	struct archive *ext;
+	struct archive_entry *entry;
+	int flags;
+	int r;
 
-    /* Select which attributes we want to restore. */
-    flags = ARCHIVE_EXTRACT_TIME;
-    flags |= ARCHIVE_EXTRACT_PERM;
-    flags |= ARCHIVE_EXTRACT_ACL;
-    flags |= ARCHIVE_EXTRACT_FFLAGS;
+	/* Select which attributes we want to restore. */
+	flags = ARCHIVE_EXTRACT_TIME;
+	flags |= ARCHIVE_EXTRACT_PERM;
+	flags |= ARCHIVE_EXTRACT_ACL;
+	flags |= ARCHIVE_EXTRACT_FFLAGS;
 
-    a = archive_read_new();
-    archive_read_support_format_all(a);
-    archive_read_support_filter_all(a);
-    ext = archive_write_disk_new();
-    archive_write_disk_set_options(ext, flags);
-    archive_write_disk_set_standard_lookup(ext);
-    if ((r = archive_read_open_filename(a, fileToExtract.fileSystemRepresentation, 10240)))
-        return 1;
-    for (;;)
-    {
-        r = archive_read_next_header(a, &entry);
-        if (r == ARCHIVE_EOF)
-            break;
-        if (r < ARCHIVE_OK)
-            fprintf(stderr, "%s\n", archive_error_string(a));
-        if (r < ARCHIVE_WARN)
-            return 1;
-        
-        NSString* currentFile = [NSString stringWithUTF8String:archive_entry_pathname(entry)];
-        NSString* fullOutputPath = [extractionPath stringByAppendingPathComponent:currentFile];
-        //printf("extracting %@ to %@\n", currentFile, fullOutputPath);
-        archive_entry_set_pathname(entry, fullOutputPath.fileSystemRepresentation);
-        
-        r = archive_write_header(ext, entry);
-        if (r < ARCHIVE_OK)
-            fprintf(stderr, "%s\n", archive_error_string(ext));
-        else if (archive_entry_size(entry) > 0) {
-            r = copy_data(a, ext);
-            if (r < ARCHIVE_OK)
-                fprintf(stderr, "%s\n", archive_error_string(ext));
-            if (r < ARCHIVE_WARN)
-                return 1;
-        }
-        r = archive_write_finish_entry(ext);
-        if (r < ARCHIVE_OK)
-            fprintf(stderr, "%s\n", archive_error_string(ext));
-        if (r < ARCHIVE_WARN)
-            return 1;
-    }
-    archive_read_close(a);
-    archive_read_free(a);
-    archive_write_close(ext);
-    archive_write_free(ext);
-    
-    return 0;
+	a = archive_read_new();
+	archive_read_support_format_all(a);
+	archive_read_support_filter_all(a);
+	ext = archive_write_disk_new();
+	archive_write_disk_set_options(ext, flags);
+	archive_write_disk_set_standard_lookup(ext);
+	if ((r = archive_read_open_filename(a, fileToExtract.fileSystemRepresentation, 10240)))
+			return 1;
+	for (;;)
+	{
+			r = archive_read_next_header(a, &entry);
+			if (r == ARCHIVE_EOF)
+					break;
+			if (r < ARCHIVE_OK)
+					fprintf(stderr, "%s\n", archive_error_string(a));
+			if (r < ARCHIVE_WARN)
+					return 1;
+			
+			NSString* currentFile = [NSString stringWithUTF8String:archive_entry_pathname(entry)];
+			NSString* fullOutputPath = [extractionPath stringByAppendingPathComponent:currentFile];
+			//printf("extracting %@ to %@\n", currentFile, fullOutputPath);
+			archive_entry_set_pathname(entry, fullOutputPath.fileSystemRepresentation);
+			
+			r = archive_write_header(ext, entry);
+			if (r < ARCHIVE_OK)
+					fprintf(stderr, "%s\n", archive_error_string(ext));
+			else if (archive_entry_size(entry) > 0) {
+					r = copy_data(a, ext);
+					if (r < ARCHIVE_OK)
+							fprintf(stderr, "%s\n", archive_error_string(ext));
+					if (r < ARCHIVE_WARN)
+							return 1;
+			}
+			r = archive_write_finish_entry(ext);
+			if (r < ARCHIVE_OK)
+					fprintf(stderr, "%s\n", archive_error_string(ext));
+			if (r < ARCHIVE_WARN)
+					return 1;
+	}
+	archive_read_close(a);
+	archive_read_free(a);
+	archive_write_close(ext);
+	archive_write_free(ext);
+	
+	return 0;
 }
 
 NSString *trollStoreRootHelperPath(void)
@@ -96,8 +99,19 @@ NSString *trollStoreRootHelperPath(void)
 	return [appProxy.bundleURL.path stringByAppendingPathComponent:@"trollstorehelper"];
 }
 
-int basebinUpdateFromTar(NSString *basebinPath)
+int basebinUpdateFromTar(NSString *basebinPath, bool rebootWhenDone)
 {
+	LSApplicationProxy *appProxy = [LSApplicationProxy applicationProxyForIdentifier:@"com.opa334.Dopamine"];
+	if (appProxy) {
+		NSString *executablePath = [appProxy.bundleURL.path stringByAppendingPathComponent:appProxy.bundleExecutable];
+		if (executablePath) {
+			int prepRet = spawn(executablePath, @[@"prepare_jbupdate"]);
+			if (prepRet != 0) {
+				NSLog(@"WARNING: jbupdate preparation failed");
+			}
+		}
+	}
+
 	uint64_t existingTCKaddr = bootInfo_getUInt64(@"basebin_trustcache_kaddr");
 	uint64_t existingTCLength = kread32(existingTCKaddr + offsetof(trustcache_page, file.length));
 	uint64_t existingTCSize = sizeof(trustcache_page) + (sizeof(trustcache_entry) * existingTCLength);
@@ -132,7 +146,7 @@ int basebinUpdateFromTar(NSString *basebinPath)
 	// Copy new basebin over old basebin
 	NSArray *basebinItems = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:tmpBasebinPath error:nil];
 	for (NSString *basebinItem in basebinItems) {
-		NSString *oldBasebinPath = [@"/var/jb/basebin" stringByAppendingPathComponent:basebinItem];
+		NSString *oldBasebinPath = [prebootPath(@"basebin") stringByAppendingPathComponent:basebinItem];
 		NSString *newBasebinPath = [tmpBasebinPath stringByAppendingPathComponent:basebinItem];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:oldBasebinPath]) {
 			[[NSFileManager defaultManager] removeItemAtPath:oldBasebinPath error:nil];
@@ -141,10 +155,10 @@ int basebinUpdateFromTar(NSString *basebinPath)
 	}
 
 	// Update systemhook.dylib on bind mount
-	if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/basebin/.fakelib/systemhook.dylib"]) {
-		[[NSFileManager defaultManager] removeItemAtPath:@"/var/jb/basebin/.fakelib/systemhook.dylib" error:nil];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:prebootPath(@"basebin/.fakelib/systemhook.dylib")]) {
+		[[NSFileManager defaultManager] removeItemAtPath:prebootPath(@"basebin/.fakelib/systemhook.dylib") error:nil];
 	}
-	[[NSFileManager defaultManager] copyItemAtPath:@"/var/jb/basebin/systemhook.dylib" toPath:@"/var/jb/basebin/.fakelib/systemhook.dylib" error:nil];
+	[[NSFileManager defaultManager] copyItemAtPath:prebootPath(@"basebin/systemhook.dylib") toPath:prebootPath(@"basebin/.fakelib/systemhook.dylib") error:nil];
 
 	trustCacheListRemove(existingTCKaddr);
 
@@ -153,10 +167,15 @@ int basebinUpdateFromTar(NSString *basebinPath)
 	sleep(1);
 
 	kfree(existingTCKaddr, existingTCSize);
+
+	if (rebootWhenDone) {
+		return reboot3(RB2_USERREBOOT);
+	}
+
 	return 0;
 }
 
-int jbUpdateFromTIPA(NSString *tipaPath)
+int jbUpdateFromTIPA(NSString *tipaPath, bool rebootWhenDone)
 {
 	NSString *tsRootHelperPath = trollStoreRootHelperPath();
 	if (!tsRootHelperPath) return 1;
@@ -164,7 +183,7 @@ int jbUpdateFromTIPA(NSString *tipaPath)
 	if (installRet != 0) return 2;
 
 	LSApplicationProxy *appProxy = [LSApplicationProxy applicationProxyForIdentifier:@"com.opa334.Dopamine"];
-	int bbRet = basebinUpdateFromTar([appProxy.bundleURL.path stringByAppendingPathComponent:@"basebin.tar"]);
+	int bbRet = basebinUpdateFromTar([appProxy.bundleURL.path stringByAppendingPathComponent:@"basebin.tar"], rebootWhenDone);
 	if (bbRet != 0) return 2 + bbRet;
 	return 0;
 }

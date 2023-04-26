@@ -405,12 +405,13 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 							const char *basebinPath = xpc_dictionary_get_string(message, "basebinPath");
 							const char *tipaPath = xpc_dictionary_get_string(message, "tipaPath");
+							bool rebootWhenDone = xpc_dictionary_get_bool(message, "rebootWhenDone");
 
 							if (basebinPath) {
-								result = basebinUpdateFromTar([NSString stringWithUTF8String:basebinPath]);
+								result = basebinUpdateFromTar([NSString stringWithUTF8String:basebinPath], rebootWhenDone);
 							}
 							else if (tipaPath) {
-								result = jbUpdateFromTIPA([NSString stringWithUTF8String:tipaPath]);
+								result = jbUpdateFromTIPA([NSString stringWithUTF8String:tipaPath], rebootWhenDone);
 							}
 							else {
 								result = 101;
