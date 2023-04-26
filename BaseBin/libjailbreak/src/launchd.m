@@ -1,4 +1,5 @@
 #import "launchd.h"
+#import "util.h"
 
 #define OS_ALLOC_ONCE_KEY_MAX    100
 
@@ -48,4 +49,26 @@ xpc_object_t launchd_xpc_send_message(xpc_object_t xdict)
 		}
 	}
 	return xreply;
+}
+
+void patchBaseBinLaunchDaemonPlist(NSString *plistPath)
+{
+	NSMutableDictionary *plistDict = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
+	if (plistDict) {
+		NSMutableArray *programArguments = ((NSArray *)plistDict[@"ProgramArguments"]).mutableCopy;
+		if (programArguments.count >= 1) {
+			programArguments[0] = prebootPath(programArguments[0]);
+			plistDict[@"ProgramArguments"] = programArguments.copy;
+			[plistDict writeToFile:plistPath atomically:YES];
+		}
+	}
+}
+
+void patchBaseBinLaunchDaemonPlists(void)
+{
+	NSURL *launchDaemonURL = [NSURL fileURLWithPath:prebootPath(@"basebin/LaunchDaemons") isDirectory:YES];
+	NSArray<NSURL *> *launchDaemonPlistURLs = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:launchDaemonURL includingPropertiesForKeys:nil options:0 error:nil];
+	for (NSURL *launchDaemonPlistURL in launchDaemonPlistURLs) {
+		patchBaseBinLaunchDaemonPlist(launchDaemonPlistURL.path);
+	}
 }

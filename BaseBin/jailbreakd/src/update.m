@@ -2,6 +2,7 @@
 #import <CoreServices/LSApplicationProxy.h>
 #import <libjailbreak/libjailbreak.h>
 #import <libjailbreak/boot_info.h>
+#import <libjailbreak/launchd.h>
 #import "trustcache.h"
 #import "spawn_wrapper.h"
 #include <libarchive/archive.h>
@@ -153,6 +154,7 @@ int basebinUpdateFromTar(NSString *basebinPath, bool rebootWhenDone)
 		}
 		[[NSFileManager defaultManager] copyItemAtPath:newBasebinPath toPath:oldBasebinPath error:nil];
 	}
+	patchBaseBinLaunchDaemonPlists();
 
 	// Update systemhook.dylib on bind mount
 	if ([[NSFileManager defaultManager] fileExistsAtPath:prebootPath(@"basebin/.fakelib/systemhook.dylib")]) {

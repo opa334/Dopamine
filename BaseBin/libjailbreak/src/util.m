@@ -47,7 +47,12 @@ NSString *prebootPath(NSString *path)
 		}
 	});
 
-	return [sPrebootPrefix stringByAppendingPathComponent:path];
+	if (path) {
+		return [sPrebootPrefix stringByAppendingPathComponent:path];
+	}
+	else {
+		return sPrebootPrefix;
+	}
 }
 
 uint64_t kalloc(uint64_t size)

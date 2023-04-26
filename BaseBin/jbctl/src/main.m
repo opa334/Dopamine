@@ -1,4 +1,5 @@
 #import <libjailbreak/jailbreakd.h>
+#import <libjailbreak/libjailbreak.h>
 extern char **environ;
 
 int main(int argc, char* argv[])
@@ -34,7 +35,7 @@ int main(int argc, char* argv[])
 		if (result == 0) {
 			printf("Update applied, userspace rebooting to finalize it...\n");
 			usleep(5000);
-			execve("/var/jb/usr/bin/launchctl", (char *const[]){ "/var/jb/usr/bin/launchctl", "reboot", "userspace", NULL }, environ);
+			execve(prebootPath(@"usr/bin/launchctl").fileSystemRepresentation, (char *const[]){ prebootPath(@"usr/bin/launchctl").fileSystemRepresentation, "reboot", "userspace", NULL }, environ);
 		}
 		else {
 			printf("Update failed with error code %lld\n", result);

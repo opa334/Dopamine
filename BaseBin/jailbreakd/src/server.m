@@ -208,7 +208,7 @@ void generateSystemWideSandboxExtensions(NSString *targetPath)
 
 int64_t initEnvironment(NSDictionary *settings)
 {
-	NSString *fakeLibPath = @"/var/jb/basebin/.fakelib";
+	NSString *fakeLibPath = prebootPath(@"basebin/.fakelib");
 	NSString *libPath = @"/usr/lib";
 
 	BOOL copySuc = [[NSFileManager defaultManager] copyItemAtPath:libPath toPath:fakeLibPath error:nil];
@@ -217,13 +217,13 @@ int64_t initEnvironment(NSDictionary *settings)
 	}
 	JBLogDebug("copied %s to %s", libPath.UTF8String, fakeLibPath.UTF8String);
 
-	int dyldRet = applyDyldPatches(@"/var/jb/basebin/.fakelib/dyld");
+	int dyldRet = applyDyldPatches(prebootPath(@"basebin/.fakelib/dyld"));
 	if (dyldRet != 0) {
 		return 1 + dyldRet;
 	}
 	
 	NSData *dyldCDHash;
-	evaluateSignature([NSURL fileURLWithPath:@"/var/jb/basebin/.fakelib/dyld"], &dyldCDHash, nil);
+	evaluateSignature([NSURL fileURLWithPath:prebootPath(@"basebin/.fakelib/dyld")], &dyldCDHash, nil);
 	if (!dyldCDHash) {
 		return 5;
 	}
@@ -240,13 +240,13 @@ int64_t initEnvironment(NSDictionary *settings)
 
 	JBLogDebug("dyld trust cache allocated to %llX (size: %zX)", dyldTCKaddr, dyldTCSize);
 
-	copySuc = [[NSFileManager defaultManager] copyItemAtPath:@"/var/jb/basebin/systemhook.dylib" toPath:@"/var/jb/basebin/.fakelib/systemhook.dylib" error:nil];
+	copySuc = [[NSFileManager defaultManager] copyItemAtPath:prebootPath(@"basebin/systemhook.dylib") toPath:prebootPath(@"basebin/.fakelib/systemhook.dylib") error:nil];
 	if (!copySuc) {
 		return 7;
 	}
 	JBLogDebug("copied systemhook");
 
-	generateSystemWideSandboxExtensions(@"/var/jb/basebin/.fakelib/sandbox.plist");
+	generateSystemWideSandboxExtensions(prebootPath(@"basebin/.fakelib/sandbox.plist"));
 	JBLogDebug("generated sandbox extensions");
 
 	uint64_t bindMountRet = bindMount(libPath.fileSystemRepresentation, fakeLibPath.fileSystemRepresentation);
@@ -579,7 +579,7 @@ int main(int argc, char* argv[])
 
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 			if (bootInfo_getUInt64(@"jbdIconCacheNeedsRefresh")) {
-				spawn(@"/var/jb/usr/bin/uicache", @[@"-a"]);
+				spawn(prebootPath(@"usr/bin/uicache"), @[@"-a"]);
 				bootInfo_setObject(@"jbdIconCacheNeedsRefresh", nil);
 			}
 		});

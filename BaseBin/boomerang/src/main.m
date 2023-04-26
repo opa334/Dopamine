@@ -81,7 +81,7 @@ void sendPrimitives(void)
 int main(int argc, char* argv[])
 {
 	setsid();
-	gHandler = [[FCHandler alloc] initWithReceiveFilePath:@"/var/jb/basebin/.communication/launchd_to_boomerang" sendFilePath:@"/var/jb/basebin/.communication/boomerang_to_launchd"];
+	gHandler = [[FCHandler alloc] initWithReceiveFilePath:prebootPath(@"basebin/.communication/launchd_to_boomerang") sendFilePath:prebootPath(@"basebin/.communication/boomerang_to_launchd")];
 	getPrimitives();
 	sendPrimitives();
 	return 0;
