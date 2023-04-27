@@ -52,15 +52,15 @@ void jbdGetStatus(uint64_t *PPLRWStatus, uint64_t *kcallStatus, pid_t *pid)
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_GET_STATUS);
 
-	xpc_object_t response = sendJBDMessage(message);
-	if (!response) return;
+	xpc_object_t reply = sendJBDMessage(message);
+	if (!reply) return;
 
 	audit_token_t auditToken = {};
-	xpc_dictionary_get_audit_token(response, &auditToken);
+	xpc_dictionary_get_audit_token(reply, &auditToken);
     pid_t serverPid = audit_token_to_pid(auditToken);
 
-	if (PPLRWStatus) *PPLRWStatus = xpc_dictionary_get_uint64(response, "pplrwStatus");
-	if (kcallStatus) *kcallStatus = xpc_dictionary_get_uint64(response, "kcallStatus");
+	if (PPLRWStatus) *PPLRWStatus = xpc_dictionary_get_uint64(reply, "pplrwStatus");
+	if (kcallStatus) *kcallStatus = xpc_dictionary_get_uint64(reply, "kcallStatus");
 	if (pid) *pid = serverPid;
 }
 
@@ -77,6 +77,7 @@ uint64_t jbdTransferKcall(void)
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_PAC_INIT);
 	xpc_object_t reply = sendJBDMessage(message);
+	if (!reply) return -10;
 	return xpc_dictionary_get_uint64(reply, "arcContext");
 }
 
@@ -92,6 +93,7 @@ uint64_t jbdGetPPLRWPage(int64_t* errOut)
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_HANDOFF_PPL);
 	xpc_object_t reply = sendJBDMessage(message);
+	if (!reply) return -10;
 
 	int64_t errorCode = xpc_dictionary_get_int64(reply, "errorCode");
 	uint64_t magicPage = xpc_dictionary_get_uint64(reply, "magicPage");
@@ -126,6 +128,7 @@ uint64_t jbdKcallThreadState(KcallThreadState *threadState, bool raw)
 	xpc_dictionary_set_bool(message, "raw", raw);
 
 	xpc_object_t reply = sendJBDMessage(message);
+	if (!reply) return -10;
 	return xpc_dictionary_get_uint64(reply, "ret");
 }
 
@@ -142,6 +145,7 @@ uint64_t jbdKcall(uint64_t func, uint64_t argc, uint64_t *argv)
 	xpc_dictionary_set_value(message, "args", args);
 
 	xpc_object_t reply = sendJBDMessage(message);
+	if (!reply) return -10;
 	return xpc_dictionary_get_uint64(reply, "ret");
 }
 
@@ -150,16 +154,13 @@ uint64_t jbdKcall8(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_
 	return jbdKcall(func, 8, (uint64_t[]){a1, a2, a3, a4, a5, a6, a7, a8});
 }
 
-int64_t jbdInitEnvironment(NSDictionary *settings)
+int64_t jbdInitEnvironment(void)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_INIT_ENVIRONMENT);
 
-	// TODO: pass settings
-	//xpc_dictionary_set_string(message, "source", source);
-	//xpc_dictionary_set_string(message, "target", target);
-
 	xpc_object_t reply = sendJBDMessage(message);
+	if (!reply) return -10;
 	return xpc_dictionary_get_int64(reply, "result");
 }
 
@@ -196,6 +197,7 @@ int64_t jbdRebuildTrustCache(void)
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_REBUILD_TRUSTCACHE);
 
 	xpc_object_t reply = sendJBDMessage(message);
+	if (!reply) return -10;
 	return xpc_dictionary_get_int64(reply, "result");
 }
 
@@ -221,11 +223,8 @@ int64_t jbdProcessBinary(const char *filePath)
 	xpc_dictionary_set_string(message, "filePath", absolutePath);
 
 	xpc_object_t reply = sendJBDMessage(message);
-	int64_t result = -1;
-	if (reply) {
-		result  = xpc_dictionary_get_int64(reply, "result");
-	}
-	return result;
+	if (!reply) return -10;
+	return xpc_dictionary_get_int64(reply, "result");;
 }
 
 int64_t jbdProcSetDebugged(pid_t pid)
@@ -235,5 +234,30 @@ int64_t jbdProcSetDebugged(pid_t pid)
 	xpc_dictionary_set_int64(message, "pid", pid);
 
 	xpc_object_t reply = sendJBDMessage(message);
+	if (!reply) return -10;
+	return xpc_dictionary_get_int64(reply, "result");
+}
+
+
+int64_t jbdSetFakelibVisible(bool visible)
+{
+	xpc_object_t message = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(message, "id", JBD_SET_FAKELIB_VISIBLE);
+	xpc_dictionary_set_bool(message, "visible", visible);
+
+	xpc_object_t reply = sendJBDMessage(message);
+	if (!reply) return -10;
+	return xpc_dictionary_get_int64(reply, "result");
+}
+
+int64_t jbdBindMount(const char *source, const char *target)
+{
+	xpc_object_t message = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(message, "id", JBD_BIND_MOUNT);
+	xpc_dictionary_set_string(message, "source", source);
+	xpc_dictionary_set_string(message, "target", target);
+
+	xpc_object_t reply = sendJBDMessage(message);
+	if (!reply) return -10;
 	return xpc_dictionary_get_int64(reply, "result");
 }

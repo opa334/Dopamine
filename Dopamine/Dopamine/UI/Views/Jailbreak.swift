@@ -143,6 +143,10 @@ func changeEnvironmentVisibility(hidden: Bool) {
     else {
         _ = execCmd(args: [CommandLine.arguments[0], "unhide_environment"])
     }
+
+    if isJailbroken() {
+        jbdSetFakelibVisible(!hidden)
+    }
 }
 
 func isEnvironmentHidden() -> Bool {
