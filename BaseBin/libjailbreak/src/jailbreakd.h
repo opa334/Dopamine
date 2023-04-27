@@ -18,7 +18,11 @@ typedef enum {
 	JBD_MSG_PROCESS_BINARY = 22,
 	JBD_MSG_PROC_SET_DEBUGGED = 23,
 	JBD_MSG_DEBUG_ME = 24,
-	JBD_MSG_FORK_FIX = 25
+	JBD_MSG_FORK_FIX = 25,
+
+	JBD_SET_FAKELIB_MOUNT_ACTIVE = 30,
+	JBD_BIND_MOUNT = 31,
+	JBD_UNMOUNT = 32,
 } JBD_MESSAGE_ID;
 
 typedef enum {
@@ -52,7 +56,7 @@ int jbdInitPPLRW(void);
 uint64_t jbdKcallThreadState(KcallThreadState *threadState, bool raw);
 uint64_t jbdKcall(uint64_t func, uint64_t argc, uint64_t *argv);
 uint64_t jbdKcall8(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8);
-int64_t jbdInitEnvironment(NSDictionary *settings);
+int64_t jbdInitEnvironment(void);
 
 int64_t jbdUpdateFromTIPA(NSString *pathToTIPA);
 int64_t jbdUpdateFromBasebinTar(NSString *pathToBasebinTar);
@@ -60,3 +64,6 @@ int64_t jbdUpdateFromBasebinTar(NSString *pathToBasebinTar);
 int64_t jbdRebuildTrustCache(void);
 int64_t jbdProcessBinary(const char *filePath);
 int64_t jbdProcSetDebugged(pid_t pid);
+
+int64_t jbdSetFakelibMountActive(bool active);
+int64_t jbdBindMount(const char *source, const char *target);

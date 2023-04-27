@@ -799,7 +799,7 @@ uint32_t vnode_get_id(uint64_t vnode_ptr)
 
 uint64_t vnode_get_mount(uint64_t vnode_ptr)
 {
-	return kread64(vnode_ptr + 0xD8);
+	return kread_ptr(vnode_ptr + 0xD8);
 }
 
 NSMutableDictionary *proc_dump_entitlements(uint64_t proc_ptr)

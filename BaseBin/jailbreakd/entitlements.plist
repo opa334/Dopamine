@@ -24,5 +24,9 @@
 	<true/>
 	<key>com.apple.private.xpc.launchd.userspace-reboot</key>
 	<true/>
+	<key>com.apple.private.vfs.role-account-unmount</key>
+	<true/>
+	<key>com.apple.private.security.system-mount-authority</key>
+	<true/>
 </dict>
 </plist>

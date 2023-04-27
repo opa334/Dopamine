@@ -86,6 +86,17 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 								xpc_dictionary_set_int64(xreply, "error", error);
 								break;
 							}
+
+							case LAUNCHD_JB_MSG_UNMOUNT: {
+								int64_t result = -1;
+								const char *path = xpc_dictionary_get_string(xdict, "path");
+								uint32_t flags = xpc_dictionary_get_uint64(xdict, "flags");
+								if (path) {
+									result = unmount(path, flags);
+								}
+								xpc_dictionary_set_int64(xreply, "result", result);
+								break;
+							}
 						}
 
 						xpc_pipe_routine_reply(xreply);
