@@ -164,26 +164,28 @@ int64_t jbdInitEnvironment(void)
 	return xpc_dictionary_get_int64(reply, "result");
 }
 
-int64_t jbdUpdateFromTIPA(NSString *pathToTIPA)
+int64_t jbdUpdateFromTIPA(NSString *pathToTIPA, bool rebootWhenDone)
 {
 	NSString *standardizedPath = [[pathToTIPA stringByResolvingSymlinksInPath] stringByStandardizingPath];
 
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_JBUPDATE);
 	xpc_dictionary_set_string(message, "tipaPath", standardizedPath.fileSystemRepresentation);
+	xpc_dictionary_set_bool(message, "rebootWhenDone", rebootWhenDone);
 
 	xpc_object_t reply = sendJBDMessage(message);
 	if (!reply) return -10;
 	return xpc_dictionary_get_int64(reply, "result");
 }
 
-int64_t jbdUpdateFromBasebinTar(NSString *pathToBasebinTar)
+int64_t jbdUpdateFromBasebinTar(NSString *pathToBasebinTar, bool rebootWhenDone)
 {
 	NSString *standardizedPath = [[pathToBasebinTar stringByResolvingSymlinksInPath] stringByStandardizingPath];
 
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_JBUPDATE);
 	xpc_dictionary_set_string(message, "basebinPath", standardizedPath.fileSystemRepresentation);
+	xpc_dictionary_set_bool(message, "rebootWhenDone", rebootWhenDone);
 
 	xpc_object_t reply = sendJBDMessage(message);
 	if (!reply) return -10;

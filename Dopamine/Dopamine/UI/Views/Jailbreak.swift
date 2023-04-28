@@ -156,7 +156,7 @@ func isEnvironmentHidden() -> Bool {
 }
 
 func update(tipaURL: URL) {
-    print(tipaURL)
+    jbdUpdateFromTIPA(tipaURL.path, true)
 }
 
 func installedEnvironmentVersion() -> String {
@@ -168,7 +168,7 @@ func isInstalledEnvironmentVersionMismatching() -> Bool {
 }
 
 func updateEnvironment() {
-    
+    jbdUpdateFromBasebinTar(Bundle.main.bundlePath + "/basebin.tar", true)
 }
 
 
