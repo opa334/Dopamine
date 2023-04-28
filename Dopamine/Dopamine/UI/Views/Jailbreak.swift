@@ -156,11 +156,13 @@ func isEnvironmentHidden() -> Bool {
 }
 
 func update(tipaURL: URL) {
-    jbdUpdateFromTIPA(tipaURL.path, true)
+    DispatchQueue.global(qos: .userInitiated).async {
+        jbdUpdateFromTIPA(tipaURL.path, true)
+    }
 }
 
 func installedEnvironmentVersion() -> String {
-    if isSandboxed() { return "1.0" } // ui debugging
+    if isSandboxed() { return "0.9" } // ui debugging
     
     return getBootInfoValue(key: "basebin-version") as? String ?? "1.0"
 }
@@ -170,7 +172,9 @@ func isInstalledEnvironmentVersionMismatching() -> Bool {
 }
 
 func updateEnvironment() {
-    jbdUpdateFromBasebinTar(Bundle.main.bundlePath + "/basebin.tar", true)
+    DispatchQueue.global(qos: .userInitiated).async {
+        jbdUpdateFromBasebinTar(Bundle.main.bundlePath + "/basebin.tar", true)
+    }
 }
 
 
