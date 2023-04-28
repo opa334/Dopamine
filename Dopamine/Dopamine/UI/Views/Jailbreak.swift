@@ -17,8 +17,10 @@ public func rootifyPath(path: String) -> String {
     return fakeRootPath! + "/procursus/" + path
 }
 
-func getBootInfoValue(key: String) -> Any {
-    let bootInfo = NSDictionary(contentsOfFile: rootifyPath(path: "/basebin/boot_info.plist"))!
+func getBootInfoValue(key: String) -> Any? {
+    guard let bootInfo = NSDictionary(contentsOfFile: rootifyPath(path: "/basebin/boot_info.plist")) else {
+        return nil
+    }
     return bootInfo[key]
 }
 
