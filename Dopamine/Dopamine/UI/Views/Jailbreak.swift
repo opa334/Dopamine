@@ -10,22 +10,31 @@ import Fugu15KernelExploit
 import CBindings
 
 var fakeRootPath: String? = nil
-public func rootifyPath(path: String) -> String {
+public func rootifyPath(path: String) -> String? {
     if fakeRootPath == nil {
         fakeRootPath = Bootstrapper.locateExistingFakeRoot()
+    }
+    if fakeRootPath == nil {
+        return nil
     }
     return fakeRootPath! + "/procursus/" + path
 }
 
 func getBootInfoValue(key: String) -> Any? {
-    guard let bootInfo = NSDictionary(contentsOfFile: rootifyPath(path: "/basebin/boot_info.plist")) else {
+    guard let bootInfoPath = rootifyPath(path: "/basebin/boot_info.plist") else {
+        return nil
+    }
+    guard let bootInfo = NSDictionary(contentsOfFile: bootInfoPath) else {
         return nil
     }
     return bootInfo[key]
 }
 
 func respring() {
-    _ = execCmd(args: [rootifyPath(path: "/usr/bin/sbreload")])
+    guard let sbreloadPath = rootifyPath(path: "/usr/bin/sbreload") else {
+        return
+    }
+    _ = execCmd(args: [sbreloadPath])
 }
 
 func userspaceReboot() {
@@ -45,7 +54,10 @@ func userspaceReboot() {
     }
     
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-        _ = execCmd(args: [rootifyPath(path: "/usr/bin/launchctl"), "reboot", "userspace"])
+        guard let launchctlPath = rootifyPath(path: "/usr/bin/launchctl") else {
+            return
+        }
+        _ = execCmd(args: [launchctlPath, "reboot", "userspace"])
     })
 }
 
@@ -69,7 +81,6 @@ func isBootstrapped() -> Bool {
 
 func jailbreak(completion: @escaping (Error?) -> ()) {
     do {
-        var wifiFixupNeeded = false
         if #available(iOS 15.4, *) {
             // No Wifi fixup needed
         }
@@ -134,7 +145,13 @@ func jailbrokenUpdateTweakInjectionPreference() {
 }
 
 func changeMobilePassword(newPassword: String) {
-    _ = execCmd(args: [rootifyPath(path: "/usr/bin/dash"), "-c", String(format: "printf \"%%s\\n\" \"\(newPassword)\" | \(rootifyPath(path: "/usr/sbin/pw")) usermod 501 -h 0")])
+    guard let dashPath = rootifyPath(path: "/usr/bin/dash") else {
+        return;
+    }
+    guard let pwPath = rootifyPath(path: "/usr/sbin/pw") else {
+        return;
+    }
+    _ = execCmd(args: [dashPath, "-c", String(format: "printf \"%%s\\n\" \"\(newPassword)\" | \(pwPath) usermod 501 -h 0")])
 }
 
 
