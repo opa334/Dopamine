@@ -58,10 +58,8 @@ int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid, bool mightHaveDirtyPag
 	NSString *childPath = proc_get_path(childPid);
 	// very basic check to make sure this is actually a fork flow
 	if ([parentPath isEqualToString:childPath]) {
-		NSLog(@"running fork debug fixup for %@", childPath);
 		proc_set_debugged(childPid);
 		if (!mightHaveDirtyPages) return 0;
-		NSLog(@"running fork page fixup for %@", childPath);
 
 		bool child_proc_needs_release = false;
 		uint64_t child_proc = proc_for_pid(childPid, &child_proc_needs_release);
@@ -123,7 +121,6 @@ int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid, bool mightHaveDirtyPag
 
 		if (child_proc_needs_release) proc_rele(child_proc);
 
-		NSLog(@"fork fixup done for %@", childPath);
 		return r;
 	}
 	else {
