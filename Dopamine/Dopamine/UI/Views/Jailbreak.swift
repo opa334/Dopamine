@@ -160,6 +160,8 @@ func update(tipaURL: URL) {
 }
 
 func installedEnvironmentVersion() -> String {
+    if isSandboxed() { return "1.0" } // ui debugging
+    
     return getBootInfoValue(key: "basebin-version") as? String ?? "1.0"
 }
 

@@ -106,10 +106,12 @@ struct SettingsView: View {
                                         .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
                                 )
                             }
-                            Text("Hint_Hide_Jailbreak")
+                            Text(isJailbroken() ? "Hint_Hide_Jailbreak_Jailbroken" : "Hint_Hide_Jailbreak")
                                 .font(.footnote)
                                 .opacity(0.6)
-                                .padding(.top, 2)
+                                .padding(.top, 8)
+                                .frame(maxWidth: .infinity)
+                                .multilineTextAlignment(.center)
                         }
                     }
                 }
