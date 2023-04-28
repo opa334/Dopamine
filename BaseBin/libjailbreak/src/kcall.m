@@ -29,6 +29,7 @@ typedef struct {
 
 typedef struct {
 	thread_t thread;
+	uint64_t threadKptr;
 	uint64_t actContext;
 	kRegisterState signedState;
 	uint64_t kernelStack;
@@ -182,6 +183,11 @@ uint64_t Fugu14Kcall_withArguments(Fugu14KcallThread *callThread, uint64_t func,
 	return Fugu14Kcall_withThreadState(callThread, &threadState);
 }
 
+uint64_t getKcallThreadKptr(void)
+{
+	return gFugu14KcallThread.threadKptr;
+}
+
 uint64_t kcall(uint64_t func, uint64_t argc, uint64_t *argv)
 {
 	if (gKCallStatus != kKcallStatusFinalized) {
@@ -231,15 +237,15 @@ uint64_t initPACPrimitives(uint64_t kernelAllocation)
 	}
 	
 	// Find the thread
-	uint64_t threadPtr = task_get_first_thread(self_task());
-	if (threadPtr == 0) {
+	uint64_t threadKptr = task_get_first_thread(self_task());
+	if (threadKptr == 0) {
 		JBLogError("[-] setupFugu14Kcall: Failed to find thread!");
 		return false;
 	}
 
 	// Get it's state pointer
-	uint64_t actContext = thread_get_act_context(threadPtr);
-	if (threadPtr == 0) {
+	uint64_t actContext = thread_get_act_context(threadKptr);
+	if (threadKptr == 0) {
 		JBLogError("[-] setupFugu14Kcall: Failed to get thread ACT_CONTEXT!");
 		return false;
 	}
@@ -269,7 +275,7 @@ uint64_t initPACPrimitives(uint64_t kernelAllocation)
 
 	// Use str x8, [x9] gadget to set TH_KSTACKPTR
 	kwrite64(actContext + offsetof(kRegisterState, x[8]), stack + 0x10ULL);
-	kwrite64(actContext + offsetof(kRegisterState, x[9]), threadPtr + bootInfo_getUInt64(@"TH_KSTACKPTR"));
+	kwrite64(actContext + offsetof(kRegisterState, x[9]), threadKptr + bootInfo_getUInt64(@"TH_KSTACKPTR"));
 
 	// SP and x0 should both point to the new CPU state
 	kwrite64(actContext + offsetof(kRegisterState, sp),   stack);
@@ -282,6 +288,7 @@ uint64_t initPACPrimitives(uint64_t kernelAllocation)
 	kRegisterState *mappedState = (kRegisterState*)((uintptr_t)gThreadMapStart + 0x8000ULL);
 
 	gFugu14KcallThread.thread              = thread;
+	gFugu14KcallThread.threadKptr          = threadKptr;
 	gFugu14KcallThread.kernelStack         = stack;
 	gFugu14KcallThread.scratchMemory       = stack + 0x7000ULL;
 	gFugu14KcallThread.mappedState         = mappedState;

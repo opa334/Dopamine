@@ -80,7 +80,24 @@ void stringKFree(const char *string, uint64_t kmem)
 	kfree(kmem, strlen(string)+1);
 }
 
-bool cs_allow_invalid(uint64_t proc_ptr)
+int nameidone(struct nameidata *nd)
+{
+	// TODO: implement
+	return 0;
+}
+
+int namei(struct nameidata *nd)
+{
+	uint64_t nameidata_kernel = kalloc(sizeof(*nd));
+	nd->ni_cnd.cn_ndp = nameidata_kernel;
+	kwritebuf(nameidata_kernel, nd, sizeof(*nd));
+	int ret = (int)kcall(bootInfo_getSlidUInt64(@"namei"), 1, (uint64_t[]){nameidata_kernel});
+	kreadbuf(nameidata_kernel, nd, sizeof(*nd));
+	kfree(nameidata_kernel, sizeof(*nd));
+	return ret;
+}
+
+/*bool cs_allow_invalid(uint64_t proc_ptr)
 {
 	uint64_t cs_allow_invalid = bootInfo_getSlidUInt64(@"cs_allow_invalid");
 	return (bool)kcall(cs_allow_invalid, 1, (uint64_t[]){proc_ptr});
@@ -90,7 +107,7 @@ uint64_t ptrauth_utils_sign_blob_generic(uint64_t ptr, uint64_t len_bytes, uint6
 {
 	uint64_t ptrauth_utils_sign_blob_generic = bootInfo_getSlidUInt64(@"ptrauth_utils_sign_blob_generic");
 	return kcall(ptrauth_utils_sign_blob_generic, 4, (uint64_t[]){ptr, len_bytes, salt, flags});
-}
+}*/
 
 /*
 Uses some super simple PACDA signing gadget I found by accident
@@ -397,6 +414,17 @@ uint64_t thread_get_act_context(uint64_t thread_ptr)
 	return kread_ptr(thread_ptr + actContextOffset);
 }
 
+uint64_t thread_get_vfs_context(uint64_t thread_ptr)
+{
+	if (@available(iOS 15.2, *)) {
+		return kread_ptr(thread_ptr + 0x390); //thread_ro
+	}
+	else {
+		uint64_t uthread_ptr = kread_ptr(thread_ptr + 0x4F0);
+		return kread_ptr(uthread_ptr + 0x118); // uu_context
+	}
+}
+
 uint64_t task_get_vm_map(uint64_t task_ptr)
 {
 	return kread_ptr(task_ptr + 0x28);
@@ -600,7 +628,7 @@ uint64_t cr_label_get_OSEntitlements(uint64_t cr_label_ptr)
 	return kread_ptr(cr_label_ptr + 0x8);
 }
 
-NSData *OSEntitlements_get_cdhash(uint64_t OSEntitlements_ptr)
+/*NSData *OSEntitlements_get_cdhash(uint64_t OSEntitlements_ptr)
 {
 	uint8_t cdhash[20];
 	kreadbuf(OSEntitlements_ptr + 0x10, cdhash, 20);
@@ -648,9 +676,9 @@ void CEQueryContext_replace_entitlements(uint64_t CEQueryContext_ptr, NSDictiona
 	uint64_t kern_der_start = 0, kern_der_end = 0;
 	copyEntitlementsToKernelMemory(newEntitlements, &kern_der_start, &kern_der_end);
 
-	/*uint64_t old_kern_der_start = kread_ptr(CEQueryContext_ptr + 0x18);
-	uint64_t old_kern_der_end = kread_ptr(CEQueryContext_ptr + 0x20);
-	uint64_t old_kern_der_size = old_kern_der_end - old_kern_der_start;*/
+	//uint64_t old_kern_der_start = kread_ptr(CEQueryContext_ptr + 0x18);
+	//uint64_t old_kern_der_end = kread_ptr(CEQueryContext_ptr + 0x20);
+	//uint64_t old_kern_der_size = old_kern_der_end - old_kern_der_start;
 	//kfree(old_kern_der_start, old_kern_der_size);
 
 	kwrite64(CEQueryContext_ptr + 0x18, kern_der_start);
@@ -683,45 +711,45 @@ void cr_label_replace_entitlements(uint64_t cr_label_ptr, NSDictionary *newEntit
 	//uint64_t OSEntitlements_newPtr = kcall(bootInfo_getSlidUInt64(@"OSEntitlements_MetaClass_alloc"), 0, 0, 0, 0, 0, 0, 0, 0);
 
 	uint64_t kslide = bootInfo_getUInt64(@"kernelslide");
-	/*JBLogDebug("initWithValidationResult(0x%llX, 0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345CF8, OSEntitlements_newPtr, fakeCERValidationResult, csblob, true);
+	JBLogDebug("initWithValidationResult(0x%llX, 0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345CF8, OSEntitlements_newPtr, fakeCERValidationResult, csblob, true);
 	sleep(5);
 	uint64_t ret = kcall(kslide + 0xFFFFFFF008345CF8, OSEntitlements_newPtr, fakeCERValidationResult, csblob, true, 0, 0, 0, 0);
-	JBLogDebug("initWithValidationResult => 0x%llX", ret);*/
+	JBLogDebug("initWithValidationResult => 0x%llX", ret);
 
-	/*JBLogDebug("withValidationResult(0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345C24, fakeCERValidationResult, csblob, false);
+	JBLogDebug("withValidationResult(0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345C24, fakeCERValidationResult, csblob, false);
 	sleep(3);
 	return;
-	uint64_t OSEntitlements_newPtr = kcall(kslide + 0xFFFFFFF008345C24, fakeCERValidationResult, csblob, false, 0, 0, 0, 0, 0);*/
+	uint64_t OSEntitlements_newPtr = kcall(kslide + 0xFFFFFFF008345C24, fakeCERValidationResult, csblob, false, 0, 0, 0, 0, 0);
 
-	/*JBLogDebug("initWithValidationResult(0x%llX, 0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345CF8, OSEntitlements_ptr, fakeCERValidationResult, csblob, true);
+	JBLogDebug("initWithValidationResult(0x%llX, 0x%llX, 0x%llX, 0x%llX, %d)", kslide + 0xFFFFFFF008345CF8, OSEntitlements_ptr, fakeCERValidationResult, csblob, true);
 	sleep(3);
 	uint64_t ret = kcall(kslide + 0xFFFFFFF008345CF8, OSEntitlements_ptr, fakeCERValidationResult, csblob, true, 0, 0, 0, 0);
-	JBLogDebug("initWithValidationResult => 0x%llX", ret);*/
+	JBLogDebug("initWithValidationResult => 0x%llX", ret);
 
 	// Copy existing properties from old object ot new object
-	/*uint8_t *buf = malloc(0x88);
-	kreadbuf(OSEntitlements_ptr + 0x10, buf, 0x88);
-	kwritebuf(OSEntitlements_newPtr + 0x10, buf, 0x88);
-	free(buf);
+	uint8_t *buf = malloc(0x88);
+	//kreadbuf(OSEntitlements_ptr + 0x10, buf, 0x88);
+	//kwritebuf(OSEntitlements_newPtr + 0x10, buf, 0x88);
+	//free(buf);
 
 	// Replace entitlements on CEQueryContext of new object and resign it
-	uint64_t CEQueryContext = OSEntitlements_newPtr + 0x28;
-	CEQueryContext_replace_entitlements(CEQueryContext, newEntitlements);
-	OSEntitlements_resign(OSEntitlements_newPtr);*/
+	//uint64_t CEQueryContext = OSEntitlements_newPtr + 0x28;
+	//CEQueryContext_replace_entitlements(CEQueryContext, newEntitlements);
+	//OSEntitlements_resign(OSEntitlements_newPtr);
 
 	// Write new entitlements to label
-	/*kcall(bootInfo_getSlidUInt64(@"mac_label_set"), cr_label_ptr, 0, OSEntitlements_newPtr, 0, 0, 0, 0, 0);
+	//kcall(bootInfo_getSlidUInt64(@"mac_label_set"), cr_label_ptr, 0, OSEntitlements_newPtr, 0, 0, 0, 0, 0);
 
 	// Deallocate old entitlements object
-	kcall(bootInfo_getSlidUInt64(@"OSEntitlements_Destructor"), OSEntitlements_ptr, 0, 0, 0, 0, 0, 0, 0);*/
+	//kcall(bootInfo_getSlidUInt64(@"OSEntitlements_Destructor"), OSEntitlements_ptr, 0, 0, 0, 0, 0, 0, 0);
 }
 
-/*void cr_label_update_entitlements(uint64_t cr_label_ptr)
+void cr_label_update_entitlements(uint64_t cr_label_ptr)
 {
 	uint64_t OSEntitlements_ptr = kread64(cr_label_ptr + 0x8);
 	uint64_t kslide = bootInfo_getUInt64(@"kernelslide");
 	kcall(0xFFFFFFF008346184 + kslide, OSEntitlements_ptr, 0, 0, 0, 0, 0, 0, 0);
-}*/
+}
 
 NSMutableDictionary *pmap_cs_entry_dump_entitlements(uint64_t pmap_cs_entry_ptr)
 {
@@ -762,7 +790,7 @@ void vnode_replace_entitlements(uint64_t vnode_ptr, NSDictionary *newEntitlement
 		pmap_cs_entry_replace_entitlements(pmap_cs_entry_ptr, newEntitlements);
 		*stop = YES;
 	});
-}
+}*/
 
 uint64_t vnode_get_csblob(uint64_t vnode_ptr)
 {
@@ -802,7 +830,7 @@ uint64_t vnode_get_mount(uint64_t vnode_ptr)
 	return kread64(vnode_ptr + 0xD8);
 }
 
-NSMutableDictionary *proc_dump_entitlements(uint64_t proc_ptr)
+/*NSMutableDictionary *proc_dump_entitlements(uint64_t proc_ptr)
 {
 	uint64_t ucred_ptr = proc_get_ucred(proc_ptr);
 	uint64_t cr_label_ptr = ucred_get_cr_label(ucred_ptr);
@@ -810,7 +838,7 @@ NSMutableDictionary *proc_dump_entitlements(uint64_t proc_ptr)
 	return OSEntitlements_dump_entitlements(OSEntitlements_ptr);
 }
 
-/*void proc_replace_entitlements(uint64_t proc_ptr, NSDictionary *newEntitlements)
+void proc_replace_entitlements(uint64_t proc_ptr, NSDictionary *newEntitlements)
 {
 	uint64_t ucred_ptr = proc_get_ucred(proc_ptr);
 	uint64_t cr_label_ptr = ucred_get_cr_label(ucred_ptr);

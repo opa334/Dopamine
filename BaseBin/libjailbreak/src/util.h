@@ -1,11 +1,86 @@
 #import <Foundation/Foundation.h>
 
+typedef enum {
+	UIO_USERSPACE = 0,
+	UIO_SYSSPACE = 2,
+	UIO_USERSPACE32 = 5,
+	UIO_USERSPACE64 = 8,
+	UIO_SYSSPACE32 = 11
+} uio_seg; // @ 0x8
+
+typedef enum {
+	OP_LOOKUP = 0,
+	OP_MOUNT = 1,
+	OP_UNMOUNT = 2,
+	OP_STATFS = 3,
+	OP_OPEN = 4,
+	OP_LINK = 5,
+	OP_UNLINK = 6,
+	OP_RENAME = 7,
+	OP_CHDIR = 8,
+	OP_CHROOT = 9,
+	OP_MKNOD = 10,
+	OP_MKFIFO = 11,
+	OP_SYMLINK = 12,
+	OP_ACCESS = 13,
+	OP_PATHCONF = 14,
+	OP_READLINK = 15,
+	OP_GETATTR = 16,
+	OP_SETATTR = 17,
+	OP_TRUNCATE = 18,
+	OP_COPYFILE = 19,
+	OP_MKDIR = 20,
+	OP_RMDIR = 21,
+	OP_REVOKE = 22,
+	OP_EXCHANGEDATA = 23,
+	OP_SEARCHFS = 24,
+	OP_FSCTL = 25,
+	OP_GETXATTR = 26,
+	OP_SETXATTR = 27,
+	OP_REMOVEXATTR = 28,
+	OP_LISTXATTR = 29,
+	OP_MAXOP = 30
+} path_operation;  
+
+struct __attribute__((__packed__)) componentname {
+	uint32_t          cn_nameiop; // @ 0x0
+	uint32_t          cn_flags;   // @ 0x4
+	uint64_t          cn_context; // @ 0x8
+	uint64_t          cn_ndp;     // @ 0x10 (nameidata)
+	char             *cn_pnbuf;   // @ 0x18
+	int               cn_pnlen;   // @ 0x20
+	char             *cn_nameptr; // @ 0x28
+	int               cn_namelen; // @ 0x30
+	uint32_t          cn_hash;    // @ 0x34
+	uint32_t          cn_consume; // @ 0x38
+};
+
+struct __attribute__((__packed__)) nameidata {
+	void                *ni_dirp;		  // @ 0x0
+	uio_seg              ni_segflg;		  // @ 0x8
+	path_operation       ni_op;			  // @ 0xc
+	uint64_t /*vnode_t*/ ni_startdir;     // @ 0x10
+	uint64_t /*vnode_t*/ ni_rootdir;      // @ 0x18
+	uint64_t /*vnode_t*/ ni_usedvp;       // @ 0x20
+	uint64_t /*vnode_t*/ ni_vp;           // @ 0x28
+	uint64_t /*vnode_t*/ ni_dvp;          // @ 0x30
+	u_int                ni_pathlen;      // @ 0x38
+	char                *ni_next;         // @ 0x40
+	char                 ni_pathbuf[256]; // @ 0x48
+	u_long               ni_loopcnt;      // @ 0x148
+	struct componentname ni_cnd;          // @ 0x150
+	int32_t              ni_flag;         // @ 0x190
+	int                  ni_ncgeneration; // @ 0x194
+};
+
 NSString *prebootPath(NSString *path);
 
 uint64_t kalloc(uint64_t size);
 uint64_t kfree(uint64_t addr, uint64_t size);
 uint64_t stringKalloc(const char *string);
 void stringKFree(const char *string, uint64_t kmem);
+int nameidone(struct nameidata *nd);
+int namei(struct nameidata *nd);
 
 bool cs_allow_invalid(uint64_t proc_ptr);
 uint64_t ptrauth_utils_sign_blob_generic(uint64_t ptr, uint64_t len_bytes, uint64_t salt, uint64_t flags);
@@ -46,6 +121,7 @@ uint64_t ucred_get_cr_label(uint64_t ucred_ptr);
 
 uint64_t task_get_first_thread(uint64_t task_ptr);
 uint64_t thread_get_act_context(uint64_t thread_ptr);
+uint64_t thread_get_vfs_context(uint64_t thread_ptr);
 uint64_t task_get_vm_map(uint64_t task_ptr);
 uint64_t self_task(void);
 

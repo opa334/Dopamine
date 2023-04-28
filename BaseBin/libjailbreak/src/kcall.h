@@ -23,6 +23,7 @@ extern KcallStatus gKCallStatus;
 
 void pac_loop(void);
 
+uint64_t getKcallThreadKptr(void);
 uint64_t kcall(uint64_t func, uint64_t argc, uint64_t *argv);
 uint64_t kcall8(uint64_t func, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6, uint64_t a7, uint64_t a8);
 uint64_t kcall_with_raw_thread_state(KcallThreadState threadState);

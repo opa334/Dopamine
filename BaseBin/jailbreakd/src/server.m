@@ -14,7 +14,7 @@
 #import <bsm/libbsm.h>
 #import <libproc.h>
 #import "spawn_wrapper.h"
-#import "bind_mount.h"
+#import "mount.h"
 #import "fakelib.h"
 #import "update.h"
 #import "forkfix.h"
@@ -356,7 +356,14 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						int64_t result = 0;
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 							bool visible = xpc_dictionary_get_bool(message, "visible");
-							result = setFakeLibVisible(visible);
+							NSString *libPath = @"/usr/lib";
+							if (visible) {
+								NSString *fakeLibPath = prebootPath(@"basebin/.fakelib");
+								result = bindMount(libPath.fileSystemRepresentation, fakeLibPath.fileSystemRepresentation);
+							} else {
+								kernel_unmount(libPath.fileSystemRepresentation, MNT_FORCE);
+							}
+							//result = setFakeLibVisible(visible);
 						}
 						else {
 							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
