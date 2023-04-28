@@ -14,7 +14,6 @@
 #import <bsm/libbsm.h>
 #import <libproc.h>
 #import "spawn_wrapper.h"
-#import "bind_mount.h"
 #import "fakelib.h"
 #import "update.h"
 #import "forkfix.h"
@@ -236,9 +235,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 							result = makeFakeLib();
 							if (result == 0) {
-								NSString *fakeLibPath = prebootPath(@"basebin/.fakelib");
-								NSString *libPath = @"/usr/lib";
-								result = bindMount(libPath.fileSystemRepresentation, fakeLibPath.fileSystemRepresentation);
+								result = setFakeLibBindMountActive(true);
 							}
 						}
 						else {
@@ -357,20 +354,6 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 							bool visible = xpc_dictionary_get_bool(message, "visible");
 							result = setFakeLibVisible(visible);
-						}
-						else {
-							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
-						}
-						xpc_dictionary_set_int64(reply, "result", result);
-						break;
-					}
-
-					case JBD_BIND_MOUNT: {
-						int64_t result = 0;
-						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
-							const char *source = xpc_dictionary_get_string(message, "source");
-							const char *target = xpc_dictionary_get_string(message, "target");
-							result = bindMount(source, target);
 						}
 						else {
 							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;

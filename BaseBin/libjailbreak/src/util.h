@@ -19,6 +19,7 @@ int proc_rele(uint64_t proc);
 uint64_t proc_get_task(uint64_t proc_ptr);
 pid_t proc_get_pid(uint64_t proc_ptr);
 uint64_t proc_get_ucred(uint64_t proc_ptr);
+void proc_set_ucred(uint64_t proc_ptr, uint64_t ucred_ptr);
 uint64_t proc_get_proc_ro(uint64_t proc_ptr);
 uint64_t proc_ro_get_ucred(uint64_t proc_ro_ptr);
 uint64_t proc_get_text_vnode(uint64_t proc_ptr);
@@ -45,6 +46,9 @@ int ucred_set_svgid(uint64_t ucred_ptr, uint32_t svgid);
 uint64_t ucred_get_cr_label(uint64_t ucred_ptr);
 
 uint64_t task_get_first_thread(uint64_t task_ptr);
+uint64_t task_get_thread(uint64_t task_ptr, thread_act_t thread);
+uint64_t self_thread(void);
+uint64_t thread_get_id(uint64_t thread_ptr);
 uint64_t thread_get_act_context(uint64_t thread_ptr);
 uint64_t task_get_vm_map(uint64_t task_ptr);
 uint64_t self_task(void);
@@ -91,3 +95,5 @@ void proc_replace_entitlements(uint64_t proc_ptr, NSDictionary *entitlements);
 bool proc_set_debugged(pid_t pid);
 NSString *proc_get_path(pid_t pid);
 int64_t proc_fix_setuid(pid_t pid);
+
+void run_unsandboxed(void (^block)(void));

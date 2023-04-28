@@ -249,15 +249,3 @@ int64_t jbdSetFakelibVisible(bool visible)
 	if (!reply) return -10;
 	return xpc_dictionary_get_int64(reply, "result");
 }
-
-int64_t jbdBindMount(const char *source, const char *target)
-{
-	xpc_object_t message = xpc_dictionary_create_empty();
-	xpc_dictionary_set_uint64(message, "id", JBD_BIND_MOUNT);
-	xpc_dictionary_set_string(message, "source", source);
-	xpc_dictionary_set_string(message, "target", target);
-
-	xpc_object_t reply = sendJBDMessage(message);
-	if (!reply) return -10;
-	return xpc_dictionary_get_int64(reply, "result");
-}

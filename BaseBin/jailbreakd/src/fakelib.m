@@ -4,6 +4,8 @@
 #import <sandbox.h>
 #import "dyld_patch.h"
 #import "trustcache.h"
+#import <sys/param.h>
+#import <sys/mount.h>
 
 void generateSystemWideSandboxExtensions(NSString *targetPath)
 {
@@ -169,4 +171,33 @@ int makeFakeLib(void)
 	JBLogDebug("dyld trust cache inserted, allocated at %llX (size: %zX)", dyldTCKaddr, dyldTCSize);
 
 	return setFakeLibVisible(true);
+}
+
+bool isFakeLibBindMountActive(void)
+{
+	struct statfs fs;
+	int sfsret = statfs("/usr/lib", &fs);
+	if (sfsret == 0) {
+		return !strcmp(fs.f_mntonname, "/usr/lib");
+	}
+	return NO;
+}
+
+int setFakeLibBindMountActive(bool active)
+{
+	__block int ret = -1;
+	bool alreadyActive = isFakeLibBindMountActive();
+	if (active != alreadyActive) {
+		if (active) {
+			run_unsandboxed(^{
+				ret = mount("bindfs", "/usr/lib", MNT_RDONLY, (void*)prebootPath(@"basebin/.fakelib").fileSystemRepresentation);
+			});
+		}
+		else {
+			run_unsandboxed(^{
+				ret = unmount("/usr/lib", 0);
+			});
+		}
+	}
+	return ret;
 }

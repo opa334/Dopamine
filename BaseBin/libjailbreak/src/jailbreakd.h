@@ -21,7 +21,6 @@ typedef enum {
 	JBD_MSG_FORK_FIX = 25,
 
 	JBD_SET_FAKELIB_VISIBLE = 30,
-	JBD_BIND_MOUNT = 31,
 } JBD_MESSAGE_ID;
 
 typedef enum {
