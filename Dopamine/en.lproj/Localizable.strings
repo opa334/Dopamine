@@ -58,6 +58,10 @@
 
 "Launching kexploitd" = "Launching kexploitd";
 
+"Enabling Wi-Fi" = "Enabling Wi-Fi";
+
+"Disabling Wi-Fi" = "Disabling Wi-Fi";
+
 "Launching oobPCI" = "Launching oobPCI";
 
 "Loading Basebin Trustcache" = "Loading Basebin Trustcache";
