@@ -45,7 +45,9 @@ struct JailbreakView: View {
     @State var jailbreakingError: Error?
     
     @State var updateAvailable = false
-    @State var showingUpdatePopup = false
+    @State var showingUpdatePopupType: UpdateType? = nil
+    
+    
     @State var updateChangelog: String? = nil
     
     @State var aprilFirstAlert = whatCouldThisVariablePossiblyEvenMean
@@ -75,7 +77,7 @@ struct JailbreakView: View {
         GeometryReader { geometry in
             ZStack {
                 
-                let shouldShowBackground = optionPresentedID != nil || showingUpdatePopup
+                let shouldShowBackground = optionPresentedID != nil || showingUpdatePopupType != nil
                 
                 Image(whatCouldThisVariablePossiblyEvenMean ? "Clouds" : "Wallpaper")
                     .resizable()
@@ -105,7 +107,7 @@ struct JailbreakView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .blur(radius: shouldShowBackground ? 4 : 0)
                 .scaleEffect(shouldShowBackground ? 0.85 : 1)
-                .opacity(showingUpdatePopup ? 0 : 1)
+                .opacity(showingUpdatePopupType != nil ? 0 : 1)
                 .animation(.spring(), value: updateAvailable)
                 .animation(.spring(), value: shouldShowBackground)
                 
@@ -122,23 +124,17 @@ struct JailbreakView: View {
                     ForEach(menuOptions) { option in
                         option.view?
                             .padding(.vertical)
-                            .background(showingUpdatePopup ? nil : MaterialView(.systemUltraThinMaterialDark)
+                            .background(showingUpdatePopupType != nil ? nil : MaterialView(.systemUltraThinMaterialDark)
                                         //                    .opacity(0.8)
                                 .cornerRadius(16))
                             .opacity(option.id == optionPresentedID ? 1 : 0)
-                            .animation(.spring().speed(1.5), value: optionPresentedID != nil)
+                            .animation(.spring().speed(1.5), value: optionPresentedID)
                     }
-                    
-                    UpdateDownloadingView(shown: $showingUpdatePopup, changelog: updateChangelog ?? NSLocalizedString("Changelog_Unavailable_Text", comment: "")/*"""
-                                                                                                                                                                 Added support for iOS 15.0 - 15.1.
-                                                                                                                                                                 Improved the app's compatibility with various iOS devices.
-                                                                                                                                                                 Fixed bugs related to the installation of certain tweaks and packages.
-                                                                                                                                                                 Added new options for customizing the app's interface and settings.
-                                                                                                                                                                 """*/)
-                    .opacity(showingUpdatePopup ? 1 : 0)
-                    .animation(.spring().speed(1.5), value: showingUpdatePopup)
+                    UpdateDownloadingView(type: $showingUpdatePopupType, changelog: updateChangelog ?? NSLocalizedString("Changelog_Unavailable_Text", comment: ""))
+                    .opacity(showingUpdatePopupType != nil ? 1 : 0)
+                    .animation(.spring().speed(1.5), value: showingUpdatePopupType)
                 }
-                .frame(maxWidth: showingUpdatePopup ? .infinity : 320)
+                .frame(maxWidth: showingUpdatePopupType != nil ? .infinity : 320)
                 .scaleEffect(shouldShowBackground ? 1 : 0.9)
                 .opacity(shouldShowBackground ? 1 : 0)
                 .animation(.spring().speed(1.5), value: shouldShowBackground)
@@ -241,12 +237,15 @@ struct JailbreakView: View {
             Button {
                 UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                 
-                if (dopamineDefaults().array(forKey: "selectedPackageManagers") as? [String] ?? []).isEmpty && !isBootstrapped() {
-                    jailbreakingProgress = .selectingPackageManager
+                if requiresEnvironmentUpdate {
+                    showingUpdatePopupType = .environment
                 } else {
-                    uiJailbreak()
+                    if (dopamineDefaults().array(forKey: "selectedPackageManagers") as? [String] ?? []).isEmpty && !isBootstrapped() {
+                        jailbreakingProgress = .selectingPackageManager
+                    } else {
+                        uiJailbreak()
+                    }
                 }
-                print(jailbreakingProgress)
             } label: {
                 Label(title: {
                     if !requiresEnvironmentUpdate {
@@ -269,7 +268,7 @@ struct JailbreakView: View {
                             }
                         }
                     } else {
-                        Text("Button_Update_Required")
+                        Text("Button_Update_Environment")
                     }
                     
                 }, icon: {
@@ -291,14 +290,14 @@ struct JailbreakView: View {
                             }
                         }
                     } else {
-                        Image(systemName: "exclamationmark.triangle")
+                        Image(systemName: "doc.badge.arrow.up")
                     }
                 })
                 .foregroundColor(whatCouldThisVariablePossiblyEvenMean ? .black : .white)
                 .padding()
                 .frame(maxWidth: isJailbreaking ? .infinity : 280)
             }
-            .disabled(isJailbroken() || isJailbreaking || requiresEnvironmentUpdate)
+            .disabled((isJailbroken() || isJailbreaking) && !requiresEnvironmentUpdate)
             .drawingGroup()
             
             if jailbreakingProgress == .finished || jailbreakingProgress == .jailbreaking {
@@ -319,7 +318,7 @@ struct JailbreakView: View {
             .cornerRadius(isJailbreaking ? 20 : 8)
             .ignoresSafeArea(.all, edges: isJailbreaking ? .all : .top)
             .offset(y: isJailbreaking ? 16 : 0)
-            .opacity(isJailbroken() ? 0.5 : 1)
+            .opacity((isJailbroken() && !requiresEnvironmentUpdate) ? 0.5 : 1)
         )
         .animation(.spring(), value: isJailbreaking)
     }
@@ -372,7 +371,7 @@ struct JailbreakView: View {
     @ViewBuilder
     var updateButton: some View {
         Button {
-            showingUpdatePopup = true
+            showingUpdatePopupType = .regular
         } label: {
             Label(title: { Text("Button_Update_Available") }, icon: {
                 ZStack {

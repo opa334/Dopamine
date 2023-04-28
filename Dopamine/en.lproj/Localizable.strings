@@ -24,6 +24,8 @@
 
 "Button_Update_Available" = "Update available";
 
+"Button_Update_Environment" = "Update Environment";
+
 "Bypassing PAC" = "Bypassing PAC";
 
 "Bypassing PPL" = "Bypassing PPL";
@@ -50,7 +52,7 @@
 
 "Hint_Hide_Jailbreak" = "\"Hide Jailbreak\" temporarily removes jailbreak-related files until next jailbreak";
 
-"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
 
 "Initializing Environment" = "Initializing Environment";
 
