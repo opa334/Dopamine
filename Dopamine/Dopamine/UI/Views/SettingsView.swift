@@ -31,7 +31,7 @@ struct SettingsView: View {
     }
     
     var body: some View {
-        if !isSelectingPackageManagers {
+        ZStack {
             VStack {
                 Text("Menu_Settings_Title")
                 Divider()
@@ -177,14 +177,19 @@ struct SettingsView: View {
                 
             }
             .foregroundColor(.white)
-        } else {
+            .opacity(isSelectingPackageManagers ? 0 : 1)
+            .animation(.spring().speed(3), value: isSelectingPackageManagers)
+            .frame(maxHeight: isSelectingPackageManagers ? 0 : nil)
+            
             PackageManagerSelectionView {
                 isSelectingPackageManagers = false
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
             }
-            .frame(height: 250)
+            .opacity(isSelectingPackageManagers ? 1 : 0)
+            .frame(maxHeight: 250)
             .padding(.horizontal)
             .foregroundColor(.white)
+            .animation(.spring(), value: isSelectingPackageManagers)
         }
     }
     
