@@ -51,6 +51,7 @@ struct SettingsView: View {
                         if !isJailbroken() {
                             Toggle("Settings_iDownload", isOn: $enableiDownload)
                             Toggle("Settings_Verbose_Logs", isOn: $verboseLogs)
+                                .minimumScaleFactor(0.5)
                         }
                     }
                     if isBootstrapped() {
@@ -64,6 +65,7 @@ struct SettingsView: View {
                                         Image(systemName: "key")
                                         Text("Button_Set_Mobile_Password")
                                             .lineLimit(1)
+                                            .minimumScaleFactor(0.5)
                                     }
                                     .padding(8)
                                     .frame(maxWidth: .infinity)
@@ -83,7 +85,9 @@ struct SettingsView: View {
                                         Image(systemName: "shippingbox")
                                         Text("Button_Reinstall_Package_Managers")
                                             .lineLimit(1)
+                                            .minimumScaleFactor(0.5)
                                     }
+                                    .padding(.horizontal, 4)
                                     .padding(8)
                                     .frame(maxWidth: .infinity)
                                     .overlay(
@@ -102,7 +106,9 @@ struct SettingsView: View {
                                         Image(systemName: isEnvironmentHiddenState ? "eye" : "eye.slash")
                                         Text(isEnvironmentHiddenState ? "Button_Unhide_Jailbreak" : "Button_Hide_Jailbreak")
                                             .lineLimit(1)
+                                            .minimumScaleFactor(0.5)
                                     }
+                                    .padding(.horizontal, 4)
                                     .padding(8)
                                     .frame(maxWidth: .infinity)
                                     .overlay(
@@ -118,7 +124,9 @@ struct SettingsView: View {
                                         Image(systemName: "trash")
                                         Text("Button_Remove_Jailbreak")
                                             .lineLimit(1)
+                                            .minimumScaleFactor(0.5)
                                     }
+                                    .padding(.horizontal, 4)
                                     .padding(8)
                                     .frame(maxWidth: .infinity)
                                     .overlay(
