@@ -14,6 +14,8 @@
 
 "Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
 
+"Button_Reinstall_Package_Managers" = "Select Package Managers";
+
 "Button_Set" = "Set";
 
 "Button_Show_Logs_Title" = "Show Logs";
