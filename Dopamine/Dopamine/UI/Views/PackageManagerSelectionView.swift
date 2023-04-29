@@ -73,7 +73,7 @@ struct PackageManagerSelectionView: View {
                     .font(.subheadline)
                     .foregroundColor(.white.opacity(0.5))
                     .padding(.vertical)
-                    .padding(.horizontal, 64)
+                    .padding(.horizontal, 32)
                     .multilineTextAlignment(.center)
                 
                 Spacer()
@@ -131,8 +131,14 @@ struct PackageManagerSelectionView: View {
                         .cornerRadius(8)
                     )
                     .opacity(selectedNames.isEmpty ? 0.5 : 1)
-                    
                 }
+                
+                Text("PM_Reinstall_Done_Text")
+                    .font(.subheadline)
+                    .foregroundColor(.white.opacity(0.5))
+                    .padding(.vertical)
+                    .padding(.horizontal, 32)
+                    .multilineTextAlignment(.center)
             }
         }
         .foregroundColor(.white)
