@@ -88,6 +88,8 @@
 
 "Patchfinding" = "Patchfinding";
 
+"PM_Reinstall_Done_Text" = "Selected package managers have been reinstalled";
+
 "Rebuilding TrustCache" = "Rebuilding TrustCache";
 
 "Refreshing Icon Cache" = "Refreshing Icon Cache";
