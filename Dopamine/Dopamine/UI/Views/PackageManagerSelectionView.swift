@@ -23,7 +23,7 @@ struct PackageManagerSelectionView: View {
         VStack {
             Spacer()
             
-            HStack(spacing: 64) {
+            HStack(spacing: 48) {
                 ForEach(packageManagers.indices, id: \.self) { pmI in
                     let pm = packageManagers[pmI]
                     let name = pm.0
@@ -56,6 +56,7 @@ struct PackageManagerSelectionView: View {
             }
             
             Text("If you are unsure which one to select, use Sileo")
+                .font(.subheadline)
                 .foregroundColor(.white.opacity(0.5))
                 .padding(.vertical)
                 .padding(.horizontal, 64)
