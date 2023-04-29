@@ -305,7 +305,7 @@ struct JailbreakView: View {
                 LogView(advancedLogsTemporarilyEnabled: $advancedLogsTemporarilyEnabled, advancedLogsByDefault: $advancedLogsByDefault)
                 endButtons
             } else if jailbreakingProgress == .selectingPackageManager {
-                PackageManagerSelectionView(onContinue: {
+                PackageManagerSelectionView(shown: .constant(true), onContinue: {
                     uiJailbreak()
                 })
                 .padding(.horizontal)

@@ -181,7 +181,7 @@ struct SettingsView: View {
             .animation(.spring().speed(3), value: isSelectingPackageManagers)
             .frame(maxHeight: isSelectingPackageManagers ? 0 : nil)
             
-            PackageManagerSelectionView {
+            PackageManagerSelectionView(shown: $isSelectingPackageManagers, reinstall: true) {
                 isSelectingPackageManagers = false
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
             }
