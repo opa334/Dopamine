@@ -422,9 +422,40 @@ struct JailbreakView: View {
         }
     }
     
+    func getChangelog(json: [[String : Any]], fromVersion: String?, toVersion: String?) -> String {
+        var include: Bool = toVersion == nil
+        var changelogBuf: String = ""
+        for item in json {
+            let versionString = item["tag_name"] as? String
+            if versionString != nil {
+                if toVersion != nil {
+                    if versionString! == toVersion {
+                        include = true
+                    }
+                }
+                
+                if include {
+                    let changelog = item["body"] as? String
+                    if changelog != nil {
+                        if !changelogBuf.isEmpty {
+                            changelogBuf += "\n\n\n"
+                        }
+                        changelogBuf += versionString! + "\n\n" + changelog!
+                    }
+                }
+                
+                if fromVersion != nil {
+                    if versionString! == fromVersion {
+                        include = false
+                    }
+                }
+            }
+        }
+        return changelogBuf
+    }
+    
     func checkForUpdates() async throws {
-        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-            
+        if let currentAppVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
             let owner = "opa334"
             let repo = "Dopamine"
             
@@ -434,9 +465,9 @@ struct JailbreakView: View {
             let (releasesData, _) = try await URLSession.shared.data(for: releasesRequest)
             let releasesJSON = try JSONSerialization.jsonObject(with: releasesData, options: []) as! [[String: Any]]
             
-            if let latestTag = releasesJSON.first?["tag_name"] as? String, latestTag != version {
+            if let latestTag = releasesJSON.first?["tag_name"] as? String, latestTag != currentAppVersion {
                 updateAvailable = true
-                updateChangelog = releasesJSON.first?["body"] as? String
+                updateChangelog = getChangelog(json: releasesJSON, fromVersion: currentAppVersion, toVersion: nil)
             }
         }
     }
