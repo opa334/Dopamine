@@ -30,8 +30,12 @@ struct UpdateDownloadingView: View {
     
     var body: some View {
         ZStack {
-            #warning("Fix this")
             if type != nil {
+                Color.black
+                    .ignoresSafeArea()
+                    .opacity(0.6)
+                    .transition(.opacity.animation(.spring()))
+                
                 VStack(spacing: 16) {
                     VStack(spacing: 10) {
                         Text(type == .environment ? "Title_Mismatching_Environment_Version" : "Title_Changelog")
@@ -106,6 +110,7 @@ struct UpdateDownloadingView: View {
                 .opacity(updateState == .changelog ? 1 : 0)
                 .animation(.spring(), value: updateState)
                 .padding(.vertical, 64)
+                .frame(maxWidth: 280)
                 
                 ZStack {
                     VStack(spacing: 150) {
@@ -168,10 +173,10 @@ struct UpdateDownloadingView: View {
                 }
                 .opacity(updateState != .changelog ? 1 : 0)
                 .animation(.spring(), value: updateState)
+                .frame(maxWidth: 280)
             }
         }
         .foregroundColor(.white)
-        .frame(maxWidth: 280)
     }
     
     func downloadUpdateAndInstall() async throws {

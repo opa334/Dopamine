@@ -32,17 +32,6 @@ struct AboutView: View {
     
     var body: some View {
         VStack {
-            VStack(spacing: 4) {
-                Text("Credits_Made_By")
-                Text("Credits_Made_By_Subheadline")
-                    .font(.footnote)
-                    .opacity(0.6)
-            }
-            Divider()
-                .background(.white)
-                .padding(.horizontal, 32)
-                .opacity(0.25)
-            
             VStack {
                 Button(action: {
                     openURL(URL(string: "https://github.com/opa334/Dopamine")!)

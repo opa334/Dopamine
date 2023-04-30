@@ -28,6 +28,7 @@
 		8C8D955E29D04C4D00A482A8 /* zebra.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C8D955D29D04C4D00A482A8 /* zebra.deb */; };
 		8C8D955F29D04CD100A482A8 /* zebra.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C8D955D29D04C4D00A482A8 /* zebra.deb */; };
 		8CBDF90929FEEF4400988663 /* LICENSE_libc.md in Resources */ = {isa = PBXBuildFile; fileRef = 8CBDF90829FEEF4400988663 /* LICENSE_libc.md */; };
+		93532B3129FE6CC8007135BE /* PopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93532B3029FE6CC8007135BE /* PopupView.swift */; };
 		9380BFFE29E6F1FA00C0121A /* UpdateDownloadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9380BFFD29E6F1FA00C0121A /* UpdateDownloadingView.swift */; };
 		9380C00129EAE9C600C0121A /* PackageManagerSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9380C00029EAE9C600C0121A /* PackageManagerSelectionView.swift */; };
 		938DADDE29F2993400C37952 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 938DADDD29F20ACA00C37952 /* Localizable.strings */; };
@@ -79,6 +80,7 @@
 		8C8D955A29D04B4C00A482A8 /* tar */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = tar; path = ../../../BaseBin/_external/tar; sourceTree = "<group>"; };
 		8C8D955D29D04C4D00A482A8 /* zebra.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = zebra.deb; sourceTree = "<group>"; };
 		8CBDF90829FEEF4400988663 /* LICENSE_libc.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = LICENSE_libc.md; path = ../../../LICENSE_libc.md; sourceTree = "<group>"; };
+		93532B3029FE6CC8007135BE /* PopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupView.swift; sourceTree = "<group>"; };
 		9380BFFD29E6F1FA00C0121A /* UpdateDownloadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateDownloadingView.swift; sourceTree = "<group>"; };
 		9380BFFF29E8601600C0121A /* Fugu15KernelExploit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Fugu15KernelExploit; path = ../Packages/Fugu15KernelExploit; sourceTree = "<group>"; };
 		9380C00029EAE9C600C0121A /* PackageManagerSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageManagerSelectionView.swift; sourceTree = "<group>"; };
@@ -257,6 +259,7 @@
 				CEBBF6DC29DB04FA00AD7299 /* Jailbreak.swift */,
 				9380BFFD29E6F1FA00C0121A /* UpdateDownloadingView.swift */,
 				9380C00029EAE9C600C0121A /* PackageManagerSelectionView.swift */,
+				93532B3029FE6CC8007135BE /* PopupView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -380,6 +383,7 @@
 				CEBBF6DD29DB04FA00AD7299 /* Jailbreak.swift in Sources */,
 				151CAFB32894041D00B2A6BA /* main.swift in Sources */,
 				CEC4159F29D3590800D79EE9 /* MaterialView.swift in Sources */,
+				93532B3129FE6CC8007135BE /* PopupView.swift in Sources */,
 				CE284DE529D4777A0096D99D /* Logger.swift in Sources */,
 				93D2565B29ED6EDE00B549BA /* URLExtension+download.swift in Sources */,
 				CEBBF6E129DB422500AD7299 /* TextField++.swift in Sources */,
