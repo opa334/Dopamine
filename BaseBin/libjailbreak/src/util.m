@@ -80,7 +80,7 @@ void stringKFree(const char *string, uint64_t kmem)
 	kfree(kmem, strlen(string)+1);
 }
 
-bool cs_allow_invalid(uint64_t proc_ptr)
+/*bool cs_allow_invalid(uint64_t proc_ptr)
 {
 	uint64_t cs_allow_invalid = bootInfo_getSlidUInt64(@"cs_allow_invalid");
 	return (bool)kcall(cs_allow_invalid, 1, (uint64_t[]){proc_ptr});
@@ -90,7 +90,7 @@ uint64_t ptrauth_utils_sign_blob_generic(uint64_t ptr, uint64_t len_bytes, uint6
 {
 	uint64_t ptrauth_utils_sign_blob_generic = bootInfo_getSlidUInt64(@"ptrauth_utils_sign_blob_generic");
 	return kcall(ptrauth_utils_sign_blob_generic, 4, (uint64_t[]){ptr, len_bytes, salt, flags});
-}
+}*/
 
 uint64_t kpacda(uint64_t pointer, uint64_t modifier)
 {
@@ -249,7 +249,7 @@ uint64_t proc_get_vnode_by_file_descriptor(uint64_t proc_ptr, int fd)
 	return kread_ptr(file_glob_ptr + 0x38);
 }
 
-uint32_t proc_get_csflags(uint64_t proc)
+/*uint32_t proc_get_csflags(uint64_t proc)
 {
 	if (@available(iOS 15.2, *)) {
 		uint64_t proc_ro = proc_get_proc_ro(proc);
@@ -270,7 +270,7 @@ void proc_set_csflags(uint64_t proc, uint32_t csflags)
 	else {
 		// TODO
 	}
-}
+}*/
 
 uint32_t proc_get_svuid(uint64_t proc_ptr)
 {
@@ -607,14 +607,14 @@ void DEREntitlementsEncode(NSDictionary *entitlements, uint8_t **startOut, uint8
 	der_encode_plist((__bridge CFDictionaryRef)entitlements, NULL, der_start, der_end);
 	if (startOut) *startOut = der_start;
 	if (endOut) *endOut = der_end;
-}*/
+}
 
 uint64_t cr_label_get_OSEntitlements(uint64_t cr_label_ptr)
 {
 	return kread_ptr(cr_label_ptr + 0x8);
 }
 
-/*NSData *OSEntitlements_get_cdhash(uint64_t OSEntitlements_ptr)
+NSData *OSEntitlements_get_cdhash(uint64_t OSEntitlements_ptr)
 {
 	uint8_t cdhash[20];
 	kreadbuf(OSEntitlements_ptr + 0x10, cdhash, 20);
