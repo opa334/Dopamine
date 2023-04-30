@@ -17,6 +17,8 @@ struct SettingsView: View {
     @AppStorage("tweakInjectionEnabled", store: dopamineDefaults()) var tweakInjection: Bool = true
     @AppStorage("iDownloadEnabled", store: dopamineDefaults()) var enableiDownload: Bool = false
     
+    @Binding var isPresented: Bool
+    
     @State var mobilePasswordChangeAlertShown = false
     @State var mobilePasswordInput = "alpine"
     
@@ -26,19 +28,14 @@ struct SettingsView: View {
     
     @State var isEnvironmentHiddenState = isEnvironmentHidden()
     
-    init() {
+    init(isPresented: Binding<Bool>?) {
         UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = .init(named: "AccentColor")
+        self._isPresented = isPresented ?? .constant(true)
     }
     
     var body: some View {
         ZStack {
             VStack {
-                Text("Menu_Settings_Title")
-                Divider()
-                    .background(.white)
-                    .padding(.horizontal, 32)
-                    .opacity(0.25)
-                
                 VStack(spacing: 20) {
                     VStack(spacing: 10) {
                         Toggle("Settings_Tweak_Injection", isOn: $tweakInjection)
@@ -198,6 +195,11 @@ struct SettingsView: View {
             .padding(.horizontal)
             .foregroundColor(.white)
             .animation(.spring(), value: isSelectingPackageManagers)
+        }
+        .onChange(of: isPresented) { newValue in
+            if !newValue {
+                isSelectingPackageManagers = false
+            }
         }
     }
     

@@ -29,18 +29,19 @@ struct JailbreakView: View {
             lhs.id == rhs.id
         }
         
-        var id = UUID()
+        var id: String
         
         var imageName: String
         var title: String
-        var view: AnyView? = nil
         var showUnjailbroken: Bool = true
         
         
         var action: (() -> ())? = nil
     }
     
-    @State var optionPresentedID: UUID?
+    @State var isSettingsPresented = false
+    @State var isCreditsPresented = false
+    
     @State var jailbreakingProgress: JailbreakingProgress = .idle
     @State var jailbreakingError: Error?
     
@@ -62,23 +63,21 @@ struct JailbreakView: View {
     
     var requiresEnvironmentUpdate = isInstalledEnvironmentVersionMismatching() && isJailbroken()
     
-    var menuOptions: [MenuOption] = []
-    
-    init() {
-        menuOptions = [
-            .init(imageName: "gearshape", title: NSLocalizedString("Menu_Settings_Title", comment: ""), view: AnyView(SettingsView())),
-            .init(imageName: "arrow.clockwise", title: NSLocalizedString("Menu_Restart_SpringBoard_Title", comment: ""), showUnjailbroken: false, action: respring),
-            .init(imageName: "arrow.clockwise.circle", title: NSLocalizedString("Menu_Reboot_Userspace_Title", comment: ""), showUnjailbroken: false, action: userspaceReboot),
-            .init(imageName: "info.circle", title: NSLocalizedString("Menu_Credits_Title", comment: ""), view: AnyView(AboutView())),
-        ]
-    }
+//    init() {
+//        menuOptions = [
+//            .init(imageName: "gearshape", title: NSLocalizedString("Menu_Settings_Title", comment: ""), view: AnyView(SettingsView())),
+//            .init(imageName: "arrow.clockwise", title: NSLocalizedString("Menu_Restart_SpringBoard_Title", comment: ""), showUnjailbroken: false, action: respring),
+//            .init(imageName: "arrow.clockwise.circle", title: NSLocalizedString("Menu_Reboot_Userspace_Title", comment: ""), showUnjailbroken: false, action: userspaceReboot),
+//            .init(imageName: "info.circle", title: NSLocalizedString("Menu_Credits_Title", comment: ""), view: AnyView(AboutView())),
+//        ]
+//    }
     
     
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 
-                let shouldShowBackground = optionPresentedID != nil || showingUpdatePopupType != nil
+                let isPopupPresented = isSettingsPresented || isCreditsPresented
                 
                 Image(whatCouldThisVariablePossiblyEvenMean ? "Clouds" : "Wallpaper")
                     .resizable()
@@ -87,59 +86,77 @@ struct JailbreakView: View {
                     .blur(radius: 4)
                     .frame(width: geometry.size.width, height: geometry.size.height)
                 
-                    .scaleEffect(shouldShowBackground ? 1.2 : 1.4)
-                    .animation(.spring(), value: shouldShowBackground)
+                    .scaleEffect(isPopupPresented ? 1.2 : 1.4)
+                    .animation(.spring(), value: isPopupPresented)
                 
-                VStack {
-                    Spacer()
-                    header
-                    Spacer()
-                    menu
-                    if !isJailbreaking {
+                if showingUpdatePopupType == nil {
+                    VStack {
                         Spacer()
+                        header
                         Spacer()
-                    }
-                    bottomSection
-                    updateButton
-                    if !isJailbreaking {
-                        Spacer()
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .blur(radius: shouldShowBackground ? 4 : 0)
-                .scaleEffect(shouldShowBackground ? 0.85 : 1)
-                .opacity(showingUpdatePopupType != nil ? 0 : 1)
-                .animation(.spring(), value: updateAvailable)
-                .animation(.spring(), value: shouldShowBackground)
-                
-                Color.black
-                    .ignoresSafeArea()
-                    .opacity(shouldShowBackground ? 0.6 : 0)
-                    .animation(.spring(), value: shouldShowBackground)
-                    .onTapGesture {
-                        if optionPresentedID != nil {
-                            optionPresentedID = nil
+                        menu
+                        if !isJailbreaking {
+                            Spacer()
+                            Spacer()
+                        }
+                        bottomSection
+                        updateButton
+                        if !isJailbreaking {
+                            Spacer()
                         }
                     }
-                ZStack {
-                    ForEach(menuOptions) { option in
-                        option.view?
-                            .padding(.vertical)
-                            .background(showingUpdatePopupType != nil ? nil : MaterialView(.systemUltraThinMaterialDark)
-                                        //                    .opacity(0.8)
-                                .cornerRadius(16))
-                            .opacity(option.id == optionPresentedID ? 1 : 0)
-                            .animation(.spring().speed(1.5), value: optionPresentedID)
-                    }
-                    UpdateDownloadingView(type: $showingUpdatePopupType, changelog: updateChangelog ?? NSLocalizedString("Changelog_Unavailable_Text", comment: ""), mismatchChangelog: mismatchChangelog ?? NSLocalizedString("Changelog_Unavailable_Text", comment: ""))
-                    .opacity(showingUpdatePopupType != nil ? 1 : 0)
-                    .animation(.spring().speed(1.5), value: showingUpdatePopupType)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .blur(radius: isPopupPresented ? 4 : 0)
+                    .scaleEffect(isPopupPresented ? 0.85 : 1)
+                    .animation(.spring(), value: updateAvailable)
+                    .animation(.spring(), value: isPopupPresented)
+                    .transition(.opacity)
+                    .zIndex(1)
                 }
-                .frame(maxWidth: showingUpdatePopupType != nil ? .infinity : 320)
-                .scaleEffect(shouldShowBackground ? 1 : 0.9)
-                .opacity(shouldShowBackground ? 1 : 0)
-                .animation(.spring().speed(1.5), value: shouldShowBackground)
+                
+                PopupView(title: {
+                    Text("Settings")
+                }, contents: {
+                    SettingsView(isPresented: $isSettingsPresented)
+                        .frame(maxWidth: 320)
+                }, isPresented: $isSettingsPresented)
+                .zIndex(2)
+                
+                
+                PopupView(title: {
+                    Text("Credits_Made_By")
+                    Text("Credits_Made_By_Subheadline")
+                        .font(.footnote)
+                        .opacity(0.6)
+                }, contents: {
+                    AboutView()
+                        .frame(maxWidth: 320)
+                }, isPresented: $isCreditsPresented)
+                .zIndex(2)
+                
+                
+                UpdateDownloadingView(type: $showingUpdatePopupType, changelog: updateChangelog ?? NSLocalizedString("Changelog_Unavailable_Text", comment: ""), mismatchChangelog: mismatchChangelog ?? NSLocalizedString("Changelog_Unavailable_Text", comment: ""))
+
+//
+//                ZStack {
+//                    ForEach(menuOptions) { option in
+//                        option.view?
+//                            .padding(.vertical)
+//                            .background(showingUpdatePopupType != nil ? nil : MaterialView(.systemUltraThinMaterialDark)
+//                                        //                    .opacity(0.8)
+//                                .cornerRadius(16))
+//                            .opacity(option.id == optionPresentedID ? 1 : 0)
+//                            .animation(.spring().speed(1.5), value: optionPresentedID)
+//                    }
+//                    .opacity(showingUpdatePopupType != nil ? 1 : 0)
+//                    .animation(.spring().speed(1.5), value: showingUpdatePopupType)
+//                }
+//                .frame(maxWidth: showingUpdatePopupType != nil ? .infinity : 320)
+//                .scaleEffect(shouldShowBackground ? 1 : 0.9)
+//                .opacity(shouldShowBackground ? 1 : 0)
+//                .animation(.spring().speed(1.5), value: shouldShowBackground)
             }
+            .animation(.default, value: showingUpdatePopupType == nil)
         }
         .onAppear {
             Task {
@@ -187,13 +204,25 @@ struct JailbreakView: View {
     @ViewBuilder
     var menu: some View {
         VStack {
+            let menuOptions: [MenuOption] = [
+                .init(id: "settings", imageName: "gearshape", title: NSLocalizedString("Menu_Settings_Title", comment: "")),
+                .init(id: "respring", imageName: "arrow.clockwise", title: NSLocalizedString("Menu_Restart_SpringBoard_Title", comment: ""), showUnjailbroken: false, action: respring),
+                .init(id: "userspace", imageName: "arrow.clockwise.circle", title: NSLocalizedString("Menu_Reboot_Userspace_Title", comment: ""), showUnjailbroken: false, action: userspaceReboot),
+                .init(id: "credits", imageName: "info.circle", title: NSLocalizedString("Menu_Credits_Title", comment: "")),
+            ]
             ForEach(menuOptions) { option in
                 Button {
                     UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                    if option.view != nil {
-                        optionPresentedID = option.id
-                    } else if let action = option.action {
+                    if let action = option.action {
                         action()
+                    } else {
+                        switch option.id {
+                        case "settings":
+                            isSettingsPresented = true
+                        case "credits":
+                            isCreditsPresented = true
+                        default: break
+                        }
                     }
                 } label: {
                     HStack {
@@ -202,7 +231,7 @@ struct JailbreakView: View {
                         
                         Spacer()
                         
-                        if option.view != nil {
+                        if option.action == nil {
                             Image(systemName: Locale.characterDirection(forLanguage: Locale.current.languageCode ?? "") == .rightToLeft ? "chevron.left" : "chevron.right")
                                 .font(.body)
                                 .symbolRenderingMode(.palette)
