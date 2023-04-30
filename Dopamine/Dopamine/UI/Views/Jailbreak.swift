@@ -189,9 +189,7 @@ func isInstalledEnvironmentVersionMismatching() -> Bool {
 }
 
 func updateEnvironment() {
-    DispatchQueue.global(qos: .userInitiated).async {
-        jbdUpdateFromBasebinTar(Bundle.main.bundlePath + "/basebin.tar", true)
-    }
+    jbdUpdateFromBasebinTar(Bundle.main.bundlePath + "/basebin.tar", true)
 }
 
 

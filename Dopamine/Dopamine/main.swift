@@ -25,4 +25,11 @@ if CommandLine.arguments.count > 1 {
 
 Fugu15.mainHook()
 
+if isJailbroken() {
+    let rootPrefix = rootifyPath(path: "")
+    if rootPrefix != nil {
+        setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:\(rootPrefix!)/sbin:\(rootPrefix!)/bin:\(rootPrefix!)/usr/sbin:\(rootPrefix!)/usr/bin", 1)
+    }
+}
+
 Fugu15App.main()

@@ -24,7 +24,7 @@
 
 "Button_Update" = "Update";
 
-"Button_Update_Available" = "Update available";
+"Button_Update_Available" = "Update Available";
 
 "Button_Update_Environment" = "Update Environment";
 
@@ -88,7 +88,7 @@
 
 "Patchfinding" = "Patchfinding";
 
-"PM_Reinstall_Done_Text" = "Selected package managers have been reinstalled";
+"PM_Reinstall_Done_Text" = "The selected package managers have been reinstalled";
 
 "Rebuilding TrustCache" = "Rebuilding TrustCache";
 
@@ -139,3 +139,13 @@
 "Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
 
 "Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace Reboot Required";
+
+"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+
+"Select_Package_Managers_Reinstall_Message" = "Select package managers to reinstall";
+
+"Reinstall" = "Reinstall";
+
+"Continue" = "Continue";
+
+"Close" = "Close";

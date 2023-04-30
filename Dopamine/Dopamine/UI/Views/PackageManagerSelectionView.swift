@@ -69,7 +69,7 @@ struct PackageManagerSelectionView: View {
                     }
                 }
                 
-                Text(reinstall ? "Select package managers to reinstall" : "If you are unsure which one to select, select Sileo")
+                Text(reinstall ? "Select_Package_Managers_Reinstall_Message" : "Select_Package_Managers_Install_Message")
                     .font(.subheadline)
                     .foregroundColor(.white.opacity(0.5))
                     .padding(.vertical)
@@ -88,12 +88,21 @@ struct PackageManagerSelectionView: View {
                     } else {
                         reinstallStatus = .inProgress
                         
-                        // TODO: Reinstall
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            let dpkgPath = rootifyPath(path: "usr/bin/dpkg")
+                            if dpkgPath != nil {
+                                if selectedNames.contains("Sileo") {
+                                    _ = execCmd(args: [dpkgPath!, "-i", Bundle.main.bundlePath + "/sileo.deb"])
+                                }
+                                if selectedNames.contains("Zebra") {
+                                    _ = execCmd(args: [dpkgPath!, "-i", Bundle.main.bundlePath + "/zebra.deb"])
+                                }
+                            }
                             
-                            reinstallStatus = .finished
-                        })
+                            DispatchQueue.main.async {
+                                reinstallStatus = .finished
+                            }
+                        }
                     }
                 } label: {
                     Label(title: { Text(reinstall ? "Reinstall" : "Continue") }, icon: {
@@ -114,6 +123,12 @@ struct PackageManagerSelectionView: View {
             } else if reinstallStatus == .inProgress {
                 LoadingIndicator(animation: .circleRunner, color: .white)
             } else if reinstallStatus == .finished {
+                Text("PM_Reinstall_Done_Text")
+                    .font(.subheadline)
+                    .foregroundColor(.white.opacity(0.5))
+                    .padding(.vertical)
+                    .padding(.horizontal, 32)
+                    .multilineTextAlignment(.center)
                 Button {
                     UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     
@@ -132,13 +147,6 @@ struct PackageManagerSelectionView: View {
                     )
                     .opacity(selectedNames.isEmpty ? 0.5 : 1)
                 }
-                
-                Text("PM_Reinstall_Done_Text")
-                    .font(.subheadline)
-                    .foregroundColor(.white.opacity(0.5))
-                    .padding(.vertical)
-                    .padding(.horizontal, 32)
-                    .multilineTextAlignment(.center)
             }
         }
         .foregroundColor(.white)

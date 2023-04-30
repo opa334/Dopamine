@@ -73,8 +73,12 @@ struct UpdateDownloadingView: View {
                                 }
                             }
                         } else {
-                            updateEnvironment()
-                            updateState = .updating
+                            DispatchQueue.global(qos: .userInitiated).async {
+                                updateEnvironment()
+                                DispatchQueue.main.async {
+                                    updateState = .updating
+                                }
+                            }
                         }
                         
                     } label: {
