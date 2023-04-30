@@ -26,6 +26,7 @@ struct UpdateDownloadingView: View {
     @State var updateState: UpdateState = .changelog
     @State var showLogView = false
     var changelog: String
+    var mismatchChangelog: String
     
     var body: some View {
         ZStack {
@@ -42,7 +43,7 @@ struct UpdateDownloadingView: View {
                             .padding(.horizontal, 32)
                             .opacity(0.5)
                         ScrollView {
-                            Text(try! AttributedString(markdown: type == .environment ? "Mismatching_Environment_Version_Update_Body" : changelog, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)))
+                            Text(try! AttributedString(markdown: type == .environment ? mismatchChangelog : changelog, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)))
                                 .opacity(0.5)
                                 .multilineTextAlignment(.center)
                                 .padding(.vertical)
@@ -73,11 +74,9 @@ struct UpdateDownloadingView: View {
                                 }
                             }
                         } else {
+                            updateState = .updating
                             DispatchQueue.global(qos: .userInitiated).async {
                                 updateEnvironment()
-                                DispatchQueue.main.async {
-                                    updateState = .updating
-                                }
                             }
                         }
                         
@@ -177,7 +176,7 @@ struct UpdateDownloadingView: View {
     
     func downloadUpdateAndInstall() async throws {
         let owner = "opa334"
-        let repo = "Fugu15"
+        let repo = "Dopamine"
         
         // Get the releases
         let releasesURL = URL(string: "https://api.github.com/repos/\(owner)/\(repo)/releases")!
@@ -222,6 +221,24 @@ struct UpdateDownloadingView_Previews: PreviewProvider {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .ignoresSafeArea()
             UpdateDownloadingView(type: .constant(.regular), changelog:
+"""
+· Added support for iOS 15.0 - 15.1.
+· Improved the app's compatibility with various iOS devices.
+· Fixed bugs related to the installation of certain tweaks and packages.
+· Added new options for customizing the app's interface and settings.
+· Added support for iOS 15.0 - 15.1.
+· Improved the app's compatibility with various iOS devices.
+· Fixed bugs related to the installation of certain tweaks and packages.
+· Added new options for customizing the app's interface and settings.
+· Added support for iOS 15.0 - 15.1.
+· Improved the app's compatibility with various iOS devices.
+· Fixed bugs related to the installation of certain tweaks and packages.
+· Added new options for customizing the app's interface and settings.
+· Added support for iOS 15.0 - 15.1.
+· Improved the app's compatibility with various iOS devices.
+· Fixed bugs related to the installation of certain tweaks and packages.
+· Added new options for customizing the app's interface and settings.
+""", mismatchChangelog:
 """
 · Added support for iOS 15.0 - 15.1.
 · Improved the app's compatibility with various iOS devices.

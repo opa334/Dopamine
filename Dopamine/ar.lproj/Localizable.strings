@@ -10,11 +10,13 @@
 
 "Button_Remove_Jailbreak" = "إزالة الجيلبريك";
 
+"Button_Set_Mobile_Password" = "Set Mobile Password";
+
 "Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
 
-"Button_Set" = "Set";
+"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
 
-"Button_Set_Root_Password" = "تعيين كلمة مرور الجذر";
+"Button_Set" = "Set";
 
 "Button_Show_Logs_Title" = "إظهار السجل";
 
@@ -24,6 +26,8 @@
 
 "Button_Update_Available" = "يتوفر تحديث";
 
+"Button_Update_Environment" = "Update Environment";
+
 "Bypassing PAC" = "تجاوز PAC";
 
 "Bypassing PPL" = "تجاوز PPL";
@@ -32,11 +36,13 @@
 
 "Context_Menu_Copy_To_Clipboard" = "نسخ إلى الحافظة";
 
+"Credits_Button_Discord" = "Discord";
+
 "Credits_Button_License" = "الترخيص";
 
 "Credits_Button_Source_Code" = "شفرة المصدر";
 
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "إصدار Dopamine هو %@\n%@";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
 
 "Credits_Header_Special_Thanks" = "شكر خاص:";
 
@@ -50,6 +56,8 @@
 
 "Hint_Hide_Jailbreak" = "\"إخفاء الجيلبريك\" يقوم بإزالة الملفات المتعلقة بالجيلبريك مؤقتًا حتى تفعيل الجيلبريك القادم.";
 
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+
 "Initializing Environment" = "جارِ تحسين البيئة";
 
 "Initializing System Hook" = "تحسين تكامل النظام";
@@ -58,11 +66,17 @@
 
 "Launching kexploitd" = "جارِ استغلال الثغرة";
 
+"Enabling Wi-Fi" = "Enabling Wi-Fi";
+
+"Disabling Wi-Fi" = "Disabling Wi-Fi";
+
 "Launching oobPCI" = "جارِ تشغيل oopPCI";
 
 "Loading Basebin Trustcache" = "تحميل بنية الذاكرة المؤقتة";
 
 "Menu_Credits_Title" = "الاعتمادات";
+
+"Menu_Settings_Title" = "الإعدادات";
 
 "Menu_Reboot_Userspace_Title" = "إعادة تشغيل Userspace";
 
@@ -76,6 +90,8 @@
 
 "Patchfinding" = "العثور على التصحيح";
 
+"PM_Reinstall_Done_Text" = "The selected package managers have been reinstalled";
+
 "Rebuilding TrustCache" = "إعادة بناء الذاكرة المؤقتة";
 
 "Refreshing Icon Cache" = "تحديث ذاكرة التخزين المؤقتة للأيقونات";
@@ -83,8 +99,6 @@
 "Settings_Footer_Device_Bootstrapped" = "تم تمهيد الجهاز";
 
 "Settings_Footer_Device_Not_Bootstrapped" = "لم يتم تمهيد الجهاز";
-
-"Menu_Settings_Title" = "الإعدادات";
 
 "Starting jailbreakd" = "بدء jailbreakd";
 
@@ -120,10 +134,24 @@
 
 "Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
 
-"Popup_Change_Root_Password_Title" = "Change Mobile Password";
+"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
 
 "Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
 
 "Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
 
 "Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
+
+"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+
+"Select_Package_Managers_Reinstall_Message" = "Select package managers to reinstall";
+
+"Reinstall" = "Reinstall";
+
+"Continue" = "Continue";
+
+"Close" = "Close";
+
+"Title_Mismatching_Environment_Version" = "Mismatching Environment Version";
+
+"Mismatching_Environment_Version_Update_Body" = "The environment version this device was jailbroken with (%@) mismatches the currently installed app version (%@)\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";

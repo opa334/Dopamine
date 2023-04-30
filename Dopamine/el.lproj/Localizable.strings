@@ -1,7 +1,3 @@
-"Alert_Button_Uninstall" = "Απεγκατάσταση";
-
-"Alert_Tweak_Injection_Toggled_Body" = "Για να εφαρμοστούν οι αλλαγές, πρέπει να γίνει εκανεκκίνηση Userspace. Θέλεις να γίνει επανεκκίνηση τώρα;";
-
 "Bootstrapping" = "Bootstrapping";
 
 "Button_Cancel" = "Ακύρωση";
@@ -18,6 +14,8 @@
 
 "Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
 
+"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
+
 "Button_Set" = "Set";
 
 "Button_Show_Logs_Title" = "Εμφάνιση αρχείου καταγραφής";
@@ -28,6 +26,8 @@
 
 "Button_Update_Available" = "Διαθέσιμη ενημέρωση";
 
+"Button_Update_Environment" = "Update Environment";
+
 "Bypassing PAC" = "Παράκαμψη PAC";
 
 "Bypassing PPL" = "Παράκαμψη PPL";
@@ -36,11 +36,13 @@
 
 "Context_Menu_Copy_To_Clipboard" = "Αντιγραφή";
 
+"Credits_Button_Discord" = "Discord";
+
 "Credits_Button_License" = "Άδεια χρήσης";
 
 "Credits_Button_Source_Code" = "Πηγαίος κώδικας";
 
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Έκδοση Dopamine %@\n%@";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
 
 "Credits_Header_Special_Thanks" = "Ιδιαίτερες ευχαριστίες:";
 
@@ -54,6 +56,8 @@
 
 "Hint_Hide_Jailbreak" = "\"Απόκρυψη Jailbreak\" Αφαιρεί προσωρινά τα αρχεία που σχετίζονται με το jailbreak μέχρι το απόμενο jailbreak";
 
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+
 "Initializing Environment" = "Αρχικοποίηση Περιβάλλοντος";
 
 "Initializing System Hook" = "Αρχικοποίηση System Hook";
@@ -62,11 +66,17 @@
 
 "Launching kexploitd" = "Εκκίνηση kexploitd";
 
+"Enabling Wi-Fi" = "Enabling Wi-Fi";
+
+"Disabling Wi-Fi" = "Disabling Wi-Fi";
+
 "Launching oobPCI" = "Εκκίνηση oobPCI";
 
 "Loading Basebin Trustcache" = "Φόρτωση Basebin Trustcache";
 
 "Menu_Credits_Title" = "Ειδική μνεία";
+
+"Menu_Settings_Title" = "Ρυθμίσεις";
 
 "Menu_Reboot_Userspace_Title" = "Επανεκκίνηση Userspace";
 
@@ -80,7 +90,7 @@
 
 "Patchfinding" = "Patchfinding";
 
-"Popup_Change_Mobile_Password_Title" = "Ορισμός κωδικού Mobile";
+"PM_Reinstall_Done_Text" = "The selected package managers have been reinstalled";
 
 "Rebuilding TrustCache" = "Ανανέωση TrustCache";
 
@@ -89,14 +99,6 @@
 "Settings_Footer_Device_Bootstrapped" = "Το bootstrap της συσκευής ολοκληρώθηκε επιτυχώς";
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Η προσπάθεια για bootstrap της συσκευής απέτυχε";
-
-"Settings_Remove_Jailbreak_Alert_Body" = "Η αφαίρεση του jailbreak θα διαγράψει όλα τα αρχεία που σχετίζονται με το jailbreak, αλλά όλες οι συνήθεις εφαρμογές, αρχεία και δεδομένα θα διατηρηθούν. Είστε σίγουροι πως θέλετε να συνεχίσετε; Δεν μπορείτε να αντιστρέψετε αυτή την ενέργεια.";
-
-"Settings_Remove_Jailbreak_Alert_Title" = "Αφαίρεση Jailbreak";
-
-"Menu_Settings_Title" = "Ρυθμίσεις";
-
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Απαραίτητη επανεκκίνηση Userspace";
 
 "Starting jailbreakd" = "Εκκίνηση jailbreakd";
 
@@ -127,3 +129,29 @@
 "Update_Status_Subtitle_Please_Wait" = "Παρακαλώ αναμείνατε την ολοκλήρωση λήψης των αρχείων";
 
 "Update_Status_Subtitle_Restart_Soon" = "Η συσκευή θα επανεκκινήσει σύντομα";
+
+"Alert_Button_Uninstall" = "Απεγκατάσταση";
+
+"Alert_Tweak_Injection_Toggled_Body" = "Για να εφαρμοστούν οι αλλαγές, πρέπει να γίνει εκανεκκίνηση Userspace. Θέλεις να γίνει επανεκκίνηση τώρα;";
+
+"Popup_Change_Mobile_Password_Title" = "Ορισμός κωδικού Mobile";
+
+"Settings_Remove_Jailbreak_Alert_Body" = "Η αφαίρεση του jailbreak θα διαγράψει όλα τα αρχεία που σχετίζονται με το jailbreak, αλλά όλες οι συνήθεις εφαρμογές, αρχεία και δεδομένα θα διατηρηθούν. Είστε σίγουροι πως θέλετε να συνεχίσετε; Δεν μπορείτε να αντιστρέψετε αυτή την ενέργεια.";
+
+"Settings_Remove_Jailbreak_Alert_Title" = "Αφαίρεση Jailbreak";
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Απαραίτητη επανεκκίνηση Userspace";
+
+"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+
+"Select_Package_Managers_Reinstall_Message" = "Select package managers to reinstall";
+
+"Reinstall" = "Reinstall";
+
+"Continue" = "Continue";
+
+"Close" = "Close";
+
+"Title_Mismatching_Environment_Version" = "Mismatching Environment Version";
+
+"Mismatching_Environment_Version_Update_Body" = "The environment version this device was jailbroken with (%@) mismatches the currently installed app version (%@)\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";

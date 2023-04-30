@@ -49,6 +49,7 @@ struct JailbreakView: View {
     
     
     @State var updateChangelog: String? = nil
+    @State var mismatchChangelog: String? = nil
     
     @State var aprilFirstAlert = whatCouldThisVariablePossiblyEvenMean
     
@@ -130,7 +131,7 @@ struct JailbreakView: View {
                             .opacity(option.id == optionPresentedID ? 1 : 0)
                             .animation(.spring().speed(1.5), value: optionPresentedID)
                     }
-                    UpdateDownloadingView(type: $showingUpdatePopupType, changelog: updateChangelog ?? NSLocalizedString("Changelog_Unavailable_Text", comment: ""))
+                    UpdateDownloadingView(type: $showingUpdatePopupType, changelog: updateChangelog ?? NSLocalizedString("Changelog_Unavailable_Text", comment: ""), mismatchChangelog: mismatchChangelog ?? NSLocalizedString("Changelog_Unavailable_Text", comment: ""))
                     .opacity(showingUpdatePopupType != nil ? 1 : 0)
                     .animation(.spring().speed(1.5), value: showingUpdatePopupType)
                 }
@@ -422,7 +423,7 @@ struct JailbreakView: View {
         }
     }
     
-    func getChangelog(json: [[String : Any]], fromVersion: String?, toVersion: String?) -> String {
+    func getDeltaChangelog(json: [[String : Any]], fromVersion: String?, toVersion: String?) -> String? {
         var include: Bool = toVersion == nil
         var changelogBuf: String = ""
         for item in json {
@@ -434,24 +435,44 @@ struct JailbreakView: View {
                     }
                 }
                 
+                if fromVersion != nil {
+                    if versionString! == fromVersion {
+                        include = false
+                    }
+                }
+                
                 if include {
                     let changelog = item["body"] as? String
                     if changelog != nil {
                         if !changelogBuf.isEmpty {
                             changelogBuf += "\n\n\n"
                         }
-                        changelogBuf += versionString! + "\n\n" + changelog!
-                    }
-                }
-                
-                if fromVersion != nil {
-                    if versionString! == fromVersion {
-                        include = false
+                        changelogBuf += "**" + versionString! + "**\n\n" + changelog!
                     }
                 }
             }
         }
-        return changelogBuf
+        return changelogBuf == "" ? nil : changelogBuf
+    }
+
+    func createUserOrientedChangelog(deltaChangelog: String?, environmentMismatch: Bool) -> String {
+        var userOrientedChangelog : String = ""
+
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+
+        // Prefix
+        if environmentMismatch {
+            userOrientedChangelog += String(format:NSLocalizedString("Mismatching_Environment_Version_Update_Body", comment: ""), installedEnvironmentVersion(), appVersion!)
+            userOrientedChangelog += "\n\n\n" + NSLocalizedString("Title_Changelog", comment: "") + ":\n\n"
+        }
+        else {
+            
+        }
+
+        // Changelog
+        userOrientedChangelog += deltaChangelog ?? NSLocalizedString("Changelog_Unavailable_Text", comment: "")
+
+        return userOrientedChangelog
     }
     
     func checkForUpdates() async throws {
@@ -467,7 +488,11 @@ struct JailbreakView: View {
             
             if let latestTag = releasesJSON.first?["tag_name"] as? String, latestTag != currentAppVersion {
                 updateAvailable = true
-                updateChangelog = getChangelog(json: releasesJSON, fromVersion: currentAppVersion, toVersion: nil)
+                updateChangelog = createUserOrientedChangelog(deltaChangelog: getDeltaChangelog(json: releasesJSON, fromVersion: currentAppVersion, toVersion: nil), environmentMismatch: false)
+            }
+
+            if isInstalledEnvironmentVersionMismatching() {
+                mismatchChangelog = createUserOrientedChangelog(deltaChangelog: getDeltaChangelog(json: releasesJSON, fromVersion: installedEnvironmentVersion(), toVersion: currentAppVersion), environmentMismatch: true)
             }
         }
     }

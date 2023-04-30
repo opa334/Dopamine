@@ -151,3 +151,7 @@
 "Continue" = "Continue";
 
 "Close" = "Close";
+
+"Title_Mismatching_Environment_Version" = "Mismatching Environment Version";
+
+"Mismatching_Environment_Version_Update_Body" = "The environment version this device was jailbroken with (%@) mismatches the currently installed app version (%@)\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";

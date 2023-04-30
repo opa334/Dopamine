@@ -14,6 +14,8 @@
 
 "Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
 
+"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
+
 "Button_Set" = "Set";
 
 "Button_Show_Logs_Title" = "Mostrar Logs";
@@ -24,6 +26,8 @@
 
 "Button_Update_Available" = "Atualização disponível";
 
+"Button_Update_Environment" = "Update Environment";
+
 "Bypassing PAC" = "Esquivando PAC";
 
 "Bypassing PPL" = "Esquivando PPL";
@@ -32,11 +36,13 @@
 
 "Context_Menu_Copy_To_Clipboard" = "Copiar para área de transferência";
 
+"Credits_Button_Discord" = "Discord";
+
 "Credits_Button_License" = "Licenças";
 
 "Credits_Button_Source_Code" = "Fonte";
 
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine versão %@\n%@";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
 
 "Credits_Header_Special_Thanks" = "Agradecimento:";
 
@@ -50,6 +56,8 @@
 
 "Hint_Hide_Jailbreak" = "\"Ocultar Jailbreak\" remove temporariamente os arquivos até o próximo jailbreak";
 
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+
 "Initializing Environment" = "Iniciando Environment";
 
 "Initializing System Hook" = "Iniciando System Hook";
@@ -58,11 +66,17 @@
 
 "Launching kexploitd" = "Carregando kexploitd";
 
+"Enabling Wi-Fi" = "Enabling Wi-Fi";
+
+"Disabling Wi-Fi" = "Disabling Wi-Fi";
+
 "Launching oobPCI" = "Carregando oobPCI";
 
 "Loading Basebin Trustcache" = "Carregando Basebin Trustcache";
 
 "Menu_Credits_Title" = "Sobre";
+
+"Menu_Settings_Title" = "Configurações";
 
 "Menu_Reboot_Userspace_Title" = "Reiniciar Userspace";
 
@@ -76,6 +90,8 @@
 
 "Patchfinding" = "Patchfinding";
 
+"PM_Reinstall_Done_Text" = "The selected package managers have been reinstalled";
+
 "Rebuilding TrustCache" = "Refazendo TrustCache";
 
 "Refreshing Icon Cache" = "Recarregando Icon Cache";
@@ -83,8 +99,6 @@
 "Settings_Footer_Device_Bootstrapped" = "Feito bootstrap no dispositivo";
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Sem bootstrap no dispositivo";
-
-"Menu_Settings_Title" = "Configurações";
 
 "Starting jailbreakd" = "Iniciando jailbreakd";
 
@@ -127,3 +141,17 @@
 "Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
 
 "Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
+
+"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+
+"Select_Package_Managers_Reinstall_Message" = "Select package managers to reinstall";
+
+"Reinstall" = "Reinstall";
+
+"Continue" = "Continue";
+
+"Close" = "Close";
+
+"Title_Mismatching_Environment_Version" = "Mismatching Environment Version";
+
+"Mismatching_Environment_Version_Update_Body" = "The environment version this device was jailbroken with (%@) mismatches the currently installed app version (%@)\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";
