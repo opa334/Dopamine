@@ -132,7 +132,7 @@
 
 "Alert_Button_Uninstall" = "Uninstall";
 
-"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+"Alert_Tweak_Injection_Toggled_Body" = "A userspace reboot is neccessary to apply the changes. Do you want to do it now?";
 
 "Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
 
@@ -140,7 +140,7 @@
 
 "Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace Reboot Required";
 
 "Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
 
