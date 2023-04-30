@@ -36,180 +36,178 @@ struct SettingsView: View {
     }
     
     var body: some View {
-        ZStack {
-            VStack {
-                VStack(spacing: 20) {
-                    VStack(spacing: 10) {
-                        Toggle("Settings_Tweak_Injection", isOn: $tweakInjection)
-                            .onChange(of: tweakInjection) { newValue in
-                                if isJailbroken() {
-                                    jailbrokenUpdateTweakInjectionPreference()
-                                    tweakInjectionToggledAlertShown = true
+        VStack {
+            if !isSelectingPackageManagers {
+                VStack {
+                    VStack(spacing: 20) {
+                        VStack(spacing: 10) {
+                            Toggle("Settings_Tweak_Injection", isOn: $tweakInjection)
+                                .onChange(of: tweakInjection) { newValue in
+                                    if isJailbroken() {
+                                        jailbrokenUpdateTweakInjectionPreference()
+                                        tweakInjectionToggledAlertShown = true
+                                    }
                                 }
+                            if !isJailbroken() {
+                                Toggle("Settings_iDownload", isOn: $enableiDownload)
+                                Toggle("Settings_Verbose_Logs", isOn: $verboseLogs)
+                                    .minimumScaleFactor(0.5)
                             }
-                        if !isJailbroken() {
-                            Toggle("Settings_iDownload", isOn: $enableiDownload)
-                            Toggle("Settings_Verbose_Logs", isOn: $verboseLogs)
-                                .minimumScaleFactor(0.5)
                         }
-                    }
-                    if isBootstrapped() {
-                        VStack {
-                            if isJailbroken() {
-                                Button(action: {
-                                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                    mobilePasswordChangeAlertShown = true
-                                }) {
-                                    HStack {
-                                        Image(systemName: "key")
-                                        Text("Button_Set_Mobile_Password")
-                                            .lineLimit(1)
-                                            .minimumScaleFactor(0.5)
-                                    }
-                                    .padding(8)
-                                    .frame(maxWidth: .infinity)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
-                                    )
-                                }
-                                .padding(.bottom)
-                                
-                                
-                                Button(action: {
-                                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                    isSelectingPackageManagers = true
-                                }) {
-                                    HStack {
-                                        Image(systemName: "shippingbox")
-                                        Text("Button_Reinstall_Package_Managers")
-                                            .lineLimit(1)
-                                            .minimumScaleFactor(0.5)
-                                    }
-                                    .padding(.horizontal, 4)
-                                    .padding(8)
-                                    .frame(maxWidth: .infinity)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
-                                    )
-                                }
-                            }
+                        if isBootstrapped() {
                             VStack {
-                                Button(action: {
-                                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                    isEnvironmentHiddenState.toggle()
-                                    changeEnvironmentVisibility(hidden: !isEnvironmentHidden())
-                                }) {
-                                    HStack {
-                                        Image(systemName: isEnvironmentHiddenState ? "eye" : "eye.slash")
-                                        Text(isEnvironmentHiddenState ? "Button_Unhide_Jailbreak" : "Button_Hide_Jailbreak")
-                                            .lineLimit(1)
-                                            .minimumScaleFactor(0.5)
+                                if isJailbroken() {
+                                    Button(action: {
+                                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                        mobilePasswordChangeAlertShown = true
+                                    }) {
+                                        HStack {
+                                            Image(systemName: "key")
+                                            Text("Button_Set_Mobile_Password")
+                                                .lineLimit(1)
+                                                .minimumScaleFactor(0.5)
+                                        }
+                                        .padding(8)
+                                        .frame(maxWidth: .infinity)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
+                                        )
                                     }
-                                    .padding(.horizontal, 4)
-                                    .padding(8)
-                                    .frame(maxWidth: .infinity)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
-                                    )
-                                }
-                                Button(action: {
-                                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                    removeJailbreakAlertShown = true
-                                }) {
-                                    HStack {
-                                        Image(systemName: "trash")
-                                        Text("Button_Remove_Jailbreak")
-                                            .lineLimit(1)
-                                            .minimumScaleFactor(0.5)
+                                    .padding(.bottom)
+                                    
+                                    
+                                    Button(action: {
+                                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                        isSelectingPackageManagers = true
+                                    }) {
+                                        HStack {
+                                            Image(systemName: "shippingbox")
+                                            Text("Button_Reinstall_Package_Managers")
+                                                .lineLimit(1)
+                                                .minimumScaleFactor(0.5)
+                                        }
+                                        .padding(.horizontal, 4)
+                                        .padding(8)
+                                        .frame(maxWidth: .infinity)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
+                                        )
                                     }
-                                    .padding(.horizontal, 4)
-                                    .padding(8)
-                                    .frame(maxWidth: .infinity)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
-                                    )
                                 }
-                                Text(isJailbroken() ? "Hint_Hide_Jailbreak_Jailbroken" : "Hint_Hide_Jailbreak")
-                                    .font(.footnote)
-                                    .opacity(0.6)
-                                    .padding(.top, 8)
-                                    .frame(maxWidth: .infinity)
-                                    .multilineTextAlignment(.center)
-                                    .onLongPressGesture(minimumDuration: 3, perform: {
-                                        easterEgg.toggle()
-                                    })
+                                VStack {
+                                    Button(action: {
+                                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                        isEnvironmentHiddenState.toggle()
+                                        changeEnvironmentVisibility(hidden: !isEnvironmentHidden())
+                                    }) {
+                                        HStack {
+                                            Image(systemName: isEnvironmentHiddenState ? "eye" : "eye.slash")
+                                            Text(isEnvironmentHiddenState ? "Button_Unhide_Jailbreak" : "Button_Hide_Jailbreak")
+                                                .lineLimit(1)
+                                                .minimumScaleFactor(0.5)
+                                        }
+                                        .padding(.horizontal, 4)
+                                        .padding(8)
+                                        .frame(maxWidth: .infinity)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
+                                        )
+                                    }
+                                    Button(action: {
+                                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                        removeJailbreakAlertShown = true
+                                    }) {
+                                        HStack {
+                                            Image(systemName: "trash")
+                                            Text("Button_Remove_Jailbreak")
+                                                .lineLimit(1)
+                                                .minimumScaleFactor(0.5)
+                                        }
+                                        .padding(.horizontal, 4)
+                                        .padding(8)
+                                        .frame(maxWidth: .infinity)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
+                                        )
+                                    }
+                                    Text(isJailbroken() ? "Hint_Hide_Jailbreak_Jailbroken" : "Hint_Hide_Jailbreak")
+                                        .font(.footnote)
+                                        .opacity(0.6)
+                                        .padding(.top, 8)
+                                        .frame(maxWidth: .infinity)
+                                        .multilineTextAlignment(.center)
+                                        .onLongPressGesture(minimumDuration: 3, perform: {
+                                            easterEgg.toggle()
+                                        })
+                                }
                             }
                         }
                     }
-                }
-                .tint(.accentColor)
-                .padding(.vertical, 16)
-                .padding(.horizontal, 32)
-                
-                Divider()
-                    .background(.white)
+                    .tint(.accentColor)
+                    .padding(.vertical, 16)
                     .padding(.horizontal, 32)
-                    .opacity(0.25)
-                VStack(spacing: 6) {
-                    Text(isBootstrapped() ? "Settings_Footer_Device_Bootstrapped" :  "Settings_Footer_Device_Not_Bootstrapped")
-                        .font(.footnote)
-                        .opacity(0.6)
-                    Text("Success_Rate \(successRate())% (\(successfulJailbreaks)/\(totalJailbreaks))")
-                        .font(.footnote)
-                        .opacity(0.6)
-                }
-                .padding(.top, 2)
-                
-                if easterEgg {
-                    Image("fr")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxHeight: .infinity)
-                }
-                
-                ZStack {}
-                    .textFieldAlert(isPresented: $mobilePasswordChangeAlertShown) { () -> TextFieldAlert in
-                        TextFieldAlert(title: NSLocalizedString("Popup_Change_Mobile_Password_Title", comment: ""), message: NSLocalizedString("Popup_Change_Mobile_Password_Message", comment: ""), text: Binding<String?>($mobilePasswordInput), onSubmit: {
-                            changeMobilePassword(newPassword: mobilePasswordInput)
-                        })
+                    
+                    Divider()
+                        .background(.white)
+                        .padding(.horizontal, 32)
+                        .opacity(0.25)
+                    VStack(spacing: 6) {
+                        Text(isBootstrapped() ? "Settings_Footer_Device_Bootstrapped" :  "Settings_Footer_Device_Not_Bootstrapped")
+                            .font(.footnote)
+                            .opacity(0.6)
+                        Text("Success_Rate \(successRate())% (\(successfulJailbreaks)/\(totalJailbreaks))")
+                            .font(.footnote)
+                            .opacity(0.6)
                     }
-                    .alert("Settings_Remove_Jailbreak_Alert_Title", isPresented: $removeJailbreakAlertShown, actions: {
-                        Button("Button_Cancel", role: .cancel) { }
-                        Button("Alert_Button_Uninstall", role: .destructive) {
-                            removeJailbreak()
+                    .padding(.top, 2)
+                    
+                    if easterEgg {
+                        Image("fr")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxHeight: .infinity)
+                    }
+                    
+                    ZStack {}
+                        .textFieldAlert(isPresented: $mobilePasswordChangeAlertShown) { () -> TextFieldAlert in
+                            TextFieldAlert(title: NSLocalizedString("Popup_Change_Mobile_Password_Title", comment: ""), message: NSLocalizedString("Popup_Change_Mobile_Password_Message", comment: ""), text: Binding<String?>($mobilePasswordInput), onSubmit: {
+                                changeMobilePassword(newPassword: mobilePasswordInput)
+                            })
                         }
-                    }, message: { Text("Settings_Remove_Jailbreak_Alert_Body") })
-                    .alert("Settings_Tweak_Injection_Toggled_Alert_Title", isPresented: $tweakInjectionToggledAlertShown, actions: {
-                        Button("Button_Cancel", role: .cancel) { }
-                        Button("Menu_Reboot_Userspace_Title") {
-                            userspaceReboot()
-                        }
-                    }, message: { Text("Alert_Tweak_Injection_Toggled_Body") })
-                    .frame(maxHeight: 0)
+                        .alert("Settings_Remove_Jailbreak_Alert_Title", isPresented: $removeJailbreakAlertShown, actions: {
+                            Button("Button_Cancel", role: .cancel) { }
+                            Button("Alert_Button_Uninstall", role: .destructive) {
+                                removeJailbreak()
+                            }
+                        }, message: { Text("Settings_Remove_Jailbreak_Alert_Body") })
+                        .alert("Settings_Tweak_Injection_Toggled_Alert_Title", isPresented: $tweakInjectionToggledAlertShown, actions: {
+                            Button("Button_Cancel", role: .cancel) { }
+                            Button("Menu_Reboot_Userspace_Title") {
+                                userspaceReboot()
+                            }
+                        }, message: { Text("Alert_Tweak_Injection_Toggled_Body") })
+                        .frame(maxHeight: 0)
+                    
+                }
+                .foregroundColor(.white)
                 
-            }
-            .foregroundColor(.white)
-            .opacity(isSelectingPackageManagers ? 0 : 1)
-            .animation(.spring().speed(3), value: isSelectingPackageManagers)
-            .frame(maxHeight: isSelectingPackageManagers ? 0 : nil)
-            
-            PackageManagerSelectionView(shown: $isSelectingPackageManagers, reinstall: true) {
-                isSelectingPackageManagers = false
-                UINotificationFeedbackGenerator().notificationOccurred(.success)
-            }
-            .opacity(isSelectingPackageManagers ? 1 : 0)
-            .frame(maxHeight: 250)
-            .padding(.horizontal)
-            .foregroundColor(.white)
-            .animation(.spring(), value: isSelectingPackageManagers)
-        }
-        .onChange(of: isPresented) { newValue in
-            if !newValue {
-                isSelectingPackageManagers = false
+            } else {
+                PackageManagerSelectionView(shown: $isSelectingPackageManagers, reinstall: true) {
+                    isSelectingPackageManagers = false
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                }
+                .frame(maxHeight: 250)
+                .padding(.horizontal)
+                .foregroundColor(.white)
+                .onChange(of: isPresented) { newValue in
+                    if !newValue {
+                        isSelectingPackageManagers = false
+                    }
+                }
             }
         }
     }
@@ -234,10 +232,10 @@ extension View {
         when shouldShow: Bool,
         alignment: Alignment = .leading,
         @ViewBuilder placeholder: () -> Content) -> some View {
-
-        ZStack(alignment: alignment) {
-            placeholder().opacity(shouldShow ? 1 : 0)
-            self
+            
+            ZStack(alignment: alignment) {
+                placeholder().opacity(shouldShow ? 1 : 0)
+                self
+            }
         }
-    }
 }

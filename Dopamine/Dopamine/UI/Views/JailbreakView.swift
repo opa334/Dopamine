@@ -98,6 +98,11 @@ struct JailbreakView: View {
                         if !isJailbreaking {
                             Spacer()
                             Spacer()
+                            if isSandboxed() {
+                                Text("(Demo version - Sandboxed)")
+                                    .foregroundColor(.white)
+                                    .opacity(0.5)
+                            }
                         }
                         bottomSection
                         updateButton
