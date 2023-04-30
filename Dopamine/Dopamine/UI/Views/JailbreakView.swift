@@ -124,10 +124,13 @@ struct JailbreakView: View {
                 
                 
                 PopupView(title: {
-                    Text("Credits_Made_By")
-                    Text("Credits_Made_By_Subheadline")
-                        .font(.footnote)
-                        .opacity(0.6)
+                    VStack(spacing: 4) {
+                        Text("Credits_Made_By")
+                        Text("Credits_Made_By_Subheadline")
+                            .font(.footnote)
+                            .opacity(0.6)
+                            .multilineTextAlignment(.center)
+                    }
                 }, contents: {
                     AboutView()
                         .frame(maxWidth: 320)
@@ -236,6 +239,9 @@ struct JailbreakView: View {
                                 .font(.body)
                                 .symbolRenderingMode(.palette)
                                 .foregroundStyle(.white.opacity(0.5))
+                                .onLongPressGesture {
+                                    UIApplication.shared.open(.init(string: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")!)
+                                }
                         }
                     }
                     .frame(maxWidth: .infinity)

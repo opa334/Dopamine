@@ -28,6 +28,8 @@ struct SettingsView: View {
     
     @State var isEnvironmentHiddenState = isEnvironmentHidden()
     
+    @State var easterEgg = false
+    
     init(isPresented: Binding<Bool>?) {
         UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = .init(named: "AccentColor")
         self._isPresented = isPresented ?? .constant(true)
@@ -137,6 +139,9 @@ struct SettingsView: View {
                                     .padding(.top, 8)
                                     .frame(maxWidth: .infinity)
                                     .multilineTextAlignment(.center)
+                                    .onLongPressGesture(minimumDuration: 3, perform: {
+                                        easterEgg.toggle()
+                                    })
                             }
                         }
                     }
@@ -159,6 +164,12 @@ struct SettingsView: View {
                 }
                 .padding(.top, 2)
                 
+                if easterEgg {
+                    Image("fr")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(maxHeight: .infinity)
+                }
                 
                 ZStack {}
                     .textFieldAlert(isPresented: $mobilePasswordChangeAlertShown) { () -> TextFieldAlert in
