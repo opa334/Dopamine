@@ -47,9 +47,9 @@ int main(int argc, char* argv[])
 		char *updateType = argv[2];
 		int64_t result = -1;
 		if (!strcmp(updateType, "tipa")) {
-			result = jbdUpdateFromTIPA([NSString stringWithUTF8String:argv[3]]);
+			result = jbdUpdateFromTIPA([NSString stringWithUTF8String:argv[3]], false);
 		} else if(!strcmp(updateType, "basebin")) {
-			result = jbdUpdateFromBasebinTar([NSString stringWithUTF8String:argv[3]]);
+			result = jbdUpdateFromBasebinTar([NSString stringWithUTF8String:argv[3]], false);
 		}
 		if (result == 0) {
 			printf("Update applied, userspace rebooting to finalize it...\n");
