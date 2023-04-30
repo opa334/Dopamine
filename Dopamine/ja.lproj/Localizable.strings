@@ -135,7 +135,7 @@
 "Menu_Settings_Title" = "設定";
 
 
-"Mismatching_Environment_Version_Update_Body" = "The environment version this device was jailbroken with (%@) mismatches the currently installed app version (%@)\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";
+"Mismatching_Environment_Version_Update_Body" = "このデバイスのjailbreak環境noバージョン (%@) 今のインストールしたアプリのバージョン (%@) 不一致があります。\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";
 
 
 "PM_Reinstall_Done_Text" = "選択されたパッケージマネージャーが再インストールしました";
