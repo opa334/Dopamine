@@ -315,9 +315,6 @@ done:
 	return (err);
 }
 
-// I don't like the idea of blacklisting certain processes
-// But for some it seems neccessary
-
 typedef enum 
 {
 	kBinaryConfigDontInject = 1 << 0,
@@ -345,7 +342,7 @@ kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 	}
 
 	// Blacklist to ensure general system stability
-	// I don't like this but it seems neccessary
+	// I don't like this but for some processes it seems neccessary
 	const char *processBlacklist[] = {
 		"/System/Library/Frameworks/GSS.framework/Helpers/GSSCred",
 		"/System/Library/PrivateFrameworks/IDSBlastDoorSupport.framework/XPCServices/IDSBlastDoorService.xpc/IDSBlastDoorService",
