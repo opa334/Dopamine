@@ -76,6 +76,22 @@ struct AboutView: View {
                     )
                     .padding(.horizontal, 32)
                 }
+                Button(action: {
+                    openURL(URL(string: "https://discord.gg/jb")!)
+                }) {
+                    HStack {
+                        Spacer()
+                        Image("discord")
+                        Text("Credits_Button_Discord")
+                        Spacer()
+                    }
+                    .padding(8)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
+                    )
+                    .padding(.horizontal, 32)
+                }
             }
             .padding(.vertical)
             
