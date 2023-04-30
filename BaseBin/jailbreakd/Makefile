@@ -10,6 +10,7 @@ sign: $(TARGET)
 
 $(TARGET): $(wildcard src/*.m src/*.S src/machoparse/*.c)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+	install_name_tool -change "/var/jb/basebin/libjailbreak.dylib" "@loader_path/libjailbreak.dylib" $@
 
 clean:
 	@rm -f $(TARGET)

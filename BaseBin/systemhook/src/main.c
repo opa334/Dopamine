@@ -8,9 +8,6 @@
 
 extern bool swh_is_debugged;
 
-int reboot3(uint64_t flags, ...);
-#define RB2_USERREBOOT (0x2000000000000000llu)
-
 void* dlopen_from(const char* path, int mode, void* addressInCaller);
 void* dlopen_audited(const char* path, int mode);
 bool dlopen_preflight(const char* path);
@@ -103,10 +100,9 @@ int posix_spawnp_hook(pid_t *restrict pid, const char *restrict file,
 					   char *const argv[restrict],
 					   char *const envp[restrict])
 {
-	char *resolvedPath = resolvePath(file, NULL);
-	int ret = spawn_hook_common(pid, resolvedPath, file_actions, attrp, argv, envp, (void *)posix_spawn);
-	if (resolvedPath) free(resolvedPath);
-	return ret;
+	return resolvePath(file, NULL, ^int(char *path) {
+		return spawn_hook_common(pid, path, file_actions, attrp, argv, envp, (void *)posix_spawn);
+	});
 }
 
 
@@ -159,17 +155,20 @@ int execlp_hook(const char *file, const char *arg0, ... /*, (char *)0 */)
 	}
 	va_end(args_copy);
 
-	char *argv[arg_count+1];
+	char **argv = malloc((arg_count+1) * sizeof(char *));
 	for (int i = 0; i < arg_count-1; i++) {
 		char *arg = va_arg(args, char*);
 		argv[i] = arg;
 	}
 	argv[arg_count] = NULL;
 
-	char *resolvedPath = resolvePath(file, NULL);
-	int ret = execve_hook(resolvedPath, argv, NULL);
-	if (resolvedPath) free(resolvedPath);
-	return ret;
+	int r = resolvePath(file, NULL, ^int(char *path) {
+		return execve_hook(path, argv, NULL);
+	});
+
+	free(argv);
+
+	return r;
 }
 
 int execl_hook(const char *path, const char *arg0, ... /*, (char *)0 */)
@@ -203,18 +202,16 @@ int execv_hook(const char *path, char *const argv[])
 
 int execvp_hook(const char *file, char *const argv[])
 {
-	char *resolvedPath = resolvePath(file, NULL);
-	int ret = execve_hook(resolvedPath, argv, NULL);
-	if (resolvedPath) free(resolvedPath);
-	return ret;
+	return resolvePath(file, NULL, ^int(char *path) {
+		return execve_hook(path, argv, NULL);
+	});
 }
 
 int execvP_hook(const char *file, const char *search_path, char *const argv[])
 {
-	char *resolvedPath = resolvePath(file, search_path);
-	int ret = execve_hook(resolvedPath, argv, NULL);
-	if (resolvedPath) free(resolvedPath);
-	return ret;
+	return resolvePath(file, search_path, ^int(char *path) {
+		return execve_hook(path, argv, NULL);
+	});
 }
 
 

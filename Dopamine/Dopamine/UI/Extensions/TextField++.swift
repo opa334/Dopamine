@@ -64,6 +64,7 @@ class TextFieldAlertViewController: UIViewController {
         })
         vc.addAction(UIAlertAction(title: NSLocalizedString("Button_Set", comment: ""), style: .default) { [weak self] _ in
             self?.isPresented?.wrappedValue = false
+            self?.onSubmit()
         })
         present(vc, animated: true, completion: {
             vc.view.tintColor = .tintColor

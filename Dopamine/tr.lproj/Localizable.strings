@@ -1,61 +1,133 @@
 "Bootstrapping" = "Bootstrap Kuruluyor";
+
 "Button_Cancel" = "İptal";
+
 "Button_Hide_Jailbreak" = "Jailbreak'i Sakla";
+
 "Button_Hide_Logs_Title" = "Log'u Sakla";
+
 "Button_Jailbreak_Title" = "Jailbreak";
+
 "Button_Remove_Jailbreak" = "Jailbreak'i Sil";
+
 "Button_Set_Mobile_Password" = "Mobile Şifresini Değiştir";
+
 "Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+
+"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
+
 "Button_Set" = "Set";
+
 "Button_Show_Logs_Title" = "Log'u Göster";
+
 "Button_Unhide_Jailbreak" = "Jailbreak'i Göster";
+
 "Button_Update" = "Güncelle";
+
 "Button_Update_Available" = "Güncelleme mevcut";
+
+"Button_Update_Environment" = "Update Environment";
+
 "Bypassing PAC" = "PAC Baypaslanıyor";
+
 "Bypassing PPL" = "PPL Baypaslanıyor";
+
 "Changelog_Unavailable_Text" = "Güncelleme Günlüğü Mevcut Değil";
+
 "Context_Menu_Copy_To_Clipboard" = "Kopyala";
+
+"Credits_Button_Discord" = "Discord";
+
 "Credits_Button_License" = "Lisans";
+
 "Credits_Button_Source_Code" = "Kaynak Kodu";
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine sürümü %@\n%@";
+
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
+
 "Credits_Header_Special_Thanks" = "Teşekkürler:";
+
 "Credits_Made_By" = "opa334 ve évelyne tarafından yapılmıştır";
+
 "Credits_Made_By_Subheadline" = "Arayüz sourcelocation tarafından\nLogo ve simge xerus tarafından";
+
 "Finalizing Bootstrap" = "Bootstrap Bitiriliyor";
+
 "Gaining r/w" = "r/w elde ediliyor";
+
 "Hint_Hide_Jailbreak" = "\"Jailbreak'i Sakla\" Geçici olarak jailbreak ile ilgili dosyaları sonraki jailbreak'e kadar saklar";
+
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+
 "Initializing Environment" = "Ortam Başlatılıyor";
+
 "Initializing System Hook" = "Sistem Kancası Başlatılıyor";
+
 "Jailbreak_Done" = "Bitti!";
+
 "Launching kexploitd" = "kexploitd Başlatılıyor";
+
+"Enabling Wi-Fi" = "Enabling Wi-Fi";
+
+"Disabling Wi-Fi" = "Disabling Wi-Fi";
+
 "Launching oobPCI" = "oobPCI Başlatılıyor";
+
 "Loading Basebin Trustcache" = "Basebin Trustcache yükleniyor";
+
 "Menu_Credits_Title" = "Hakkında";
-"Menu_Reboot_Userspace_Title" = "Userspace'i Yeniden Başlat";
-"Menu_Restart_SpringBoard_Title" = "Springboard'u Yeniden Başlat";
-"Settings_Tweak_Injection" = "Tweak Enjeksiyonu";
-"Settings_Verbose_Logs" = "Sözlü Loglar";
-"Settings_iDownload" = "iDownload";
-"Patchfinding" = "Patchfinding Yapılıyor";
-"Rebuilding TrustCache" = "TrustCache Yeniden İnşa Ediliyor";
-"Refreshing Icon Cache" = "İkon Önbelleği Yenileniyor";
-"Settings_Footer_Device_Bootstrapped" = "Cihaz Bootstraplendi";
-"Settings_Footer_Device_Not_Bootstrapped" = "Cihaz bootstraplenmedi";
+
 "Menu_Settings_Title" = "Ayarlar";
-"Starting Launch Daemons" = "Başlangıç Daemonları başlatılıyor";
+
+"Menu_Reboot_Userspace_Title" = "Userspace'i Yeniden Başlat";
+
+"Menu_Restart_SpringBoard_Title" = "Springboard'u Yeniden Başlat";
+
+"Settings_iDownload" = "iDownload";
+
+"Settings_Tweak_Injection" = "Tweak Enjeksiyonu";
+
+"Settings_Verbose_Logs" = "Sözlü Loglar";
+
+"Patchfinding" = "Patchfinding Yapılıyor";
+
+"PM_Reinstall_Done_Text" = "The selected package managers have been reinstalled";
+
+"Rebuilding TrustCache" = "TrustCache Yeniden İnşa Ediliyor";
+
+"Refreshing Icon Cache" = "İkon Önbelleği Yenileniyor";
+
+"Settings_Footer_Device_Bootstrapped" = "Cihaz Bootstraplendi";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "Cihaz bootstraplenmedi";
+
 "Starting jailbreakd" = "jailbreakd Başlatılıyor";
+
+"Starting Launch Daemons" = "Başlangıç Daemonları başlatılıyor";
+
 "Status_Title_Jailbreaking" = "Jailbreak Yapılıyor";
+
 "Status_Title_Jailbroken" = "Jailbreakli";
+
 "Status_Title_Select_Package_Managers" = "Paket Yöneticisi Seçin";
+
 "Status_Title_Unsuccessful" = "Başarısız";
+
 "Success_Rate %@%% (%lld/%lld)" = "Başarı oranı: %@%% (%lld/%lld)";
+
 "Title_Changelog" = "Sürüm Günlüğü";
+
 "Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
+
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
+
 "Update_Log_Hint_Scrollable" = "Log görünümü kaydırılabilir";
+
 "Update_Status_Downloading" = "Güncelleme indiriliyor...";
+
 "Update_Status_Installing" = "Güncelleme yükleniyor...";
+
 "Update_Status_Subtitle_Please_Wait" = "Dosyaların indirilmesi biterken lütfen bekleyiniz";
+
 "Update_Status_Subtitle_Restart_Soon" = "Cihaz az sonra yeniden başlatılacaktır";
 
 "Alert_Button_Uninstall" = "Uninstall";
@@ -69,3 +141,17 @@
 "Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
 
 "Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
+
+"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+
+"Select_Package_Managers_Reinstall_Message" = "Select package managers to reinstall";
+
+"Reinstall" = "Reinstall";
+
+"Continue" = "Continue";
+
+"Close" = "Close";
+
+"Title_Mismatching_Environment_Version" = "Mismatching Environment Version";
+
+"Mismatching_Environment_Version_Update_Body" = "The environment version this device was jailbroken with (%@) mismatches the currently installed app version (%@)\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";

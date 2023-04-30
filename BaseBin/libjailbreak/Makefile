@@ -10,6 +10,7 @@ sign: $(TARGET)
 
 $(TARGET): $(wildcard src/*.m src/*.c src/*.S)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+	install_name_tool -change "/var/jb/basebin/libfilecom.dylib" "@loader_path/libfilecom.dylib" $@
 
 clean:
 	@rm -f $(TARGET)

@@ -9,9 +9,32 @@ import UIKit
 import Fugu15KernelExploit
 import CBindings
 
+var fakeRootPath: String? = nil
+public func rootifyPath(path: String) -> String? {
+    if fakeRootPath == nil {
+        fakeRootPath = Bootstrapper.locateExistingFakeRoot()
+    }
+    if fakeRootPath == nil {
+        return nil
+    }
+    return fakeRootPath! + "/procursus/" + path
+}
+
+func getBootInfoValue(key: String) -> Any? {
+    guard let bootInfoPath = rootifyPath(path: "/basebin/boot_info.plist") else {
+        return nil
+    }
+    guard let bootInfo = NSDictionary(contentsOfFile: bootInfoPath) else {
+        return nil
+    }
+    return bootInfo[key]
+}
 
 func respring() {
-    _ = execCmd(args: ["/var/jb/usr/bin/sbreload"])
+    guard let sbreloadPath = rootifyPath(path: "/usr/bin/sbreload") else {
+        return
+    }
+    _ = execCmd(args: [sbreloadPath])
 }
 
 func userspaceReboot() {
@@ -31,7 +54,10 @@ func userspaceReboot() {
     }
     
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-        _ = execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
+        guard let launchctlPath = rootifyPath(path: "/usr/bin/launchctl") else {
+            return
+        }
+        _ = execCmd(args: [launchctlPath, "reboot", "userspace"])
     })
 }
 
@@ -55,18 +81,15 @@ func isBootstrapped() -> Bool {
 
 func jailbreak(completion: @escaping (Error?) -> ()) {
     do {
-        var wifiFixupNeeded = false
         if #available(iOS 15.4, *) {
             // No Wifi fixup needed
         }
         else {
-            wifiFixupNeeded = wifiIsEnabled()
-        }
-
-        if wifiFixupNeeded {
-            setWifiEnabled(false)
-            Logger.log("Disabling Wi-Fi", isStatus: true)
-            sleep(1)
+            if wifiIsEnabled() {
+                setWifiEnabled(false)
+                Logger.log("Disabling Wi-Fi", isStatus: true)
+                sleep(1)
+            }
         }
 
         Logger.log("Launching kexploitd", isStatus: true)
@@ -86,7 +109,10 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
             }
         }
 
-        if wifiFixupNeeded {
+        if #available(iOS 15.4, *) {
+            // No Wifi fixup needed
+        }
+        else {
             setWifiEnabled(true)
             Logger.log("Enabling Wi-Fi", isStatus: true)
         }
@@ -119,7 +145,13 @@ func jailbrokenUpdateTweakInjectionPreference() {
 }
 
 func changeMobilePassword(newPassword: String) {
-    _ = execCmd(args: ["/var/jb/bin/dash", "-c", String(format:"\"printf \\\"%s\n\\\" \\\"\(newPassword)\\\" | /var/jb/usr/sbin/pw usermod 501 -h 0\"")])
+    guard let dashPath = rootifyPath(path: "/usr/bin/dash") else {
+        return;
+    }
+    guard let pwPath = rootifyPath(path: "/usr/sbin/pw") else {
+        return;
+    }
+    _ = execCmd(args: [dashPath, "-c", String(format: "printf \"%%s\\n\" \"\(newPassword)\" | \(pwPath) usermod 501 -h 0")])
 }
 
 
@@ -130,6 +162,10 @@ func changeEnvironmentVisibility(hidden: Bool) {
     else {
         _ = execCmd(args: [CommandLine.arguments[0], "unhide_environment"])
     }
+
+    if isJailbroken() {
+        jbdSetFakelibVisible(!hidden)
+    }
 }
 
 func isEnvironmentHidden() -> Bool {
@@ -137,7 +173,23 @@ func isEnvironmentHidden() -> Bool {
 }
 
 func update(tipaURL: URL) {
-    print(tipaURL)
+    DispatchQueue.global(qos: .userInitiated).async {
+        jbdUpdateFromTIPA(tipaURL.path, true)
+    }
+}
+
+func installedEnvironmentVersion() -> String {
+    if isSandboxed() { return "0.9" } // ui debugging
+    
+    return getBootInfoValue(key: "basebin-version") as? String ?? "1.0"
+}
+
+func isInstalledEnvironmentVersionMismatching() -> Bool {
+    return installedEnvironmentVersion() != Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+}
+
+func updateEnvironment() {
+    jbdUpdateFromBasebinTar(Bundle.main.bundlePath + "/basebin.tar", true)
 }
 
 
