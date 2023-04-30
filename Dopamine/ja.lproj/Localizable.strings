@@ -138,7 +138,7 @@
 "Mismatching_Environment_Version_Update_Body" = "The environment version this device was jailbroken with (%@) mismatches the currently installed app version (%@)\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";
 
 
-"PM_Reinstall_Done_Text" = "The selected package managers have been reinstalled";
+"PM_Reinstall_Done_Text" = "選択されたパッケージマネージャーが再インストールしました";
 
 
 "Patchfinding" = "Patchfinderを実行中";
@@ -156,13 +156,13 @@
 "Refreshing Icon Cache" = "アイコンキャッシュを更新中";
 
 
-"Reinstall" = "Reinstall";
+"Reinstall" = "再インストールします";
 
 
-"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+"Select_Package_Managers_Install_Message" = "どのパッケージマネージャーを選択したらいいか分からないなら、Sileoを選択してください";
 
 
-"Select_Package_Managers_Reinstall_Message" = "Select package managers to reinstall";
+"Select_Package_Managers_Reinstall_Message" = "再インストールするパッケージマネージャーを選択してください";
 
 
 "Settings_Footer_Device_Bootstrapped" = "bootstrapはインストールされています";
@@ -216,7 +216,7 @@
 "Title_Made_By" = "作者： opa334, évelyne\nUIの作者： sourceloc\nFugu15に基づきました\nFugu15に基づきました";
 
 
-"Title_Mismatching_Environment_Version" = "Mismatching Environment Version";
+"Title_Mismatching_Environment_Version" = "環境バージョンの不一致";
 
 
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
