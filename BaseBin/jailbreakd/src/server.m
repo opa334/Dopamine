@@ -14,32 +14,11 @@
 #import <bsm/libbsm.h>
 #import <libproc.h>
 #import "spawn_wrapper.h"
-#import "dyld_patch.h"
+#import "fakelib.h"
 #import "update.h"
-#import <sandbox.h>
 #import "forkfix.h"
 
 kern_return_t bootstrap_check_in(mach_port_t bootstrap_port, const char *service, mach_port_t *server_port);
-
-const char *verbosityString(int verbosity)
-{
-	switch (verbosity) {
-		case 1:
-		return "ERROR";
-		case 2:
-		return "WARNING";
-		default:
-		return "INFO";
-	}
-}
-
-NSString *procPath(pid_t pid)
-{
-	char pathbuf[4*MAXPATHLEN];
-	int ret = proc_pidpath(pid, pathbuf, sizeof(pathbuf));
-	if (ret <= 0) return nil;
-	return [NSString stringWithUTF8String:pathbuf];
-}
 
 int processBinary(NSString *binaryPath)
 {
@@ -102,159 +81,22 @@ int processBinary(NSString *binaryPath)
 	return ret;
 }
 
-uint64_t kernel_mount(const char* fstype, uint64_t pvp, uint64_t vp, const char *mountPath, uint64_t data, size_t datalen, int syscall_flags, uint32_t kern_flags)
+int launchdInitPPLRW(void)
 {
-	size_t fstype_len = strlen(fstype) + 1;
-	uint64_t kern_fstype = kalloc(fstype_len);
-	kwritebuf(kern_fstype, fstype, fstype_len);
+	xpc_object_t msg = xpc_dictionary_create_empty();
+	xpc_dictionary_set_bool(msg, "jailbreak", true);
+	xpc_dictionary_set_uint64(msg, "id", LAUNCHD_JB_MSG_ID_GET_PPLRW);
+	xpc_object_t reply = launchd_xpc_send_message(msg);
 
-	size_t mountPath_len = strlen(mountPath) + 1;
-	uint64_t kern_mountPath = kalloc(mountPath_len);
-	kwritebuf(kern_mountPath, mountPath, mountPath_len);
-
-	uint64_t kernel_mount_kaddr = bootInfo_getSlidUInt64(@"kernel_mount");
-	uint64_t kerncontext_kaddr = bootInfo_getSlidUInt64(@"kerncontext");
-
-	uint64_t ret = kcall(kernel_mount_kaddr, 9, (uint64_t[]){kern_fstype, pvp, vp, kern_mountPath, data, datalen, syscall_flags, kern_flags, kerncontext_kaddr});
-	kfree(kern_fstype, fstype_len);
-	kfree(kern_mountPath, mountPath_len);
-
-	return ret;
-}
-
-#define KERNEL_MOUNT_NOAUTH             0x01 /* Don't check the UID of the directory we are mounting on */
-#define MNT_RDONLY      0x00000001      /* read only filesystem */
-
-uint64_t bindMount(const char *source, const char *target)
-{
-	NSString *sourcePath = [[NSString stringWithUTF8String:source] stringByResolvingSymlinksInPath];
-	NSString *targetPath = [[NSString stringWithUTF8String:target] stringByResolvingSymlinksInPath];
-
-	int fd = open(sourcePath.fileSystemRepresentation, O_RDONLY);
-	if (fd < 0) {
-		JBLogError("Bind mount: Failed to open %s", sourcePath.UTF8String);
-		return 1;
+	int error = xpc_dictionary_get_int64(reply, "error");
+	if (error == 0) {
+		uint64_t magicPage = xpc_dictionary_get_uint64(reply, "magicPage");
+		initPPLPrimitives(magicPage);
+		return 0;
 	}
-
-	uint64_t vnode = proc_get_vnode_by_file_descriptor(self_proc(), fd);
-	JBLogDebug("Bind mount: Got vnode 0x%llX for path \"%s\"", vnode, sourcePath.fileSystemRepresentation);
-
-	uint64_t parent_vnode = kread_ptr(vnode + 0xC0);
-	JBLogDebug("Bind mount: Got parent vnode: 0x%llX", parent_vnode);
-
-	uint64_t mount_ret = kernel_mount("bindfs", parent_vnode, vnode, targetPath.fileSystemRepresentation, (uint64_t)targetPath.fileSystemRepresentation, 8, MNT_RDONLY, KERNEL_MOUNT_NOAUTH);
-	JBLogDebug("Bind mount: kernel_mount returned %lld (%s)", mount_ret, strerror(mount_ret));
-	return mount_ret;
-}
-
-void generateSystemWideSandboxExtensions(NSString *targetPath)
-{
-	NSMutableArray *extensions = [NSMutableArray new];
-
-	char *extension = NULL;
-
-	// Make /var/jb readable
-	extension = sandbox_extension_issue_file("com.apple.app-sandbox.read", "/var/jb", 0);
-	if (extension) [extensions addObject:[NSString stringWithUTF8String:extension]];
-
-	// Make binaries in /var/jb executable
-	extension = sandbox_extension_issue_file("com.apple.sandbox.executable", "/var/jb", 0);
-	if (extension) [extensions addObject:[NSString stringWithUTF8String:extension]];
-
-	// Ensure the whole system has access to com.opa334.jailbreakd.systemwide
-	extension = sandbox_extension_issue_mach("com.apple.app-sandbox.mach", "com.opa334.jailbreakd.systemwide", 0);
-	if (extension) [extensions addObject:[NSString stringWithUTF8String:extension]];
-	extension = sandbox_extension_issue_mach("com.apple.security.exception.mach-lookup.global-name", "com.opa334.jailbreakd.systemwide", 0);
-	if (extension) [extensions addObject:[NSString stringWithUTF8String:extension]];
-
-	NSDictionary *dictToSave = @{ @"extensions" : extensions };
-	[dictToSave writeToFile:targetPath atomically:NO];
-}
-
-// This did not work, what did work however was some xpcproxy hook
-/*void increaseJetsamLimit(pid_t pid)
-{
-	memorystatus_memlimit_properties2_t mmprops;
-	memorystatus_control(MEMORYSTATUS_CMD_GET_MEMLIMIT_PROPERTIES, pid, 0, &mmprops, sizeof(mmprops));
-
-	JBLogDebug("JETSAM %d previous limit (%u/%u)", pid, mmprops.v1.memlimit_active, mmprops.v1.memlimit_inactive);
-
-	//mmprops.v1.memlimit_active = mmprops.v1.memlimit_active * 10;
-	//mmprops.v1.memlimit_inactive = mmprops.v1.memlimit_inactive * 10;
-
-	// for whatever fucking reason it expects the v1 struct when setting but gives you the v2 struct when getting
-	// don't ask me why lol
-	//memorystatus_control(MEMORYSTATUS_CMD_SET_MEMLIMIT_PROPERTIES, pid, 0, &mmprops.v1, sizeof(mmprops.v1));
-
-	//int current = getCurrentHighwatermark(pid);
-	//memorystatus_control(MEMORYSTATUS_CMD_SET_JETSAM_HIGH_WATER_MARK, pid, current * 5, 0, 0);
-
-	memorystatus_control(MEMORYSTATUS_CMD_GET_MEMLIMIT_PROPERTIES, pid, 0, &mmprops, sizeof(mmprops));
-
-	JBLogDebug("JETSAM %d new limit (%u/%u)", pid, mmprops.v1.memlimit_active, mmprops.v1.memlimit_inactive);
-
-	int rc; memorystatus_priority_properties_t props = {JETSAM_PRIORITY_CRITICAL, 0};
-	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PRIORITY_PROPERTIES, pid, 0, &props, sizeof(props));
-	JBLogDebug("rc %d", rc);
-	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_JETSAM_HIGH_WATER_MARK, pid, -1, NULL, 0);
-	JBLogDebug("rc %d", rc);
-	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PROCESS_IS_MANAGED, pid, 0, NULL, 0);
-	JBLogDebug("rc %d", rc);
-	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PROCESS_IS_FREEZABLE, pid, 0, NULL, 0);
-	JBLogDebug("rc %d", rc);
-	rc = proc_track_dirty(pid, 0);
-	JBLogDebug("rc %d", rc);
-}*/
-
-int64_t initEnvironment(NSDictionary *settings)
-{
-	NSString *fakeLibPath = @"/var/jb/basebin/.fakelib";
-	NSString *libPath = @"/usr/lib";
-
-	BOOL copySuc = [[NSFileManager defaultManager] copyItemAtPath:libPath toPath:fakeLibPath error:nil];
-	if (!copySuc) {
-		return 1;
+	else {
+		return error;
 	}
-	JBLogDebug("copied %s to %s", libPath.UTF8String, fakeLibPath.UTF8String);
-
-	int dyldRet = applyDyldPatches(@"/var/jb/basebin/.fakelib/dyld");
-	if (dyldRet != 0) {
-		return 1 + dyldRet;
-	}
-	
-	NSData *dyldCDHash;
-	evaluateSignature([NSURL fileURLWithPath:@"/var/jb/basebin/.fakelib/dyld"], &dyldCDHash, nil);
-	if (!dyldCDHash) {
-		return 5;
-	}
-
-	JBLogDebug("got dyld cd hash %s", dyldCDHash.description.UTF8String);
-
-	size_t dyldTCSize = 0;
-	uint64_t dyldTCKaddr = staticTrustCacheUploadCDHashesFromArray(@[dyldCDHash], &dyldTCSize);
-	if(dyldTCSize == 0 || dyldTCKaddr == 0) {
-		return 6;
-	}
-	bootInfo_setObject(@"dyld_trustcache_kaddr", @(dyldTCKaddr));
-	bootInfo_setObject(@"dyld_trustcache_size", @(dyldTCSize));
-
-	JBLogDebug("dyld trust cache allocated to %llX (size: %zX)", dyldTCKaddr, dyldTCSize);
-
-	copySuc = [[NSFileManager defaultManager] copyItemAtPath:@"/var/jb/basebin/systemhook.dylib" toPath:@"/var/jb/basebin/.fakelib/systemhook.dylib" error:nil];
-	if (!copySuc) {
-		return 7;
-	}
-	JBLogDebug("copied systemhook");
-
-	generateSystemWideSandboxExtensions(@"/var/jb/basebin/.fakelib/sandbox.plist");
-	JBLogDebug("generated sandbox extensions");
-
-	uint64_t bindMountRet = bindMount(libPath.fileSystemRepresentation, fakeLibPath.fileSystemRepresentation);
-	if (bindMountRet != 0) {
-		return 8;
-	}
-
-	return 0;
 }
 
 void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
@@ -391,7 +233,10 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 					case JBD_MSG_INIT_ENVIRONMENT: {
 						int64_t result = 0;
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
-							result = initEnvironment(nil);
+							result = makeFakeLib();
+							if (result == 0) {
+								result = setFakeLibBindMountActive(true);
+							}
 						}
 						else {
 							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
@@ -405,12 +250,13 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 							const char *basebinPath = xpc_dictionary_get_string(message, "basebinPath");
 							const char *tipaPath = xpc_dictionary_get_string(message, "tipaPath");
+							bool rebootWhenDone = xpc_dictionary_get_bool(message, "rebootWhenDone");
 
 							if (basebinPath) {
-								result = basebinUpdateFromTar([NSString stringWithUTF8String:basebinPath]);
+								result = basebinUpdateFromTar([NSString stringWithUTF8String:basebinPath], rebootWhenDone);
 							}
 							else if (tipaPath) {
-								result = jbUpdateFromTIPA([NSString stringWithUTF8String:tipaPath]);
+								result = jbUpdateFromTIPA([NSString stringWithUTF8String:tipaPath], rebootWhenDone);
 							}
 							else {
 								result = 101;
@@ -502,6 +348,19 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						xpc_dictionary_set_int64(reply, "result", result);
 						break;
 					}
+
+					case JBD_SET_FAKELIB_VISIBLE: {
+						int64_t result = 0;
+						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+							bool visible = xpc_dictionary_get_bool(message, "visible");
+							result = setFakeLibVisible(visible);
+						}
+						else {
+							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+						}
+						xpc_dictionary_set_int64(reply, "result", result);
+						break;
+					}
 				}
 			}
 		}
@@ -514,24 +373,6 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 				JBLogError("Error %d sending response", err);
 			}
 		}
-	}
-}
-
-int launchdInitPPLRW(void)
-{
-	xpc_object_t msg = xpc_dictionary_create_empty();
-	xpc_dictionary_set_bool(msg, "jailbreak", true);
-	xpc_dictionary_set_uint64(msg, "id", LAUNCHD_JB_MSG_ID_GET_PPLRW);
-	xpc_object_t reply = launchd_xpc_send_message(msg);
-
-	int error = xpc_dictionary_get_int64(reply, "error");
-	if (error == 0) {
-		uint64_t magicPage = xpc_dictionary_get_uint64(reply, "magicPage");
-		initPPLPrimitives(magicPage);
-		return 0;
-	}
-	else {
-		return error;
 	}
 }
 
@@ -578,7 +419,7 @@ int main(int argc, char* argv[])
 
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 			if (bootInfo_getUInt64(@"jbdIconCacheNeedsRefresh")) {
-				spawn(@"/var/jb/usr/bin/uicache", @[@"-a"]);
+				spawn(prebootPath(@"usr/bin/uicache"), @[@"-a"]);
 				bootInfo_setObject(@"jbdIconCacheNeedsRefresh", nil);
 			}
 		});

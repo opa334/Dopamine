@@ -19,7 +19,7 @@ __attribute__((constructor)) static void initializer(void)
 		// First get PPLRW primitives
 		__block pid_t boomerangPid = 0;
 		dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-		FCHandler *handler = [[FCHandler alloc] initWithReceiveFilePath:@"/var/jb/basebin/.communication/boomerang_to_launchd" sendFilePath:@"/var/jb/basebin/.communication/launchd_to_boomerang"];
+		FCHandler *handler = [[FCHandler alloc] initWithReceiveFilePath:prebootPath(@"basebin/.communication/boomerang_to_launchd") sendFilePath:prebootPath(@"basebin/.communication/launchd_to_boomerang")];
 		handler.receiveHandler = ^(NSDictionary *message) {
 			NSString *identifier = message[@"id"];
 			if (identifier) {
@@ -36,7 +36,7 @@ __attribute__((constructor)) static void initializer(void)
 		dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
 		recoverPACPrimitives();
 		[handler sendMessage:@{ @"id" : @"primitivesInitialized" }];
-		[[NSFileManager defaultManager] removeItemAtPath:@"/var/jb/basebin/.communication" error:nil];
+		[[NSFileManager defaultManager] removeItemAtPath:prebootPath(@"basebin/.communication") error:nil];
 		if (boomerangPid != 0) {
 			int status;
 			waitpid(boomerangPid, &status, WEXITED);
@@ -64,7 +64,7 @@ __attribute__((constructor)) static void initializer(void)
 
 	// This will ensure launchdhook is always reinjected after userspace reboots
 	// As this launchd will pass environ to the next launchd...
-	setenv("DYLD_INSERT_LIBRARIES", "/var/jb/basebin/launchdhook.dylib", 1);
+	setenv("DYLD_INSERT_LIBRARIES", prebootPath(@"basebin/launchdhook.dylib").fileSystemRepresentation, 1);
 
 	bootInfo_setObject(@"environmentInitialized", @1);
 }

@@ -21,7 +21,7 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 				xpc_dictionary_get_audit_token(xdict, &auditToken);
 				pid_t clientPid = audit_token_to_pid(auditToken);
 				NSString *clientPath = proc_get_path(clientPid);
-				NSString *jailbreakdPath = [[@"/var/jb/basebin/jailbreakd" stringByResolvingSymlinksInPath] stringByStandardizingPath];
+				NSString *jailbreakdPath = prebootPath(@"basebin/jailbreakd");
 				if (xpc_dictionary_get_bool(xdict, "jailbreak-systemwide")) {
 					uint64_t msgId = xpc_dictionary_get_uint64(xdict, "id");
 					xpc_object_t xreply = xpc_dictionary_create_reply(xdict);

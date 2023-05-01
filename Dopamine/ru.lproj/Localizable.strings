@@ -10,7 +10,13 @@
 
 "Button_Remove_Jailbreak" = "Удалить джейлбрейк";
 
-"Button_Set_Root_Password" = "Установить пароль Root";
+"Button_Set_Mobile_Password" = "Установить пароль Mobile";
+
+"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+
+"Button_Reinstall_Package_Managers" = "Переустановить менеджеры пакетов";
+
+"Button_Set" = "Выбрать";
 
 "Button_Show_Logs_Title" = "Показать логи";
 
@@ -20,6 +26,8 @@
 
 "Button_Update_Available" = "Доступно обновление";
 
+"Button_Update_Environment" = "Обновить переменную среду";
+
 "Bypassing PAC" = "Обход PAC";
 
 "Bypassing PPL" = "Обход PPL";
@@ -28,11 +36,13 @@
 
 "Context_Menu_Copy_To_Clipboard" = "Копировать в буфер обмена";
 
+"Credits_Button_Discord" = "Discord";
+
 "Credits_Button_License" = "Лицензия";
 
 "Credits_Button_Source_Code" = "Исходный код";
 
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine версия %@\n%@";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Версия Dopamine %@\n%@";
 
 "Credits_Header_Special_Thanks" = "Особая благодарность:";
 
@@ -46,6 +56,8 @@
 
 "Hint_Hide_Jailbreak" = "\"Скрыть джейлбрейк\" временно удаляет файлы, связанные с джейлбрейком, до следующего джейлбрейка";
 
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Скрыть джейлбрейк\" частично отключает джейлбрейк для того, чтобы сделать его обнаружение более трудным. Однако это не совсем эффективно и маскирует не все.";
+
 "Initializing Environment" = "Инициализация переменной среды";
 
 "Initializing System Hook" = "Инициализация системного хука";
@@ -54,11 +66,17 @@
 
 "Launching kexploitd" = "Запуск kexploitd";
 
+"Enabling Wi-Fi" = "Включение Wi-Fi";
+
+"Disabling Wi-Fi" = "Отключение Wi-Fi";
+
 "Launching oobPCI" = "Запуск oobPCI";
 
 "Loading Basebin Trustcache" = "Загрузка Basebin Trustcache";
 
 "Menu_Credits_Title" = "Благодарности";
+
+"Menu_Settings_Title" = "Настройки";
 
 "Menu_Reboot_Userspace_Title" = "Перезагрузить Userspace";
 
@@ -72,6 +90,8 @@
 
 "Patchfinding" = "Поиск патчей";
 
+"PM_Reinstall_Done_Text" = "Выбранные менеджеры пакетов переустановлены";
+
 "Rebuilding TrustCache" = "Обновление TrustCache";
 
 "Refreshing Icon Cache" = "Обновление кэша иконок";
@@ -79,8 +99,6 @@
 "Settings_Footer_Device_Bootstrapped" = "Bootstrap установлен";
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Bootstrap не установлен";
-
-"Menu_Settings_Title" = "Настройки";
 
 "Starting jailbreakd" = "Запуск jailbreakd";
 
@@ -94,13 +112,13 @@
 
 "Status_Title_Unsuccessful" = "Неудачно";
 
-"Success_Rate %@%% (%lld/%lld)" = "Прогресс: %@%% (%lld/%lld)";
+"Success_Rate %@%% (%lld/%lld)" = "Успешность: %@%% (%lld/%lld)";
 
-"Title_Changelog" = "Изменения";
+"Title_Changelog" = "Список изменении";
 
-"Title_Made_By" = "от opa334, évelyne, UI от sourceloc";
+"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
 
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
 "Update_Log_Hint_Scrollable" = "Журнал может прокручиваться";
 
@@ -116,10 +134,24 @@
 
 "Alert_Tweak_Injection_Toggled_Body" = "Чтобы изменения вступили в силу, нужно перезагрузить Userspace. Перезагрузить сейчас?";
 
-"Popup_Change_Root_Password_Title" = "Изменение пароля Root";
+"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
 
 "Settings_Remove_Jailbreak_Alert_Body" = "Удаление джейлбрейка приведет к удалению всех файлов, связанных с джейлбрейком, но все обычные приложения, файлы и данные будут сохранены. Вы уверены, что хотите продолжить? Вы не сможете отменить это действие.";
 
 "Settings_Remove_Jailbreak_Alert_Title" = "Удаление джейлбрейка";
 
 "Settings_Tweak_Injection_Toggled_Alert_Title" = "Требуется перезагрузка Userspace";
+
+"Select_Package_Managers_Install_Message" = "Если вы не знаете, какой из них выбрать, выберите Sileo";
+
+"Select_Package_Managers_Reinstall_Message" = "Выберите менеджеры пакетов для переустановки";
+
+"Reinstall" = "Переустановить";
+
+"Continue" = "Продолжить";
+
+"Close" = "Закрыть";
+
+"Title_Mismatching_Environment_Version" = "Несоответствие версии переменной среды";
+
+"Mismatching_Environment_Version_Update_Body" = "Версия переменной среды джейлбрейка (%@) не соответствует версии из установленного приложения (%@)\nНажатие кнопки \"Обновить\" - обновит версию переменной среды джейлбрейка до версии из установленного приложения, затем будет произведена перезагрузка UserSpace.";

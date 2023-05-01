@@ -15,11 +15,11 @@ int applyDyldPatches(NSString *dyldPath)
 	CSRange range = __CSSymbolGetRange(symbol);
 	uint64_t getAMFIOffset = range.location;
 	if (getAMFIOffset == 0) {
-		return 1;
+		return 100;
 	}
 
 	FILE *dyldFile = fopen(dyldPath.fileSystemRepresentation, "rb+");
-	if (!dyldFile) return 2;
+	if (!dyldFile) return 101;
 	fseek(dyldFile, getAMFIOffset, SEEK_SET);
 	uint32_t patchInstr[2] = { 
 		0xD2801BE0, // mov x0, 0xDF
@@ -31,7 +31,7 @@ int applyDyldPatches(NSString *dyldPath)
 
 	int csRet = resignFile(dyldPath, true);
 	if (csRet != 0) {
-		return 3;
+		return 102;
 	}
 	JBLogDebug("resigned dyld");
 

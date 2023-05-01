@@ -10,7 +10,13 @@
 
 "Button_Remove_Jailbreak" = "Ta Bot Jailbreak";
 
-"Button_Set_Root_Password" = "Ställ in rotlösenord";
+"Button_Set_Mobile_Password" = "Ställ in rotlösenord";
+
+"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+
+"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
+
+"Button_Set" = "Set";
 
 "Button_Show_Logs_Title" = "Visa Loggar";
 
@@ -20,6 +26,8 @@
 
 "Button_Update_Available" = "Uppdatering tillgänglig";
 
+"Button_Update_Environment" = "Update Environment";
+
 "Bypassing PAC" = "Undviker PAC";
 
 "Bypassing PPL" = "Undviker PPL";
@@ -27,6 +35,8 @@
 "Changelog_Unavailable_Text" = "Ändringslogg ej tillgänglig";
 
 "Context_Menu_Copy_To_Clipboard" = "Kopiera till urklipp";
+
+"Credits_Button_Discord" = "Discord";
 
 "Credits_Button_License" = "Licens";
 
@@ -46,6 +56,8 @@
 
 "Hint_Hide_Jailbreak" = "\"Göm Jailbreak\" tar tillfälligt bort jailbreak-relaterade filer tills nästa jailbreak";
 
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+
 "Initializing Environment" = "Initiera miljö";
 
 "Initializing System Hook" = "Initialiserande systemkrok";
@@ -54,11 +66,17 @@
 
 "Launching kexploitd" = "Startar kexploitd";
 
+"Enabling Wi-Fi" = "Enabling Wi-Fi";
+
+"Disabling Wi-Fi" = "Disabling Wi-Fi";
+
 "Launching oobPCI" = "Startar oobPCI";
 
 "Loading Basebin Trustcache" = "Laddar Basebin Trustcache";
 
 "Menu_Credits_Title" = "Om";
+
+"Menu_Settings_Title" = "Inställningar";
 
 "Menu_Reboot_Userspace_Title" = "Starta om Userspace";
 
@@ -72,6 +90,8 @@
 
 "Patchfinding" = "Patchfinding";
 
+"PM_Reinstall_Done_Text" = "The selected package managers have been reinstalled";
+
 "Rebuilding TrustCache" = "Bygger om TrustCache";
 
 "Refreshing Icon Cache" = "Uppfriskande ikoncache";
@@ -79,8 +99,6 @@
 "Settings_Footer_Device_Bootstrapped" = "Enheten är bootstrapsed";
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Enheten är inte bootstrapsed";
-
-"Menu_Settings_Title" = "Inställningar";
 
 "Starting jailbreakd" = "Börjar jailbreakad";
 
@@ -98,9 +116,9 @@
 
 "Title_Changelog" = "Ändringslogg";
 
-"Title_Made_By" = "av opa334, évelyne, UI av sourceloc";
+"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
 
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
 "Update_Log_Hint_Scrollable" = "Loggvy kan scrollas";
 
@@ -114,12 +132,26 @@
 
 "Alert_Button_Uninstall" = "Uninstall";
 
-"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+"Alert_Tweak_Injection_Toggled_Body" = "A userspace reboot is neccessary to apply the changes. Do you want to do it now?";
 
-"Popup_Change_Root_Password_Title" = "Change Root Password";
+"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
 
 "Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
 
 "Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace Reboot Required";
+
+"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+
+"Select_Package_Managers_Reinstall_Message" = "Select package managers to reinstall";
+
+"Reinstall" = "Reinstall";
+
+"Continue" = "Continue";
+
+"Close" = "Close";
+
+"Title_Mismatching_Environment_Version" = "Mismatching Environment Version";
+
+"Mismatching_Environment_Version_Update_Body" = "The environment version this device was jailbroken with (%@) mismatches the currently installed app version (%@)\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";

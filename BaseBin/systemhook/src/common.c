@@ -5,6 +5,8 @@
 #include <sys/param.h>
 #include <sys/mount.h>
 #include <sandbox.h>
+#include <paths.h>
+#include <sys/stat.h>
 
 #define POSIX_SPAWN_PROC_TYPE_DRIVER 0x700
 int posix_spawnattr_getprocesstype_np(const posix_spawnattr_t * __restrict, int * __restrict) __API_AVAILABLE(macos(10.8), ios(6.0));
@@ -214,36 +216,104 @@ int64_t jbdswForkFix(pid_t childPid, bool mightHaveDirtyPages)
 	return result;
 }
 
-
-char *resolvePath(const char *file, const char *searchPath)
+// Derived from posix_spawnp in Apple libc
+int resolvePath(const char *file, const char *searchPath, int (^attemptHandler)(char *path))
 {
-	if (!file) return NULL;
+	const char *env_path;
+	char *bp;
+	char *cur;
+	char *p;
+	char **memp;
+	int lp;
+	int ln;
+	int cnt;
+	int err = 0;
+	int eacces = 0;
+	struct stat sb;
+	char path_buf[PATH_MAX];
 
-	if (access(file, X_OK) == 0) {
-		return strdup(file);
+	if ((env_path = getenv("PATH")) == NULL)
+		env_path = _PATH_DEFPATH;
+
+	/* If it's an absolute or relative path name, it's easy. */
+	if (index(file, '/')) {
+		bp = (char *)file;
+		cur = NULL;
+		goto retry;
 	}
+	bp = path_buf;
 
-	const char *searchPathToUse = searchPath;
-	if (!searchPathToUse) {
-		searchPathToUse = getenv("PATH");
-	}
+	/* If it's an empty path name, fail in the usual POSIX way. */
+	if (*file == '\0')
+		return (ENOENT);
 
-	char *dir = strtok((char *)searchPathToUse, ":");
-	char fullpath[1024];
-
-	while (dir != NULL) {
-		snprintf(fullpath, 1024, "%s/%s", dir, file);
-		if (access(fullpath, X_OK) == 0) {
-			return strdup(fullpath);
+	if ((cur = alloca(strlen(env_path) + 1)) == NULL)
+		return ENOMEM;
+	strcpy(cur, env_path);
+	while ((p = strsep(&cur, ":")) != NULL) {
+		/*
+		 * It's a SHELL path -- double, leading and trailing colons
+		 * mean the current directory.
+		 */
+		if (*p == '\0') {
+			p = ".";
+			lp = 1;
+		} else {
+			lp = strlen(p);
 		}
-		dir = strtok(NULL, ":");
+		ln = strlen(file);
+
+		/*
+		 * If the path is too long complain.  This is a possible
+		 * security issue; given a way to make the path too long
+		 * the user may spawn the wrong program.
+		 */
+		if (lp + ln + 2 > sizeof(path_buf)) {
+			err = ENAMETOOLONG;
+			goto done;
+		}
+		bcopy(p, path_buf, lp);
+		path_buf[lp] = '/';
+		bcopy(file, path_buf + lp + 1, ln);
+		path_buf[lp + ln + 1] = '\0';
+
+retry:		err = attemptHandler(bp);
+		switch (err) {
+		case E2BIG:
+		case ENOMEM:
+		case ETXTBSY:
+			goto done;
+		case ELOOP:
+		case ENAMETOOLONG:
+		case ENOENT:
+		case ENOTDIR:
+			break;
+		case ENOEXEC:
+			goto done;
+		default:
+			/*
+			 * EACCES may be for an inaccessible directory or
+			 * a non-executable file.  Call stat() to decide
+			 * which.  This also handles ambiguities for EFAULT
+			 * and EIO, and undocumented errors like ESTALE.
+			 * We hope that the race for a stat() is unimportant.
+			 */
+			if (stat(bp, &sb) != 0)
+				break;
+			if (err == EACCES) {
+				eacces = 1;
+				continue;
+			}
+			goto done;
+		}
 	}
-
-	return NULL;
+	if (eacces)
+		err = EACCES;
+	else
+		err = ENOENT;
+done:
+	return (err);
 }
-
-// I don't like the idea of blacklisting certain processes
-// But for some it seems neccessary
 
 typedef enum 
 {
@@ -272,7 +342,7 @@ kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 	}
 
 	// Blacklist to ensure general system stability
-	// I don't like this but it seems neccessary
+	// I don't like this but for some processes it seems neccessary
 	const char *processBlacklist[] = {
 		"/System/Library/Frameworks/GSS.framework/Helpers/GSSCred",
 		"/System/Library/PrivateFrameworks/IDSBlastDoorSupport.framework/XPCServices/IDSBlastDoorService.xpc/IDSBlastDoorService",

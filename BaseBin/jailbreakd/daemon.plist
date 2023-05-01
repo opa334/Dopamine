@@ -18,7 +18,7 @@
 	</dict>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/var/jb/basebin/jailbreakd</string>
+		<string>basebin/jailbreakd</string>
 	</array>
 	<key>UserName</key>
 	<string>root</string>

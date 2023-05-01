@@ -103,24 +103,9 @@ A: ...
 
 - Create an account on GitHub
 - [Fork this repo](https://docs.github.com/en/get-started/quickstart/fork-a-repo)
-- [Clone your fork to your system](https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/adding-and-cloning-repositories/cloning-a-repository-from-github-to-github-desktop)
-
-From here you have 2 recommended ways of editing translation files for macOS:
-
-### iOSLocalizationEditor (easiest)
-
-- Duplicate `Dopamine/Dopamine/en.lproj` folder and replace the country code with yours.
-- Download [iOSLocalizationEditor](https://github.com/igorkulman/iOSLocalizationEditor).
-- Open `Dopamine/Dopamine` folder and edit a newly added language or an existing one.
-
-### Xcode
-- Open `Dopamine/Dopamine.xcodeproj` using Xcode and [add a new language](https://developer.apple.com/documentation/xcode/adding-support-for-languages-and-regions).
+- If creating your language hasn't been translated yet, **duplicate `Dopamine/Dopamine/en.lproj` folder** and replace the country code with yours.
+- Open `Dopamine/Dopamine/<language_code>.lproj/Localizable.strings`
 - Edit `Localizable.strings`. Change only the part after "=" sign inside double quotes.
-
-## Submit your work
-
-* [Push changes](https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/making-changes-in-a-branch/pushing-changes-to-github)
-
 - [Create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) once you are done
 
 # Credits

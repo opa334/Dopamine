@@ -81,6 +81,12 @@ make
 cd -
 cp "./systemhook/systemhook.dylib" ".tmp/basebin/systemhook.dylib"
 
+# rootlesshooks
+cd "rootlesshooks"
+make
+cd -
+cp "./rootlesshooks/.theos/obj/rootlesshooks.dylib" ".tmp/basebin/rootlesshooks.dylib"
+
 # forkfix
 cd "forkfix"
 make

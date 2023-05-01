@@ -12,5 +12,7 @@
 	<array>
 		<string>com.opa334.jailbreakd</string>
 	</array>
+	<key>com.apple.private.xpc.launchd.userspace-reboot</key>
+	<true/>
 </dict>
 </plist>

@@ -17,26 +17,21 @@ struct AboutView: View {
     
     let contributors = [
         ("opa334", "http://github.com/opa334"),
-        ("evelyneee", "http://github.com/evelyneee"),
+        ("Évelyne", "http://github.com/evelyneee"),
         ("sourcelocation", "http://github.com/sourcelocation"),
         ("LinusHenze", "http://github.com/LinusHenze"),
-        ("anotherperson", "http://github.com/opa334"),
-        ("randomperson", "http://github.com/opa334"),
+        ("Cryptic", "http://github.com/Cryptiiiic"),
+        ("Clarity", "http://github.com/TheRealClarity"),
+        ("Dhinakg", "http://github.com/dhinakg"),
+        ("Capt Inc", "http://github.com/captinc"),
+        ("Sam Bingner", "http://github.com/sbingner"),
+        ("ProcursusTeam", "http://github.com/ProcursusTeam"),
+        ("kirb", "http://github.com/kirb"),
+        ("Amy While", "http://github.com/elihwyma"),
     ]
     
     var body: some View {
         VStack {
-            VStack(spacing: 4) {
-                Text("Credits_Made_By")
-                Text("Credits_Made_By_Subheadline")
-                    .font(.footnote)
-                    .opacity(0.6)
-            }
-            Divider()
-                .background(.white)
-                .padding(.horizontal, 32)
-                .opacity(0.25)
-            
             VStack {
                 Button(action: {
                     openURL(URL(string: "https://github.com/opa334/Dopamine")!)
@@ -61,6 +56,22 @@ struct AboutView: View {
                         Spacer()
                         Image(systemName: "scroll")
                         Text("Credits_Button_License")
+                        Spacer()
+                    }
+                    .padding(8)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
+                    )
+                    .padding(.horizontal, 32)
+                }
+                Button(action: {
+                    openURL(URL(string: "https://discord.gg/jb")!)
+                }) {
+                    HStack {
+                        Spacer()
+                        Image("discord")
+                        Text("Credits_Button_Discord")
                         Spacer()
                     }
                     .padding(8)

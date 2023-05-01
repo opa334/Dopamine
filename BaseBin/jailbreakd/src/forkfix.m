@@ -58,12 +58,11 @@ int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid, bool mightHaveDirtyPag
 	NSString *childPath = proc_get_path(childPid);
 	// very basic check to make sure this is actually a fork flow
 	if ([parentPath isEqualToString:childPath]) {
-		NSLog(@"running fork debug fixup for %@", childPath);
 		proc_set_debugged(childPid);
 		if (!mightHaveDirtyPages) return 0;
-		NSLog(@"running fork page fixup for %@", childPath);
 
-		uint64_t child_proc = proc_for_pid(childPid);
+		bool child_proc_needs_release = false;
+		uint64_t child_proc = proc_for_pid(childPid, &child_proc_needs_release);
 		uint64_t child_task = proc_get_task(child_proc);
 		uint64_t child_vm_map = task_get_vm_map(child_task);
 
@@ -119,6 +118,9 @@ int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid, bool mightHaveDirtyPag
 			}
 			mach_port_deallocate(mach_task_self(), parentTaskPort);
 		}
+
+		if (child_proc_needs_release) proc_rele(child_proc);
+
 		return r;
 	}
 	else {

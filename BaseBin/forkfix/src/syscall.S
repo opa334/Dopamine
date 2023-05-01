@@ -31,14 +31,14 @@ _ffsys_vm_protect:
 	svc 0x80
 	ret
 
-.global _ffsys_kill
-_ffsys_kill:
-	mov x16, #37
-	svc 0x80
-	ret
-
 .global _ffsys_getpid
 _ffsys_getpid:
 	mov x16, #20
+	svc 0x80
+	ret
+
+.global _ffsys_pid_suspend
+_ffsys_pid_suspend:
+	mov x16, #433
 	svc 0x80
 	ret
