@@ -10,9 +10,9 @@
 
 "Button_Remove_Jailbreak" = "Удалить джейлбрейк";
 
-"Button_Set_Mobile_Password" = "Установить пароль Mobile";
+"Button_Set_Mobile_Password" = "Установить пароль пользователя mobile";
 
-"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+"Popup_Change_Mobile_Password_Message" = "Установка пароля пользователя mobile, его также можно использовать для выполнения какой-либо команды с правами root, используя команду sudo. Если вы хотите установить пароль для пользователя root, вы можете сделать это из командной строки, используя \"sudo passwd root\".";
 
 "Button_Reinstall_Package_Managers" = "Переустановить менеджеры пакетов";
 
@@ -90,7 +90,7 @@
 
 "Patchfinding" = "Поиск патчей";
 
-"PM_Reinstall_Done_Text" = "Выбранные менеджеры пакетов переустановлены";
+"PM_Reinstall_Done_Text" = "Менеджеры пакетов переустановлены";
 
 "Rebuilding TrustCache" = "Обновление TrustCache";
 
@@ -134,7 +134,7 @@
 
 "Alert_Tweak_Injection_Toggled_Body" = "Чтобы изменения вступили в силу, нужно перезагрузить Userspace. Перезагрузить сейчас?";
 
-"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
+"Popup_Change_Mobile_Password_Title" = "Изменение пароля пользователя mobile";
 
 "Settings_Remove_Jailbreak_Alert_Body" = "Удаление джейлбрейка приведет к удалению всех файлов, связанных с джейлбрейком, но все обычные приложения, файлы и данные будут сохранены. Вы уверены, что хотите продолжить? Вы не сможете отменить это действие.";
 
@@ -152,6 +152,6 @@
 
 "Close" = "Закрыть";
 
-"Title_Mismatching_Environment_Version" = "Несоответствие версии переменной среды";
+"Title_Mismatching_Environment_Version" = "Несоответствие версии переменных сред";
 
-"Mismatching_Environment_Version_Update_Body" = "Версия переменной среды джейлбрейка (%@) не соответствует версии из установленного приложения (%@)\nНажатие кнопки \"Обновить\" - обновит версию переменной среды джейлбрейка до версии из установленного приложения, затем будет произведена перезагрузка UserSpace.";
+"Mismatching_Environment_Version_Update_Body" = "Версия переменной среды джейлбрейка (%@) не соответствует версии из установленного приложения (%@)\nНажатие кнопки \"Обновить\" - обновит версию переменной среды джейлбрейка до версии из установленного приложения, затем будет произведена перезагрузка Userspace.";
