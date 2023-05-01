@@ -3,10 +3,10 @@
 "Alert_Button_Uninstall" = "アンインストール";
 
 
-"Alert_Tweak_Injection_Toggled_Body" = "変化が完了になるために、ユーザースペースを再起動することが必要です。今再起動したいですか？";
+"Alert_Tweak_Injection_Toggled_Body" = "この変更を適用するためには、userspaceを再起動する必要があります。今すぐ再起動をしてもよろしいですか？";
 
 
-"Bootstrapping" = "ブートストラップをインストール中";
+"Bootstrapping" = "Bootstrapをインストール中";
 
 
 "Button_Cancel" = "キャンセル";
@@ -18,19 +18,19 @@
 "Button_Hide_Logs_Title" = "ログを隠す";
 
 
-"Button_Jailbreak_Title" = "Jailbreakする";
+"Button_Jailbreak_Title" = "Jailbreak";
 
 
-"Button_Reinstall_Package_Managers" = "パッケージマネジャーを再インストール";
+"Button_Reinstall_Package_Managers" = "パッケージマネージャーの再インストール";
 
 
 "Button_Remove_Jailbreak" = "Jailbreak環境を削除";
 
 
-"Button_Set" = "セットする";
+"Button_Set" = "セット";
 
 
-"Button_Set_Mobile_Password" = "モバイルパスワードを設定";
+"Button_Set_Mobile_Password" = "Mobileのパスワードを設定";
 
 
 "Button_Show_Logs_Title" = "ログを表示";
@@ -45,13 +45,13 @@
 "Button_Update_Available" = "アップデートがあります";
 
 
-"Button_Update_Environment" = "環境を更新";
+"Button_Update_Environment" = "環境をアップデート";
 
 
-"Bypassing PAC" = "PACのbypassを実行中";
+"Bypassing PAC" = "PAC bypassを実行中";
 
 
-"Bypassing PPL" = "PPLのbypassを実行中";
+"Bypassing PPL" = "PPL bypassを実行中";
 
 
 "Changelog_Unavailable_Text" = "更新履歴は利用できません";
@@ -60,10 +60,10 @@
 "Close" = "閉じる";
 
 
-"Context_Menu_Copy_To_Clipboard" = "クリップボードにコピーする";
+"Context_Menu_Copy_To_Clipboard" = "クリップボードにコピー";
 
 
-"Continue" = "進む";
+"Continue" = "続ける";
 
 
 "Credits_Button_Discord" = "Discord";
@@ -75,16 +75,16 @@
 "Credits_Button_Source_Code" = "ソースコード";
 
 
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine バージョン %@\n%@\"";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
 
 
-"Credits_Header_Special_Thanks" = "スペシャル・サンクス：";
+"Credits_Header_Special_Thanks" = "Special thanks:";
 
 
-"Credits_Made_By" = "作者： opa334, évelyne";
+"Credits_Made_By" = "Made by opa334, évelyne";
 
 
-"Credits_Made_By_Subheadline" = "UIの作者： sourcelocation\nロゴとアイコンの作者： xerus";
+"Credits_Made_By_Subheadline" = "UI by sourcelocation\nLogo and icon by xerus";
 
 
 "Disabling Wi-Fi" = "Wi-Fiの無効化中";
@@ -93,22 +93,22 @@
 "Enabling Wi-Fi" = "Wi-Fiの有効化中";
 
 
-"Finalizing Bootstrap" = "ブートストラップを完了中";
+"Finalizing Bootstrap" = "Bootstrapのファイナライズ中";
 
 
 "Gaining r/w" = "r/wを取得中";
 
 
-"Hint_Hide_Jailbreak" = "「Jailbreakを隠す」は、次のjailbreakの実行までjailbreak関連のファイルを一時的に隠します";
+"Hint_Hide_Jailbreak" = "\"Jailbreakを隠す\"は、次のjailbreakの実行までjailbreak関連のファイルを一時的に隠します";
 
 
-"Hint_Hide_Jailbreak_Jailbroken" = "「Jailbreakを隠す」は、jailbreakを部分的に無効化します。";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Jailbreakを隠す\"は、jailbreakを部分的に無効にして、jailbreak検出をより困難にすることを目的としています。しかし、この機能ではすべてを完全に隠せるわけではありません。";
 
 
 "Initializing Environment" = "Jailbreak環境の初期設定中";
 
 
-"Initializing System Hook" = "システムフックの初期設定中";
+"Initializing System Hook" = "System Hookの初期設定中";
 
 
 "Jailbreak_Done" = "完了！";
@@ -126,7 +126,7 @@
 "Menu_Credits_Title" = "クレジット";
 
 
-"Menu_Reboot_Userspace_Title" = "ユーザースペースを再起動";
+"Menu_Reboot_Userspace_Title" = "Userspaceを再起動";
 
 
 "Menu_Restart_SpringBoard_Title" = "SpringBoardを再起動";
@@ -134,20 +134,20 @@
 
 "Menu_Settings_Title" = "設定";
 
+/*  */
+"Mismatching_Environment_Version_Update_Body" = "このデバイスのjailbreak環境のバージョン（%@）と現在インストールされているアプリのバージョン（%@）が一致していません。アップデートを押すと、jailbreak環境が現在インストールされているアプリのものに更新され、その後、お使いのデバイスはuserspaceで再起動します。";
 
-"Mismatching_Environment_Version_Update_Body" = "このデバイスのjailbreak環境のバージョン (%@) 今のインストールしたアプリのバージョン (%@) 不一致があります。\n「アップデート」を押したらこのデバイスのjailbreak環境を今のアプリのバージョンにアップデートします。このデバイスはアップデート終了後ユーザースペースの再起動をします。";
 
-
-"PM_Reinstall_Done_Text" = "選択されたパッケージマネージャーが再インストールしました";
+"PM_Reinstall_Done_Text" = "選択されたパッケージマネージャーは再インストールされました";
 
 
 "Patchfinding" = "Patchfinderを実行中";
 
 
-"Popup_Change_Mobile_Password_Message" = "terminalのmobileパスワードを設定します。これは、sudoを使ったrootアクセスにも使用されます。rootパスワードを設定したい場合は、mobileシェルから \"sudo passwd root \"を使用して設定することができます。";
+"Popup_Change_Mobile_Password_Message" = "terminalのmobileパスワードを設定します。これは、sudoを使ったrootアクセスにも使用されます。rootパスワードを設定したい場合は、mobileシェルから \"sudo passwd root\"を実行して設定することができます。";
 
 
-"Popup_Change_Mobile_Password_Title" = "モバイルパスワードを変化する";
+"Popup_Change_Mobile_Password_Title" = "Mobileのパスワードを変更";
 
 
 "Rebuilding TrustCache" = "TrustCacheを再構築中";
@@ -156,10 +156,10 @@
 "Refreshing Icon Cache" = "アイコンキャッシュを更新中";
 
 
-"Reinstall" = "再インストールします";
+"Reinstall" = "再インストール";
 
 
-"Select_Package_Managers_Install_Message" = "どのパッケージマネージャーを選択したらいいか分からないなら、Sileoを選択してください";
+"Select_Package_Managers_Install_Message" = "どちらを選択するか迷った場合は、Sileoを選択してください";
 
 
 "Select_Package_Managers_Reinstall_Message" = "再インストールするパッケージマネージャーを選択してください";
@@ -177,10 +177,10 @@
 "Settings_Remove_Jailbreak_Alert_Title" = "Jailbreak環境を削除";
 
 
-"Settings_Tweak_Injection" = "ツィーク・インジェクション";
+"Settings_Tweak_Injection" = "Tweak Injection";
 
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "ユーザースペースの再起動が必要です";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspaceの再起動が必要です";
 
 
 "Settings_Verbose_Logs" = "詳細なログ";
@@ -189,16 +189,16 @@
 "Settings_iDownload" = "iDownload";
 
 
-"Starting Launch Daemons" = "ローンチデーモンを開始中";
+"Starting Launch Daemons" = "Launch Daemonを開始中";
 
 
 "Starting jailbreakd" = "jailbreakdを開始中";
 
 
-"Status_Title_Jailbreaking" = "Jailbreak中";
+"Status_Title_Jailbreaking" = "Jailbreaking";
 
 
-"Status_Title_Jailbroken" = "Jailbreakされました";
+"Status_Title_Jailbroken" = "Jailbroken";
 
 
 "Status_Title_Select_Package_Managers" = "パッケージマネージャーを選択";
@@ -213,7 +213,7 @@
 "Title_Changelog" = "更新履歴";
 
 
-"Title_Made_By" = "作者： opa334, évelyne\nUIの作者： sourceloc\nFugu15に基づきました\nFugu15に基づきました";
+"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
 
 
 "Title_Mismatching_Environment_Version" = "環境バージョンの不一致";
