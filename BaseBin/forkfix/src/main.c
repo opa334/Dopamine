@@ -100,6 +100,7 @@ void parent_fixup(pid_t childPid, bool mightHaveDirtyPages)
 	do {
 		ret = proc_pidinfo(childPid, PROC_PIDTASKINFO, 0, &taskinfo, sizeof(taskinfo));
 		if (ret <= 0) {
+			kill(childPid, SIGKILL);
 			abort();
 		}
 	} while (taskinfo.pti_numrunning != 0);
@@ -108,6 +109,7 @@ void parent_fixup(pid_t childPid, bool mightHaveDirtyPages)
 	// Apply fixup
 	int64_t fix_ret = jbdswForkFix(childPid, mightHaveDirtyPages);
 	if (fix_ret != 0) {
+		kill(childPid, SIGKILL);
 		abort();
 	}
 }
