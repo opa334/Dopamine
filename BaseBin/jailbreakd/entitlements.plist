@@ -24,5 +24,7 @@
 	<true/>
 	<key>com.apple.private.xpc.launchd.userspace-reboot</key>
 	<true/>
+	<key>com.apple.private.process.suspend-resume.any</key>
+	<true/>
 </dict>
 </plist>

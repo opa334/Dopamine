@@ -33,8 +33,6 @@ struct proc_taskinfo {
 #define PROC_PIDTASKINFO		4
 #define PROC_PIDTASKINFO_SIZE		(sizeof(struct proc_taskinfo))
 
-extern int pid_resume(int pid);
-
 int64_t (*jbdswForkFix)(pid_t childPid, bool mightHaveDirtyPages);
 
 static void **_libSystem_atfork_prepare_ptr = 0;
@@ -90,7 +88,7 @@ void child_fixup(void)
 	extern pid_t _current_pid;
 	_current_pid = 0;
 
-	// SIGSTOP and wait for the parent process to run fixups
+	// suspend ourselves to wait for the parent process to run fixups
 	ffsys_pid_suspend(ffsys_getpid());
 }
 
@@ -102,17 +100,16 @@ void parent_fixup(pid_t childPid, bool mightHaveDirtyPages)
 	do {
 		ret = proc_pidinfo(childPid, PROC_PIDTASKINFO, 0, &taskinfo, sizeof(taskinfo));
 		if (ret <= 0) {
-			perror("proc_pidinfo");
-			exit(EXIT_FAILURE);
+			abort();
 		}
 	} while (taskinfo.pti_numrunning != 0);
 	// Child is waiting for wx_allowed + permission fixups now
 
 	// Apply fixup
 	int64_t fix_ret = jbdswForkFix(childPid, mightHaveDirtyPages);
-
-	// Resume child
-	pid_resume(childPid);
+	if (fix_ret != 0) {
+		abort();
+	}
 }
 
 __attribute__((visibility ("default"))) pid_t forkfix___fork(void)

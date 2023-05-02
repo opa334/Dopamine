@@ -5,6 +5,7 @@
 #import <mach/mach.h>
 #import <Foundation/Foundation.h>
 #import <libjailbreak/libjailbreak.h>
+extern int pid_resume(int pid);
 
 typedef struct {
 	mach_vm_address_t address;
@@ -54,6 +55,7 @@ mem_region_info_t *dump_regions(task_t task, int *region_count_out)
 
 int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid, bool mightHaveDirtyPages)
 {
+	int r = 10;
 	NSString *parentPath = proc_get_path(parentPid);
 	NSString *childPath = proc_get_path(childPid);
 	// very basic check to make sure this is actually a fork flow
@@ -66,7 +68,7 @@ int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid, bool mightHaveDirtyPag
 		uint64_t child_task = proc_get_task(child_proc);
 		uint64_t child_vm_map = task_get_vm_map(child_task);
 
-		int r = 5;
+		r = 5;
 		task_t parentTaskPort = -1;
 		task_t childTaskPort = -1;
 		kern_return_t parentKR = task_for_pid(mach_task_self(), parentPid, &parentTaskPort);
@@ -120,10 +122,12 @@ int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid, bool mightHaveDirtyPag
 		}
 
 		if (child_proc_needs_release) proc_rele(child_proc);
+	}
 
-		return r;
+	// after we're done, resume child
+	int pr = pid_resume(childPid);
+	if (pr != 0) {
+		r = 15;
 	}
-	else {
-		return 10;
-	}
+	return r;
 }
