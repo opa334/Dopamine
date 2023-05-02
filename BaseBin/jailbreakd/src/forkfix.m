@@ -125,9 +125,10 @@ int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid, bool mightHaveDirtyPag
 	}
 
 	// after we're done, resume child
-	int pr = pid_resume(childPid);
-	if (pr != 0) {
-		r = 15;
+	if (r == 0) {
+		if (pid_resume(childPid) != 0) {
+			r = 15;
+		}
 	}
 	return r;
 }
