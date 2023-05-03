@@ -50,7 +50,7 @@ struct AboutView: View {
                     .padding(.horizontal, 32)
                 }
                 Button(action: {
-                    openURL(URL(string: "https://github.com/opa334/Dopamine/LICENSE")!)
+                    openURL(URL(string: "https://github.com/opa334/Dopamine/LICENSE.md")!)
                 }) {
                     HStack {
                         Spacer()
