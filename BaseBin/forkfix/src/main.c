@@ -122,6 +122,7 @@ void parent_fixup(pid_t childPid, bool mightHaveDirtyPages)
 		abort();
 	}
 
+	// Tel child we are done, this will make it resume
 	write(parentToChildPipe[1], &msg, sizeof(msg));
 
 	close(parentToChildPipe[1]);
