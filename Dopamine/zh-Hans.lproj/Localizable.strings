@@ -12,7 +12,7 @@
 
 "Button_Set_Mobile_Password" = "设置Mobile密码";
 
-"Popup_Change_Mobile_Password_Message" = "设置您设备的Mobile密码,这也可以使用sudo进行root访问。如果您想设置root密码,可以从Mobile shell使用“sudo passwd root”进行设置。";  
+"Popup_Change_Mobile_Password_Message" = "设置您设备的Mobile密码,可以用于sudo进行root访问。如果您想设置root密码,可以从终端上使用“sudo passwd root”进行设置。";  
 
 "Button_Reinstall_Package_Managers" = "重新安装软件包管理器";  
 
@@ -24,7 +24,7 @@
 
 "Button_Update" = "更新";
 
-"Button_Update_Available" = "发现可用更新";
+"Button_Update_Available" = "可用更新";
 
 "Button_Update_Environment" = "更新环境";
 
@@ -56,7 +56,7 @@
 
 "Hint_Hide_Jailbreak" = "\"隐藏越狱\"会暂时删除越狱相关文件,直到下次越狱";
 
-"Hint_Hide_Jailbreak_Jailbroken" = "\"隐藏越狱\"会部分禁用越狱并试图使检测变得更具挑战性。但是,它不完全有效,并且并非可掩盖一切。";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"隐藏越狱\"会部分禁用越狱并试图使检测变得更具挑战性。但是,它不完全有效,并非可躲过一切检测。";
 
 "Initializing Environment" = "初始化环境";  
 
@@ -82,7 +82,7 @@
 
 "Menu_Reboot_Userspace_Title" = "重启用户空间";
 
-"Menu_Restart_SpringBoard_Title" = "重启SpringBoard";  
+"Menu_Restart_SpringBoard_Title" = "注销";  
 
 "Settings_iDownload" = "iDownload";     
 
@@ -136,7 +136,7 @@
 
 "Alert_Tweak_Injection_Toggled_Body" = "要应用更改,需要重启用户空间。您现在想重启吗?";
 
-"Popup_Change_Mobile_Password_Title" = "更改手机密码";
+"Popup_Change_Mobile_Password_Title" = "更改Mobile密码";
 
 "Settings_Remove_Jailbreak_Alert_Body" = "移除越狱会删除所有与越狱相关的文件,但所有常规应用程序、文件和数据都将保留。您确定要继续吗?您无法撤消此操作。";
 
