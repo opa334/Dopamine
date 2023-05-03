@@ -12,11 +12,11 @@
 
 "Button_Set_Mobile_Password" = "設定 mobile 用戶口令";
 
-"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+"Popup_Change_Mobile_Password_Message" = "設定裝置上 mobile 用戶之口令。該口令亦可用於經由 sudo 命令訪問 root 用戶權限。若想要修改 root 用戶口令，可在裝置 shell 中執行 \"sudo passwd root\"。";
 
-"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
+"Button_Reinstall_Package_Managers" = "重新安裝包管理器（越獄商店）";
 
-"Button_Set" = "Set";
+"Button_Set" = "設定";
 
 "Button_Show_Logs_Title" = "展現日誌";
 
@@ -26,7 +26,7 @@
 
 "Button_Update_Available" = "可更新";
 
-"Button_Update_Environment" = "Update Environment";
+"Button_Update_Environment" = "更新環境";
 
 "Bypassing PAC" = "繞過 PAC";
 
@@ -42,7 +42,7 @@
 
 "Credits_Button_Source_Code" = "原始碼";
 
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine 版本 %@\n%@";
 
 "Credits_Header_Special_Thanks" = "特別緻謝：";
 
@@ -56,7 +56,7 @@
 
 "Hint_Hide_Jailbreak" = "「隱藏越獄」將在下次越獄前臨時移除越獄相關的文件";
 
-"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+"Hint_Hide_Jailbreak_Jailbroken" = "已越獄時，「隱藏越獄」將部分禁用越獄功能以增加探測越獄的難度。但是，這並非總是有效，也沒有隱藏所有東西。";
 
 "Initializing Environment" = "初始化環境";
 
@@ -66,9 +66,9 @@
 
 "Launching kexploitd" = "啟動 kexploitd";
 
-"Enabling Wi-Fi" = "Enabling Wi-Fi";
+"Enabling Wi-Fi" = "啟用 Wi-Fi";
 
-"Disabling Wi-Fi" = "Disabling Wi-Fi";
+"Disabling Wi-Fi" = "禁用 Wi-Fi";
 
 "Launching oobPCI" = "啟動 oobPCI";
 
@@ -77,6 +77,8 @@
 "Menu_Credits_Title" = "關於";
 
 "Menu_Settings_Title" = "設置";
+
+"Settings" = "設置";
 
 "Menu_Reboot_Userspace_Title" = "用戶空間重啟";
 
@@ -90,7 +92,7 @@
 
 "Patchfinding" = "Patchfinding";
 
-"PM_Reinstall_Done_Text" = "The selected package managers have been reinstalled";
+"PM_Reinstall_Done_Text" = "選中的包管理器已重新安裝";
 
 "Rebuilding TrustCache" = "重建 TrustCache";
 
@@ -142,16 +144,22 @@
 
 "Settings_Tweak_Injection_Toggled_Alert_Title" = "需要用戶空間重啟";
 
-"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+"Select_Package_Managers_Install_Message" = "若不確定如何選擇，請使用 Sileo";
 
-"Select_Package_Managers_Reinstall_Message" = "Select package managers to reinstall";
+"Select_Package_Managers_Reinstall_Message" = "選定需要重新安裝的包管理器";
 
-"Reinstall" = "Reinstall";
+"Reinstall" = "重新安裝";
 
-"Continue" = "Continue";
+"Continue" = "繼續";
 
-"Close" = "Close";
+"Close" = "關閉";
 
-"Title_Mismatching_Environment_Version" = "Mismatching Environment Version";
+"Title_Mismatching_Environment_Version" = "環境版本不匹配";
 
-"Mismatching_Environment_Version_Update_Body" = "The environment version this device was jailbroken with (%@) mismatches the currently installed app version (%@)\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";
+"Mismatching_Environment_Version_Update_Body" = "本機的越獄環境 (%@) 與 App 版本 (%@) 不匹配。\n點按更新按鈕將安裝匹配 App 版本的越獄環境，並將隨後執行一次用戶空間重啟。";
+
+"Options_Tweak_Injection" = "插件注入";
+
+"Reboot_Userspace_Finish" = "用戶空間重啟";
+
+"Restarting Userspace" = "正在重啟用戶空間";
