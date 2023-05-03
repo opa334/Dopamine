@@ -58,9 +58,9 @@
 
 "Hint_Hide_Jailbreak_Jailbroken" = "\"隱藏越獄\" 為了提升越獄偵測難度而停用部分越獄。 然而，不一定有效，也無法掩蓋一切痕跡。";
 
-"Initializing Environment" = "初始化環境";
+"Initializing Environment" = "正在初始化環境";
 
-"Initializing System Hook" = "初始化系統 hook";
+"Initializing System Hook" = "正在初始化系統 hook";
 
 "Jailbreak_Done" = "完成！";
 
