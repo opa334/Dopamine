@@ -12,7 +12,7 @@
 
 "Button_Set_Mobile_Password" = "設定 mobile 帳戶密碼";
 
-"Popup_Change_Mobile_Password_Message" = "設定 mobile 帳戶密碼，使用 sudo 也可以存取 root 權限. 如果你想修改 root 密碼，你可以在 mobile 權限下的終端執行  \"sudo passwd root\" 指令";
+"Popup_Change_Mobile_Password_Message" = "設定裝置上 mobile 用戶之口令。該口令亦可用於經由 sudo 命令訪問 root 用戶權限。若想要修改 root 用戶口令，可在裝置 shell 中執行 \"sudo passwd root\"。";
 
 "Button_Reinstall_Package_Managers" = "重新安裝套件管理器";
 
@@ -56,7 +56,7 @@
 
 "Hint_Hide_Jailbreak" = "「隱藏越獄」將在下次越獄前臨時移除越獄相關的檔案";
 
-"Hint_Hide_Jailbreak_Jailbroken" = "\"隱藏越獄\" 為了提升越獄偵測難度而停用部分越獄。 然而，不一定有效，也無法掩蓋一切痕跡。";
+"Hint_Hide_Jailbreak_Jailbroken" = "已越獄時，\"隱藏越獄\" 可提升越獄偵測難度而停用部分越獄。然而，不一定有效，也無法掩蓋一切痕跡。";
 
 "Initializing Environment" = "正在初始化環境";
 
@@ -66,9 +66,9 @@
 
 "Launching kexploitd" = "啟動 kexploitd";
 
-"Enabling Wi-Fi" = "Wi-Fi 啟用中";
+"Enabling Wi-Fi" = "啟用 Wi-Fi";
 
-"Disabling Wi-Fi" = "Wi-Fi 停用中";
+"Disabling Wi-Fi" = "停用 Wi-Fi";
 
 "Launching oobPCI" = "啟動 oobPCI";
 
@@ -77,6 +77,8 @@
 "Menu_Credits_Title" = "關於";
 
 "Menu_Settings_Title" = "設定";
+
+"Settings" = "設定";
 
 "Menu_Reboot_Userspace_Title" = "重新啟動使用者空間";
 
@@ -155,3 +157,9 @@
 "Title_Mismatching_Environment_Version" = "環境版本不符";
 
 "Mismatching_Environment_Version_Update_Body" = "此裝置越獄所使用的環境版本（%@）與目前已安裝的應用程式版本（%@）不相符。\n點擊更新將會更新越獄環境以符合目前安裝的應用程式版本，之後您的裝置將重新啟動使用者空間。";
+
+"Options_Tweak_Injection" = "插件注入";
+
+"Reboot_Userspace_Finish" = "用戶空間重啟";
+
+"Restarting Userspace" = "正在重啟用戶空間";

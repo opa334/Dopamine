@@ -8,7 +8,7 @@
 
 "Button_Jailbreak_Title" = "越狱";
 
-"Button_Remove_Jailbreak" = "移除越狱";
+"Button_Remove_Jailbreak" = "清除越狱";
 
 "Button_Set_Mobile_Password" = "设定 mobile 用户密码";
 
@@ -74,7 +74,7 @@
 
 "Loading Basebin Trustcache" = "加载 Basebin Trustcache";
 
-"Menu_Credits_Title" = "制作人员";
+"Menu_Credits_Title" = "关于";
 
 "Menu_Settings_Title" = "设置";
 
@@ -82,7 +82,7 @@
 
 "Menu_Reboot_Userspace_Title" = "用户空间重启";
 
-"Menu_Restart_SpringBoard_Title" = "重启SpringBoard";
+"Menu_Restart_SpringBoard_Title" = "注销";
 
 "Settings_iDownload" = "iDownload";
 
@@ -112,15 +112,15 @@
 
 "Status_Title_Select_Package_Managers" = "选择包管理器（越狱商店）";
 
-"Status_Title_Unsuccessful" = "未成功";
+"Status_Title_Unsuccessful" = "失败";
 
 "Success_Rate %@%% (%lld/%lld)" = "成功率：%@%% (%lld/%lld)";
 
 "Title_Changelog" = "变更日志";
 
-"Title_Made_By" = "由opa334, évelyne制作\nUI设计由sourceloc完成\n基于Fugu15";
+"Title_Made_By" = "作者：opa334, évelyne；UI: sourceloc\n基于 Fugu15";
 
-"Title_Supported_iOS_Versions" = "支持iOS 15.0 - 15.4.1 | A12 - A15,M1";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
 "Update_Log_Hint_Scrollable" = "滚动查看日志";
 
@@ -160,6 +160,6 @@
 
 "Options_Tweak_Injection" = "插件注入";
 
-"Reboot_Userspace_Finish" = "重启用户空间";
+"Reboot_Userspace_Finish" = "用户空间重启";
 
 "Restarting Userspace" = "正在重启用户空间";
