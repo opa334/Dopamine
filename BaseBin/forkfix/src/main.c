@@ -146,8 +146,8 @@ __attribute__((visibility ("default"))) pid_t forkfix_fork(int is_vfork, bool mi
 	int ret;
 
 	if (pipe(parentToChildPipe) < 0 || pipe(childToParentPipe) < 0) {
-        return -1;
-    }
+		return -1;
+	}
 
 	if (_libSystem_atfork_prepare_V2) {
 		_libSystem_atfork_prepare_V2(is_vfork);
