@@ -42,3 +42,21 @@ _ffsys_pid_suspend:
 	mov x16, #433
 	svc 0x80
 	ret
+
+.global _ffsys_read
+_ffsys_read:
+	mov x16, #3
+	svc 0x80
+	ret
+
+.global _ffsys_write
+_ffsys_write:
+	mov x16, #4
+	svc 0x80
+	ret
+
+.global _ffsys_close
+_ffsys_close:
+	mov x16, #6
+	svc 0x80
+	ret

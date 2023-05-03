@@ -49,6 +49,9 @@ static void (*_libSystem_atfork_prepare_V2)(int) = 0;
 static void (*_libSystem_atfork_parent_V2)(int) = 0;
 static void (*_libSystem_atfork_child_V2)(int) = 0;
 
+int childToParentPipe[2];
+int parentToChildPipe[2];
+
 void loadPrivateSymbols(void) {
 	MSImageRef libSystemCHandle = MSGetImageByName("/usr/lib/system/libsystem_c.dylib");
 
@@ -88,30 +91,41 @@ void child_fixup(void)
 	extern pid_t _current_pid;
 	_current_pid = 0;
 
-	// suspend ourselves to wait for the parent process to run fixups
-	ffsys_pid_suspend(ffsys_getpid());
+	ffsys_close(parentToChildPipe[1]);
+	ffsys_close(childToParentPipe[0]);
+
+	// Tell parent we are waiting for fixup now
+	char msg = ' ';
+	ffsys_write(childToParentPipe[1], &msg, sizeof(msg));
+
+	// Wait until parent completes fixup
+	ffsys_read(parentToChildPipe[0], &msg, sizeof(msg));
+
+	ffsys_close(parentToChildPipe[0]);
+	ffsys_close(childToParentPipe[1]);
 }
 
 void parent_fixup(pid_t childPid, bool mightHaveDirtyPages)
 {
-	// Wait until the child is suspended
-	struct proc_taskinfo taskinfo;
-	int ret;
-	do {
-		ret = proc_pidinfo(childPid, PROC_PIDTASKINFO, 0, &taskinfo, sizeof(taskinfo));
-		if (ret <= 0) {
-			kill(childPid, SIGKILL);
-			abort();
-		}
-	} while (taskinfo.pti_numrunning != 0);
-	// Child is waiting for wx_allowed + permission fixups now
+	close(parentToChildPipe[0]);
+	close(childToParentPipe[1]);
 
+	// Wait until the child is ready and waiting
+	char msg = ' ';
+	read(childToParentPipe[0], &msg, sizeof(msg));
+
+	// Child is waiting for wx_allowed + permission fixups now
 	// Apply fixup
 	int64_t fix_ret = jbdswForkFix(childPid, mightHaveDirtyPages);
 	if (fix_ret != 0) {
 		kill(childPid, SIGKILL);
 		abort();
 	}
+
+	write(parentToChildPipe[1], &msg, sizeof(msg));
+
+	close(parentToChildPipe[1]);
+	close(childToParentPipe[0]);
 }
 
 __attribute__((visibility ("default"))) pid_t forkfix___fork(void)
@@ -130,6 +144,10 @@ __attribute__((visibility ("default"))) pid_t forkfix___fork(void)
 __attribute__((visibility ("default"))) pid_t forkfix_fork(int is_vfork, bool mightHaveDirtyPages)
 {
 	int ret;
+
+	if (pipe(parentToChildPipe) < 0 || pipe(childToParentPipe) < 0) {
+        return -1;
+    }
 
 	if (_libSystem_atfork_prepare_V2) {
 		_libSystem_atfork_prepare_V2(is_vfork);

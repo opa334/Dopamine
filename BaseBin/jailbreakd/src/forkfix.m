@@ -89,11 +89,5 @@ int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid, bool mightHaveDirtyPag
 		}
 	}
 
-	// after we're done, resume child
-	if (retval == 0) {
-		if (pid_resume(childPid) != 0) {
-			retval = 1;
-		}
-	}
 	return retval;
 }
