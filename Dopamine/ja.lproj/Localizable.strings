@@ -186,7 +186,7 @@
 "Settings_Verbose_Logs" = "詳細なログ";
 
 
-"Settings_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload (デベロッパー端末)";
 
 
 "Starting Launch Daemons" = "Launch Daemonを開始中";
