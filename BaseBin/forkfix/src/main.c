@@ -87,7 +87,7 @@ mem_region_info_t *regions = NULL;
 void child_fixup(void)
 {
 	// late fixup, normally done in ASM
-	// ASM is a bitch though and I couldn't out how to do this
+	// ASM is a bitch though and I couldn't figure out how to do this
 	extern pid_t _current_pid;
 	_current_pid = 0;
 
