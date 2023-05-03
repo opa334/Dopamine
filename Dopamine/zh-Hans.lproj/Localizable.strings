@@ -8,150 +8,158 @@
 
 "Button_Jailbreak_Title" = "越狱";
 
-"Button_Remove_Jailbreak" = "清除越狱";
+"Button_Remove_Jailbreak" = "移除越狱";  
 
 "Button_Set_Mobile_Password" = "设置Mobile密码";
 
-"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+"Popup_Change_Mobile_Password_Message" = "设置您设备的Mobile密码,这也可以使用sudo进行root访问。如果您想设置root密码,可以从Mobile shell使用“sudo passwd root”进行设置。";  
 
-"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
+"Button_Reinstall_Package_Managers" = "重新安装软件包管理器";  
 
-"Button_Set" = "Set";
+"Button_Set" = "设置";
 
-"Button_Show_Logs_Title" = "显示日志 ";
+"Button_Show_Logs_Title" = "显示日志";
 
 "Button_Unhide_Jailbreak" = "取消隐藏越狱";
 
 "Button_Update" = "更新";
 
-"Button_Update_Available" = "检测到版本更新";
+"Button_Update_Available" = "发现可用更新";
 
-"Button_Update_Environment" = "Update Environment";
+"Button_Update_Environment" = "更新环境";
 
-"Bypassing PAC" = "正在绕过PAC";
+"Bypassing PAC" = "绕过PAC";  
 
-"Bypassing PPL" = "正在绕过PPL";
+"Bypassing PPL" = "绕过PPL";
 
-"Changelog_Unavailable_Text" = "无法获取更新日志";
+"Changelog_Unavailable_Text" = "更新日志不可用";  
 
 "Context_Menu_Copy_To_Clipboard" = "复制到剪贴板";
 
 "Credits_Button_Discord" = "Discord";
 
-"Credits_Button_License" = "许可证 \n";
+"Credits_Button_License" = "许可证";   
 
 "Credits_Button_Source_Code" = "源代码";
 
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "多巴胺版本%@\n%@"; 
 
-"Credits_Header_Special_Thanks" = "特别致谢:";
+"Credits_Header_Special_Thanks" = "特别鸣谢:";
 
-"Credits_Made_By" = "开发者opa334, évelyne";
+"Credits_Made_By" = "由opa334,évelyne制作";  
 
-"Credits_Made_By_Subheadline" = "sourcelocation设计UI\nxerus制作Logo、图标";
+"Credits_Made_By_Subheadline" = "UI设计由sourcelocation完成\n由xerus设计Logo和图标";
 
-"Finalizing Bootstrap" = "完成引导程序";
+"Finalizing Bootstrap" = "完成引导";
 
-"Gaining r/w" = "正在获取r/w权限";
+"Gaining r/w" = "获得读/写权限";   
 
-"Hint_Hide_Jailbreak" = "“隐藏越狱”将暂时删除与越狱相关的文件，直到下一次越狱";
+"Hint_Hide_Jailbreak" = "\"隐藏越狱\"会暂时删除越狱相关文件,直到下次越狱";
 
-"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"隐藏越狱\"会部分禁用越狱并试图使检测变得更具挑战性。但是,它不完全有效,并且并非可掩盖一切。";
 
-"Initializing Environment" = "正在初始化环境";
+"Initializing Environment" = "初始化环境";  
 
-"Initializing System Hook" = "正在初始化System Hook";
+"Initializing System Hook" = "初始化系统钩子";
 
-"Jailbreak_Done" = "越狱成功！";
+"Jailbreak_Done" = "完成!";
 
-"Launching kexploitd" = "正在启动kexploitd";
+"Launching kexploitd" = "启动kexploitd";
 
-"Enabling Wi-Fi" = "Enabling Wi-Fi";
+"Enabling Wi-Fi" = "正在启用Wi-Fi";  
 
-"Disabling Wi-Fi" = "Disabling Wi-Fi";
+"Disabling Wi-Fi" = "正在禁用Wi-Fi";
 
-"Launching oobPCI" = "正在启动oobPCI";
+"Launching oobPCI" = "启动oobPCI";     
 
-"Loading Basebin Trustcache" = "正在加载Basebin Trustcache";
+"Loading Basebin Trustcache" = "加载Basebin Trustcache";
 
-"Menu_Credits_Title" = "关于";
+"Menu_Credits_Title" = "制作人员";  
 
-"Menu_Settings_Title" = "设置";
+"Menu_Settings_Title" = "设置";   
+
+"Settings" = "设置";  
 
 "Menu_Reboot_Userspace_Title" = "重启用户空间";
 
-"Menu_Restart_SpringBoard_Title" = "注销";
+"Menu_Restart_SpringBoard_Title" = "重启SpringBoard";  
 
-"Settings_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";     
 
-"Settings_Tweak_Injection" = "插件注入";
+"Settings_Tweak_Injection" = "插件注入";  
 
-"Settings_Verbose_Logs" = "详细日志";
+"Settings_Verbose_Logs" = "详细日志";   
 
-"Patchfinding" = "正在Patchfinding";
+"Patchfinding" = "查找补丁";
 
-"PM_Reinstall_Done_Text" = "The selected package managers have been reinstalled";
+"PM_Reinstall_Done_Text" = "已重新安装所选软件包管理器";
 
 "Rebuilding TrustCache" = "重建TrustCache";
 
 "Refreshing Icon Cache" = "刷新图标缓存";
 
-"Settings_Footer_Device_Bootstrapped" = "设备已引导启动";
+"Settings_Footer_Device_Bootstrapped" = "设备已完成引导";
 
-"Settings_Footer_Device_Not_Bootstrapped" = "设备未引导启动";
+"Settings_Footer_Device_Not_Bootstrapped" = "设备未完成引导";
 
-"Starting jailbreakd" = "正在启动jailbreakd";
+"Starting jailbreakd" = "启动jailbreakd";
 
-"Starting Launch Daemons" = "正在启动守护程序";
+"Starting Launch Daemons" = "启动Launch Daemons";
 
-"Status_Title_Jailbreaking" = "正在越狱";
+"Status_Title_Jailbreaking" = "越狱中";
 
 "Status_Title_Jailbroken" = "已越狱";
 
-"Status_Title_Select_Package_Managers" = "选择越狱商店";
+"Status_Title_Select_Package_Managers" = "选择软件包管理器";
 
-"Status_Title_Unsuccessful" = "失败";
+"Status_Title_Unsuccessful" = "未成功";
 
-"Success_Rate %@%% (%lld/%lld)" = "成功率: %@%% (%lld/%lld)";
+"Success_Rate %@%% (%lld/%lld)" = "成功率:%@%% (%lld/%lld)";
 
-"Title_Changelog" = "更改日志";
+"Title_Changelog" = "更新日志";
 
-"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
+"Title_Made_By" = "由opa334, évelyne制作\nUI设计由sourceloc完成\n基于Fugu15";
 
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
+"Title_Supported_iOS_Versions" = "支持iOS 15.0 - 15.4.1 | A12 - A15,M1";
 
 "Update_Log_Hint_Scrollable" = "日志视图可以滚动";
 
-"Update_Status_Downloading" = "下载更新中...";
+"Update_Status_Downloading" = "正在下载更新...";
 
-"Update_Status_Installing" = "安装更新中...";
+"Update_Status_Installing" = "正在安装更新...";
 
-"Update_Status_Subtitle_Please_Wait" = "请等待文件下载完成";
+"Update_Status_Subtitle_Please_Wait" = "请等待文件完成下载";
 
-"Update_Status_Subtitle_Restart_Soon" = "设备将很快重新启动";
+"Update_Status_Subtitle_Restart_Soon" = "设备将很快重启"; 
 
-"Alert_Button_Uninstall" = "Uninstall";
+"Alert_Button_Uninstall" = "卸载";
 
-"Alert_Tweak_Injection_Toggled_Body" = "A userspace reboot is neccessary to apply the changes. Do you want to do it now?";
+"Alert_Tweak_Injection_Toggled_Body" = "要应用更改,需要重启用户空间。您现在想重启吗?";
 
-"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
+"Popup_Change_Mobile_Password_Title" = "更改手机密码";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+"Settings_Remove_Jailbreak_Alert_Body" = "移除越狱会删除所有与越狱相关的文件,但所有常规应用程序、文件和数据都将保留。您确定要继续吗?您无法撤消此操作。";
 
-"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+"Settings_Remove_Jailbreak_Alert_Title" = "移除越狱";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace Reboot Required";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "需要重启用户空间";
 
-"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+"Select_Package_Managers_Install_Message" = "如果您不确定要选择哪一个,请选择Sileo";
 
-"Select_Package_Managers_Reinstall_Message" = "Select package managers to reinstall";
+"Select_Package_Managers_Reinstall_Message" = "选择要重新安装的软件包管理器";
 
-"Reinstall" = "Reinstall";
+"Reinstall" = "重新安装";
 
-"Continue" = "Continue";
+"Continue" = "继续"; 
 
-"Close" = "Close";
+"Close" = "关闭";
 
-"Title_Mismatching_Environment_Version" = "Mismatching Environment Version";
+"Title_Mismatching_Environment_Version" = "环境版本不匹配";
 
-"Mismatching_Environment_Version_Update_Body" = "The environment version this device was jailbroken with (%@) mismatches the currently installed app version (%@)\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";
+"Mismatching_Environment_Version_Update_Body" = "此设备使用的环境版本(%@)与当前安装的应用程序版本(%@)不匹配。按\“更新\”将更新越狱环境为当前安装的应用程序环境,之后您的设备将重启用户空间。";
+
+"Options_Tweak_Injection" = "插件注入";
+
+"Reboot_Userspace_Finish" = "重启用户空间";
+
+"Restarting Userspace" = "正在重启用户空间";
