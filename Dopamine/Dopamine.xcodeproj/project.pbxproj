@@ -46,6 +46,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0C1F280A2A029FB10053DDD6 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0C5D3B0929F2DA27002924C0 /* zh_HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_HK; path = zh_HK.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0C5D3B0A29F2DA3C002924C0 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1502A4082891B03F0011CB6E /* Dopamine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dopamine.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -332,6 +333,7 @@
 				kk,
 				el,
 				da,
+				zh_CN,
 			);
 			mainGroup = 1502A3FF2891B03F0011CB6E;
 			packageReferences = (
@@ -422,6 +424,7 @@
 				21C376B329F43EA0001ECD18 /* kk */,
 				21BFE80B29F4447E00F0ABCD /* el */,
 				21DCC6D929FC521100B54B63 /* da */,
+				0C1F280A2A029FB10053DDD6 /* zh_CN */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
