@@ -108,7 +108,7 @@ __attribute__((visibility ("default"))) pid_t forkfix___fork(void)
 	return pid;
 }
 
-__attribute__((visibility ("default"))) pid_t forkfix_fork(int is_vfork, bool mightHaveDirtyPages)
+__attribute__((visibility ("default"))) pid_t forkfix_fork(bool is_vfork, bool mightHaveDirtyPages)
 {
 	int ret;
 
