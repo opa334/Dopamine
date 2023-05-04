@@ -234,7 +234,7 @@ struct JailbreakView: View {
                     }
                 } label: {
                     HStack {
-                        Label(title: { Text(option.title) }, icon: { Image(systemName: option.imageName) })
+                        Label(title: { Text(option.title) }, icon: { Image(systemName: option.imageName) .frame(width: 20, height: 20) .fixedSize()})
                             .foregroundColor(Color.white)
                         
                         Spacer()
