@@ -249,7 +249,7 @@ bool dlopen_preflight_hook(const char* path)
 	return dlopen_preflight(path);
 }
 
-pid_t (*forkfix_fork)(int, bool) = NULL;
+pid_t (*forkfix_fork)(bool, bool) = NULL;
 void forkfix_load(void)
 {
 	static dispatch_once_t onceToken;
@@ -261,7 +261,7 @@ void forkfix_load(void)
 	});
 }
 
-pid_t fork_hook_wrapper(int is_vfork, pid_t (*orig)(void))
+pid_t fork_hook_wrapper(bool is_vfork, pid_t (*orig)(void))
 {
 	if (swh_is_debugged) {
 		// we assume if none of these functions exists in the process space, nothing can be hooked
@@ -277,12 +277,12 @@ pid_t fork_hook_wrapper(int is_vfork, pid_t (*orig)(void))
 
 pid_t fork_hook(void)
 {
-	return fork_hook_wrapper(0, &fork);
+	return fork_hook_wrapper(false, &fork);
 }
 
 pid_t vfork_hook(void)
 {
-	return fork_hook_wrapper(1, &vfork);
+	return fork_hook_wrapper(true, &vfork);
 }
 
 bool shouldEnableTweaks(void)
