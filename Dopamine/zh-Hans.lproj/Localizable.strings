@@ -1,10 +1,10 @@
-"Bootstrapping" = "引导中";
+"Bootstrapping" = "正在引导";  
 
-"Button_Cancel" = "取消";
+"Button_Cancel" = "取消";   
 
-"Button_Hide_Jailbreak" = "隐藏越狱";
+"Button_Hide_Jailbreak" = "隐藏越狱";   
 
-"Button_Hide_Logs_Title" = "隐藏日志";
+"Button_Hide_Logs_Title" = "隐藏日志";  
 
 "Button_Jailbreak_Title" = "越狱";
 
@@ -20,7 +20,7 @@
 
 "Button_Show_Logs_Title" = "显示日志";
 
-"Button_Unhide_Jailbreak" = "解除隐藏越狱";
+"Button_Unhide_Jailbreak" = "取消隐藏越狱";  
 
 "Button_Update" = "更新";
 
@@ -60,11 +60,11 @@
 
 "Initializing Environment" = "初始化环境";
 
-"Initializing System Hook" = "初始化系统 hook";
+"Initializing System Hook" = "初始化系统补丁";
 
 "Jailbreak_Done" = "完成！";
 
-"Launching kexploitd" = "启动 kexploitd";
+"Launching kexploitd" = "利用内核漏洞";
 
 "Enabling Wi-Fi" = "启用无线局域网";
 
@@ -72,31 +72,31 @@
 
 "Launching oobPCI" = "启动 oobPCI";
 
-"Loading Basebin Trustcache" = "加载 Basebin Trustcache";
+"Loading Basebin Trustcache" = "等待Basebin信任缓存";
 
 "Menu_Credits_Title" = "制作人员";
 
-"Menu_Settings_Title" = "设置";
+"Menu_Settings_Title" = "设置";   
 
 "Settings" = "设置";
 
 "Menu_Reboot_Userspace_Title" = "用户空间重启";
 
-"Menu_Restart_SpringBoard_Title" = "重启SpringBoard";
+"Menu_Restart_SpringBoard_Title" = "注销";
 
-"Settings_iDownload" = "iDownload (开发商终端)";
+"Settings_iDownload" = "iDownload (fugu终端)";
 
-"Settings_Tweak_Injection" = "插件注入";
+"Settings_Tweak_Injection" = "插件注入";  
 
-"Settings_Verbose_Logs" = "详细日志";
+"Settings_Verbose_Logs" = "详细日志";   
 
-"Patchfinding" = "Patchfinding";
+"Patchfinding" = "补丁查找中";
 
 "PM_Reinstall_Done_Text" = "选中的包管理器已被重新安装";
 
-"Rebuilding TrustCache" = "重建 TrustCache";
+"Rebuilding TrustCache" = "重建信任缓存";
 
-"Refreshing Icon Cache" = "刷新图标缓存";
+"Refreshing Icon Cache" = "刷新图标缓存";  
 
 "Settings_Footer_Device_Bootstrapped" = "设备已安装越狱环境";
 
@@ -104,11 +104,11 @@
 
 "Starting jailbreakd" = "启动 jailbreakd";
 
-"Starting Launch Daemons" = "启动 Launch Daemons";
+"Starting Launch Daemons" = "加载启动项";
 
 "Status_Title_Jailbreaking" = "越狱中";
 
-"Status_Title_Jailbroken" = "已越狱";
+"Status_Title_Jailbroken" = "已越狱";  
 
 "Status_Title_Select_Package_Managers" = "选择包管理器（越狱商店）";
 
