@@ -12,7 +12,7 @@
 
 "Button_Set_Mobile_Password" = "設定 mobile 帳戶密碼";
 
-"Popup_Change_Mobile_Password_Message" = "設定裝置上 mobile 用戶之口令。該口令亦可用於經由 sudo 命令訪問 root 用戶權限。若想要修改 root 用戶口令，可在裝置 shell 中執行 \"sudo passwd root\"。";
+"Popup_Change_Mobile_Password_Message" = "設定裝置上 mobile 帳戶的密碼。該密碼亦可用於 sudo 指令存取 root 帳戶權限。若想要修改 root 帳戶密碼\，可在裝置 shell 中執行 \"sudo passwd root\"。";
 
 "Button_Reinstall_Package_Managers" = "重新安裝套件管理器";
 
@@ -66,9 +66,9 @@
 
 "Launching kexploitd" = "啟動 kexploitd";
 
-"Enabling Wi-Fi" = "啟用 Wi-Fi";
+"Enabling Wi-Fi" = "正在啟用 Wi-Fi";
 
-"Disabling Wi-Fi" = "停用 Wi-Fi";
+"Disabling Wi-Fi" = "正在停用 Wi-Fi";
 
 "Launching oobPCI" = "啟動 oobPCI";
 
@@ -84,7 +84,7 @@
 
 "Menu_Restart_SpringBoard_Title" = "重新啟動主畫面";
 
-"Settings_iDownload" = "iDownload (开发商终端)";
+"Settings_iDownload" = "iDownload (開發者终端)";
 
 "Settings_Tweak_Injection" = "外掛注入";
 
@@ -118,7 +118,7 @@
 
 "Title_Changelog" = "版本日誌";
 
-"Title_Made_By" = "來自 opa334，évelyne\n同型化界面來自 sourceloc\n基於 Fugu15";
+"Title_Made_By" = "來自 opa334，évelyne\n圖形化界面來自 sourceloc\n基於 Fugu15";
 
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15，M1";
 
@@ -134,17 +134,17 @@
 
 "Alert_Button_Uninstall" = "清除越獄";
 
-"Alert_Tweak_Injection_Toggled_Body" = "為使變更生效需重新啟動使用者空間，現在執行？";
+"Alert_Tweak_Injection_Toggled_Body" = "需重新啟動使用者空間使變更生效，現在執行？";
 
 "Popup_Change_Mobile_Password_Title" = "修改 mobile 帳戶密碼";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "清除越獄將移除所有和越獄相關的檔案，但將保留普通 App、檔案、資料。請注意，此操作無法復原。確認清除越獄嗎？";
+"Settings_Remove_Jailbreak_Alert_Body" = "清除越獄將移除所有和越獄相關的檔案，但將保留普通 App、檔案、資料。請注意，此動作無法復原。確認清除越獄嗎？";
 
 "Settings_Remove_Jailbreak_Alert_Title" = "清除越獄";
 
 "Settings_Tweak_Injection_Toggled_Alert_Title" = "需要重新啟動使用者空間";
 
-"Select_Package_Managers_Install_Message" = "如果你不確定要選哪個，選擇 Sileo";
+"Select_Package_Managers_Install_Message" = "如果您不確定要選哪個，選擇 Sileo";
 
 "Select_Package_Managers_Reinstall_Message" = "選擇要重新安裝的套件管理器";
 
@@ -158,8 +158,8 @@
 
 "Mismatching_Environment_Version_Update_Body" = "此裝置越獄所使用的環境版本（%@）與目前已安裝的應用程式版本（%@）不相符。\n點擊更新將會更新越獄環境以符合目前安裝的應用程式版本，之後您的裝置將重新啟動使用者空間。";
 
-"Options_Tweak_Injection" = "插件注入";
+"Options_Tweak_Injection" = "外掛注入";
 
-"Reboot_Userspace_Finish" = "用戶空間重啟";
+"Reboot_Userspace_Finish" = "重新啟動使用者空間";
 
-"Restarting Userspace" = "正在重啟用戶空間";
+"Restarting Userspace" = "正在重新啟動使用者空間";
