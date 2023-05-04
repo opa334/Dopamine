@@ -144,7 +144,7 @@
 "Patchfinding" = "Patchfinderを実行中";
 
 
-"Popup_Change_Mobile_Password_Message" = "terminalのmobileパスワードを設定します。これは、sudoを使ったrootアクセスにも使用されます。rootパスワードを設定したい場合は、mobileシェルから \"sudo passwd root\"を実行して設定することができます。";
+"Popup_Change_Mobile_Password_Message" = "Terminalのmobileパスワードを設定します。これは、sudoを使ったrootアクセスにも使用されます。rootパスワードを設定したい場合は、mobileシェルから \"sudo passwd root\"を実行して設定することができます。";
 
 
 "Popup_Change_Mobile_Password_Title" = "Mobileのパスワードを変更";
@@ -165,10 +165,10 @@
 "Select_Package_Managers_Reinstall_Message" = "再インストールするパッケージマネージャーを選択してください";
 
 
-"Settings_Footer_Device_Bootstrapped" = "bootstrapはインストールされています";
+"Settings_Footer_Device_Bootstrapped" = "Bootstrapはインストールされています";
 
 
-"Settings_Footer_Device_Not_Bootstrapped" = "bootstrapはインストールされていません";
+"Settings_Footer_Device_Not_Bootstrapped" = "Bootstrapはインストールされていません";
 
 
 "Settings_Remove_Jailbreak_Alert_Body" = "Jailbreak環境を削除すると、jailbreak関連のファイルはすべて削除されますが、通常のアプリケーション、ファイル、データはすべて保持されます。本当に続けてもよろしいですか？この操作を元に戻すことはできません。";
@@ -186,7 +186,7 @@
 "Settings_Verbose_Logs" = "詳細なログ";
 
 
-"Settings_iDownload" = "iDownload (デベロッパー端末)";
+"Settings_iDownload" = "iDownload (開発者用シェル)";
 
 
 "Starting Launch Daemons" = "Launch Daemonを開始中";
