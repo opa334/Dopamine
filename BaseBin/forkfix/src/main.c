@@ -50,16 +50,6 @@ void loadPrivateSymbols(void) {
 	jbdswForkFix = dlsym(systemhookHandle, "jbdswForkFix");
 }
 
-typedef struct {
-	mach_vm_address_t address;
-	mach_vm_size_t size;
-	vm_prot_t prot;
-	vm_prot_t maxprot;
-} mem_region_info_t;
-
-int region_count = 0;
-mem_region_info_t *regions = NULL;
-
 void child_fixup(void)
 {
 	// late fixup, normally done in ASM
