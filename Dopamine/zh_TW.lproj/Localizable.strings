@@ -138,7 +138,7 @@
 
 "Popup_Change_Mobile_Password_Title" = "修改 mobile 帳戶密碼";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "清除越獄將移除所有和越獄相關的檔案，但將保留普通 App、檔案、資料。請注意，此操作無法復原。確認清除越獄嗎？";
+"Settings_Remove_Jailbreak_Alert_Body" = "清除越獄將移除所有和越獄相關的檔案，但將保留普通 App、檔案、資料。請注意，此動作無法復原。確認清除越獄嗎？";
 
 "Settings_Remove_Jailbreak_Alert_Title" = "清除越獄";
 
