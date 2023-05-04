@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build
+    runs-on: macos-12
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Select Xcode version (14.2)
+        run: |
+          sudo xcode-select --switch /Applications/Xcode_14.2.app
+
+      - name: Bootstrap Procursus
+        uses: dhinakg/procursus-action@main
+        with:
+          packages: ldid findutils sed coreutils trustcache make
+          cache: true
+          cache-path: ~/__cache
+        env:
+          DEBIAN_FRONTEND: noninteractive
+          
+      - name: Install theos
+        run: |
+           bash -c "$(curl -fsSL https://raw.githubusercontent.com/verygenericname/theos/master/bin/install-theos)"
+
+      - name: Build Dopamine
+        run: |
+           export THEOS=~/theos
+           gmake
+
+      - name: Upload Dopamine
+        uses: actions/upload-artifact@v2.3.1
+        with:
+          name: Dopamine tipa
+          path: |
+            ${{ github.workspace }}/Dopamine/Dopamine.tipa
