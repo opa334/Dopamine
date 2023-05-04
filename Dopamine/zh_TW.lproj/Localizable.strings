@@ -12,7 +12,7 @@
 
 "Button_Set_Mobile_Password" = "設定 mobile 帳戶密碼";
 
-"Popup_Change_Mobile_Password_Message" = "設定裝置上 mobile 帳戶的密碼。配該密碼亦可用於 sudo 指令存取 root 帳戶權限。若想要修改 root 帳戶密碼\，可在裝置 shell 中執行 \"sudo passwd root\"。";
+"Popup_Change_Mobile_Password_Message" = "設定裝置上 mobile 帳戶的密碼。該密碼亦可用於 sudo 指令存取 root 帳戶權限。若想要修改 root 帳戶密碼\，可在裝置 shell 中執行 \"sudo passwd root\"。";
 
 "Button_Reinstall_Package_Managers" = "重新安裝套件管理器";
 
