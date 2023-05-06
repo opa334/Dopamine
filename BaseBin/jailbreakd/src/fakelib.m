@@ -65,18 +65,62 @@ bool fileExistsOrSymlink(NSString *path, BOOL *isDirectory)
 	return NO;
 }
 
-int carbonCopy(NSString *sourcePath, NSString *destinationPath)
+int carbonCopySingle(NSString *sourcePath, NSString *targetPath)
 {
-	setJetsamEnabled(false);
-	copyfile_state_t state = copyfile_state_alloc();
-	int flags = COPYFILE_ALL | COPYFILE_RECURSIVE | COPYFILE_NOFOLLOW;
-	int result = copyfile(sourcePath.fileSystemRepresentation, destinationPath.fileSystemRepresentation, state, flags);
-	if (result != 0) {
-		JBLogError("Error copying %s to %s: %s", sourcePath.fileSystemRepresentation, destinationPath.fileSystemRepresentation, strerror(errno));
+	BOOL isDirectory = NO;
+	BOOL exists = fileExistsOrSymlink(sourcePath, &isDirectory);
+	if (!exists) {
+		return 1;
 	}
-	copyfile_state_free(state);
-	setJetsamEnabled(true);
-	return result;
+
+	if (fileExistsOrSymlink(targetPath, nil)) {
+		[[NSFileManager defaultManager] removeItemAtPath:targetPath error:nil];
+	}
+
+	NSDictionary* attributes = writableAttributes([[NSFileManager defaultManager] attributesOfItemAtPath:sourcePath error:nil]);
+	if (isDirectory) {
+		return [[NSFileManager defaultManager] createDirectoryAtPath:targetPath withIntermediateDirectories:NO attributes:attributes error:nil] != YES;
+	}
+	else {
+		if ([[NSFileManager defaultManager] copyItemAtPath:sourcePath toPath:targetPath error:nil]) {
+			[[NSFileManager defaultManager] setAttributes:attributes ofItemAtPath:targetPath error:nil];
+			return 0;
+		}
+		return 1;
+	}
+}
+
+int carbonCopy(NSString *sourcePath, NSString *targetPath)
+{
+	setJetsamEnabled(NO);
+	int retval = 0;
+	BOOL isDirectory = NO;
+	BOOL exists = fileExistsOrSymlink(sourcePath, &isDirectory);
+	if (exists) {
+		if (isDirectory) {
+			retval = carbonCopySingle(sourcePath, targetPath);
+			if (retval == 0) {
+				NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:sourcePath];
+				for (NSString *relativePath in enumerator) {
+					@autoreleasepool {
+						NSString *subSourcePath = [sourcePath stringByAppendingPathComponent:relativePath];
+						NSString *subTargetPath = [targetPath stringByAppendingPathComponent:relativePath];
+						retval = carbonCopySingle(subSourcePath, subTargetPath);
+						if (retval != 0) break;
+					}
+				}
+			}
+			
+		}
+		else {
+			retval = carbonCopySingle(sourcePath, targetPath);
+		}
+	}
+	else {
+		retval = 1;
+	}
+	setJetsamEnabled(YES);
+	return retval;
 }
 
 int setFakeLibVisible(bool visible)
