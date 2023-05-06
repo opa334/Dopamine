@@ -92,7 +92,7 @@ void vnode_replace_entitlements(uint64_t vnode_ptr, NSDictionary *newEntitlement
 NSMutableDictionary *proc_dump_entitlements(uint64_t proc_ptr);
 void proc_replace_entitlements(uint64_t proc_ptr, NSDictionary *entitlements);
 
-bool proc_set_debugged(pid_t pid);
+int proc_set_debugged(pid_t pid);
 NSString *proc_get_path(pid_t pid);
 int64_t proc_fix_setuid(pid_t pid);
 

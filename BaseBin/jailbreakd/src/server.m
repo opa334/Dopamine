@@ -330,7 +330,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						int64_t result = 0;
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 							pid_t pid = xpc_dictionary_get_int64(message, "pid");
-							proc_set_debugged(pid);
+							result = proc_set_debugged(pid);
 						}
 						else {
 							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
@@ -342,7 +342,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 					case JBD_MSG_DEBUG_ME: {
 						int64_t result = 0;
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
-							proc_set_debugged(clientPid);
+							result = proc_set_debugged(clientPid);
 						}
 						else {
 							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
