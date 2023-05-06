@@ -80,7 +80,7 @@
 
 "Settings" = "设置";
 
-"Menu_Reboot_Userspace_Title" = "用户空间重启";
+"Menu_Reboot_Userspace_Title" = "重启用户空间";
 
 "Menu_Restart_SpringBoard_Title" = "注销";
 
@@ -134,7 +134,7 @@
 
 "Alert_Button_Uninstall" = "清除越狱";
 
-"Alert_Tweak_Injection_Toggled_Body" = "为使变更生效需要用户空间重启，立即执行？";
+"Alert_Tweak_Injection_Toggled_Body" = "为使变更生效需要重启用户空间，立即执行？";
 
 "Popup_Change_Mobile_Password_Title" = "修改 mobile 用户密码";
 
@@ -142,7 +142,7 @@
 
 "Settings_Remove_Jailbreak_Alert_Title" = "清除越狱";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "需要用户空间重启";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "需要重启用户空间";
 
 "Select_Package_Managers_Install_Message" = "若你不确定如何选择，请使用 Sileo";
 
@@ -156,10 +156,10 @@
 
 "Title_Mismatching_Environment_Version" = "环境版本不匹配";
 
-"Mismatching_Environment_Version_Update_Body" = "本机的越狱环境版本 (%@) 与 App 版本 (%@) 不匹配。\n点按更新按钮将安装匹配 App 版本的越狱环境，并将随后执行一次用户空间重启。";
+"Mismatching_Environment_Version_Update_Body" = "本机的越狱环境版本 (%@) 与 App 版本 (%@) 不匹配。\n点按更新按钮将安装匹配 App 版本的越狱环境，并将随后执行一次重启用户空间。";
 
 "Options_Tweak_Injection" = "插件注入";
 
-"Reboot_Userspace_Finish" = "用户空间重启";
+"Reboot_Userspace_Finish" = "重启用户空间";
 
 "Restarting Userspace" = "正在重启用户空间";
