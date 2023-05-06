@@ -88,7 +88,7 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
             if wifiIsEnabled() {
                 setWifiEnabled(false)
                 Logger.log("Disabling Wi-Fi", isStatus: true)
-                sleep(1)
+                sleep(5)
             }
         }
 
