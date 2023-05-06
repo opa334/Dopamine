@@ -14,6 +14,8 @@
 
 "Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
 
+"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
+
 "Button_Set" = "Set";
 
 "Button_Show_Logs_Title" = "로그 표시";
@@ -24,6 +26,8 @@
 
 "Button_Update_Available" = "업데이트 가능";
 
+"Button_Update_Environment" = "Update Environment";
+
 "Bypassing PAC" = "PAC 우회";
 
 "Bypassing PPL" = "PPL 우회";
@@ -32,11 +36,13 @@
 
 "Context_Menu_Copy_To_Clipboard" = "클립보드에 복사";
 
+"Credits_Button_Discord" = "Discord";
+
 "Credits_Button_License" = "라이센스";
 
 "Credits_Button_Source_Code" = "소스코드";
 
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine 버전 %@\n%@";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
 
 "Credits_Header_Special_Thanks" = "감사:";
 
@@ -50,6 +56,8 @@
 
 "Hint_Hide_Jailbreak" = "\"탈옥감지 우회\" 다음 탈옥까지 일시적으로 탈옥 관련 파일을 제거합니다";
 
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+
 "Initializing Environment" = "환경 초기화 중";
 
 "Initializing System Hook" = "시스템 후크 초기화 중";
@@ -58,23 +66,31 @@
 
 "Launching kexploitd" = "kexploitd 실행 중";
 
+"Enabling Wi-Fi" = "Enabling Wi-Fi";
+
+"Disabling Wi-Fi" = "Disabling Wi-Fi";
+
 "Launching oobPCI" = "oobPCI 실행 중";
 
 "Loading Basebin Trustcache" = "Basebin Trustcache 로딩 중";
 
 "Menu_Credits_Title" = "이 앱에 대하여";
 
+"Menu_Settings_Title" = "설정";
+
 "Menu_Reboot_Userspace_Title" = "Userspace 재시작";
 
 "Menu_Restart_SpringBoard_Title" = "SpringBoard 재시작";
 
-"Settings_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload (개발자 터미널)";
 
 "Settings_Tweak_Injection" = "트윅 추가";
 
 "Settings_Verbose_Logs" = "로그";
 
 "Patchfinding" = "패치파인딩";
+
+"PM_Reinstall_Done_Text" = "The selected package managers have been reinstalled";
 
 "Rebuilding TrustCache" = "TrustCache 재구축";
 
@@ -83,8 +99,6 @@
 "Settings_Footer_Device_Bootstrapped" = "기기가 bootstrap 되어 있습니다";
 
 "Settings_Footer_Device_Not_Bootstrapped" = "기기가 bootstrap 되어 있지 않습니다";
-
-"Menu_Settings_Title" = "설정";
 
 "Starting jailbreakd" = "jailbreakd 시작";
 
@@ -116,10 +130,9 @@
 
 "Update_Status_Subtitle_Restart_Soon" = "잠시 후 기기가 재시작합니다.";
 
-
 "Alert_Button_Uninstall" = "Uninstall";
 
-"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+"Alert_Tweak_Injection_Toggled_Body" = "A userspace reboot is neccessary to apply the changes. Do you want to do it now?";
 
 "Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
 
@@ -127,4 +140,18 @@
 
 "Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace Reboot Required";
+
+"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+
+"Select_Package_Managers_Reinstall_Message" = "Select package managers to reinstall";
+
+"Reinstall" = "Reinstall";
+
+"Continue" = "Continue";
+
+"Close" = "Close";
+
+"Title_Mismatching_Environment_Version" = "Mismatching Environment Version";
+
+"Mismatching_Environment_Version_Update_Body" = "The environment version this device was jailbroken with (%@) mismatches the currently installed app version (%@)\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";

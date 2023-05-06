@@ -8,9 +8,6 @@
 
 extern bool swh_is_debugged;
 
-int reboot3(uint64_t flags, ...);
-#define RB2_USERREBOOT (0x2000000000000000llu)
-
 void* dlopen_from(const char* path, int mode, void* addressInCaller);
 void* dlopen_audited(const char* path, int mode);
 bool dlopen_preflight(const char* path);
@@ -103,10 +100,9 @@ int posix_spawnp_hook(pid_t *restrict pid, const char *restrict file,
 					   char *const argv[restrict],
 					   char *const envp[restrict])
 {
-	char *resolvedPath = resolvePath(file, NULL);
-	int ret = spawn_hook_common(pid, resolvedPath, file_actions, attrp, argv, envp, (void *)posix_spawn);
-	if (resolvedPath) free(resolvedPath);
-	return ret;
+	return resolvePath(file, NULL, ^int(char *path) {
+		return spawn_hook_common(pid, path, file_actions, attrp, argv, envp, (void *)posix_spawn);
+	});
 }
 
 
@@ -159,17 +155,20 @@ int execlp_hook(const char *file, const char *arg0, ... /*, (char *)0 */)
 	}
 	va_end(args_copy);
 
-	char *argv[arg_count+1];
+	char **argv = malloc((arg_count+1) * sizeof(char *));
 	for (int i = 0; i < arg_count-1; i++) {
 		char *arg = va_arg(args, char*);
 		argv[i] = arg;
 	}
 	argv[arg_count] = NULL;
 
-	char *resolvedPath = resolvePath(file, NULL);
-	int ret = execve_hook(resolvedPath, argv, NULL);
-	if (resolvedPath) free(resolvedPath);
-	return ret;
+	int r = resolvePath(file, NULL, ^int(char *path) {
+		return execve_hook(path, argv, NULL);
+	});
+
+	free(argv);
+
+	return r;
 }
 
 int execl_hook(const char *path, const char *arg0, ... /*, (char *)0 */)
@@ -203,18 +202,16 @@ int execv_hook(const char *path, char *const argv[])
 
 int execvp_hook(const char *file, char *const argv[])
 {
-	char *resolvedPath = resolvePath(file, NULL);
-	int ret = execve_hook(resolvedPath, argv, NULL);
-	if (resolvedPath) free(resolvedPath);
-	return ret;
+	return resolvePath(file, NULL, ^int(char *path) {
+		return execve_hook(path, argv, NULL);
+	});
 }
 
 int execvP_hook(const char *file, const char *search_path, char *const argv[])
 {
-	char *resolvedPath = resolvePath(file, search_path);
-	int ret = execve_hook(resolvedPath, argv, NULL);
-	if (resolvedPath) free(resolvedPath);
-	return ret;
+	return resolvePath(file, search_path, ^int(char *path) {
+		return execve_hook(path, argv, NULL);
+	});
 }
 
 
@@ -252,7 +249,7 @@ bool dlopen_preflight_hook(const char* path)
 	return dlopen_preflight(path);
 }
 
-pid_t (*forkfix_fork)(int, bool) = NULL;
+pid_t (*forkfix_fork)(bool, bool) = NULL;
 void forkfix_load(void)
 {
 	static dispatch_once_t onceToken;
@@ -264,7 +261,7 @@ void forkfix_load(void)
 	});
 }
 
-pid_t fork_hook_wrapper(int is_vfork, pid_t (*orig)(void))
+pid_t fork_hook_wrapper(bool is_vfork, pid_t (*orig)(void))
 {
 	if (swh_is_debugged) {
 		// we assume if none of these functions exists in the process space, nothing can be hooked
@@ -280,12 +277,12 @@ pid_t fork_hook_wrapper(int is_vfork, pid_t (*orig)(void))
 
 pid_t fork_hook(void)
 {
-	return fork_hook_wrapper(0, &fork);
+	return fork_hook_wrapper(false, &fork);
 }
 
 pid_t vfork_hook(void)
 {
-	return fork_hook_wrapper(1, &vfork);
+	return fork_hook_wrapper(true, &vfork);
 }
 
 bool shouldEnableTweaks(void)
@@ -345,8 +342,11 @@ __attribute__((constructor)) static void initializer(void)
 		if (strcmp(gExecutablePath, "/System/Library/CoreServices/SpringBoard.app/SpringBoard") == 0) {
 			applyKbdFix();
 		}
-		if (strcmp(gExecutablePath, "/usr/libexec/installd") == 0 || strcmp(gExecutablePath, "/usr/sbin/cfprefsd") == 0) {
-			dlopen_hook("/var/jb/basebin/rootlesshooks.dylib", RTLD_NOW);
+		if (strcmp(gExecutablePath, "/usr/sbin/cfprefsd") == 0) {
+			int64_t debugErr = jbdswDebugMe();
+			if (debugErr == 0) {
+				dlopen_hook("/var/jb/basebin/rootlesshooks.dylib", RTLD_NOW);
+			}
 		}
 	}
 
@@ -355,20 +355,23 @@ __attribute__((constructor)) static void initializer(void)
 		if (debugErr == 0) {
 			if(access("/var/jb/usr/lib/TweakLoader.dylib", F_OK) == 0)
 			{
-				dlopen_hook("/var/jb/usr/lib/TweakLoader.dylib", RTLD_NOW);
+				void *tweakLoaderHandle = dlopen_hook("/var/jb/usr/lib/TweakLoader.dylib", RTLD_NOW);
+				if (tweakLoaderHandle != NULL) {
+					dlclose(tweakLoaderHandle);
+				}
 			}
 		}
 	}
 	freeExecutablePath();
 }
 
-void _os_crash(void);
+/*void _os_crash(void);
 void _os_crash_hook(void)
 {
 	// Normally this function is used to trigger a userspace panic
 	// We overwrite it to do a userspace reboot instead, so that the jailbreak environment stays alive
 	reboot3(RB2_USERREBOOT);
-}
+}*/
 
 DYLD_INTERPOSE(posix_spawn_hook, posix_spawn)
 DYLD_INTERPOSE(posix_spawnp_hook, posix_spawnp)
@@ -384,4 +387,4 @@ DYLD_INTERPOSE(dlopen_audited_hook, dlopen_audited)
 DYLD_INTERPOSE(dlopen_preflight_hook, dlopen_preflight)
 DYLD_INTERPOSE(fork_hook, fork)
 DYLD_INTERPOSE(vfork_hook, vfork)
-DYLD_INTERPOSE(_os_crash_hook, _os_crash)
+//DYLD_INTERPOSE(_os_crash_hook, _os_crash)

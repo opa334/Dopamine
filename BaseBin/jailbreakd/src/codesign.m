@@ -93,6 +93,7 @@ extern const CFStringRef kSecCodeInfoResourceDirectory; /* Internal */
 int resignFile(NSString *filePath, bool preserveMetadata)
 {
 	OSStatus status = 0;
+	int retval = 200;
 
 	// the special value "-" (dash) indicates ad-hoc signing
 	SecIdentityRef identity = (SecIdentityRef)kCFNull;
@@ -104,35 +105,36 @@ int resignFile(NSString *filePath, bool preserveMetadata)
 
 	SecCodeSignerRef signerRef;
 	status = SecCodeSignerCreate((__bridge CFDictionaryRef)parameters, kSecCSDefaultFlags, &signerRef);
-	if (status) {
+	if (status == 0) {
+		SecStaticCodeRef code;
+		status = SecStaticCodeCreateWithPathAndAttributes((__bridge CFURLRef)[NSURL fileURLWithPath:filePath], kSecCSDefaultFlags, NULL, &code);
+		if (status == 0) {
+			status = SecCodeSignerAddSignatureWithErrors(signerRef, code, kSecCSDefaultFlags, NULL);
+			if (status == 0) {
+				CFDictionaryRef newSigningInformation;
+				// Difference from codesign: added kSecCSSigningInformation, kSecCSRequirementInformation, kSecCSInternalInformation
+				status = SecCodeCopySigningInformation(code, kSecCSDefaultFlags | kSecCSSigningInformation | kSecCSRequirementInformation | kSecCSInternalInformation, &newSigningInformation);
+				if (status == 0) {
+					JBLogDebug("SecCodeCopySigningInformation succeeded: %s", ((__bridge NSDictionary*)newSigningInformation).description.UTF8String);
+					retval = 0;
+					CFRelease(newSigningInformation);
+				} else {
+					JBLogError("SecCodeCopySigningInformation failed: %s (%d)", ((__bridge NSString*)SecCopyErrorMessageString(status, NULL)).UTF8String, status);
+					retval = 203;
+				}
+			}
+			CFRelease(code);
+		}
+		else {
+			JBLogError("SecStaticCodeCreateWithPathAndAttributes failed: %s (%d)", ((__bridge NSString*)SecCopyErrorMessageString(status, NULL)).UTF8String, status);
+			retval = 202;
+		}
+		CFRelease(signerRef);
+	}
+	else {
 		JBLogError("SecCodeSignerCreate failed: %s (%d)", ((__bridge NSString*)SecCopyErrorMessageString(status, NULL)).UTF8String, status);
-		return 1;
+		retval = 201;
 	}
 
-	SecStaticCodeRef code;
-	status =
-		SecStaticCodeCreateWithPathAndAttributes((__bridge CFURLRef)[NSURL fileURLWithPath:filePath], kSecCSDefaultFlags, NULL, &code);
-	if (status) {
-		JBLogError("SecStaticCodeCreateWithPathAndAttributes failed: %s (%d)", ((__bridge NSString*)SecCopyErrorMessageString(status, NULL)).UTF8String, status);
-		return 1;
-	}
-
-	status = SecCodeSignerAddSignatureWithErrors(signerRef, code, kSecCSDefaultFlags, NULL);
-	if (status) {
-		JBLogError("SecCodeSignerAddSignatureWithErrors failed: %s (%d)", ((__bridge NSString*)SecCopyErrorMessageString(status, NULL)).UTF8String, status);
-		return 1;
-	}
-
-	CFDictionaryRef newSigningInformation;
-	// Difference from codesign: added kSecCSSigningInformation, kSecCSRequirementInformation, kSecCSInternalInformation
-	status = SecCodeCopySigningInformation(
-		code, kSecCSDefaultFlags | kSecCSSigningInformation | kSecCSRequirementInformation | kSecCSInternalInformation,
-		&newSigningInformation);
-	if (!status) {
-		JBLogDebug("SecCodeCopySigningInformation succeeded: %s", ((__bridge NSDictionary*)newSigningInformation).description.UTF8String);
-	} else {
-		JBLogError("SecCodeCopySigningInformation failed: %s (%d)", ((__bridge NSString*)SecCopyErrorMessageString(status, NULL)).UTF8String, status);
-		return 1;
-	}
-	return 0;
+	return retval;
 }

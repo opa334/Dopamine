@@ -18,8 +18,10 @@ BOOL tcPagesRecover(void)
 {
 	NSArray *existingTCAllocations = bootInfo_getArray(@"trustcache_allocations");
 	for (NSNumber *allocNum in existingTCAllocations) {
-		uint64_t kaddr = [allocNum unsignedLongLongValue];
-		[gTCPages addObject:[[JBDTCPage alloc] initWithKernelAddress:kaddr]];
+		@autoreleasepool {
+			uint64_t kaddr = [allocNum unsignedLongLongValue];
+			[gTCPages addObject:[[JBDTCPage alloc] initWithKernelAddress:kaddr]];
+		}
 	}
 	NSArray *existingUnusuedTCAllocations = bootInfo_getArray(@"trustcache_unused_allocations");
 	if (existingUnusuedTCAllocations) {
@@ -32,7 +34,9 @@ void tcPagesChanged(void)
 {
 	NSMutableArray *tcAllocations = [NSMutableArray new];
 	for (JBDTCPage *page in gTCPages) {
-		[tcAllocations addObject:@(page.kaddr)];
+		@autoreleasepool {
+			[tcAllocations addObject:@(page.kaddr)];
+		}
 	}
 	bootInfo_setObject(@"trustcache_allocations", tcAllocations);
 	bootInfo_setObject(@"trustcache_unused_allocations", gTCUnusedAllocations);

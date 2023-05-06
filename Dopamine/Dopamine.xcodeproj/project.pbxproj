@@ -15,6 +15,8 @@
 		151CAFB32894041D00B2A6BA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151CAFB22894041D00B2A6BA /* main.swift */; };
 		15372EA628DDFF9000514A73 /* sileo.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 15372EA528DDFF9000514A73 /* sileo.deb */; };
 		15372EA728DDFF9A00514A73 /* sileo.deb in Resources */ = {isa = PBXBuildFile; fileRef = 15372EA528DDFF9000514A73 /* sileo.deb */; };
+		8C10C47229FDDE3B00930377 /* LICENSE_Fugu15.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C10C47029FDDE3B00930377 /* LICENSE_Fugu15.md */; };
+		8C10C47329FDDE3B00930377 /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C10C47129FDDE3B00930377 /* LICENSE.md */; };
 		8C19A9AB29F54BEA00F06D21 /* libzstd in Frameworks */ = {isa = PBXBuildFile; productRef = 8C19A9AA29F54BEA00F06D21 /* libzstd */; };
 		8C19A9AD29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst in Resources */ = {isa = PBXBuildFile; fileRef = 8C19A9AC29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst */; };
 		8C19A9CC29F5608200F06D21 /* libjbdrw.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C19A9CB29F5608200F06D21 /* libjbdrw.deb */; };
@@ -25,6 +27,8 @@
 		8C8D955B29D04B4C00A482A8 /* tar in Resources */ = {isa = PBXBuildFile; fileRef = 8C8D955A29D04B4C00A482A8 /* tar */; };
 		8C8D955E29D04C4D00A482A8 /* zebra.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C8D955D29D04C4D00A482A8 /* zebra.deb */; };
 		8C8D955F29D04CD100A482A8 /* zebra.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C8D955D29D04C4D00A482A8 /* zebra.deb */; };
+		8CBDF90929FEEF4400988663 /* LICENSE_libc.md in Resources */ = {isa = PBXBuildFile; fileRef = 8CBDF90829FEEF4400988663 /* LICENSE_libc.md */; };
+		93532B3129FE6CC8007135BE /* PopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93532B3029FE6CC8007135BE /* PopupView.swift */; };
 		9380BFFE29E6F1FA00C0121A /* UpdateDownloadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9380BFFD29E6F1FA00C0121A /* UpdateDownloadingView.swift */; };
 		9380C00129EAE9C600C0121A /* PackageManagerSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9380C00029EAE9C600C0121A /* PackageManagerSelectionView.swift */; };
 		938DADDE29F2993400C37952 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 938DADDD29F20ACA00C37952 /* Localizable.strings */; };
@@ -42,8 +46,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0CA22AFB29F134440088CB7B /* constants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = constants.m; path = Dopamine/constants.m; sourceTree = "<group>"; };
-		0C5D3B0829F2D5C7002924C0 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/Localizable.strings; sourceTree = "<group>"; };
+		0C1F280A2A029FB10053DDD6 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0C5D3B0929F2DA27002924C0 /* zh_HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_HK; path = zh_HK.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0C5D3B0A29F2DA3C002924C0 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1502A4082891B03F0011CB6E /* Dopamine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dopamine.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -64,15 +67,20 @@
 		15372EA528DDFF9000514A73 /* sileo.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = sileo.deb; sourceTree = "<group>"; };
 		21AFE72F29F32AF8008B4B4C /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
 		21AFE73029F33538008B4B4C /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
+		21BFE80B29F4447E00F0ABCD /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Localizable.strings; sourceTree = "<group>"; };
+		21C376B329F43EA0001ECD18 /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/Localizable.strings; sourceTree = "<group>"; };
+		21DCC6D929FC521100B54B63 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8C10C47029FDDE3B00930377 /* LICENSE_Fugu15.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = LICENSE_Fugu15.md; path = ../../../LICENSE_Fugu15.md; sourceTree = "<group>"; };
+		8C10C47129FDDE3B00930377 /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = LICENSE.md; path = ../../../LICENSE.md; sourceTree = "<group>"; };
 		8C19A9AC29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bootstrap-iphoneos-arm64.tar.zst"; sourceTree = "<group>"; };
 		8C19A9CB29F5608200F06D21 /* libjbdrw.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjbdrw.deb; sourceTree = "<group>"; };
-		21C376B329F43EA0001ECD18 /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/Localizable.strings; sourceTree = "<group>"; };
-		21BFE80B29F4447E00F0ABCD /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8C2EDE1829F0AAF70060D192 /* oobPCI */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = oobPCI; path = ../../Exploits/oobPCI/oobPCI; sourceTree = "<group>"; };
 		8C2EDE1A29F0ACA60060D192 /* basebin.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = basebin.tar; sourceTree = "<group>"; };
 		8C2EDE1C29F0ACC80060D192 /* basebin.tc */ = {isa = PBXFileReference; lastKnownFileType = file; name = basebin.tc; path = ../../../BaseBin/basebin.tc; sourceTree = "<group>"; };
 		8C8D955A29D04B4C00A482A8 /* tar */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = tar; path = ../../../BaseBin/_external/tar; sourceTree = "<group>"; };
 		8C8D955D29D04C4D00A482A8 /* zebra.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = zebra.deb; sourceTree = "<group>"; };
+		8CBDF90829FEEF4400988663 /* LICENSE_libc.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = LICENSE_libc.md; path = ../../../LICENSE_libc.md; sourceTree = "<group>"; };
+		93532B3029FE6CC8007135BE /* PopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupView.swift; sourceTree = "<group>"; };
 		9380BFFD29E6F1FA00C0121A /* UpdateDownloadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateDownloadingView.swift; sourceTree = "<group>"; };
 		9380BFFF29E8601600C0121A /* Fugu15KernelExploit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Fugu15KernelExploit; path = ../Packages/Fugu15KernelExploit; sourceTree = "<group>"; };
 		9380C00029EAE9C600C0121A /* PackageManagerSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageManagerSelectionView.swift; sourceTree = "<group>"; };
@@ -144,6 +152,7 @@
 		1502A40A2891B03F0011CB6E /* Dopamine */ = {
 			isa = PBXGroup;
 			children = (
+				8C10C46F29FDDE2B00930377 /* Licenses */,
 				CE53628529D64DBA00E4332B /* UI */,
 				15372E9E28DDF5D300514A73 /* bootstrap */,
 				1502A41B2891B0980011CB6E /* Info.plist */,
@@ -201,6 +210,16 @@
 			path = bootstrap;
 			sourceTree = "<group>";
 		};
+		8C10C46F29FDDE2B00930377 /* Licenses */ = {
+			isa = PBXGroup;
+			children = (
+				8CBDF90829FEEF4400988663 /* LICENSE_libc.md */,
+				8C10C47029FDDE3B00930377 /* LICENSE_Fugu15.md */,
+				8C10C47129FDDE3B00930377 /* LICENSE.md */,
+			);
+			path = Licenses;
+			sourceTree = "<group>";
+		};
 		CE284DE329D4776D0096D99D /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -240,6 +259,7 @@
 				CEBBF6DC29DB04FA00AD7299 /* Jailbreak.swift */,
 				9380BFFD29E6F1FA00C0121A /* UpdateDownloadingView.swift */,
 				9380C00029EAE9C600C0121A /* PackageManagerSelectionView.swift */,
+				93532B3029FE6CC8007135BE /* PopupView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -308,11 +328,12 @@
 				nl,
 				uk,
 				sv,
-				zh_CN,
 				zh_HK,
 				zh_TW,
 				kk,
 				el,
+				da,
+				zh_CN,
 			);
 			mainGroup = 1502A3FF2891B03F0011CB6E;
 			packageReferences = (
@@ -335,6 +356,7 @@
 			files = (
 				8C19A9CD29F5659700F06D21 /* libjbdrw.deb in Resources */,
 				8C8D955F29D04CD100A482A8 /* zebra.deb in Resources */,
+				8CBDF90929FEEF4400988663 /* LICENSE_libc.md in Resources */,
 				938DADDE29F2993400C37952 /* Localizable.strings in Resources */,
 				8C19A9AD29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst in Resources */,
 				8C8D955B29D04B4C00A482A8 /* tar in Resources */,
@@ -344,6 +366,8 @@
 				8C2EDE1D29F0AE3A0060D192 /* basebin.tc in Resources */,
 				1502A4132891B0410011CB6E /* Preview Assets.xcassets in Resources */,
 				1502A4102891B0410011CB6E /* Assets.xcassets in Resources */,
+				8C10C47229FDDE3B00930377 /* LICENSE_Fugu15.md in Resources */,
+				8C10C47329FDDE3B00930377 /* LICENSE.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -359,6 +383,7 @@
 				CEBBF6DD29DB04FA00AD7299 /* Jailbreak.swift in Sources */,
 				151CAFB32894041D00B2A6BA /* main.swift in Sources */,
 				CEC4159F29D3590800D79EE9 /* MaterialView.swift in Sources */,
+				93532B3129FE6CC8007135BE /* PopupView.swift in Sources */,
 				CE284DE529D4777A0096D99D /* Logger.swift in Sources */,
 				93D2565B29ED6EDE00B549BA /* URLExtension+download.swift in Sources */,
 				CEBBF6E129DB422500AD7299 /* TextField++.swift in Sources */,
@@ -394,11 +419,12 @@
 				938DADEF29F2FCE400C37952 /* nl */,
 				21AFE72F29F32AF8008B4B4C /* uk */,
 				21AFE73029F33538008B4B4C /* sv */,
-				0C5D3B0829F2D5C7002924C0 /* zh_CN */,
 				0C5D3B0929F2DA27002924C0 /* zh_HK */,
 				0C5D3B0A29F2DA3C002924C0 /* zh_TW */,
 				21C376B329F43EA0001ECD18 /* kk */,
 				21BFE80B29F4447E00F0ABCD /* el */,
+				21DCC6D929FC521100B54B63 /* da */,
+				0C1F280A2A029FB10053DDD6 /* zh_CN */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -551,7 +577,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dopamine/bootstrap",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.3;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,
@@ -595,7 +621,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dopamine/bootstrap",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.3;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,

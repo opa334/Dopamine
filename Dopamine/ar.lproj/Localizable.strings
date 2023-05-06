@@ -10,11 +10,13 @@
 
 "Button_Remove_Jailbreak" = "إزالة الجيلبريك";
 
-"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+"Button_Set_Mobile_Password" = "تعيين كلمة سر الهاتف";
 
-"Button_Set" = "Set";
+"Popup_Change_Mobile_Password_Message" = "قم بتعيين كلمة سر الهاتف لجهازك، يمكن استخدام هذا أيضًا للوصول إلى الجذر باستخدام الأمر sudu. إذا كنت ترغب في تعيين كلمة سر الجذر، فيمكنك القيام بذلك من الوحدة الطرفية (التيرمنال) باستخدام \"sudo passwd root\"";
 
-"Button_Set_Root_Password" = "تعيين كلمة مرور الجذر";
+"Button_Reinstall_Package_Managers" = "إعادة تثبيت مديري الحزم";
+
+"Button_Set" = "تعيين";
 
 "Button_Show_Logs_Title" = "إظهار السجل";
 
@@ -24,6 +26,8 @@
 
 "Button_Update_Available" = "يتوفر تحديث";
 
+"Button_Update_Environment" = "تحديث البيئة";
+
 "Bypassing PAC" = "تجاوز PAC";
 
 "Bypassing PPL" = "تجاوز PPL";
@@ -31,6 +35,8 @@
 "Changelog_Unavailable_Text" = "سجل التغييرات غير متاح";
 
 "Context_Menu_Copy_To_Clipboard" = "نسخ إلى الحافظة";
+
+"Credits_Button_Discord" = "Discord";
 
 "Credits_Button_License" = "الترخيص";
 
@@ -50,6 +56,8 @@
 
 "Hint_Hide_Jailbreak" = "\"إخفاء الجيلبريك\" يقوم بإزالة الملفات المتعلقة بالجيلبريك مؤقتًا حتى تفعيل الجيلبريك القادم.";
 
+"Hint_Hide_Jailbreak_Jailbroken" = "\" إخفاء الجيلبريك\" يعطل الجيلبريك جزئيًا ويجعل كشفه أكثر صعوبة. ومع ذلك، فإن هذه الخاصية ليست فعالة ١٠٠٪؜ ولا تخفي كل شيء.";
+
 "Initializing Environment" = "جارِ تحسين البيئة";
 
 "Initializing System Hook" = "تحسين تكامل النظام";
@@ -58,23 +66,31 @@
 
 "Launching kexploitd" = "جارِ استغلال الثغرة";
 
+"Enabling Wi-Fi" = "تشغيل Wi-Fi";
+
+"Disabling Wi-Fi" = "تعطيل Wi-Fi";
+
 "Launching oobPCI" = "جارِ تشغيل oopPCI";
 
 "Loading Basebin Trustcache" = "تحميل بنية الذاكرة المؤقتة";
 
 "Menu_Credits_Title" = "الاعتمادات";
 
+"Menu_Settings_Title" = "الإعدادات";
+
 "Menu_Reboot_Userspace_Title" = "إعادة تشغيل Userspace";
 
 "Menu_Restart_SpringBoard_Title" = "إعادة تشغيل واجهة النظام";
 
-"Settings_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload (محطة المطور)";
 
 "Settings_Tweak_Injection" = "وصول الأدوات";
 
 "Settings_Verbose_Logs" = "السجلات المطولة";
 
 "Patchfinding" = "العثور على التصحيح";
+
+"PM_Reinstall_Done_Text" = "تم إعادة تثبيت مديري الحزم المختارين";
 
 "Rebuilding TrustCache" = "إعادة بناء الذاكرة المؤقتة";
 
@@ -83,8 +99,6 @@
 "Settings_Footer_Device_Bootstrapped" = "تم تمهيد الجهاز";
 
 "Settings_Footer_Device_Not_Bootstrapped" = "لم يتم تمهيد الجهاز";
-
-"Menu_Settings_Title" = "الإعدادات";
 
 "Starting jailbreakd" = "بدء jailbreakd";
 
@@ -102,7 +116,7 @@
 
 "Title_Changelog" = "سجل التغييرات";
 
-"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
+"Title_Made_By" = "بواسطة opa334 و évelyne\nواجهة المستخدم بواسطة sourceloc\nيعتمد على Fugu15";
 
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
@@ -116,14 +130,28 @@
 
 "Update_Status_Subtitle_Restart_Soon" = "سيتم إعادة تشغيل الجهاز خلال لحظات";
 
-"Alert_Button_Uninstall" = "Uninstall";
+"Alert_Button_Uninstall" = "إلغاء التثبيت";
 
-"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+"Alert_Tweak_Injection_Toggled_Body" = "إعادة تشغيل userspace ضرورية لتطبيق التغييرات. هل تريد فعلها الآن؟";
 
-"Popup_Change_Root_Password_Title" = "Change Mobile Password";
+"Popup_Change_Mobile_Password_Title" = "تغيير كلمة سر الهاتف";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+"Settings_Remove_Jailbreak_Alert_Body" = "ستؤدي إزالة الجيلبريك إلى حذف جميع الملفات المتعلقة به، ولكن سيتم الاحتفاظ بجميع التطبيقات والملفات والبيانات العادية. هل أنت متأكد من أنك تريد الاستمرار؟ لا يمكنك التراجع عن هذا الإجراء.";
 
-"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+"Settings_Remove_Jailbreak_Alert_Title" = "إزالة الجيلبريك";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "يتطلب إعادة تشغيل Userspace";
+
+"Select_Package_Managers_Install_Message" = "إذا كنت محتارًا في الاختيار، فاختر Sileo";
+
+"Select_Package_Managers_Reinstall_Message" = "حدد مديري الحزم لإعادة التثبيت";
+
+"Reinstall" = "إعادة التثبيت";
+
+"Continue" = "استمرار";
+
+"Close" = "إغلاق";
+
+"Title_Mismatching_Environment_Version" = "نسخة بيئة غير متطابقة";
+
+"Mismatching_Environment_Version_Update_Body" = "تم كسر حماية إصدار البيئة لهذا الجهاز مع (%@) مما يؤدي إلى عدم تطابق إصدار التطبيق المثبت حاليًا (%@)\nسيؤدي الضغط على التحديث إلى تحديث بيئة الجيلبريك إلى أحد التطبيقات المثبتة حاليًا، وسيقوم جهازك بإعادة تشغيل userspace بعد ذلك.";
