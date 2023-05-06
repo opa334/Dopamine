@@ -180,6 +180,17 @@ struct UpdateDownloadingView: View {
     }
     
     func downloadUpdateAndInstall() async throws {
+        if (!isJailbroken()) {
+            // If not jailbroken, just open latest TIPA in TrollStore
+            guard let dopamineUpdateURL = URL(string: "apple-magnifier://install?url=https://github.com/opa334/Dopamine/releases/latest/download/Dopamine.tipa") else {
+                return
+            }
+            
+            await UIApplication.shared.open(dopamineUpdateURL)
+            exit(0)
+            return;
+        }
+        
         let owner = "opa334"
         let repo = "Dopamine"
         

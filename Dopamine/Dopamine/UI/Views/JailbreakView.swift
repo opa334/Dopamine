@@ -454,6 +454,7 @@ struct JailbreakView: View {
                             userspaceReboot()
                         } else {
                             respring()
+                            exit(0)
                         }
                     }
                 } else {
