@@ -102,10 +102,12 @@ int carbonCopy(NSString *sourcePath, NSString *targetPath)
 			if (retval == 0) {
 				NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:sourcePath];
 				for (NSString *relativePath in enumerator) {
-					NSString *subSourcePath = [sourcePath stringByAppendingPathComponent:relativePath];
-					NSString *subTargetPath = [targetPath stringByAppendingPathComponent:relativePath];
-					retval = carbonCopySingle(subSourcePath, subTargetPath);
-					if (retval != 0) break;
+					@autoreleasepool {
+						NSString *subSourcePath = [sourcePath stringByAppendingPathComponent:relativePath];
+						NSString *subTargetPath = [targetPath stringByAppendingPathComponent:relativePath];
+						retval = carbonCopySingle(subSourcePath, subTargetPath);
+						if (retval != 0) break;
+					}
 				}
 			}
 			
