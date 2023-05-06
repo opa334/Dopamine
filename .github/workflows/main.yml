@@ -1,0 +1,47 @@
+name: Build Dopamine
+
+on:
+   push:
+     branches:
+       - master
+   pull_request:
+     branches:
+       - master
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Procursus
+        uses: dhinakg/procursus-action@main
+        with:
+          packages: ldid findutils sed coreutils trustcache make
+
+      - name: Install THEOS (without SDKs)
+        run: |
+          set -x
+          export BASEDIR="$(pwd)"
+          export THEOS="${BASEDIR}/theos"
+          mkdir -p $THEOS
+          curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos >> install-theos.sh
+          gsed -E "/^\s*get_theos\s*$/,+1 s/^(\s*)(get_sdks)\s*$/\1mkdir -p \${THEOS}\/sdks\n\1touch \${THEOS}\/sdks\/sdk\n\1\2/g" -i install-theos.sh
+          bash install-theos.sh
+          cd $BASEDIR
+      
+      - name: Build
+        run: |
+          set -x
+          sudo security import Exploits/fastPath/arm.pfx -k /Library/Keychains/System.keychain -P password -A
+          export BASEDIR="$(pwd)"
+          export THEOS="${BASEDIR}/theos"
+          gmake -j$(sysctl -n hw.physicalcpu)
+      
+      - name: Upload Dopamine
+        uses: actions/upload-artifact@v2.3.1
+        with:
+           name: Dopamine tipa
+           path: |
+             ${{ github.workspace }}/Dopamine/Dopamine.tipa
