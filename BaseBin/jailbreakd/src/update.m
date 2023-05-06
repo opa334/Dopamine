@@ -55,8 +55,7 @@ int extract(NSString* fileToExtract, NSString* extractionPath)
 	archive_write_disk_set_standard_lookup(ext);
 	if ((r = archive_read_open_filename(a, fileToExtract.fileSystemRepresentation, 10240)))
 			return 1;
-	for (;;)
-	{
+	for (;;) {
 			r = archive_read_next_header(a, &entry);
 			if (r == ARCHIVE_EOF)
 					break;
@@ -147,12 +146,14 @@ int basebinUpdateFromTar(NSString *basebinPath, bool rebootWhenDone)
 	// Copy new basebin over old basebin
 	NSArray *basebinItems = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:tmpBasebinPath error:nil];
 	for (NSString *basebinItem in basebinItems) {
-		NSString *oldBasebinPath = [prebootPath(@"basebin") stringByAppendingPathComponent:basebinItem];
-		NSString *newBasebinPath = [tmpBasebinPath stringByAppendingPathComponent:basebinItem];
-		if ([[NSFileManager defaultManager] fileExistsAtPath:oldBasebinPath]) {
-			[[NSFileManager defaultManager] removeItemAtPath:oldBasebinPath error:nil];
+		@autoreleasepool {
+			NSString *oldBasebinPath = [prebootPath(@"basebin") stringByAppendingPathComponent:basebinItem];
+			NSString *newBasebinPath = [tmpBasebinPath stringByAppendingPathComponent:basebinItem];
+			if ([[NSFileManager defaultManager] fileExistsAtPath:oldBasebinPath]) {
+				[[NSFileManager defaultManager] removeItemAtPath:oldBasebinPath error:nil];
+			}
+			[[NSFileManager defaultManager] copyItemAtPath:newBasebinPath toPath:oldBasebinPath error:nil];
 		}
-		[[NSFileManager defaultManager] copyItemAtPath:newBasebinPath toPath:oldBasebinPath error:nil];
 	}
 	patchBaseBinLaunchDaemonPlists();
 

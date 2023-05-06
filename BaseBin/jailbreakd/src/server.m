@@ -87,6 +87,7 @@ int launchdInitPPLRW(void)
 	xpc_dictionary_set_bool(msg, "jailbreak", true);
 	xpc_dictionary_set_uint64(msg, "id", LAUNCHD_JB_MSG_ID_GET_PPLRW);
 	xpc_object_t reply = launchd_xpc_send_message(msg);
+	if (!reply) return -1;
 
 	int error = xpc_dictionary_get_int64(reply, "error");
 	if (error == 0) {
@@ -189,7 +190,9 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 							uint64_t argc = xpc_array_get_count(args);
 							uint64_t argv[argc];
 							for (uint64_t i = 0; i < argc; i++) {
-								argv[i] = xpc_array_get_uint64(args, i);
+								@autoreleasepool {
+									argv[i] = xpc_array_get_uint64(args, i);
+								}
 							}
 							uint64_t ret = kcall(func, argc, argv);
 							xpc_dictionary_set_uint64(reply, "ret", ret);
@@ -211,7 +214,9 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 							uint64_t xXpcCount = xpc_array_get_count(xXpcArr);
 							if (xXpcCount > 29) xXpcCount = 29;
 							for (uint64_t i = 0; i < xXpcCount; i++) {
-								threadState.x[i] = xpc_array_get_uint64(xXpcArr, i);
+								@autoreleasepool {
+									threadState.x[i] = xpc_array_get_uint64(xXpcArr, i);
+								}
 							}
 
 							bool raw = xpc_dictionary_get_bool(message, "raw");
@@ -441,23 +446,4 @@ int main(int argc, char* argv[])
 		dispatch_main();
 		return 0;
 	}
-}
-
-// KILL JETSAM
-// Credits: https://gist.github.com/Lessica/ecfc5816467dcbaac41c50fd9074b8e9
-// There is literally no other way to do it, fucking hell
-static __attribute__ ((constructor(101), visibility("hidden")))
-void BypassJetsam(void) {
-	pid_t me = getpid();
-	int rc; memorystatus_priority_properties_t props = {JETSAM_PRIORITY_CRITICAL, 0};
-	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PRIORITY_PROPERTIES, me, 0, &props, sizeof(props));
-	if (rc < 0) { perror ("memorystatus_control"); exit(rc);}
-	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_JETSAM_HIGH_WATER_MARK, me, -1, NULL, 0);
-	if (rc < 0) { perror ("memorystatus_control"); exit(rc);}
-	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PROCESS_IS_MANAGED, me, 0, NULL, 0);
-	if (rc < 0) { perror ("memorystatus_control"); exit(rc);}
-	rc = memorystatus_control(MEMORYSTATUS_CMD_SET_PROCESS_IS_FREEZABLE, me, 0, NULL, 0);
-	if (rc < 0) { perror ("memorystatus_control"); exit(rc); }
-	rc = proc_track_dirty(me, 0);
-	if (rc != 0) { perror("proc_track_dirty"); exit(rc); }
 }
