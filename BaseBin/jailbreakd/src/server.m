@@ -20,6 +20,17 @@
 
 kern_return_t bootstrap_check_in(mach_port_t bootstrap_port, const char *service, mach_port_t *server_port);
 
+void setJetsamEnabled(bool enabled)
+{
+	pid_t me = getpid();
+	int priorityToSet = -1;
+	if (enabled) {
+		priorityToSet = 10;
+	}
+	int rc = memorystatus_control(MEMORYSTATUS_CMD_SET_JETSAM_HIGH_WATER_MARK, me, -1, NULL, 0);
+	if (rc < 0) { perror ("memorystatus_control"); exit(rc);}
+}
+
 int processBinary(NSString *binaryPath)
 {
 	if (!binaryPath) return 0;
@@ -386,6 +397,8 @@ int main(int argc, char* argv[])
 	@autoreleasepool {
 		JBLogDebug("Hello from the other side!");
 		gIsJailbreakd = YES;
+
+		setJetsamEnabled(true);
 
 		gTCPages = [NSMutableArray new];
 		gTCUnusedAllocations = [NSMutableArray new];
