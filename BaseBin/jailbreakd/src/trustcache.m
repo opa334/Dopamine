@@ -28,11 +28,13 @@ JBDTCPage *trustCacheMapInFreePage(void)
 {
 	// Find page that has slots left
 	for (JBDTCPage *page in gTCPages) {
-		[page mapIn];
-		if (page.amountOfSlotsLeft > 0) {
-			return page;
+		@autoreleasepool {
+			[page mapIn];
+			if (page.amountOfSlotsLeft > 0) {
+				return page;
+			}
+			[page mapOut];
 		}
-		[page mapOut];
 	}
 
 	// No page found, allocate new one
@@ -52,8 +54,10 @@ void dynamicTrustCacheAddEntry(trustcache_entry entry)
 void dynamicTrustCacheRemoveEntry(trustcache_entry entry)
 {
 	for (JBDTCPage *page in gTCPages) {
-		BOOL removed = [page removeEntry:entry];
-		if (removed) return;
+		@autoreleasepool {
+			BOOL removed = [page removeEntry:entry];
+			if (removed) return;
+		}
 	}
 }
 
@@ -99,22 +103,24 @@ void dynamicTrustCacheUploadCDHashesFromArray(NSArray *cdHashArray)
 {
 	__block JBDTCPage *mappedInPage = nil;
 	for (NSData *cdHash in cdHashArray) {
-		if (!mappedInPage || mappedInPage.amountOfSlotsLeft == 0) {
-			// If there is still a page mapped, map it out now
-			if (mappedInPage) {
-				[mappedInPage sort];
-				[mappedInPage mapOut];
+		@autoreleasepool {
+			if (!mappedInPage || mappedInPage.amountOfSlotsLeft == 0) {
+				// If there is still a page mapped, map it out now
+				if (mappedInPage) {
+					[mappedInPage sort];
+					[mappedInPage mapOut];
+				}
+
+				mappedInPage = trustCacheMapInFreePage();
 			}
 
-			mappedInPage = trustCacheMapInFreePage();
+			trustcache_entry entry;
+			memcpy(&entry.hash, cdHash.bytes, CS_CDHASH_LEN);
+			entry.hash_type = 0x2;
+			entry.flags = 0x0;
+			JBLogDebug("[dynamicTrustCacheUploadCDHashesFromArray] uploading %s", cdHash.description.UTF8String);
+			[mappedInPage addEntry:entry];
 		}
-
-		trustcache_entry entry;
-		memcpy(&entry.hash, cdHash.bytes, CS_CDHASH_LEN);
-		entry.hash_type = 0x2;
-		entry.flags = 0x0;
-		JBLogDebug("[dynamicTrustCacheUploadCDHashesFromArray] uploading %s", cdHash.description.UTF8String);
-		[mappedInPage addEntry:entry];
 	}
 
 	if (mappedInPage) {
@@ -125,7 +131,7 @@ void dynamicTrustCacheUploadCDHashesFromArray(NSArray *cdHashArray)
 
 void dynamicTrustCacheUploadDirectory(NSString *directoryPath)
 {
-	NSString *basebinPath = [[@"/var/jb/basebin" stringByResolvingSymlinksInPath] stringByStandardizingPath];
+	NSString *basebinPath = [[prebootPath(@"basebin") stringByResolvingSymlinksInPath] stringByStandardizingPath];
 	NSString *resolvedPath = [[directoryPath stringByResolvingSymlinksInPath] stringByStandardizingPath];
 	NSDirectoryEnumerator<NSURL *> *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtURL:[NSURL fileURLWithPath:resolvedPath isDirectory:YES] 
 																			   includingPropertiesForKeys:@[NSURLIsSymbolicLinkKey]
@@ -133,25 +139,27 @@ void dynamicTrustCacheUploadDirectory(NSString *directoryPath)
 																							 errorHandler:nil];
 	__block JBDTCPage *mappedInPage = nil;
 	for (NSURL *enumURL in directoryEnumerator) {
-		NSNumber *isSymlink;
-		[enumURL getResourceValue:&isSymlink forKey:NSURLIsSymbolicLinkKey error:nil];
-		if (isSymlink && ![isSymlink boolValue]) {
-			// never inject basebin binaries here
-			if ([[[enumURL.path stringByResolvingSymlinksInPath] stringByStandardizingPath] hasPrefix:basebinPath]) continue;
-			fileEnumerateTrustCacheEntries(enumURL, ^(trustcache_entry entry) {
-				if (!mappedInPage || mappedInPage.amountOfSlotsLeft == 0) {
-					// If there is still a page mapped, map it out now
-					if (mappedInPage) {
-						[mappedInPage sort];
-						[mappedInPage mapOut];
+		@autoreleasepool {
+			NSNumber *isSymlink;
+			[enumURL getResourceValue:&isSymlink forKey:NSURLIsSymbolicLinkKey error:nil];
+			if (isSymlink && ![isSymlink boolValue]) {
+				// never inject basebin binaries here
+				if ([[[enumURL.path stringByResolvingSymlinksInPath] stringByStandardizingPath] hasPrefix:basebinPath]) continue;
+				fileEnumerateTrustCacheEntries(enumURL, ^(trustcache_entry entry) {
+					if (!mappedInPage || mappedInPage.amountOfSlotsLeft == 0) {
+						// If there is still a page mapped, map it out now
+						if (mappedInPage) {
+							[mappedInPage sort];
+							[mappedInPage mapOut];
+						}
+						JBLogDebug("mapping in a new tc page");
+						mappedInPage = trustCacheMapInFreePage();
 					}
-					JBLogDebug("mapping in a new tc page");
-					mappedInPage = trustCacheMapInFreePage();
-				}
 
-				JBLogDebug("[dynamicTrustCacheUploadDirectory %s] Uploading cdhash of %s", directoryPath.UTF8String, enumURL.path.UTF8String);
-				[mappedInPage addEntry:entry];
-			});
+					JBLogDebug("[dynamicTrustCacheUploadDirectory %s] Uploading cdhash of %s", directoryPath.UTF8String, enumURL.path.UTF8String);
+					[mappedInPage addEntry:entry];
+				});
+			}
 		}
 	}
 
@@ -165,11 +173,13 @@ void rebuildDynamicTrustCache(void)
 {
 	// nuke existing
 	for (JBDTCPage *page in [gTCPages reverseObjectEnumerator]) {
-		[page unlinkAndFree];
+		@autoreleasepool {
+			[page unlinkAndFree];
+		}
 	}
 
 	JBLogDebug("Triggering initial trustcache upload...");
-	dynamicTrustCacheUploadDirectory(@"/var/jb");
+	dynamicTrustCacheUploadDirectory(prebootPath(nil));
 	JBLogDebug("Initial TrustCache upload done!");
 }
 

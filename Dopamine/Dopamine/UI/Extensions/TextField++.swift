@@ -16,11 +16,12 @@ class TextFieldAlertViewController: UIViewController {
     ///   - message: to be used as optional message of the UIAlertController
     ///   - text: binding for the text typed into the UITextField
     ///   - isPresented: binding to be set to false when the alert is dismissed (`Done` button tapped)
-    init(title: String, message: String?, text: Binding<String?>, isPresented: Binding<Bool>?) {
+    init(title: String, message: String?, text: Binding<String?>, isPresented: Binding<Bool>?, onSubmit: @escaping () -> Void) {
         self.alertTitle = title
         self.message = message
         self._text = text
         self.isPresented = isPresented
+        self.onSubmit = onSubmit
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -33,6 +34,7 @@ class TextFieldAlertViewController: UIViewController {
     private let message: String?
     @Binding private var text: String?
     private var isPresented: Binding<Bool>?
+    private var onSubmit: () -> Void
     
     // MARK: - Private Properties
     private var subscription: AnyCancellable?
@@ -62,6 +64,7 @@ class TextFieldAlertViewController: UIViewController {
         })
         vc.addAction(UIAlertAction(title: NSLocalizedString("Button_Set", comment: ""), style: .default) { [weak self] _ in
             self?.isPresented?.wrappedValue = false
+            self?.onSubmit()
         })
         present(vc, animated: true, completion: {
             vc.view.tintColor = .tintColor
@@ -76,10 +79,11 @@ struct TextFieldAlert {
     let message: String?
     @Binding var text: String?
     var isPresented: Binding<Bool>? = nil
+    var onSubmit: () -> Void
     
     // MARK: Modifiers
     func dismissable(_ isPresented: Binding<Bool>) -> TextFieldAlert {
-        TextFieldAlert(title: title, message: message, text: $text, isPresented: isPresented)
+        TextFieldAlert(title: title, message: message, text: $text, isPresented: isPresented, onSubmit: onSubmit)
     }
 }
 
@@ -88,7 +92,7 @@ extension TextFieldAlert: UIViewControllerRepresentable {
     typealias UIViewControllerType = TextFieldAlertViewController
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<TextFieldAlert>) -> UIViewControllerType {
-        TextFieldAlertViewController(title: title, message: message, text: $text, isPresented: isPresented)
+        TextFieldAlertViewController(title: title, message: message, text: $text, isPresented: isPresented, onSubmit: onSubmit)
     }
     
     func updateUIViewController(_ uiViewController: UIViewControllerType,

@@ -1,5 +1,5 @@
 DEVICE=root@localhost
-PORT=2222
+PORT=5500
 
 ssh $DEVICE -p $PORT "rm -rf /var/mobile/Documents/Dopamine.tipa"
 scp -P$PORT ./Dopamine/Dopamine.tipa $DEVICE:/var/mobile/Documents/Dopamine.tipa

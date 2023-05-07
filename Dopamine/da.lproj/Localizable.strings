@@ -1,0 +1,157 @@
+"Bootstrapping" = "Opstart af system";
+
+"Button_Cancel" = "Annuller";
+
+"Button_Hide_Jailbreak" = "Skjul Jailbreak";
+
+"Button_Hide_Logs_Title" = "Skjul logfiler";
+
+"Button_Jailbreak_Title" = "Jailbreak";
+
+"Button_Remove_Jailbreak" = "Fjern Jailbreak";
+
+"Button_Set_Mobile_Password" = "Sæt mobiladgangskode";
+
+"Popup_Change_Mobile_Password_Message" = "Sæt en adgangskode til din enhed, som også kan bruges til root-adgang ved brug af sudo. Hvis du vil sætte root-adgangskoden, kan du gøre dette fra en mobil-shell ved at bruge \"sudo passwd root\"";
+
+"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
+
+"Button_Set" = "Sæt";
+
+"Button_Show_Logs_Title" = "Vis logfiler";
+
+"Button_Unhide_Jailbreak" = "Vis Jailbreak";
+
+"Button_Update" = "Opdater";
+
+"Button_Update_Available" = "Opdatering tilgængelig";
+
+"Button_Update_Environment" = "Update Environment";
+
+"Bypassing PAC" = "Bypass af PAC";
+
+"Bypassing PPL" = "Bypass af PPL";
+
+"Changelog_Unavailable_Text" = "Ændringslog utilgængelig";
+
+"Context_Menu_Copy_To_Clipboard" = "Kopiér til udklipsholder";
+
+"Credits_Button_Discord" = "Discord";
+
+"Credits_Button_License" = "Licens";
+
+"Credits_Button_Source_Code" = "Kildekode";
+
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
+
+"Credits_Header_Special_Thanks" = "Særlig tak til:";
+
+"Credits_Made_By" = "Lavet af opa334, évelyne";
+
+"Credits_Made_By_Subheadline" = "UI af sourcelocation\nLogo og ikon af xerus";
+
+"Finalizing Bootstrap" = "Afslutter opstart";
+
+"Gaining r/w" = "Får r/w";
+
+"Hint_Hide_Jailbreak" = "\"Skjul Jailbreak\" fjerner midlertidigt jailbreak-relaterede filer indtil næste jailbreak";
+
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+
+"Initializing Environment" = "Initialiserer miljø";
+
+"Initializing System Hook" = "Initialiserer system-hook";
+
+"Jailbreak_Done" = "Færdig!";
+
+"Launching kexploitd" = "Starter kexploitd";
+
+"Enabling Wi-Fi" = "Enabling Wi-Fi";
+
+"Disabling Wi-Fi" = "Disabling Wi-Fi";
+
+"Launching oobPCI" = "Starter oobPCI";
+
+"Loading Basebin Trustcache" = "Indlæser Basebin Trustcache";
+
+"Menu_Credits_Title" = "Credits";
+
+"Menu_Settings_Title" = "Indstillinger";
+
+"Menu_Reboot_Userspace_Title" = "Genstart Userspace";
+
+"Menu_Restart_SpringBoard_Title" = "Genstart SpringBoard";
+
+"Settings_iDownload" = "iDownload (Udviklerterminal)";
+
+"Settings_Tweak_Injection" = "Tweak-injektion";
+
+"Settings_Verbose_Logs" = "Detaljerede logfiler";
+
+"Patchfinding" = "Patchfinding";
+
+"PM_Reinstall_Done_Text" = "The selected package managers have been reinstalled";
+
+"Rebuilding TrustCache" = "Genopbygger TrustCache";
+
+"Refreshing Icon Cache" = "Opdaterer ikon-cache";
+
+"Settings_Footer_Device_Bootstrapped" = "Enhed er bootstrappet";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "Enhed er ikke bootstrappet";
+
+"Starting jailbreakd" = "Starter jailbreakd";
+
+"Starting Launch Daemons" = "Starter tjenester";
+
+"Status_Title_Jailbreaking" = "Jailbreaking";
+
+"Status_Title_Jailbroken" = "Jailbroken";
+
+"Status_Title_Select_Package_Managers" = "Vælg Pakkehåndteringsprogram(mer)";
+
+"Status_Title_Unsuccessful" = "Mislykket";
+
+"Success_Rate %@%% (%lld/%lld)" = "Success rate: %@%% (%lld/%lld)";
+
+"Title_Changelog" = "Ændringslog";
+
+"Title_Made_By" = "af opa334, évelyne\nUI af sourceloc\nBaseret på Fugu15";
+
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
+
+"Update_Log_Hint_Scrollable" = "Log kan scrolles";
+
+"Update_Status_Downloading" = "Downloader opdatering...";
+
+"Update_Status_Installing" = "Installerer opdatering...";
+
+"Update_Status_Subtitle_Please_Wait" = "Vent venligst mens filerne er færdige med at downloade";
+
+"Update_Status_Subtitle_Restart_Soon" = "Enheden vil genstarte snart";
+
+"Alert_Button_Uninstall" = "Afinstaller";
+
+"Alert_Tweak_Injection_Toggled_Body" = "For at ændringerne træder i kraft, skal du genstarte Userspace. Vil du genstarte nu?";
+
+"Popup_Change_Mobile_Password_Title" = "Ændre Mobiladgangskode";
+
+"Settings_Remove_Jailbreak_Alert_Body" = "Fjernelse af jailbreak vil slette alle jailbreak-relaterede filer, men alle almindelige apps, filer og data vil blive bevaret. Er du sikker på, at du vil fortsætte? Du kan ikke fortryde denne handling.";
+
+"Settings_Remove_Jailbreak_Alert_Title" = "Fjern Jailbreak";
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Genstart af Userspace påkrævet";
+
+"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+
+"Select_Package_Managers_Reinstall_Message" = "Select package managers to reinstall";
+
+"Reinstall" = "Reinstall";
+
+"Continue" = "Continue";
+
+"Close" = "Close";
+
+"Title_Mismatching_Environment_Version" = "Mismatching Environment Version";
+
+"Mismatching_Environment_Version_Update_Body" = "The environment version this device was jailbroken with (%@) mismatches the currently installed app version (%@)\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";

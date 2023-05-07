@@ -7,8 +7,9 @@ extern kern_return_t mach_vm_region_recurse(vm_map_read_t target_task, mach_vm_a
 #include "syscall.h"
 #include <signal.h>
 #include "substrate.h"
-
 #include <dlfcn.h>
+
+int64_t (*jbdswForkFix)(pid_t childPid, bool mightHaveDirtyPages);
 
 static void **_libSystem_atfork_prepare_ptr = 0;
 static void **_libSystem_atfork_parent_ptr = 0;
@@ -20,13 +21,15 @@ static void (*_libSystem_atfork_child)(void) = 0;
 static void **_libSystem_atfork_prepare_V2_ptr = 0;
 static void **_libSystem_atfork_parent_V2_ptr = 0;
 static void **_libSystem_atfork_child_V2_ptr = 0;
-static void (*_libSystem_atfork_prepare_V2)(int) = 0;
-static void (*_libSystem_atfork_parent_V2)(int) = 0;
-static void (*_libSystem_atfork_child_V2)(int) = 0;
+static void (*_libSystem_atfork_prepare_V2)(int, ...) = 0;
+static void (*_libSystem_atfork_parent_V2)(int, ...) = 0;
+static void (*_libSystem_atfork_child_V2)(int, ...) = 0;
+
+int childToParentPipe[2];
+int parentToChildPipe[2];
 
 void loadPrivateSymbols(void) {
 	MSImageRef libSystemCHandle = MSGetImageByName("/usr/lib/system/libsystem_c.dylib");
-	void *libSystemKernelDLHandle = dlopen("/usr/lib/system/libsystem_kernel.dylib", RTLD_NOW);
 
 	_libSystem_atfork_prepare_ptr = MSFindSymbol(libSystemCHandle, "__libSystem_atfork_prepare");
 	_libSystem_atfork_parent_ptr = MSFindSymbol(libSystemCHandle, "__libSystem_atfork_parent");
@@ -39,46 +42,57 @@ void loadPrivateSymbols(void) {
 	if (_libSystem_atfork_prepare_ptr) _libSystem_atfork_prepare = (void (*)(void))*_libSystem_atfork_prepare_ptr;
 	if (_libSystem_atfork_parent_ptr) _libSystem_atfork_parent = (void (*)(void))*_libSystem_atfork_parent_ptr;
 	if (_libSystem_atfork_child_ptr) _libSystem_atfork_child = (void (*)(void))*_libSystem_atfork_child_ptr;
-	if (_libSystem_atfork_prepare_V2_ptr) _libSystem_atfork_prepare_V2 = (void (*)(int))*_libSystem_atfork_prepare_V2_ptr;
-	if (_libSystem_atfork_parent_V2_ptr) _libSystem_atfork_parent_V2 = (void (*)(int))*_libSystem_atfork_parent_V2_ptr;
-	if (_libSystem_atfork_child_V2_ptr) _libSystem_atfork_child_V2 = (void (*)(int))*_libSystem_atfork_child_V2_ptr;
+	if (_libSystem_atfork_prepare_V2_ptr) _libSystem_atfork_prepare_V2 = (void (*)(int, ...))*_libSystem_atfork_prepare_V2_ptr;
+	if (_libSystem_atfork_parent_V2_ptr) _libSystem_atfork_parent_V2 = (void (*)(int, ...))*_libSystem_atfork_parent_V2_ptr;
+	if (_libSystem_atfork_child_V2_ptr) _libSystem_atfork_child_V2 = (void (*)(int, ...))*_libSystem_atfork_child_V2_ptr;
+
+	void *systemhookHandle = dlopen("/usr/lib/systemhook.dylib", RTLD_NOW);
+	jbdswForkFix = dlsym(systemhookHandle, "jbdswForkFix");
 }
-
-typedef struct {
-	mach_vm_address_t address;
-	mach_vm_size_t size;
-	vm_prot_t prot;
-	vm_prot_t maxprot;
-} mem_region_info_t;
-
-int region_count = 0;
-mem_region_info_t *regions = NULL;
 
 void child_fixup(void)
 {
 	// late fixup, normally done in ASM
-	// ASM is a bitch though and I couldn't out how to do this
+	// ASM is a bitch though and I couldn't figure out how to do this
 	extern pid_t _current_pid;
 	_current_pid = 0;
 
-	// SIGSTOP and wait for the parent process to run fixups
-	ffsys_kill(ffsys_getpid(), SIGSTOP);
+	ffsys_close(parentToChildPipe[1]);
+	ffsys_close(childToParentPipe[0]);
+
+	// Tell parent we are waiting for fixup now
+	char msg = ' ';
+	ffsys_write(childToParentPipe[1], &msg, sizeof(msg));
+
+	// Wait until parent completes fixup
+	ffsys_read(parentToChildPipe[0], &msg, sizeof(msg));
+
+	ffsys_close(parentToChildPipe[0]);
+	ffsys_close(childToParentPipe[1]);
 }
 
 void parent_fixup(pid_t childPid, bool mightHaveDirtyPages)
 {
-	/*int status = 0;
-	pid_t result = waitpid(childPid, &status, WUNTRACED);
-	if (!WIFSTOPPED(status)) return;*/ // if child is not stopped, something went wrong, abort
+	close(parentToChildPipe[0]);
+	close(childToParentPipe[1]);
 
-	// child is waiting for wx_allowed + permission fixups now
+	// Wait until the child is ready and waiting
+	char msg = ' ';
+	read(childToParentPipe[0], &msg, sizeof(msg));
 
-	// set it
-	int64_t (*jbdswForkFix)(pid_t childPid, bool mightHaveDirtyPages) = dlsym(dlopen("/usr/lib/systemhook.dylib", RTLD_NOW), "jbdswForkFix");
+	// Child is waiting for wx_allowed + permission fixups now
+	// Apply fixup
 	int64_t fix_ret = jbdswForkFix(childPid, mightHaveDirtyPages);
+	if (fix_ret != 0) {
+		kill(childPid, SIGKILL);
+		abort();
+	}
 
-	// resume child
-	kill(childPid, SIGCONT);
+	// Tell child we are done, this will make it resume
+	write(parentToChildPipe[1], &msg, sizeof(msg));
+
+	close(parentToChildPipe[1]);
+	close(childToParentPipe[0]);
 }
 
 __attribute__((visibility ("default"))) pid_t forkfix___fork(void)
@@ -94,9 +108,13 @@ __attribute__((visibility ("default"))) pid_t forkfix___fork(void)
 	return pid;
 }
 
-__attribute__((visibility ("default"))) pid_t forkfix_fork(int is_vfork, bool mightHaveDirtyPages)
+__attribute__((visibility ("default"))) pid_t forkfix_fork(bool is_vfork, bool mightHaveDirtyPages)
 {
 	int ret;
+
+	if (pipe(parentToChildPipe) < 0 || pipe(childToParentPipe) < 0) {
+		return -1;
+	}
 
 	if (_libSystem_atfork_prepare_V2) {
 		_libSystem_atfork_prepare_V2(is_vfork);

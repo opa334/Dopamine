@@ -1,71 +1,165 @@
-"Bootstrapping" = "正在引导";
+"Bootstrapping" = "引导中";
+
 "Button_Cancel" = "取消";
+
 "Button_Hide_Jailbreak" = "隐藏越狱";
+
 "Button_Hide_Logs_Title" = "隐藏日志";
+
 "Button_Jailbreak_Title" = "越狱";
-"Button_Remove_Jailbreak" = "清除越狱";
-"Button_Set_Mobile_Password" = "设置Mobile密码";
-"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
-"Button_Set" = "Set";
-"Button_Show_Logs_Title" = "显示日志 ";
-"Button_Unhide_Jailbreak" = "取消隐藏越狱";
+
+"Button_Remove_Jailbreak" = "移除越狱";
+
+"Button_Set_Mobile_Password" = "设定 mobile 用户密码";
+
+"Popup_Change_Mobile_Password_Message" = "设定你设备上的 mobile 用户密码。该密码也可用于通过 sudo 命令访问 root 用户权限。若你想要修改 root 用户密码，可在设备 shell 中执行 \"sudo passwd root\"。";
+
+"Button_Reinstall_Package_Managers" = "重新安装包管理器";
+
+"Button_Set" = "确定";
+
+"Button_Show_Logs_Title" = "显示日志";
+
+"Button_Unhide_Jailbreak" = "解除隐藏越狱";
+
 "Button_Update" = "更新";
-"Button_Update_Available" = "检测到版本更新";
-"Bypassing PAC" = "正在绕过PAC";
-"Bypassing PPL" = "正在绕过PPL";
-"Changelog_Unavailable_Text" = "无法获取更新日志";
-"Context_Menu_Copy_To_Clipboard" = "复制到剪贴板";
-"Credits_Button_License" = "许可证 \n";
+
+"Button_Update_Available" = "可更新";
+
+"Button_Update_Environment" = "更新环境";
+
+"Bypassing PAC" = "绕过 PAC";
+
+"Bypassing PPL" = "绕过 PPL";
+
+"Changelog_Unavailable_Text" = "变更日志不可用";
+
+"Context_Menu_Copy_To_Clipboard" = "拷贝";
+
+"Credits_Button_Discord" = "Discord";
+
+"Credits_Button_License" = "许可证";
+
 "Credits_Button_Source_Code" = "源代码";
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine版本%@\n%@";
-"Credits_Header_Special_Thanks" = "特别致谢:";
-"Credits_Made_By" = "开发者opa334, évelyne";
-"Credits_Made_By_Subheadline" = "sourcelocation设计UI\nxerus制作Logo、图标";
-"Finalizing Bootstrap" = "完成引导程序";
-"Gaining r/w" = "正在获取r/w权限";
-"Hint_Hide_Jailbreak" = "“隐藏越狱”将暂时删除与越狱相关的文件，直到下一次越狱";
-"Initializing Environment" = "正在初始化环境";
-"Initializing System Hook" = "正在初始化System Hook";
-"Jailbreak_Done" = "越狱成功！";
-"Launching kexploitd" = "正在启动kexploitd";
-"Launching oobPCI" = "正在启动oobPCI";
-"Loading Basebin Trustcache" = "正在加载Basebin Trustcache";
-"Menu_Credits_Title" = "关于";
-"Menu_Reboot_Userspace_Title" = "重启用户空间";
-"Menu_Restart_SpringBoard_Title" = "注销";
-"Settings_Tweak_Injection" = "插件注入";
-"Settings_Verbose_Logs" = "详细日志";
-"Settings_iDownload" = "iDownload";
-"Patchfinding" = "正在Patchfinding";
-"Rebuilding TrustCache" = "重建TrustCache";
-"Refreshing Icon Cache" = "刷新图标缓存";
-"Settings_Footer_Device_Bootstrapped" = "设备已引导启动";
-"Settings_Footer_Device_Not_Bootstrapped" = "设备未引导启动";
+
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine 版本 %@\n%@";
+
+"Credits_Header_Special_Thanks" = "特别感谢：";
+
+"Credits_Made_By" = "作者：opa334, évelyne";
+
+"Credits_Made_By_Subheadline" = "UI：sourcelocation\nLogo 及 icon 作者：xerus";
+
+"Finalizing Bootstrap" = "完成引导";
+
+"Gaining r/w" = "获取 r/w 权限";
+
+"Hint_Hide_Jailbreak" = "「隐藏越狱」将在下次越狱前临时移除越狱相关的文件";
+
+"Hint_Hide_Jailbreak_Jailbroken" = "在已越狱状态下，「隐藏越狱」将部分禁用越狱功能以提升检测越狱的难度。但是，它并非总是有效，也并没有隐藏所有东西。";
+
+"Initializing Environment" = "初始化环境";
+
+"Initializing System Hook" = "初始化系统 hook";
+
+"Jailbreak_Done" = "完成！";
+
+"Launching kexploitd" = "启动 kexploitd";
+
+"Enabling Wi-Fi" = "启用无线局域网";
+
+"Disabling Wi-Fi" = "禁用无线局域网";
+
+"Launching oobPCI" = "启动 oobPCI";
+
+"Loading Basebin Trustcache" = "加载 Basebin Trustcache";
+
+"Menu_Credits_Title" = "制作人员";
+
 "Menu_Settings_Title" = "设置";
-"Starting Launch Daemons" = "正在启动守护程序";
-"Starting jailbreakd" = "正在启动jailbreakd";
-"Status_Title_Jailbreaking" = "正在越狱";
+
+"Settings" = "设置";
+
+"Menu_Reboot_Userspace_Title" = "用户空间重启";
+
+"Menu_Restart_SpringBoard_Title" = "重启SpringBoard";
+
+"Settings_iDownload" = "iDownload (开发商终端)";
+
+"Settings_Tweak_Injection" = "插件注入";
+
+"Settings_Verbose_Logs" = "详细日志";
+
+"Patchfinding" = "Patchfinding";
+
+"PM_Reinstall_Done_Text" = "选中的包管理器已被重新安装";
+
+"Rebuilding TrustCache" = "重建 TrustCache";
+
+"Refreshing Icon Cache" = "刷新图标缓存";
+
+"Settings_Footer_Device_Bootstrapped" = "设备已安装越狱环境";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "设备未安装越狱环境";
+
+"Starting jailbreakd" = "启动 jailbreakd";
+
+"Starting Launch Daemons" = "启动 Launch Daemons";
+
+"Status_Title_Jailbreaking" = "越狱中";
+
 "Status_Title_Jailbroken" = "已越狱";
-"Status_Title_Select_Package_Managers" = "选择越狱商店";
-"Status_Title_Unsuccessful" = "失败";
-"Success_Rate %@%% (%lld/%lld)" = "成功率: %@%% (%lld/%lld)";
-"Title_Changelog" = "更改日志";
-"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
-"Update_Log_Hint_Scrollable" = "日志视图可以滚动";
-"Update_Status_Downloading" = "下载更新中...";
-"Update_Status_Installing" = "安装更新中...";
-"Update_Status_Subtitle_Please_Wait" = "请等待文件下载完成";
-"Update_Status_Subtitle_Restart_Soon" = "设备将很快重新启动";
 
-"Alert_Button_Uninstall" = "Uninstall";
+"Status_Title_Select_Package_Managers" = "选择包管理器（越狱商店）";
 
-"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+"Status_Title_Unsuccessful" = "未成功";
 
-"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
+"Success_Rate %@%% (%lld/%lld)" = "成功率：%@%% (%lld/%lld)";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+"Title_Changelog" = "变更日志";
 
-"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+"Title_Made_By" = "由opa334, évelyne制作\nUI设计由sourceloc完成\n基于Fugu15";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
+"Title_Supported_iOS_Versions" = "支持iOS 15.0 - 15.4.1 | A12 - A15,M1";
+
+"Update_Log_Hint_Scrollable" = "滚动查看日志";
+
+"Update_Status_Downloading" = "正在下载更新…";
+
+"Update_Status_Installing" = "正在安装更新…";
+
+"Update_Status_Subtitle_Please_Wait" = "请等待完成下载";
+
+"Update_Status_Subtitle_Restart_Soon" = "设备即将重启";
+
+"Alert_Button_Uninstall" = "清除越狱";
+
+"Alert_Tweak_Injection_Toggled_Body" = "为使变更生效需要用户空间重启，立即执行？";
+
+"Popup_Change_Mobile_Password_Title" = "修改 mobile 用户密码";
+
+"Settings_Remove_Jailbreak_Alert_Body" = "清除越狱将移除所有和越狱相关的文件，但将保留普通 App、文件、数据。请注意，此操作无法撤销。确认清除越狱吗？";
+
+"Settings_Remove_Jailbreak_Alert_Title" = "清除越狱";
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "需要用户空间重启";
+
+"Select_Package_Managers_Install_Message" = "若你不确定如何选择，请使用 Sileo";
+
+"Select_Package_Managers_Reinstall_Message" = "选定需要重新安装的包管理器";
+
+"Reinstall" = "重新安装";
+
+"Continue" = "继续";
+
+"Close" = "关闭";
+
+"Title_Mismatching_Environment_Version" = "环境版本不匹配";
+
+"Mismatching_Environment_Version_Update_Body" = "本机的越狱环境版本 (%@) 与 App 版本 (%@) 不匹配。\n点按更新按钮将安装匹配 App 版本的越狱环境，并将随后执行一次用户空间重启。";
+
+"Options_Tweak_Injection" = "插件注入";
+
+"Reboot_Userspace_Finish" = "重启用户空间";
+
+"Restarting Userspace" = "正在重启用户空间";

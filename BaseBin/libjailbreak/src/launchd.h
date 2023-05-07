@@ -5,3 +5,6 @@ typedef enum {
 	LAUNCHD_JB_MSG_ID_GET_PPLRW,
 	LAUNCHD_JB_MSG_ID_SIGN_STATE
 } LAUNCHD_JB_MSG;
+
+void patchBaseBinLaunchDaemonPlist(NSString *plistPath);
+void patchBaseBinLaunchDaemonPlists(void);

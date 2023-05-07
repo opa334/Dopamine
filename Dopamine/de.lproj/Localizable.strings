@@ -14,6 +14,8 @@
 
 "Popup_Change_Mobile_Password_Message" = "Setze das Mobile-Passwort deines Gerätes, dieses Passwort kann auch für Root Zugriff via \"sudo\" benutzt werden. Um das Root-Passwort zu ändern, kann in einer Mobile-Shell der Befehl \"sudo passwd root\" ausgeführt werden.";
 
+"Button_Reinstall_Package_Managers" = "Packet-Manager neuinstallieren";
+
 "Button_Set" = "Setzen";
 
 "Button_Show_Logs_Title" = "Logs anzeigen";
@@ -24,6 +26,8 @@
 
 "Button_Update_Available" = "Aktualisierung verfügbar";
 
+"Button_Update_Environment" = "Umgebung aktualisieren";
+
 "Bypassing PAC" = "Umgehe PAC";
 
 "Bypassing PPL" = "Umgehe PPL";
@@ -32,13 +36,15 @@
 
 "Context_Menu_Copy_To_Clipboard" = "In die Zwischenablage kopieren";
 
+"Credits_Button_Discord" = "Discord";
+
 "Credits_Button_License" = "Lizenz";
 
 "Credits_Button_Source_Code" = "Quellcode";
 
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine Version %@\n%@";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
 
-"Credits_Header_Special_Thanks" = "Großen Dank:";
+"Credits_Header_Special_Thanks" = "Besonderen Dank:";
 
 "Credits_Made_By" = "Von opa334, évelyne";
 
@@ -50,6 +56,8 @@
 
 "Hint_Hide_Jailbreak" = "\"Jailbreak verstecken\" entfernt die Jailbreak Dateien temporär bis zum nächsten Jailbreak";
 
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Jailbreak verstecken\" deaktiviert den Jailbreak teilweise und versucht das Erkennen des Jailbreaks zu erschweren. Es ist allerdings nicht 100% effektiv und verbirgt aktuell nicht alles.";
+
 "Initializing Environment" = "Initialisiere Umgebung";
 
 "Initializing System Hook" = "Initialisiere System Hook";
@@ -58,23 +66,31 @@
 
 "Launching kexploitd" = "Starte kexploitd";
 
+"Enabling Wi-Fi" = "Aktiviere Wi-Fi";
+
+"Disabling Wi-Fi" = "Deaktiviere Wi-Fi";
+
 "Launching oobPCI" = "Starte oobPCI";
 
 "Loading Basebin Trustcache" = "Lade Basebin Trustcache";
 
 "Menu_Credits_Title" = "Über";
 
+"Menu_Settings_Title" = "Einstellungen";
+
 "Menu_Reboot_Userspace_Title" = "Userspace-Neustart";
 
 "Menu_Restart_SpringBoard_Title" = "SpringBoard neustarten";
 
-"Settings_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload (Entwickler-Terminal)";
 
 "Settings_Tweak_Injection" = "Tweaks laden";
 
 "Settings_Verbose_Logs" = "Detaillierte Logs";
 
 "Patchfinding" = "Finde Patches";
+
+"PM_Reinstall_Done_Text" = "Die ausgewählten Packet-Manager wurden neuinstalliert";
 
 "Rebuilding TrustCache" = "Baue TrustCache neu auf";
 
@@ -83,8 +99,6 @@
 "Settings_Footer_Device_Bootstrapped" = "Gerät gebootstrapped";
 
 "Settings_Footer_Device_Not_Bootstrapped" = "Gerät ist nicht gebootstrapped";
-
-"Menu_Settings_Title" = "Einstellungen";
 
 "Starting jailbreakd" = "Starte jailbreakd";
 
@@ -118,7 +132,7 @@
 
 "Alert_Button_Uninstall" = "Deinstallieren";
 
-"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+"Alert_Tweak_Injection_Toggled_Body" = "Um die Änderungen anzuwenden ist ein Userspace-Neustart erforderlich, soll dieser jetzt durchgeführt werden?";
 
 "Popup_Change_Mobile_Password_Title" = "Mobile Passwort ändern";
 
@@ -127,3 +141,17 @@
 "Settings_Remove_Jailbreak_Alert_Title" = "Jailbreak entfernen";
 
 "Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace-Reboot notwendig";
+
+"Select_Package_Managers_Install_Message" = "Bei Unklarheiten, wähle Sileo aus";
+
+"Select_Package_Managers_Reinstall_Message" = "Wähle die Paket-Manager, welche neuinstalliert werden sollen";
+
+"Reinstall" = "Neuinstallieren";
+
+"Continue" = "Fortsetzen";
+
+"Close" = "Schließen";
+
+"Title_Mismatching_Environment_Version" = "Umgebungsversion nicht übereinstimmend";
+
+"Mismatching_Environment_Version_Update_Body" = "Die Version der Umgebung mit der dieses Gerät gejailbreakt wurde (%@) stimmt nicht mit der aktuell installierten App Version (%@) überein.\nDie Update-Option wird die Jailbreak Umgebung auf die Version aktualisieren, die in der aktuell installierten App enthalten ist. Danach führt das Gerät einen Userspace-Neustart durch.";

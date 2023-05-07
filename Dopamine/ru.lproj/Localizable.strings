@@ -1,42 +1,48 @@
-"Bootstrapping" = "Инициализация запуска";
+"Bootstrapping" = "Установка Bootstrap";
 
 "Button_Cancel" = "Отмена";
 
 "Button_Hide_Jailbreak" = "Скрыть джейлбрейк";
 
-"Button_Hide_Logs_Title" = "Скрыть журналы";
+"Button_Hide_Logs_Title" = "Скрыть логи";
 
 "Button_Jailbreak_Title" = "Джейлбрейк";
 
 "Button_Remove_Jailbreak" = "Удалить джейлбрейк";
 
-"Button_Set_Mobile_Password" = "Установить пароль Mobile";
+"Button_Set_Mobile_Password" = "Установить пароль пользователя mobile";
 
-"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+"Popup_Change_Mobile_Password_Message" = "Установка пароля пользователя mobile, его также можно использовать для выполнения какой-либо команды с правами root, используя команду sudo. Если вы хотите установить пароль для пользователя root, вы можете сделать это из командной строки, используя \"sudo passwd root\".";
 
-"Button_Set" = "Set";
+"Button_Reinstall_Package_Managers" = "Переустановить менеджеры пакетов";
 
-"Button_Show_Logs_Title" = "Показать журналы";
+"Button_Set" = "Выбрать";
 
-"Button_Unhide_Jailbreak" = "Раскрыть джейлбрейк";
+"Button_Show_Logs_Title" = "Показать логи";
+
+"Button_Unhide_Jailbreak" = "Не скрывать джейлбрейк";
 
 "Button_Update" = "Обновить";
 
 "Button_Update_Available" = "Доступно обновление";
 
+"Button_Update_Environment" = "Обновить переменную среду";
+
 "Bypassing PAC" = "Обход PAC";
 
 "Bypassing PPL" = "Обход PPL";
 
-"Changelog_Unavailable_Text" = "Ссписок изменений не доступен";
+"Changelog_Unavailable_Text" = "Список изменений не доступен";
 
 "Context_Menu_Copy_To_Clipboard" = "Копировать в буфер обмена";
+
+"Credits_Button_Discord" = "Discord";
 
 "Credits_Button_License" = "Лицензия";
 
 "Credits_Button_Source_Code" = "Исходный код";
 
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine версия %@\n%@";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Версия Dopamine %@\n%@";
 
 "Credits_Header_Special_Thanks" = "Особая благодарность:";
 
@@ -44,13 +50,15 @@
 
 "Credits_Made_By_Subheadline" = "UI от sourcelocation\nЛоготип и иконка от xerus";
 
-"Finalizing Bootstrap" = "Завершение инициализации запуска";
+"Finalizing Bootstrap" = "Завершение установки Bootstrap";
 
 "Gaining r/w" = "Получение прав на чтение/запись";
 
 "Hint_Hide_Jailbreak" = "\"Скрыть джейлбрейк\" временно удаляет файлы, связанные с джейлбрейком, до следующего джейлбрейка";
 
-"Initializing Environment" = "Инициализация окружения";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Скрыть джейлбрейк\" частично отключает джейлбрейк для того, чтобы сделать его обнаружение более трудным. Однако это не совсем эффективно и маскирует не все.";
+
+"Initializing Environment" = "Инициализация переменной среды";
 
 "Initializing System Hook" = "Инициализация системного хука";
 
@@ -58,39 +66,45 @@
 
 "Launching kexploitd" = "Запуск kexploitd";
 
+"Enabling Wi-Fi" = "Включение Wi-Fi";
+
+"Disabling Wi-Fi" = "Отключение Wi-Fi";
+
 "Launching oobPCI" = "Запуск oobPCI";
 
 "Loading Basebin Trustcache" = "Загрузка Basebin Trustcache";
 
 "Menu_Credits_Title" = "Благодарности";
 
+"Menu_Settings_Title" = "Настройки";
+
 "Menu_Reboot_Userspace_Title" = "Перезагрузить Userspace";
 
 "Menu_Restart_SpringBoard_Title" = "Перезапустить SpringBoard";
 
-"Settings_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload (Терминал разработчика)";
 
 "Settings_Tweak_Injection" = "Внедрение твиков";
 
-"Settings_Verbose_Logs" = "Расширенные журналы";
+"Settings_Verbose_Logs" = "Расширенные логи";
 
 "Patchfinding" = "Поиск патчей";
+
+"PM_Reinstall_Done_Text" = "Менеджеры пакетов переустановлены";
 
 "Rebuilding TrustCache" = "Обновление TrustCache";
 
 "Refreshing Icon Cache" = "Обновление кэша иконок";
 
-"Settings_Footer_Device_Bootstrapped" = "Устройство Bootstrapped";
+"Settings_Footer_Device_Bootstrapped" = "Bootstrap установлен";
 
-"Settings_Footer_Device_Not_Bootstrapped" = "Устройство не Bootstrapped";
-
-"Menu_Settings_Title" = "Настройки";
+"Settings_Footer_Device_Not_Bootstrapped" = "Bootstrap не установлен";
 
 "Starting jailbreakd" = "Запуск jailbreakd";
 
-"Starting Launch Daemons" = "Запуск Launch Daemons";
+"Starting Launch Daemons" = "Запуск системных демонов";
 
-"Status_Title_Jailbreaking" = "Джейлбрейк";
+"Status_Title_Jailbreaking" = "Выполнение джейлбрейка";
 
 "Status_Title_Jailbroken" = "Джейлбрейк выполнен";
 
@@ -100,7 +114,7 @@
 
 "Success_Rate %@%% (%lld/%lld)" = "Успешность: %@%% (%lld/%lld)";
 
-"Title_Changelog" = "Изменения";
+"Title_Changelog" = "Список изменении";
 
 "Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
 
@@ -112,18 +126,32 @@
 
 "Update_Status_Installing" = "Установка обновления...";
 
-"Update_Status_Subtitle_Please_Wait" = "Пожалуйста, подождите, пока файлы будут загружены.";
+"Update_Status_Subtitle_Please_Wait" = "Пожалуйста, подождите, пока файлы будут загружены";
 
 "Update_Status_Subtitle_Restart_Soon" = "Устройство скоро перезагрузится";
 
-"Alert_Button_Uninstall" = "Uninstall";
+"Alert_Button_Uninstall" = "Удаление";
 
-"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+"Alert_Tweak_Injection_Toggled_Body" = "Чтобы изменения вступили в силу, нужно перезагрузить Userspace. Перезагрузить сейчас?";
 
-"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
+"Popup_Change_Mobile_Password_Title" = "Изменение пароля пользователя mobile";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+"Settings_Remove_Jailbreak_Alert_Body" = "Удаление джейлбрейка приведет к удалению всех файлов, связанных с джейлбрейком, но все обычные приложения, файлы и данные будут сохранены. Вы уверены, что хотите продолжить? Вы не сможете отменить это действие.";
 
-"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+"Settings_Remove_Jailbreak_Alert_Title" = "Удаление джейлбрейка";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Требуется перезагрузка Userspace";
+
+"Select_Package_Managers_Install_Message" = "Если вы не знаете, какой из них выбрать, выберите Sileo";
+
+"Select_Package_Managers_Reinstall_Message" = "Выберите менеджеры пакетов для переустановки";
+
+"Reinstall" = "Переустановить";
+
+"Continue" = "Продолжить";
+
+"Close" = "Закрыть";
+
+"Title_Mismatching_Environment_Version" = "Несоответствие версии переменных сред";
+
+"Mismatching_Environment_Version_Update_Body" = "Версия переменной среды джейлбрейка (%@) не соответствует версии из установленного приложения (%@)\nНажатие кнопки \"Обновить\" - обновит версию переменной среды джейлбрейка до версии из установленного приложения, затем будет произведена перезагрузка Userspace.";

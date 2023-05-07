@@ -1,65 +1,165 @@
-"Alert_Button_Uninstall" = "清除越獄";
-"Alert_Tweak_Injection_Toggled_Body" = "為使變更生效需用戶空間重啟，即可執行否？";
 "Bootstrapping" = "引導中";
+
 "Button_Cancel" = "取消";
+
 "Button_Hide_Jailbreak" = "隱藏越獄";
+
 "Button_Hide_Logs_Title" = "隱藏日誌";
+
 "Button_Jailbreak_Title" = "越獄";
+
 "Button_Remove_Jailbreak" = "清除越獄";
+
 "Button_Set_Mobile_Password" = "設定 mobile 用戶口令";
-"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
-"Button_Set" = "Set";
+
+"Popup_Change_Mobile_Password_Message" = "設定裝置上 mobile 用戶之口令。該口令亦可用於經由 sudo 命令訪問 root 用戶權限。若想要修改 root 用戶口令，可在裝置 shell 中執行 \"sudo passwd root\"。";
+
+"Button_Reinstall_Package_Managers" = "重新安裝包管理器（越獄商店）";
+
+"Button_Set" = "設定";
+
 "Button_Show_Logs_Title" = "展現日誌";
+
 "Button_Unhide_Jailbreak" = "解除隱藏越獄";
+
 "Button_Update" = "更新";
+
 "Button_Update_Available" = "可更新";
+
+"Button_Update_Environment" = "更新環境";
+
 "Bypassing PAC" = "繞過 PAC";
+
 "Bypassing PPL" = "繞過 PPL";
+
 "Changelog_Unavailable_Text" = "變更日誌不可用";
+
 "Context_Menu_Copy_To_Clipboard" = "拷貝";
+
+"Credits_Button_Discord" = "Discord";
+
 "Credits_Button_License" = "許可證";
+
 "Credits_Button_Source_Code" = "原始碼";
+
 "Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine 版本 %@\n%@";
+
 "Credits_Header_Special_Thanks" = "特別緻謝：";
+
 "Credits_Made_By" = "作者：opa334, évelyne";
+
 "Credits_Made_By_Subheadline" = "UI：sourcelocation\nLogo 及 icon 作者：xerus";
+
 "Finalizing Bootstrap" = "完成引導";
+
 "Gaining r/w" = "取得 r/w 權限";
+
 "Hint_Hide_Jailbreak" = "「隱藏越獄」將在下次越獄前臨時移除越獄相關的文件";
+
+"Hint_Hide_Jailbreak_Jailbroken" = "已越獄時，「隱藏越獄」將部分禁用越獄功能以增加探測越獄的難度。但是，這並非總是有效，也沒有隱藏所有東西。";
+
 "Initializing Environment" = "初始化環境";
+
 "Initializing System Hook" = "初始化系統 hook";
+
 "Jailbreak_Done" = "完成！";
+
 "Launching kexploitd" = "啟動 kexploitd";
+
+"Enabling Wi-Fi" = "啟用 Wi-Fi";
+
+"Disabling Wi-Fi" = "禁用 Wi-Fi";
+
 "Launching oobPCI" = "啟動 oobPCI";
+
 "Loading Basebin Trustcache" = "加載 Basebin Trustcache";
+
 "Menu_Credits_Title" = "關於";
-"Menu_Reboot_Userspace_Title" = "用戶空間重啟";
-"Menu_Restart_SpringBoard_Title" = "註銷";
-"Settings_iDownload" = "iDownload";
-"Settings_Tweak_Injection" = "插件注入";
-"Settings_Verbose_Logs" = "詳細日誌";
-"Patchfinding" = "Patchfinding";
-"Rebuilding TrustCache" = "重建 TrustCache";
-"Refreshing Icon Cache" = "更新圖標緩存";
-"Settings_Footer_Device_Bootstrapped" = "裝置已安裝越獄環境";
-"Settings_Footer_Device_Not_Bootstrapped" = "裝置未安裝越獄環境";
-"Settings_Remove_Jailbreak_Alert_Body" = "清除越獄將移除所有和越獄相關的文件，但將保留普通 App、文件、數據。請注意，此操作無法撤銷。確認清除越獄嗎？";
-"Settings_Remove_Jailbreak_Alert_Title" = "清除越獄";
+
 "Menu_Settings_Title" = "設置";
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "需要用戶空間重啟";
+
+"Settings" = "設置";
+
+"Menu_Reboot_Userspace_Title" = "用戶空間重啟";
+
+"Menu_Restart_SpringBoard_Title" = "註銷";
+
+"Settings_iDownload" = "iDownload (开发商终端)";
+
+"Settings_Tweak_Injection" = "插件注入";
+
+"Settings_Verbose_Logs" = "詳細日誌";
+
+"Patchfinding" = "Patchfinding";
+
+"PM_Reinstall_Done_Text" = "選中的包管理器已重新安裝";
+
+"Rebuilding TrustCache" = "重建 TrustCache";
+
+"Refreshing Icon Cache" = "更新圖標緩存";
+
+"Settings_Footer_Device_Bootstrapped" = "裝置已安裝越獄環境";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "裝置未安裝越獄環境";
+
 "Starting jailbreakd" = "啟動 jailbreakd";
+
 "Starting Launch Daemons" = "啟動 Launch Daemons";
+
 "Status_Title_Jailbreaking" = "正在越獄";
+
 "Status_Title_Jailbroken" = "已越獄";
+
 "Status_Title_Select_Package_Managers" = "選定包管理器（越獄商店）";
+
 "Status_Title_Unsuccessful" = "失敗";
+
 "Success_Rate %@%% (%lld/%lld)" = "成功率：%@%% (%lld/%lld)";
+
 "Title_Changelog" = "變更日誌";
+
 "Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
+
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
+
 "Update_Log_Hint_Scrollable" = "滑動以查看日誌";
+
 "Update_Status_Downloading" = "正在下載更新…";
+
 "Update_Status_Installing" = "正在安裝更新…";
+
 "Update_Status_Subtitle_Please_Wait" = "請等待完成下載";
+
 "Update_Status_Subtitle_Restart_Soon" = "裝置即將重新啟動";
+
+"Alert_Button_Uninstall" = "清除越獄";
+
+"Alert_Tweak_Injection_Toggled_Body" = "為使變更生效需用戶空間重啟，即可執行否？";
+
 "Popup_Change_Mobile_Password_Title" = "修改 mobile 用戶口令";
+
+"Settings_Remove_Jailbreak_Alert_Body" = "清除越獄將移除所有和越獄相關的文件，但將保留普通 App、文件、數據。請注意，此操作無法撤銷。確認清除越獄嗎？";
+
+"Settings_Remove_Jailbreak_Alert_Title" = "清除越獄";
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "需要用戶空間重啟";
+
+"Select_Package_Managers_Install_Message" = "若不確定如何選擇，請使用 Sileo";
+
+"Select_Package_Managers_Reinstall_Message" = "選定需要重新安裝的包管理器";
+
+"Reinstall" = "重新安裝";
+
+"Continue" = "繼續";
+
+"Close" = "關閉";
+
+"Title_Mismatching_Environment_Version" = "環境版本不匹配";
+
+"Mismatching_Environment_Version_Update_Body" = "本機的越獄環境 (%@) 與 App 版本 (%@) 不匹配。\n點按更新按鈕將安裝匹配 App 版本的越獄環境，並將隨後執行一次用戶空間重啟。";
+
+"Options_Tweak_Injection" = "插件注入";
+
+"Reboot_Userspace_Finish" = "用戶空間重啟";
+
+"Restarting Userspace" = "正在重啟用戶空間";

@@ -22,5 +22,7 @@
 	<true/>
 	<key>com.apple.private.security.storage.AppDataContainers</key>
 	<true/>
+	<key>com.apple.private.xpc.launchd.userspace-reboot</key>
+	<true/>
 </dict>
 </plist>
