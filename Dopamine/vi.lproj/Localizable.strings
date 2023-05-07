@@ -151,3 +151,8 @@
 "Continue" = "Tiếp tục";
 
 "Close" = "Đóng";
+
+"Title_Mismatching_Environment_Version" = "Phiên bản \"Môi trường\" không khớp";
+
+"Mismatching_Environment_Version_Update_Body" = "Phiên bản \”Môi trường\” mà thiết bị này đã được Jailbreak với (%@) không khớp với phiên bản ứng dụng hiện đang được cài đặt (%@)\nNhấn cập nhật sẽ cập nhật \”Môi trường\” Jailbreak lên một trong những ứng dụng hiện đang được cài đặt, thiết bị của bạn sẽ khởi động lại Userspace sau đó.";
+Give feedback
