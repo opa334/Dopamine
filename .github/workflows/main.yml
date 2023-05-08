@@ -66,12 +66,17 @@ jobs:
           cp -a Dopamine/Dopamine.tipa Dopamine/Dopamine_${{ env.shorthash }}_${{ env.ctime }}.tipa
           cp -a Dopamine/Dopamine.tipa Dopamine/Dopamine_Latest.tipa
 
-      - name: Upload Artifact
+      - name: Upload Latest Artifact
+        id: dopamine-latest-upload
         uses: actions/upload-artifact@v3
         with:
-          - name: Dopamine_Latest
-            path: |
-              ${{ github.workspace }}/Dopamine/Dopamine_Latest.tipa
-          - name: Dopamine_${{ env.shorthash }}_${{ env.ctime }}
-            path: |
-              ${{ github.workspace }}/Dopamine/Dopamine_${{ env.shorthash }}_${{ env.ctime }}.tipa
+          name: Dopamine_Latest
+          path: |
+            ${{ github.workspace }}/Dopamine/Dopamine_Latest.tipa
+      - name: Upload Hashed Artifact
+        id: dopamine-hashed-upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: Dopamine_${{ env.shorthash }}_${{ env.ctime }}
+          path: |
+            ${{ github.workspace }}/Dopamine/Dopamine_${{ env.shorthash }}_${{ env.ctime }}.tipa
