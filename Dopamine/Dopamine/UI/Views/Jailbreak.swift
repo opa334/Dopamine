@@ -66,7 +66,7 @@ func reboot() {
 }
 
 func isJailbroken() -> Bool {
-    if isSandboxed() { return true } // ui debugging
+    if isSandboxed() { return false } // ui debugging
     
     var jbdPid: pid_t = 0
     jbdGetStatus(nil, nil, &jbdPid)
@@ -74,7 +74,7 @@ func isJailbroken() -> Bool {
 }
 
 func isBootstrapped() -> Bool {
-    if isSandboxed() { return true } // ui debugging
+    if isSandboxed() { return false } // ui debugging
     
     return Bootstrapper.isBootstrapped()
 }
@@ -179,7 +179,7 @@ func update(tipaURL: URL) {
 }
 
 func installedEnvironmentVersion() -> String {
-    if isSandboxed() { return "0.9" } // ui debugging
+    if isSandboxed() { return "1.0.3" } // ui debugging
     
     return getBootInfoValue(key: "basebin-version") as? String ?? "1.0"
 }
