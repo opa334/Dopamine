@@ -1,6 +1,21 @@
-name: Build Dopamine
+name: "Dopamine: build and upload"
 
-on: push
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - ".gitignore"
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - ".gitignore"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -24,7 +39,17 @@ jobs:
           gsed -E "/^\s*get_theos\s*$/,+1 s/^(\s*)(get_sdks)\s*$/\1mkdir -p \${THEOS}\/sdks\n\1touch \${THEOS}\/sdks\/sdk\n\1\2/g" -i install-theos.sh
           bash install-theos.sh
           cd $BASEDIR
-      
+
+      - name: Set Environment Variables
+        run: |
+          set -x
+          T2=$(TZ=UTC-2 date +'%Y%m%d_%H%M%S')
+          TS=$(date -j -f "%Y%m%d_%H%M%S" "${T2}" +%s)
+          SHASH=$(git rev-parse --short HEAD)
+          echo "ctime=${T2}" >> $GITHUB_ENV
+          echo "ctimestamp=${TS}" >> $GITHUB_ENV
+          echo "shorthash=${SHASH}" >> $GITHUB_ENV
+
       - name: Build
         run: |
           set -x
@@ -32,10 +57,10 @@ jobs:
           export BASEDIR="$(pwd)"
           export THEOS="${BASEDIR}/theos"
           gmake -j$(sysctl -n hw.physicalcpu)
-      
-      - name: Upload Dopamine
+
+      - name: Upload Artifact
         uses: actions/upload-artifact@v2.3.1
         with:
-           name: Dopamine tipa
-           path: |
-             ${{ github.workspace }}/Dopamine/Dopamine.tipa
+          name: Dopamine_${{ env.shorthash }}_${{ env.ctime }}
+          path: |
+            ${{ github.workspace }}/Dopamine/Dopamine_${{ env.shorthash }}_${{ env.ctime }}.tipa
