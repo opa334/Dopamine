@@ -36,6 +36,6 @@ jobs:
       - name: Upload Dopamine
         uses: actions/upload-artifact@v2.3.1
         with:
-           name: Dopamine tipa
+           name: Dopamine
            path: |
              ${{ github.workspace }}/Dopamine/Dopamine.tipa
