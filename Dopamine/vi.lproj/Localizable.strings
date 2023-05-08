@@ -34,7 +34,7 @@
 
 "Changelog_Unavailable_Text" = "Không có Log thay đổi";
 
-"Context_Menu_Copy_To_Clipboard" = "Sao chép vào Bộ nhớ đệm";
+"Context_Menu_Copy_To_Clipboard" = "Chép vào bộ nhớ tạm";
 
 "Credits_Button_Discord" = "Discord";
 
@@ -52,7 +52,7 @@
 
 "Finalizing Bootstrap" = "Đang hoàn thiện Bootstrap";
 
-"Gaining r/w" = "Đang lấy quyền r/w";
+"Gaining r/w" = "Thu được quyền r/w";
 
 "Hint_Hide_Jailbreak" = "\"Ẩn Jailbreak\" sẽ tạm thời xóa các tệp tin liên quan đến Jailbreak cho đến khi bạn Jailbreak lại";
 
@@ -84,7 +84,7 @@
 
 "Settings_iDownload" = "iDownload (nhà phát triển)";
 
-"Settings_Tweak_Injection" = "Bật Tweak Injection";
+"Settings_Tweak_Injection" = "Tweak Injection";
 
 "Settings_Verbose_Logs" = "Log Verbose";
 
