@@ -8,6 +8,7 @@ extern kern_return_t mach_vm_region_recurse(vm_map_read_t target_task, mach_vm_a
 #include <signal.h>
 #include "substrate.h"
 #include <dlfcn.h>
+#include <os/log.h>
 
 int64_t (*jbdswForkFix)(pid_t childPid, bool mightHaveDirtyPages);
 
@@ -27,6 +28,18 @@ static void (*_libSystem_atfork_child_V2)(int, ...) = 0;
 
 int childToParentPipe[2];
 int parentToChildPipe[2];
+static void openPipes(void)
+{
+	if (pipe(parentToChildPipe) < 0 || pipe(childToParentPipe) < 0) {
+		abort();
+	}
+}
+static void closePipes(void)
+{
+	if (ffsys_close(parentToChildPipe[0]) != 0 || ffsys_close(parentToChildPipe[1]) != 0 || ffsys_close(childToParentPipe[0]) != 0 || ffsys_close(childToParentPipe[1]) != 0) {
+		abort();
+	}
+}
 
 void loadPrivateSymbols(void) {
 	MSImageRef libSystemCHandle = MSGetImageByName("/usr/lib/system/libsystem_c.dylib");
@@ -57,25 +70,16 @@ void child_fixup(void)
 	extern pid_t _current_pid;
 	_current_pid = 0;
 
-	ffsys_close(parentToChildPipe[1]);
-	ffsys_close(childToParentPipe[0]);
-
 	// Tell parent we are waiting for fixup now
 	char msg = ' ';
 	ffsys_write(childToParentPipe[1], &msg, sizeof(msg));
 
 	// Wait until parent completes fixup
 	ffsys_read(parentToChildPipe[0], &msg, sizeof(msg));
-
-	ffsys_close(parentToChildPipe[0]);
-	ffsys_close(childToParentPipe[1]);
 }
 
 void parent_fixup(pid_t childPid, bool mightHaveDirtyPages)
 {
-	close(parentToChildPipe[0]);
-	close(childToParentPipe[1]);
-
 	// Wait until the child is ready and waiting
 	char msg = ' ';
 	read(childToParentPipe[0], &msg, sizeof(msg));
@@ -90,9 +94,6 @@ void parent_fixup(pid_t childPid, bool mightHaveDirtyPages)
 
 	// Tell child we are done, this will make it resume
 	write(parentToChildPipe[1], &msg, sizeof(msg));
-
-	close(parentToChildPipe[1]);
-	close(childToParentPipe[0]);
 }
 
 __attribute__((visibility ("default"))) pid_t forkfix___fork(void)
@@ -112,9 +113,7 @@ __attribute__((visibility ("default"))) pid_t forkfix_fork(bool is_vfork, bool m
 {
 	int ret;
 
-	if (pipe(parentToChildPipe) < 0 || pipe(childToParentPipe) < 0) {
-		return -1;
-	}
+	openPipes();
 
 	if (_libSystem_atfork_prepare_V2) {
 		_libSystem_atfork_prepare_V2(is_vfork);
@@ -131,6 +130,7 @@ __attribute__((visibility ("default"))) pid_t forkfix_fork(bool is_vfork, bool m
 		else {
 			_libSystem_atfork_parent();
 		}
+		closePipes();
 		return ret;
 	}
 
@@ -142,6 +142,7 @@ __attribute__((visibility ("default"))) pid_t forkfix_fork(bool is_vfork, bool m
 		else {
 			_libSystem_atfork_child();
 		}
+		closePipes();
 		return 0;
 	}
 
@@ -154,6 +155,7 @@ __attribute__((visibility ("default"))) pid_t forkfix_fork(bool is_vfork, bool m
 	}
 
 	parent_fixup(ret, mightHaveDirtyPages);
+	closePipes();
 	return ret;
 }
 

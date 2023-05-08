@@ -2,8 +2,8 @@
 
 .align 4
 
-.global _ffsys_fork
-_ffsys_fork:
+.global _forkfix___fork
+_forkfix___fork:
 	pacibsp
 	stp x29, x30, [SP, #-0x10]!
 	mov x29, sp
