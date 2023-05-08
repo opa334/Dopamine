@@ -12,6 +12,12 @@ on:
     paths-ignore:
       - ".gitignore"
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 1 1 *'
+    - cron: '0 0 1 4 *'
+    - cron: '0 0 30 6 *'
+    - cron: '0 0 28 9 *'
+    - cron: '0 0 27 12 *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -57,10 +63,15 @@ jobs:
           export BASEDIR="$(pwd)"
           export THEOS="${BASEDIR}/theos"
           gmake -j$(sysctl -n hw.physicalcpu)
+          cp -a Dopamine/Dopamine.tipa Dopamine/Dopamine_${{ env.shorthash }}_${{ env.ctime }}.tipa
+          cp -a Dopamine/Dopamine.tipa Dopamine/Dopamine_Latest.tipa
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v3
         with:
-          name: Dopamine_${{ env.shorthash }}_${{ env.ctime }}
-          path: |
-            ${{ github.workspace }}/Dopamine/Dopamine_${{ env.shorthash }}_${{ env.ctime }}.tipa
+          - name: Dopamine_Latest
+            path: |
+              ${{ github.workspace }}/Dopamine/Dopamine_Latest.tipa
+          - name: Dopamine_${{ env.shorthash }}_${{ env.ctime }}
+            path: |
+              ${{ github.workspace }}/Dopamine/Dopamine_${{ env.shorthash }}_${{ env.ctime }}.tipa
