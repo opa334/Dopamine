@@ -304,13 +304,22 @@ bool shouldEnableTweaks(void)
 		if (!strcmp(gExecutablePath, "/usr/libexec/xpcproxy")) {
 			tweaksEnabled = false;
 		}
+		else if (stringEndsWith(gExecutablePath, "/usr/sbin/sshd")) {
+			tweaksEnabled = false;
+		}
 		else if (stringEndsWith(gExecutablePath, "/usr/bin/dash")) {
+			tweaksEnabled = false;
+		}
+		else if (stringEndsWith(gExecutablePath, "/usr/bin/zsh")) {
 			tweaksEnabled = false;
 		}
 		else if (stringEndsWith(gExecutablePath, "/usr/bin/apt-config")) {
 			tweaksEnabled = false;
 		}
 		else if (stringEndsWith(gExecutablePath, "/usr/bin/apt-get")) {
+			tweaksEnabled = false;
+		}
+		else if (stringEndsWith(gExecutablePath, "/usr/bin/dpkg-deb")) {
 			tweaksEnabled = false;
 		}
 	}

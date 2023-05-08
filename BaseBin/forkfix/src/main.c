@@ -94,13 +94,6 @@ void parent_fixup(pid_t childPid, bool mightHaveDirtyPages)
 
 	// Tell child we are done, this will make it resume
 	write(parentToChildPipe[1], &msg, sizeof(msg));
-
-	// There is a super weird issue where some shell scripts break if I do not add this delay
-	// This happens even when all custom elements of this fork reimplementation are commented out
-	// And the assembly of forkfix_fork is 1:1 identical to the original implementation
-	// There is no reason why this should be needed, yet it is
-	// Don't ask me why
-	usleep(20000);
 }
 
 __attribute__((visibility ("default"))) pid_t forkfix___fork(void)
