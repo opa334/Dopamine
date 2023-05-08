@@ -14,6 +14,8 @@ struct LogView: View {
     @Binding var advancedLogsTemporarilyEnabled: Bool
     @Binding var advancedLogsByDefault: Bool
     
+    @State var lastScroll = Date()
+    
     let viewAppearanceDate = Date()
     
     var advanced: Bool {
@@ -28,7 +30,7 @@ struct LogView: View {
         
         var index: Int
         var lastIndex: Int
-
+        
         var isLast: Bool {
             index == lastIndex
         }
@@ -91,7 +93,7 @@ struct LogView: View {
             GeometryReader { proxy1 in
                 ScrollViewReader { reader in
                     ScrollView {
-                        ZStack {
+                        if !advanced {
                             VStack {
                                 Spacer()
                                     .frame(minHeight: proxy1.size.height)
@@ -106,9 +108,8 @@ struct LogView: View {
                             }
                             .id("RegularLogs")
                             .frame(minHeight: proxy1.size.height)
-                            .opacity(advanced ? 0 : 1)
+                            .transition(.opacity)
                             .frame(maxHeight: advanced ? 0 : nil)
-                            .animation(.spring(), value: advanced)
                             .onChange(of: logger.userFriendlyLogs) { newValue in
                                 if !advanced {
                                     // give 0.5 seconds for a better feel
@@ -128,34 +129,37 @@ struct LogView: View {
                                     }
                                 }
                             }
-                            
-                            if advanced {
-                                Text(logger.log)
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: advanced ? .infinity : 0,
-                                           maxHeight: advanced ? .infinity : 0)
-                                    .tag("AdvancedText")
-                                    .padding(.bottom, advanced ? 64 : 0)
-                                    .padding(.horizontal, advanced ? 32 : 0)
-                                    .opacity(advanced ? 1 : 0)
-                                    .animation(.spring(), value: advanced)
-                                    .onChange(of: logger.log) { newValue in
-                                        if advanced {
-                                            withAnimation(.spring().speed(1.5)) {
-                                                reader.scrollTo("AdvancedText", anchor: .bottom)
-                                            }
+                        }
+                        
+                        if advanced {
+                            Text(logger.log)
+                                .foregroundColor(.white)
+                                .frame(minWidth: 0,
+                                       maxWidth: .infinity,
+                                       minHeight: 0,
+                                       maxHeight: .infinity,
+                                       alignment: .topLeading)
+                                .padding(.bottom, 64)
+                                .padding(.horizontal, 32)
+                                .transition(.opacity)
+                                .id("AdvancedText")
+                                .onChange(of: logger.log) { newValue in
+                                    withAnimation  {
+                                        if lastScroll.timeIntervalSinceNow < -0.25 {
+                                            lastScroll = Date()
+                                            //                                        print("scroll")
+                                            reader.scrollTo("AdvancedText", anchor: .bottom)
                                         }
                                     }
-                                    .onChange(of: advanced) { newValue in
-                                        if newValue {
-                                            withAnimation(.spring().speed(1.5)) {
-                                                reader.scrollTo("AdvancedText", anchor: .bottom)
-                                            }
-                                        }
-                                    }
-                            }
+                                }
+                                .onAppear {
+//                                    withAnimation {
+//                                        reader.scrollTo("AdvancedText", anchor: .bottom)
+//                                    }
+                                }
                         }
                     }
+                    .animation(.spring(), value: advanced)
                     .contextMenu {
                         Button {
                             UIPasteboard.general.string = logger.log
@@ -185,7 +189,7 @@ struct LogView: View {
 //                Jailbreak successful
 //                """
 //            let c = texts.components(separatedBy: "\n")
-//            Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { t in
+//            Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { t in
 //                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isStatus: Int.random(in: 1...20) == 1)
 //                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isStatus: Int.random(in: 1...20) == 1)
 //                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isStatus: Int.random(in: 1...20) == 1)
@@ -197,7 +201,7 @@ struct LogView: View {
 
 struct LogView_Previews: PreviewProvider {
     static var previews: some View {
-        LogView(advancedLogsTemporarilyEnabled: .constant(false), advancedLogsByDefault: .constant(false))
+        LogView(advancedLogsTemporarilyEnabled: .constant(true), advancedLogsByDefault: .constant(false))
             .background(.black)
     }
 }

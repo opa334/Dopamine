@@ -55,7 +55,6 @@ struct PackageManagerSelectionView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 64)
-                                    .cornerRadius(14)
                                 
                                 HStack {
                                     Text(name)

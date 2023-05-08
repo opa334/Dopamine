@@ -130,28 +130,28 @@
 
 "Update_Status_Subtitle_Restart_Soon" = "Het apparaat zal binnenkort worden herstart";
 
-"Alert_Button_Uninstall" = "Uninstall";
+"Alert_Button_Uninstall" = "De-installeren";
 
-"Alert_Tweak_Injection_Toggled_Body" = "A userspace reboot is neccessary to apply the changes. Do you want to do it now?";
+"Alert_Tweak_Injection_Toggled_Body" = "Een userspace reboot is nodig om de veranderingen toe te passen. Wil je het nu doen?";
 
-"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
+"Popup_Change_Mobile_Password_Title" = "Mobile wachtwoord wijzigen";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+"Settings_Remove_Jailbreak_Alert_Body" = "Het verwijderen van jailbreak zal alle jailbreak-gerelateerde bestanden verwijderen, maar alle reguliere apps, bestanden en gegevens blijven behouden. Weet u zeker dat u wilt doorgaan? U kunt deze actie niet ongedaan maken.";
 
-"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+"Settings_Remove_Jailbreak_Alert_Title" = "Jailbreak verwijderen";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace Reboot Required";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace Reboot Vereist";
 
-"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+"Select_Package_Managers_Install_Message" = "Als u niet zeker weet welke u moet selecteren, selecteer dan Sileo";
 
-"Select_Package_Managers_Reinstall_Message" = "Select package managers to reinstall";
+"Select_Package_Managers_Reinstall_Message" = "Selecteer pakketbeheerders om opnieuw te installeren";
 
-"Reinstall" = "Reinstall";
+"Reinstall" = "Opnieuw installeren";
 
-"Continue" = "Continue";
+"Continue" = "Doorgaan";
 
-"Close" = "Close";
+"Close" = "Sluiten";
 
-"Title_Mismatching_Environment_Version" = "Mismatching Environment Version";
+"Title_Mismatching_Environment_Version" = "Niet overeenkomstige omgevingsversie";
 
-"Mismatching_Environment_Version_Update_Body" = "The environment version this device was jailbroken with (%@) mismatches the currently installed app version (%@)\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";
+"Mismatching_Environment_Version_Update_Body" = "De versie van de omgeving waarmee op dit apparaat een jailbreak is uitgevoerd (%@) komt niet overeen met de huidige geïnstalleerde app-versie (%@).\nDoor op update te drukken wordt de jailbreak omgeving bijgewerkt naar die van de huidige geïnstalleerde app, uw toestel zal daarna een userspace reboot uitvoeren.";
