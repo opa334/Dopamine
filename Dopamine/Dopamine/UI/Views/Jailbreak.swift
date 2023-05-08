@@ -74,7 +74,7 @@ func isJailbroken() -> Bool {
 }
 
 func isBootstrapped() -> Bool {
-    if isSandboxed() { return true } // ui debugging
+    if isSandboxed() { return false } // ui debugging
     
     return Bootstrapper.isBootstrapped()
 }
