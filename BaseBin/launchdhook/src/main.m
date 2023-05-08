@@ -3,11 +3,13 @@
 #import <libjailbreak/handoff.h>
 #import <libjailbreak/kcall.h>
 #import <libfilecom/FCHandler.h>
+#import <mach-o/dyld.h>
+#import <spawn.h>
+
 #import "spawn_hook.h"
 #import "xpc_hook.h"
 #import "daemon_hook.h"
-#import <mach-o/dyld.h>
-#import <spawn.h>
+#import "ipc_hook.h"
 
 int gLaunchdImageIndex = -1;
 
@@ -61,6 +63,7 @@ __attribute__((constructor)) static void initializer(void)
 	initXPCHooks();
 	initDaemonHooks();
 	initSpawnHooks();
+	initIPCHooks();
 
 	// This will ensure launchdhook is always reinjected after userspace reboots
 	// As this launchd will pass environ to the next launchd...
@@ -68,12 +71,3 @@ __attribute__((constructor)) static void initializer(void)
 
 	bootInfo_setObject(@"environmentInitialized", @1);
 }
-
-/*
-
-TODO: Register for host get special port 10 in launchd
-then recover primitives from jailbreakd over that
-should be more stable and less prone to lockups
-do this on background thread
-
-*/
