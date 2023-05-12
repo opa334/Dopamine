@@ -5,6 +5,7 @@
 #import "signatures.h"
 #import "log.h"
 #import <libproc.h>
+#import <libproc_private.h>
 #import <IOKit/IOKitLib.h>
 
 #define P_SUGID 0x00000100
@@ -879,6 +880,15 @@ NSString *proc_get_path(pid_t pid)
 	int ret = proc_pidpath(pid, pathbuf, sizeof(pathbuf));
 	if (ret <= 0) return nil;
 	return [[[NSString stringWithUTF8String:pathbuf] stringByResolvingSymlinksInPath] stringByStandardizingPath];
+}
+
+pid_t proc_get_ppid(pid_t pid)
+{
+	struct proc_bsdinfo procInfo;
+	if (proc_pidinfo(pid, PROC_PIDTBSDINFO, 0, &procInfo, sizeof(procInfo)) <= 0) {
+        return -1;
+    }
+	return procInfo.pbi_ppid;
 }
 
 int64_t proc_fix_setuid(pid_t pid)

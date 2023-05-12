@@ -93,6 +93,7 @@ NSMutableDictionary *proc_dump_entitlements(uint64_t proc_ptr);
 void proc_replace_entitlements(uint64_t proc_ptr, NSDictionary *entitlements);
 
 int proc_set_debugged(pid_t pid);
+pid_t proc_get_ppid(pid_t pid);
 NSString *proc_get_path(pid_t pid);
 int64_t proc_fix_setuid(pid_t pid);
 

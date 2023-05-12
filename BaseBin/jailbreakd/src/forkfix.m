@@ -18,10 +18,8 @@ extern kern_return_t mach_vm_region_recurse(vm_map_read_t target_task, mach_vm_a
 int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid, bool mightHaveDirtyPages)
 {
 	int retval = 3;
-	NSString *parentPath = proc_get_path(parentPid);
-	NSString *childPath = proc_get_path(childPid);
-	// very basic check to make sure this is actually a fork flow
-	if ([parentPath isEqualToString:childPath]) {
+	// Safety check to ensure we are actually coming from fork
+	if (proc_get_ppid(childPid) == parentPid) {
 		proc_set_debugged(childPid);
 		if (!mightHaveDirtyPages) {
 			retval = 0;
