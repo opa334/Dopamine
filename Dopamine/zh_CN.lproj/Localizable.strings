@@ -1,4 +1,4 @@
-"Bootstrapping" = "引导中";
+"Bootstrapping" = "正在引导";
 
 "Button_Cancel" = "取消";
 
@@ -8,7 +8,7 @@
 
 "Button_Jailbreak_Title" = "越狱";
 
-"Button_Remove_Jailbreak" = "清除越狱";
+"Button_Remove_Jailbreak" = "移除越狱";
 
 "Button_Set_Mobile_Password" = "设定 mobile 用户密码";
 
@@ -20,7 +20,7 @@
 
 "Button_Show_Logs_Title" = "显示日志";
 
-"Button_Unhide_Jailbreak" = "解除隐藏越狱";
+"Button_Unhide_Jailbreak" = "取消隐藏越狱";
 
 "Button_Update" = "更新";
 
@@ -54,7 +54,7 @@
 
 "Gaining r/w" = "获取 r/w 权限";
 
-"Hint_Hide_Jailbreak" = "「隐藏越狱」将在下次越狱前临时移除越狱相关的文件";
+"Hint_Hide_Jailbreak" = "「隐藏越狱」将在下次越狱前临时移除越狱相关的文件。";
 
 "Hint_Hide_Jailbreak_Jailbroken" = "在已越狱状态下，「隐藏越狱」将部分禁用越狱功能以提升检测越狱的难度。但是，它并非总是有效，也并没有隐藏所有东西。";
 
@@ -84,7 +84,7 @@
 
 "Menu_Restart_SpringBoard_Title" = "注销";
 
-"Settings_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload (开发者终端)";
 
 "Settings_Tweak_Injection" = "插件注入";
 
@@ -112,15 +112,15 @@
 
 "Status_Title_Select_Package_Managers" = "选择包管理器（越狱商店）";
 
-"Status_Title_Unsuccessful" = "失败";
+"Status_Title_Unsuccessful" = "未成功";
 
 "Success_Rate %@%% (%lld/%lld)" = "成功率：%@%% (%lld/%lld)";
 
 "Title_Changelog" = "变更日志";
 
-"Title_Made_By" = "作者：opa334, évelyne；UI: sourceloc\n基于 Fugu15";
+"Title_Made_By" = "由 opa334, évelyne 制作\nUI 设计由 sourceloc 完成\n基于 Fugu15";
 
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
+"Title_Supported_iOS_Versions" = "支持 iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
 "Update_Log_Hint_Scrollable" = "滚动查看日志";
 
@@ -132,15 +132,15 @@
 
 "Update_Status_Subtitle_Restart_Soon" = "设备即将重启";
 
-"Alert_Button_Uninstall" = "清除越狱";
+"Alert_Button_Uninstall" = "移除越狱";
 
 "Alert_Tweak_Injection_Toggled_Body" = "为使变更生效需要重启用户空间，立即执行？";
 
 "Popup_Change_Mobile_Password_Title" = "修改 mobile 用户密码";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "清除越狱将移除所有和越狱相关的文件，但将保留普通 App、文件、数据。请注意，此操作无法撤销。确认清除越狱吗？";
+"Settings_Remove_Jailbreak_Alert_Body" = "「移除越狱」将移除所有和越狱相关的文件，但将保留普通 App、文件、数据。请注意，此操作无法撤销。确认移除越狱吗？";
 
-"Settings_Remove_Jailbreak_Alert_Title" = "清除越狱";
+"Settings_Remove_Jailbreak_Alert_Title" = "移除越狱";
 
 "Settings_Tweak_Injection_Toggled_Alert_Title" = "需要重启用户空间";
 
@@ -156,7 +156,7 @@
 
 "Title_Mismatching_Environment_Version" = "环境版本不匹配";
 
-"Mismatching_Environment_Version_Update_Body" = "本机的越狱环境版本 (%@) 与 App 版本 (%@) 不匹配。\n点按更新按钮将安装匹配 App 版本的越狱环境，并将随后执行一次重启用户空间。";
+"Mismatching_Environment_Version_Update_Body" = "本机的越狱环境版本 (%@) 与 App 版本 (%@) 不匹配。\n点按更新按钮将安装匹配 App 版本的越狱环境，并将随后执行一次用户空间重启。";
 
 "Options_Tweak_Injection" = "插件注入";
 
