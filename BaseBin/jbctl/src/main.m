@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 			return 1;
 		}
 		int pid = atoi(argv[2]);
-		int64_t result = jbdProcSetDebugged(getpid());
+		int64_t result = jbdProcSetDebugged(pid);
 		if (result == 0) {
 			printf("Successfully marked proc of pid %d as debugged\n", pid);
 		}
