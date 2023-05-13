@@ -886,8 +886,8 @@ pid_t proc_get_ppid(pid_t pid)
 {
 	struct proc_bsdinfo procInfo;
 	if (proc_pidinfo(pid, PROC_PIDTBSDINFO, 0, &procInfo, sizeof(procInfo)) <= 0) {
-        return -1;
-    }
+		return -1;
+	}
 	return procInfo.pbi_ppid;
 }
 
