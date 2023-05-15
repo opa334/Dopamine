@@ -298,33 +298,27 @@ bool shouldEnableTweaks(void)
 		}
 	}
 
-	bool tweaksEnabled = true;
+	const char *tweaksDisabledPathSuffixes[] = {
+		// System binaries
+		"/usr/libexec/xpcproxy",
 
-	if (gExecutablePath) {
-		if (!strcmp(gExecutablePath, "/usr/libexec/xpcproxy")) {
-			tweaksEnabled = false;
-		}
-		else if (stringEndsWith(gExecutablePath, "/usr/sbin/sshd")) {
-			tweaksEnabled = false;
-		}
-		else if (stringEndsWith(gExecutablePath, "/usr/bin/dash")) {
-			tweaksEnabled = false;
-		}
-		else if (stringEndsWith(gExecutablePath, "/usr/bin/zsh")) {
-			tweaksEnabled = false;
-		}
-		else if (stringEndsWith(gExecutablePath, "/usr/bin/apt-config")) {
-			tweaksEnabled = false;
-		}
-		else if (stringEndsWith(gExecutablePath, "/usr/bin/apt-get")) {
-			tweaksEnabled = false;
-		}
-		else if (stringEndsWith(gExecutablePath, "/usr/bin/dpkg-deb")) {
-			tweaksEnabled = false;
-		}
+		// Bootstrap binaries
+		"/usr/sbin/sshd",
+		"/usr/bin/dash",
+		"/usr/bin/zsh",
+		"/usr/bin/apt-config",
+		"/usr/bin/apt-get",
+		"/usr/bin/dpkg-deb",
+
+		// Dopamine app itself (jailbreak detection bypass tweaks can break it)
+		"Dopamine.app/Dopamine",
+	};
+	for (size_t i = 0; i < sizeof(tweaksDisabledPathSuffixes) / sizeof(const char*); i++)
+	{
+		if (stringEndsWith(gExecutablePath, tweaksDisabledPathSuffixes[i])) return false;
 	}
 
-	return tweaksEnabled;
+	return true;
 }
 
 void applyKbdFix(void)
@@ -374,12 +368,16 @@ __attribute__((constructor)) static void initializer(void)
 	freeExecutablePath();
 }
 
-/*void _os_crash(void);
-void _os_crash_hook(void)
+/*kern_return_t IOConnectCallStructMethod_hook(mach_port_t connection, uint32_t selector, const void *inputStruct, size_t inputStructCnt, void *outputStruct, size_t *outputStructCnt)
 {
-	// Normally this function is used to trigger a userspace panic
-	// We overwrite it to do a userspace reboot instead, so that the jailbreak environment stays alive
-	reboot3(RB2_USERREBOOT);
+	if (connection != MACH_PORT_NULL) {
+		if (IOObjectConformsTo((io_object_t)connection), "IOWatchdogUserClient") {
+			if (selector == 2) {
+
+			}
+		}
+	}
+	return IOConnectCallStructMethod(connection, selector, inputStruct, inputStructCnt, outputStruct, outputStructCnt);
 }*/
 
 DYLD_INTERPOSE(posix_spawn_hook, posix_spawn)
