@@ -8,6 +8,7 @@ int64_t jbdswFixSetuid(void);
 int64_t jbdswProcessBinary(const char *filePath);
 int64_t jbdswProcessLibrary(const char *filePath);
 int64_t jbdswDebugMe(void);
+int64_t jbdswInterceptUserspacePanic(const char *messageString);
 
 int resolvePath(const char *file, const char *searchPath, int (^attemptHandler)(char *path));
 int spawn_hook_common(pid_t *restrict pid, const char *restrict path,

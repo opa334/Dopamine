@@ -14,6 +14,7 @@
 #import <bsm/libbsm.h>
 #import <libproc.h>
 #import "spawn_wrapper.h"
+#import "server.h"
 #import "fakelib.h"
 #import "update.h"
 #import "forkfix.h"
@@ -111,6 +112,39 @@ int launchdInitPPLRW(void)
 	}
 }
 
+bool boolValueForEntitlement(audit_token_t *token, const char *entitlement)
+{
+	xpc_object_t entitlementValue = xpc_copy_entitlement_for_token(entitlement, token);
+	if (entitlementValue) {
+		if (xpc_get_type(entitlementValue) == XPC_TYPE_BOOL) {
+			return xpc_bool_get_value(entitlementValue);
+		}
+	}
+	return false;
+}
+
+void dumpUserspacePanicLog(const char *message)
+{
+	time_t t = time(NULL);
+	struct tm *tm = localtime(&t);
+	char timestamp[20];
+	strftime(timestamp, sizeof(timestamp), "%Y-%m-%d_%H-%M-%S", tm);
+
+	char panicPath[PATH_MAX];
+	strcpy(panicPath, "/var/mobile/Library/Logs/CrashReporter/userspace-panic-");
+	strcat(panicPath, timestamp);
+	strcat(panicPath, ".ips");
+
+	FILE * f = fopen(panicPath, "w");
+	if (f) {
+		fprintf(f, "%s", message);
+		fprintf(f, "\n\nThis panic was prevented by Dopamine and jailbreakd triggered a userspace reboot instead.");
+		fclose(f);
+		chown(panicPath, 0, 250);
+		chmod(panicPath, 0660);
+	}
+}
+
 void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 {
 	@autoreleasepool {
@@ -139,7 +173,8 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 			BOOL isAllowedSystemWide = msgId == JBD_MSG_PROCESS_BINARY || 
 									msgId == JBD_MSG_DEBUG_ME ||
 									msgId == JBD_MSG_SETUID_FIX ||
-									msgId == JBD_MSG_FORK_FIX;
+									msgId == JBD_MSG_FORK_FIX ||
+									msgId == JBD_MSG_INTERCEPT_USERSPACE_PANIC;
 
 			if (!systemwide || isAllowedSystemWide) {
 				switch (msgId) {
@@ -363,6 +398,18 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						}
 						xpc_dictionary_set_int64(reply, "result", result);
 						break;
+					}
+
+					case JBD_MSG_INTERCEPT_USERSPACE_PANIC: {
+						int64_t result = 0;
+						const char *messageString = xpc_dictionary_get_string(message, "message");
+						if (boolValueForEntitlement(&auditToken, "com.apple.private.iowatchdog.user-access") == true) {
+							if (messageString) {
+								dumpUserspacePanicLog(messageString);
+							}
+							reboot3(RB2_USERREBOOT);
+						}
+						xpc_dictionary_set_int64(reply, "result", result);
 					}
 
 					case JBD_SET_FAKELIB_VISIBLE: {

@@ -6,6 +6,7 @@ jbctl/jbctl
 launchdhook/launchdhook.dylib
 forkfix/forkfix.dylib
 systemhook/systemhook.dylib
+watchdoghook/watchdoghook.dylib
 libfilecom/libfilecom.dylib
 boomerang/boomerang
 _shared/libjailbreak

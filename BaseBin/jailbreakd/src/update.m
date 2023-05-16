@@ -5,11 +5,9 @@
 #import <libjailbreak/launchd.h>
 #import "trustcache.h"
 #import "spawn_wrapper.h"
+#import "server.h"
 #include <libarchive/archive.h>
 #include <libarchive/archive_entry.h>
-
-int reboot3(uint64_t flags, ...);
-#define RB2_USERREBOOT (0x2000000000000000llu)
 
 static int
 copy_data(struct archive *ar, struct archive *aw)

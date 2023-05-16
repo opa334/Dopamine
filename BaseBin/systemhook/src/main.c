@@ -345,11 +345,14 @@ __attribute__((constructor)) static void initializer(void)
 		if (strcmp(gExecutablePath, "/System/Library/CoreServices/SpringBoard.app/SpringBoard") == 0) {
 			applyKbdFix();
 		}
-		if (strcmp(gExecutablePath, "/usr/sbin/cfprefsd") == 0) {
+		else if (strcmp(gExecutablePath, "/usr/sbin/cfprefsd") == 0) {
 			int64_t debugErr = jbdswDebugMe();
 			if (debugErr == 0) {
 				dlopen_hook("/var/jb/basebin/rootlesshooks.dylib", RTLD_NOW);
 			}
+		}
+		else if (strcmp(gExecutablePath, "/usr/libexec/watchdogd") == 0) {
+			dlopen_hook("/var/jb/basebin/watchdoghook.dylib", RTLD_NOW);
 		}
 	}
 
@@ -367,18 +370,6 @@ __attribute__((constructor)) static void initializer(void)
 	}
 	freeExecutablePath();
 }
-
-/*kern_return_t IOConnectCallStructMethod_hook(mach_port_t connection, uint32_t selector, const void *inputStruct, size_t inputStructCnt, void *outputStruct, size_t *outputStructCnt)
-{
-	if (connection != MACH_PORT_NULL) {
-		if (IOObjectConformsTo((io_object_t)connection), "IOWatchdogUserClient") {
-			if (selector == 2) {
-
-			}
-		}
-	}
-	return IOConnectCallStructMethod(connection, selector, inputStruct, inputStructCnt, outputStruct, outputStructCnt);
-}*/
 
 DYLD_INTERPOSE(posix_spawn_hook, posix_spawn)
 DYLD_INTERPOSE(posix_spawnp_hook, posix_spawnp)

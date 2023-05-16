@@ -81,6 +81,12 @@ make
 cd -
 cp "./systemhook/systemhook.dylib" ".tmp/basebin/systemhook.dylib"
 
+# watchdoghook
+cd "watchdoghook"
+make
+cd -
+cp "./watchdoghook/watchdoghook.dylib" ".tmp/basebin/watchdoghook.dylib"
+
 # rootlesshooks
 cd "rootlesshooks"
 make

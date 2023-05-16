@@ -16,6 +16,7 @@ int posix_spawnattr_getprocesstype_np(const posix_spawnattr_t * __restrict, int 
 #define JBD_MSG_PROCESS_BINARY 22
 #define JBD_MSG_DEBUG_ME 24
 #define JBD_MSG_FORK_FIX 25
+#define JBD_MSG_INTERCEPT_USERSPACE_PANIC 26
 
 #define JETSAM_MULTIPLIER 3
 #define XPC_TIMEOUT 0.1 * NSEC_PER_SEC
@@ -207,6 +208,20 @@ int64_t jbdswForkFix(pid_t childPid, bool mightHaveDirtyPages)
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_FORK_FIX);
 	xpc_dictionary_set_int64(message, "childPid", childPid);
 	xpc_dictionary_set_bool(message, "mightHaveDirtyPages", mightHaveDirtyPages);
+	xpc_object_t reply = sendJBDMessageSystemWide(message);
+	int64_t result = -1;
+	if (reply) {
+		result  = xpc_dictionary_get_int64(reply, "result");
+		xpc_release(reply);
+	}
+	return result;
+}
+
+int64_t jbdswInterceptUserspacePanic(const char *messageString)
+{
+	xpc_object_t message = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(message, "id", JBD_MSG_INTERCEPT_USERSPACE_PANIC);
+	xpc_dictionary_set_string(message, "message", messageString);
 	xpc_object_t reply = sendJBDMessageSystemWide(message);
 	int64_t result = -1;
 	if (reply) {

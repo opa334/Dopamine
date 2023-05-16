@@ -46,6 +46,11 @@ cd "systemhook"
 make clean
 cd -
 
+# watchdoghook
+cd "watchdoghook"
+make clean
+cd -
+
 # rootlesshooks
 cd "rootlesshooks"
 make clean
