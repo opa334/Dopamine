@@ -182,7 +182,7 @@ struct UpdateDownloadingView: View {
     func downloadUpdateAndInstall() async throws {
         if (!isJailbroken()) {
             // If not jailbroken, just open latest TIPA in TrollStore
-            guard let dopamineUpdateURL = URL(string: "apple-magnifier://install?url=https://github.com/opa334/Dopamine/releases/latest/download/Dopamine.tipa") else {
+            guard let dopamineUpdateURL = URL(string: "apple-magnifier://install?url=https://github.com/opa334/Dopamine/releases/latest/download/Dopamine.ipa") else {
                 return
             }
             
@@ -191,7 +191,7 @@ struct UpdateDownloadingView: View {
             return;
         }
         
-        let owner = "opa334"
+        let owner = "wwg135"
         let repo = "Dopamine"
         
         // Get the releases
@@ -205,7 +205,7 @@ struct UpdateDownloadingView: View {
         // Find the latest release
         guard let latestRelease = releasesJSON.first,
               let assets = latestRelease["assets"] as? [[String: Any]],
-              let asset = assets.first(where: { ($0["name"] as! String).contains(".tipa") }),
+              let asset = assets.first(where: { ($0["name"] as! String).contains(".ipa") }),
               let downloadURLString = asset["browser_download_url"] as? String,
               let downloadURL = URL(string: downloadURLString) else {
             throw "Could not find download URL for ipa"
