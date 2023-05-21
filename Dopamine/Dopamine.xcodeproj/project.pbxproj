@@ -34,6 +34,7 @@
 		938DADDE29F2993400C37952 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 938DADDD29F20ACA00C37952 /* Localizable.strings */; };
 		93D2565929ED68B100B549BA /* Error++.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D2565829ED68B100B549BA /* Error++.swift */; };
 		93D2565B29ED6EDE00B549BA /* URLExtension+download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D2565A29ED6EDE00B549BA /* URLExtension+download.swift */; };
+		9F0A886B2A09C6840026F156 /* Wallpaper.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9F0A886A2A09C6840026F156 /* Wallpaper.jpg */; };
 		CE27798929D459220030E28D /* SwiftfulLoadingIndicators in Frameworks */ = {isa = PBXBuildFile; productRef = CE27798829D459220030E28D /* SwiftfulLoadingIndicators */; };
 		CE284DE529D4777A0096D99D /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE284DE429D4777A0096D99D /* Logger.swift */; };
 		CE284DE729D478620096D99D /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE284DE629D478620096D99D /* LogView.swift */; };
@@ -101,6 +102,7 @@
 		938DADEF29F2FCE400C37952 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		93D2565829ED68B100B549BA /* Error++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error++.swift"; sourceTree = "<group>"; };
 		93D2565A29ED6EDE00B549BA /* URLExtension+download.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLExtension+download.swift"; sourceTree = "<group>"; };
+		9F0A886A2A09C6840026F156 /* Wallpaper.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Wallpaper.jpg; sourceTree = "<group>"; };
 		CE284DE429D4777A0096D99D /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		CE284DE629D478620096D99D /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
 		CE6CA69229D6D7C100A6E513 /* AboutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 		1502A40A2891B03F0011CB6E /* Dopamine */ = {
 			isa = PBXGroup;
 			children = (
+			        9F0A886A2A09C6840026F156 /* Wallpaper.jpg */,
 				8C10C46F29FDDE2B00930377 /* Licenses */,
 				CE53628529D64DBA00E4332B /* UI */,
 				15372E9E28DDF5D300514A73 /* bootstrap */,
@@ -361,6 +364,7 @@
 				8C19A9AD29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst in Resources */,
 				8C8D955B29D04B4C00A482A8 /* tar in Resources */,
 				8C2EDE1929F0AAF70060D192 /* oobPCI in Resources */,
+				9F0A886B2A09C6840026F156 /* Wallpaper.jpg in Resources */,
 				15372EA728DDFF9A00514A73 /* sileo.deb in Resources */,
 				8C2EDE1B29F0ACA60060D192 /* basebin.tar in Resources */,
 				8C2EDE1D29F0AE3A0060D192 /* basebin.tc in Resources */,
