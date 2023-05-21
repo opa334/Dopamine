@@ -1,4 +1,4 @@
-"Bootstrapping" = "正在引导";
+"Bootstrapping" = "正在引导...";
 
 "Button_Cancel" = "取消";
 
@@ -8,13 +8,13 @@
 
 "Button_Jailbreak_Title" = "越狱";
 
-"Button_Remove_Jailbreak" = "移除越狱";
+"Button_Remove_Jailbreak" = "清除越狱";
 
 "Button_Set_Mobile_Password" = "设定 mobile 用户密码";
 
 "Popup_Change_Mobile_Password_Message" = "设定你设备上的 mobile 用户密码。该密码也可用于通过 sudo 命令访问 root 用户权限。若你想要修改 root 用户密码，可在设备 shell 中执行 \"sudo passwd root\"。";
 
-"Button_Reinstall_Package_Managers" = "重新安装包管理器";
+"Button_Reinstall_Package_Managers" = "重新安装越狱商店";
 
 "Button_Set" = "确定";
 
@@ -22,11 +22,11 @@
 
 "Button_Unhide_Jailbreak" = "取消隐藏越狱";
 
-"Button_Update" = "更新";
+"Button_Update" = "立即更新";
 
-"Button_Update_Available" = "可更新";
+"Button_Update_Available" = "有新版本，请点击更新";
 
-"Button_Update_Environment" = "更新环境";
+"Button_Update_Environment" = "更新越狱环境";
 
 "Bypassing PAC" = "绕过 PAC";
 
@@ -34,7 +34,7 @@
 
 "Changelog_Unavailable_Text" = "变更日志不可用";
 
-"Context_Menu_Copy_To_Clipboard" = "拷贝";
+"Context_Menu_Copy_To_Clipboard" = "复制";
 
 "Credits_Button_Discord" = "Discord";
 
@@ -60,11 +60,11 @@
 
 "Initializing Environment" = "初始化环境";
 
-"Initializing System Hook" = "初始化系统 hook";
+"Initializing System Hook" = "初始化系统补丁";
 
-"Jailbreak_Done" = "完成！";
+"Jailbreak_Done" = "越狱成功！";
 
-"Launching kexploitd" = "启动 kexploitd";
+"Launching kexploitd" = "利用内核漏洞";
 
 "Enabling Wi-Fi" = "启用无线局域网";
 
@@ -72,7 +72,7 @@
 
 "Launching oobPCI" = "启动 oobPCI";
 
-"Loading Basebin Trustcache" = "加载 Basebin Trustcache";
+"Loading Basebin Trustcache" = "等待Basebin信任缓存";
 
 "Menu_Credits_Title" = "关于";
 
@@ -86,15 +86,15 @@
 
 "Settings_iDownload" = "iDownload (开发者终端)";
 
-"Settings_Tweak_Injection" = "插件注入";
+"Settings_Tweak_Injection" = "启用插件注入";
 
 "Settings_Verbose_Logs" = "详细日志";
 
-"Patchfinding" = "Patchfinding";
+"Patchfinding" = "补丁查找中";
 
-"PM_Reinstall_Done_Text" = "选中的包管理器已被重新安装";
+"PM_Reinstall_Done_Text" = "选中的越狱商店已被重新安装";
 
-"Rebuilding TrustCache" = "重建 TrustCache";
+"Rebuilding TrustCache" = "重建信任缓存";
 
 "Refreshing Icon Cache" = "刷新图标缓存";
 
@@ -102,51 +102,51 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "设备未安装越狱环境";
 
-"Starting jailbreakd" = "启动 jailbreakd";
+"Starting jailbreakd" = "开始越狱...";
 
-"Starting Launch Daemons" = "启动 Launch Daemons";
+"Starting Launch Daemons" = "加载启动项";
 
-"Status_Title_Jailbreaking" = "越狱中";
+"Status_Title_Jailbreaking" = "越狱中...";
 
 "Status_Title_Jailbroken" = "已越狱";
 
-"Status_Title_Select_Package_Managers" = "选择包管理器（越狱商店）";
+"Status_Title_Select_Package_Managers" = "选择越狱商店";
 
-"Status_Title_Unsuccessful" = "未成功";
+"Status_Title_Unsuccessful" = "越狱失败";
 
 "Success_Rate %@%% (%lld/%lld)" = "成功率：%@%% (%lld/%lld)";
 
-"Title_Changelog" = "变更日志";
+"Title_Changelog" = "更新日志";
 
-"Title_Made_By" = "由 opa334, évelyne 制作\nUI 设计由 sourceloc 完成\n基于 Fugu15";
+"Title_Made_By" = "开发者: opa334, évelyne \nUI设计: sourceloc \nDopamine越狱基于 Fugu15";
 
 "Title_Supported_iOS_Versions" = "支持 iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
 "Update_Log_Hint_Scrollable" = "滚动查看日志";
 
-"Update_Status_Downloading" = "正在下载更新…";
+"Update_Status_Downloading" = "正在下载更新...";
 
-"Update_Status_Installing" = "正在安装更新…";
+"Update_Status_Installing" = "正在安装更新...";
 
-"Update_Status_Subtitle_Please_Wait" = "请等待完成下载";
+"Update_Status_Subtitle_Please_Wait" = "请等待完成下载...";
 
-"Update_Status_Subtitle_Restart_Soon" = "设备即将重启";
+"Update_Status_Subtitle_Restart_Soon" = "设备即将重启用户空间...";
 
-"Alert_Button_Uninstall" = "移除越狱";
+"Alert_Button_Uninstall" = "清除越狱";
 
 "Alert_Tweak_Injection_Toggled_Body" = "为使变更生效需要重启用户空间，立即执行？";
 
 "Popup_Change_Mobile_Password_Title" = "修改 mobile 用户密码";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "「移除越狱」将移除所有和越狱相关的文件，但将保留普通 App、文件、数据。请注意，此操作无法撤销。确认移除越狱吗？";
+"Settings_Remove_Jailbreak_Alert_Body" = "「清除越狱」将清除所有和越狱相关的文件，但将保留普通 App、文件、数据。请注意，此操作无法撤销。确认清除越狱吗？";
 
-"Settings_Remove_Jailbreak_Alert_Title" = "移除越狱";
+"Settings_Remove_Jailbreak_Alert_Title" = "清除越狱";
 
 "Settings_Tweak_Injection_Toggled_Alert_Title" = "需要重启用户空间";
 
 "Select_Package_Managers_Install_Message" = "若你不确定如何选择，请使用 Sileo";
 
-"Select_Package_Managers_Reinstall_Message" = "选定需要重新安装的包管理器";
+"Select_Package_Managers_Reinstall_Message" = "选定需要重新安装的越狱商店";
 
 "Reinstall" = "重新安装";
 
@@ -154,12 +154,22 @@
 
 "Close" = "关闭";
 
-"Title_Mismatching_Environment_Version" = "环境版本不匹配";
+"Title_Mismatching_Environment_Version" = "越狱环境版本不匹配";
 
-"Mismatching_Environment_Version_Update_Body" = "本机的越狱环境版本 (%@) 与 App 版本 (%@) 不匹配。\n点按更新按钮将安装匹配 App 版本的越狱环境，并将随后执行一次用户空间重启。";
+"Mismatching_Environment_Version_Update_Body" = "本机的越狱环境版本 (%@) 与 App 版本 (%@) 不匹配。\n点按更新按钮将安装匹配 App 版本的越狱环境，并将随后执行一次重启用户空间。";
 
 "Options_Tweak_Injection" = "插件注入";
 
 "Reboot_Userspace_Finish" = "重启用户空间";
 
 "Restarting Userspace" = "正在重启用户空间";
+
+"Sure_Respring" = "确定要注销吗？";
+
+"Sure_Respring_Message" = "注销将杀死所有应用程序并重启主界面。";
+
+"Sure_Reboot_Userspace" = "确定要重启用户空间吗？";
+
+"Sure_Reboot_Userspace_Message" = "重启用户空间将重启内核外的所有进程；特别地，将重启所有运行在后台的守护进程。在内存不够或插件冲突导致有后台守护进程重启失败时，则将重启设备并退出越狱环境。";
+
+"Menu_Reboot_Title" = "重启";
