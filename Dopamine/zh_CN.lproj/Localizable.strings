@@ -74,15 +74,15 @@
 
 "Loading Basebin Trustcache" = "等待Basebin信任缓存";
 
-"Menu_Credits_Title" = "关于";
+"Menu_Credits_Title" = " 关于 ";
 
 "Menu_Settings_Title" = "设置";
 
 "Settings" = "设置";
 
-"Menu_Reboot_Userspace_Title" = "重启用户空间";
+"Menu_Reboot_Userspace_Title" = " 重启用户空间 ";
 
-"Menu_Restart_SpringBoard_Title" = "注销";
+"Menu_Restart_SpringBoard_Title" = " 注销 ";
 
 "Settings_iDownload" = "iDownload (开发者终端)";
 
