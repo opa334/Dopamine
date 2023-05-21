@@ -54,6 +54,9 @@ struct JailbreakView: View {
     
     @State var aprilFirstAlert = whatCouldThisVariablePossiblyEvenMean
     
+    @State var respringAlert = false
+    @State var userspaceRebootAlert = false
+    
     @AppStorage("verboseLogsEnabled", store: dopamineDefaults()) var advancedLogsByDefault: Bool = false
     @State var advancedLogsTemporarilyEnabled: Bool = false
     
@@ -195,6 +198,14 @@ struct JailbreakView: View {
                 UIApplication.shared.open(.init(string: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")!)
             }
         }
+        .alert("Sure_Respring", isPresented: $respringAlert) {
+          Button("Button_Cancel") {}
+          Button("Button_Set") { respring() }
+        }
+        .alert("Sure_Reboot_Userspace", isPresented: $userspaceRebootAlert) {
+          Button("Button_Cancel") {}
+          Button("Button_Set") { userspaceReboot() }
+        }
     }
     
     
@@ -228,8 +239,8 @@ struct JailbreakView: View {
         VStack {
             let menuOptions: [MenuOption] = [
                 .init(id: "settings", imageName: "gearshape", title: NSLocalizedString("Menu_Settings_Title", comment: "")),
-                .init(id: "respring", imageName: "arrow.clockwise", title: NSLocalizedString("Menu_Restart_SpringBoard_Title", comment: ""), showUnjailbroken: false, action: respring),
-                .init(id: "userspace", imageName: "arrow.clockwise.circle", title: NSLocalizedString("Menu_Reboot_Userspace_Title", comment: ""), showUnjailbroken: false, action: userspaceReboot),
+                .init(id: "respring", imageName: "arrow.clockwise", title: NSLocalizedString("Menu_Restart_SpringBoard_Title", comment: ""), showUnjailbroken: false, action: { respringAlert = true } ),
+                .init(id: "userspace", imageName: "arrow.clockwise.circle", title: NSLocalizedString("Menu_Reboot_Userspace_Title", comment: ""), showUnjailbroken: false, action: { userspaceRebootAlert = true } ),
                 .init(id: "credits", imageName: "info.circle", title: NSLocalizedString("Menu_Credits_Title", comment: "")),
             ]
             ForEach(menuOptions) { option in
