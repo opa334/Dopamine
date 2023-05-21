@@ -11,3 +11,5 @@ DerivedData/
 Dopamine/Dopamine/bootstrap/tmp/
 .idea
 Tools/fastPathSign/.build_*
+.vscode/settings.json
+Dopamine/Payload
