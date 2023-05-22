@@ -2,7 +2,7 @@
 
 "Button_Cancel" = "取消";
 
-"Button_Hide_Jailbreak" = "隐藏越狱检测";
+"Button_Hide_Jailbreak" = " 隐藏越狱检测 ";
 
 "Button_Hide_Logs_Title" = "隐藏日志";
 
@@ -10,11 +10,11 @@
 
 "Button_Remove_Jailbreak" = "清除越狱";
 
-"Button_Set_Mobile_Password" = "设定Mobile密码";
+"Button_Set_Mobile_Password" = " 设定用户密码 ";
 
 "Popup_Change_Mobile_Password_Message" = "设定你设备上的 mobile 用户密码。该密码也可用于通过 sudo 命令访问 root 用户权限。若你想要修改 root 用户密码，可在设备 shell 中执行 \"sudo passwd root\"。";
 
-"Button_Reinstall_Package_Managers" = "重装越狱商店";
+"Button_Reinstall_Package_Managers" = " 重装越狱商店 ";
 
 "Button_Set" = "确定";
 
