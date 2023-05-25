@@ -10,6 +10,11 @@
 #import <Foundation/Foundation.h>
 #define min(a,b) (((a)<(b))?(a):(b))
 
+//#undef JBLogDebug
+//#undef JBLogError
+//#define JBLogDebug(x ...) printf("DEBUG: " x); printf("\n")
+//#define JBLogError(x ...) printf("ERROR: " x); printf("\n"); abort()
+
 static uint64_t* gMagicPage = NULL;
 static uint64_t gCpuTTEP = 0;
 static NSLock* gLock = nil;
