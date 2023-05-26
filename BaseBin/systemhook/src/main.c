@@ -249,42 +249,6 @@ bool dlopen_preflight_hook(const char* path)
 	return dlopen_preflight(path);
 }
 
-pid_t (*forkfix_fork)(bool, bool) = NULL;
-void forkfix_load(void)
-{
-	static dispatch_once_t onceToken;
-	dispatch_once (&onceToken, ^{
-		void *forkfixHandle = dlopen("/var/jb/basebin/forkfix.dylib", RTLD_NOW);
-		if (forkfixHandle) {
-			forkfix_fork = dlsym(forkfixHandle, "forkfix_fork");
-		}
-	});
-}
-
-pid_t fork_hook_wrapper(bool is_vfork, pid_t (*orig)(void))
-{
-	if (swh_is_debugged) {
-		// we assume if none of these functions exists in the process space, nothing can be hooked
-		// this is a naive assumption but performance wise this is an important optimization and absolutely needed
-		bool mightHaveDirtyPages = dlsym(RTLD_DEFAULT, "MSHookFunction") || dlsym(RTLD_DEFAULT, "SubHookFunctions") || dlsym(RTLD_DEFAULT, "LHHookFunctions");
-		forkfix_load();
-		if (forkfix_fork) {
-			return forkfix_fork(is_vfork, mightHaveDirtyPages);
-		}
-	}
-	return orig();
-}
-
-pid_t fork_hook(void)
-{
-	return fork_hook_wrapper(false, &fork);
-}
-
-pid_t vfork_hook(void)
-{
-	return fork_hook_wrapper(true, &vfork);
-}
-
 bool shouldEnableTweaks(void)
 {
 	if (access("/var/jb/basebin/.safe_mode", F_OK) == 0) {
@@ -383,6 +347,3 @@ DYLD_INTERPOSE(dlopen_hook, dlopen)
 DYLD_INTERPOSE(dlopen_from_hook, dlopen_from)
 DYLD_INTERPOSE(dlopen_audited_hook, dlopen_audited)
 DYLD_INTERPOSE(dlopen_preflight_hook, dlopen_preflight)
-DYLD_INTERPOSE(fork_hook, fork)
-DYLD_INTERPOSE(vfork_hook, vfork)
-//DYLD_INTERPOSE(_os_crash_hook, _os_crash)

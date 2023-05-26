@@ -2,29 +2,20 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <mach/mach.h>
-extern kern_return_t mach_vm_region_recurse(vm_map_read_t target_task, mach_vm_address_t *address, mach_vm_size_t *size, natural_t *nesting_depth, vm_region_recurse_info_t info, mach_msg_type_number_t *infoCnt);
-#include "syscall.h"
 #include <signal.h>
-#include "substrate.h"
 #include <dlfcn.h>
 #include <os/log.h>
+#include "syscall.h"
+#include "litehook.h"
 
-int64_t (*jbdswForkFix)(pid_t childPid, bool mightHaveDirtyPages);
-
-static void **_libSystem_atfork_prepare_ptr = 0;
-static void **_libSystem_atfork_parent_ptr = 0;
-static void **_libSystem_atfork_child_ptr = 0;
-static void (*_libSystem_atfork_prepare)(void) = 0;
-static void (*_libSystem_atfork_parent)(void) = 0;
-static void (*_libSystem_atfork_child)(void) = 0;
-
-static void **_libSystem_atfork_prepare_v2_ptr = 0;
-static void **_libSystem_atfork_parent_v2_ptr = 0;
-static void **_libSystem_atfork_child_v2_ptr = 0;
-static void (*_libSystem_atfork_prepare_v2)(int, ...) = 0;
-static void (*_libSystem_atfork_parent_v2)(int, ...) = 0;
-static void (*_libSystem_atfork_child_v2)(int, ...) = 0;
+extern int64_t jbdswForkFix(pid_t childPid);
+extern void _malloc_fork_prepare(void);
+extern void _malloc_fork_parent(void);
+extern void xpc_atfork_prepare(void);
+extern void xpc_atfork_parent(void);
+extern void dispatch_atfork_prepare(void);
+extern void dispatch_atfork_parent(void);
+extern void __fork(void);
 
 int childToParentPipe[2];
 int parentToChildPipe[2];
@@ -39,28 +30,6 @@ static void closePipes(void)
 	if (ffsys_close(parentToChildPipe[0]) != 0 || ffsys_close(parentToChildPipe[1]) != 0 || ffsys_close(childToParentPipe[0]) != 0 || ffsys_close(childToParentPipe[1]) != 0) {
 		abort();
 	}
-}
-
-void loadPrivateSymbols(void) {
-	MSImageRef libSystemCHandle = MSGetImageByName("/usr/lib/system/libsystem_c.dylib");
-
-	_libSystem_atfork_prepare_ptr = MSFindSymbol(libSystemCHandle, "__libSystem_atfork_prepare");
-	_libSystem_atfork_parent_ptr = MSFindSymbol(libSystemCHandle, "__libSystem_atfork_parent");
-	_libSystem_atfork_child_ptr = MSFindSymbol(libSystemCHandle, "__libSystem_atfork_child");
-
-	_libSystem_atfork_prepare_v2_ptr = MSFindSymbol(libSystemCHandle, "__libSystem_atfork_prepare_v2");
-	_libSystem_atfork_parent_v2_ptr = MSFindSymbol(libSystemCHandle, "__libSystem_atfork_parent_v2");
-	_libSystem_atfork_child_v2_ptr = MSFindSymbol(libSystemCHandle, "__libSystem_atfork_child_v2");
-
-	if (_libSystem_atfork_prepare_ptr) _libSystem_atfork_prepare = (void (*)(void))*_libSystem_atfork_prepare_ptr;
-	if (_libSystem_atfork_parent_ptr) _libSystem_atfork_parent = (void (*)(void))*_libSystem_atfork_parent_ptr;
-	if (_libSystem_atfork_child_ptr) _libSystem_atfork_child = (void (*)(void))*_libSystem_atfork_child_ptr;
-	if (_libSystem_atfork_prepare_v2_ptr) _libSystem_atfork_prepare_v2 = (void (*)(int, ...))*_libSystem_atfork_prepare_v2_ptr;
-	if (_libSystem_atfork_parent_v2_ptr) _libSystem_atfork_parent_v2 = (void (*)(int, ...))*_libSystem_atfork_parent_v2_ptr;
-	if (_libSystem_atfork_child_v2_ptr) _libSystem_atfork_child_v2 = (void (*)(int, ...))*_libSystem_atfork_child_v2_ptr;
-
-	void *systemhookHandle = dlopen("/usr/lib/systemhook.dylib", RTLD_NOW);
-	jbdswForkFix = dlsym(systemhookHandle, "jbdswForkFix");
 }
 
 void child_fixup(void)
@@ -78,15 +47,21 @@ void child_fixup(void)
 	ffsys_read(parentToChildPipe[0], &msg, sizeof(msg));
 }
 
-void parent_fixup(pid_t childPid, bool mightHaveDirtyPages)
+void parent_fixup(pid_t childPid)
 {
+	// Reenable some system functionality that XPC is dependent on and XPC itself
+	// (Normally unavailable during __fork)
+	_malloc_fork_parent();
+	dispatch_atfork_parent();
+	xpc_atfork_parent();
+
 	// Wait until the child is ready and waiting
 	char msg = ' ';
 	read(childToParentPipe[0], &msg, sizeof(msg));
 
 	// Child is waiting for wx_allowed + permission fixups now
 	// Apply fixup
-	int64_t fix_ret = jbdswForkFix(childPid, mightHaveDirtyPages);
+	int64_t fix_ret = jbdswForkFix(childPid);
 	if (fix_ret != 0) {
 		kill(childPid, SIGKILL);
 		abort();
@@ -94,64 +69,35 @@ void parent_fixup(pid_t childPid, bool mightHaveDirtyPages)
 
 	// Tell child we are done, this will make it resume
 	write(parentToChildPipe[1], &msg, sizeof(msg));
+
+	// Disable system functionality related to XPC again
+	_malloc_fork_prepare();
+	dispatch_atfork_prepare();
+	xpc_atfork_prepare();
 }
 
 __attribute__((visibility ("default"))) pid_t forkfix___fork(void)
 {
-	pid_t pid = ffsys_fork();
-	if (pid < 0) return pid;
-
-	if (pid == 0)
-	{
-		child_fixup();
-	}
-
-	return pid;
-}
-
-__attribute__((visibility ("default"))) pid_t forkfix_fork(bool is_vfork, bool mightHaveDirtyPages)
-{
-	int ret;
-
 	openPipes();
 
-	if (_libSystem_atfork_prepare_v2) {
-		_libSystem_atfork_prepare_v2(is_vfork);
-	}
-	else {
-		_libSystem_atfork_prepare();
+	pid_t pid = ffsys_fork();
+	if (pid < 0) {
+		closePipes();
+		return pid;
 	}
 
-	ret = forkfix___fork();
-	if (ret != 0) {
-		// parent
-		if (_libSystem_atfork_parent_v2) {
-			_libSystem_atfork_parent_v2(is_vfork);
-		}
-		else {
-			_libSystem_atfork_parent();
-		}
-
-		if (ret > 0) {
-			// if there was no error, apply fixup
-			parent_fixup(ret, mightHaveDirtyPages);
-		}
+	if (pid == 0) {
+		child_fixup();
 	}
 	else {
-		// child
-		if (_libSystem_atfork_child_v2) {
-			_libSystem_atfork_child_v2(is_vfork);
-		}
-		else {
-			_libSystem_atfork_child();
-		}
+		parent_fixup(pid);
 	}
 
 	closePipes();
-	return ret;
+	return pid;
 }
 
 __attribute__((constructor)) static void initializer(void)
 {
-	loadPrivateSymbols();
+	litehook_hook_function((void *)&__fork, (void *)&forkfix___fork);
 }
