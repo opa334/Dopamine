@@ -258,7 +258,7 @@ uint64_t initPACPrimitives(uint64_t kernelAllocation)
 	}
 
 	// Map in previously allocated memory for stack (4 Pages)
-	gThreadMapContext = mapInRange(kernelAllocation, 4, &gThreadMapStart);
+	gThreadMapContext = mapInVirtual(kernelAllocation, 4, &gThreadMapStart);
 	if (!gThreadMapContext)
 	{
 		JBLogError("ERROR: gThreadMapContext lookup failure");
@@ -367,6 +367,14 @@ void finalizePACPrimitives(void)
 	// Done!
 	// Thread's fault handler is now set to the br x22 gadget
 	gKCallStatus = kKcallStatusFinalized;
+
+	// Allocate a proper PPLRW placeholder page now if needed
+	if (!bootInfo_getUInt64(@"pplrw_placeholder_page")) {
+		uint64_t placeholderPage = kalloc(0x4000);
+		kwrite64(placeholderPage, placeholderPage);
+		bootInfo_setObject(@"pplrw_placeholder_page", @(placeholderPage));
+		PPLRW_updatePlaceholderPage(placeholderPage);
+	}
 }
 
 NSString *getExecutablePath(void)
@@ -480,9 +488,4 @@ int recoverPACPrimitives()
 	// If everything went well, finalize and return success
 	finalizePACPrimitives();
 	return 0;
-}
-
-void destroyPACPrimitives(void)
-{
-	// TODO
 }

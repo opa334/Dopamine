@@ -70,7 +70,7 @@ void tcPagesChanged(void)
 {
 	if (!_kaddr) return NO;
 	if (_mapRefCount == 0) {
-		_mappedInPageCtx = mapInRange(_kaddr, 1, (uint8_t**)&_mappedInPage);
+		_mappedInPageCtx = mapInVirtual(_kaddr, 1, (uint8_t**)&_mappedInPage);
 		JBLogDebug("mapped in page %p", _mappedInPage);
 	};
 	_mapRefCount++;
