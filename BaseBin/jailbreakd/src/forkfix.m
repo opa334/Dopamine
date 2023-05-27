@@ -22,65 +22,60 @@ int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid)
 	if (proc_get_ppid(childPid) == parentPid) {
 		proc_set_debugged(childPid);
 
-		bool child_proc_needs_release = false;
-		uint64_t child_proc = proc_for_pid(childPid, &child_proc_needs_release);
-		uint64_t child_task = proc_get_task(child_proc);
-		uint64_t child_vm_map = task_get_vm_map(child_task);
+		bool childProcNeedsRelease = false;
+		uint64_t childProc = proc_for_pid(childPid, &childProcNeedsRelease);
+		uint64_t childTask = proc_get_task(childProc);
+		uint64_t childVmMap = task_get_vm_map(childTask);
 
-		retval = 2;
-		task_t parentTaskPort = -1;
-		task_t childTaskPort = -1;
-		kern_return_t parentKR = task_for_pid(mach_task_self(), parentPid, &parentTaskPort);
-		if (parentKR == KERN_SUCCESS) {
-			kern_return_t childKR = task_for_pid(mach_task_self(), childPid, &childTaskPort);
-			if (childKR == KERN_SUCCESS) {
-				retval = 0;
-				mach_vm_address_t start_p = 0x0;
-				mach_vm_address_t start_c = 0x0;
-				int depth = 64;
-				while (1) {
-					mach_vm_address_t address_p = start_p;
-					mach_vm_size_t size_p = 0;
-					uint32_t depth0_p = depth;
-					vm_region_submap_info_data_64_t info_p;
-					mach_msg_type_number_t count_p = VM_REGION_SUBMAP_INFO_COUNT_64;
-					kern_return_t kr_p = mach_vm_region_recurse(parentTaskPort, &address_p, &size_p, &depth0_p, (vm_region_recurse_info_t)&info_p, &count_p);
+		bool parentProcNeedsRelease = false;
+		uint64_t parentProc = proc_for_pid(parentPid, &parentProcNeedsRelease);
+		uint64_t parentTask = proc_get_task(parentProc);
+		uint64_t parentVmMap = task_get_vm_map(parentTask);
 
-					mach_vm_address_t address_c = start_c;
-					mach_vm_size_t size_c = 0;
-					uint32_t depth0_c = depth;
-					vm_region_submap_info_data_64_t info_c;
-					mach_msg_type_number_t count_c = VM_REGION_SUBMAP_INFO_COUNT_64;
-					kern_return_t kr_c = mach_vm_region_recurse(childTaskPort, &address_c, &size_c, &depth0_c, (vm_region_recurse_info_t)&info_c, &count_c);
+		uint64_t parentHeader = vm_map_get_header(parentVmMap);
+		uint64_t parentEntry = vm_map_header_get_first_entry(parentHeader);
+		uint32_t parentNumEntries = vm_header_get_nentries(parentHeader);
 
-					if (kr_p != KERN_SUCCESS || kr_c != KERN_SUCCESS) {
-						break;
-					}
+		uint64_t childHeader = vm_map_get_header(childVmMap);
+		uint64_t childEntry = vm_map_header_get_first_entry(childHeader);
+		uint32_t childNumEntries = vm_header_get_nentries(childHeader);
 
-					if (address_p < address_c) {
-						start_p = address_p + size_p;
-						continue;
-					}
-					else if (address_p > address_c) {
-						start_c = address_c + size_c;
-						continue;
-					}
-					else if (info_p.protection != info_c.protection || info_p.max_protection != info_c.max_protection) {
-						uint64_t kchildEntry = vm_map_find_entry(child_vm_map, address_c);
-						if (kchildEntry) {
-							vm_map_entry_set_prot(kchildEntry, info_p.protection, info_p.max_protection);
-						}
-					}
+		uint32_t curChildIndex = 0;
+		uint32_t curParentIndex = 0;
+		while (curChildIndex < childNumEntries && childEntry != 0 && curParentIndex < parentNumEntries && parentEntry != 0) {
+			uint64_t childStart = 0, childEnd = 0;
+			vm_entry_get_range(childEntry, &childStart, &childEnd);
+			uint64_t parentStart = 0, parentEnd = 0;
+			vm_entry_get_range(parentEntry, &parentStart, &parentEnd);
 
-					start_p = address_p + size_p;
-					start_c = address_c + size_c;
-				}
-				mach_port_deallocate(mach_task_self(), childTaskPort);
+			if (parentStart < childStart) {
+				parentEntry = vm_map_entry_get_next_entry(parentEntry);
+				curParentIndex++;
 			}
-			mach_port_deallocate(mach_task_self(), parentTaskPort);
+			else if (parentStart > childStart) {
+				childEntry = vm_map_entry_get_next_entry(childEntry);
+				curChildIndex++;
+			}
+			else {
+				vm_prot_t parentProt = 0, parentMaxProt = 0;
+				vm_map_entry_get_prot(parentEntry, &parentProt, &parentMaxProt);
+				vm_prot_t childProt = 0, childMaxProt = 0;
+				vm_map_entry_get_prot(childEntry, &childProt, &childMaxProt);
+
+				if (parentProt != childProt || parentMaxProt != childMaxProt) {
+					vm_map_entry_set_prot(childEntry, parentProt, parentMaxProt);
+				}
+
+				parentEntry = vm_map_entry_get_next_entry(parentEntry);
+				curParentIndex++;
+				childEntry = vm_map_entry_get_next_entry(childEntry);
+				curChildIndex++;
+			}
 		}
 
-		if (child_proc_needs_release) proc_rele(child_proc);
+		if (childProcNeedsRelease) proc_rele(childProc);
+		if (parentProcNeedsRelease) proc_rele(parentProc);
+		retval = 0;
 	}
 
 	return retval;

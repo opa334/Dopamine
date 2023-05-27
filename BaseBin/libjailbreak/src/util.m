@@ -432,47 +432,63 @@ uint64_t vm_map_get_pmap(uint64_t vm_map_ptr)
 	return kread_ptr(vm_map_ptr + bootInfo_getUInt64(@"VM_MAP_PMAP"));
 }
 
-void vm_map_iterate_entries(uint64_t vm_map_ptr, void (^itBlock)(uint64_t start, uint64_t end, uint64_t entry, BOOL* stop))
+uint64_t vm_map_get_header(uint64_t vm_map_ptr)
 {
-	uint64_t header = vm_map_ptr + 0x10;
-	uint64_t link = header + 0x0;
-	uint64_t entry = kread_ptr(link + 0x8);
-	int numentry = kread32(header + 0x20);
+	return vm_map_ptr + 0x10;
+}
 
-	while(entry != 0 && numentry > 0)
-	{
-		link = entry + 0x0;
-		uint64_t start = kread64(link + 0x10);
-		uint64_t end = kread64(link + 0x18);
+uint64_t vm_map_header_get_first_entry(uint64_t vm_header_ptr)
+{
+	return kread_ptr(vm_header_ptr + 0x8);
+}
+
+uint64_t vm_map_entry_get_next_entry(uint64_t vm_entry_ptr)
+{
+	return kread_ptr(vm_entry_ptr + 0x8);
+}
+
+uint32_t vm_header_get_nentries(uint64_t vm_header_ptr)
+{
+	return kread32(vm_header_ptr + 0x20);
+}
+
+void vm_entry_get_range(uint64_t vm_entry_ptr, uint64_t *start_address_out, uint64_t *end_address_out)
+{
+	uint64_t range[2];
+	kreadbuf(vm_entry_ptr + 0x10, &range[0], sizeof(range));
+	if (start_address_out) *start_address_out = range[0];
+	if (end_address_out) *end_address_out = range[1];
+}
+
+void vm_map_iterate_entries(uint64_t vm_map_ptr, void (^itBlock)(uint64_t start, uint64_t end, uint64_t entry, BOOL *stop))
+{
+	uint64_t header = vm_map_get_header(vm_map_ptr);
+	uint64_t entry = vm_map_header_get_first_entry(header);
+	uint64_t numEntries = vm_header_get_nentries(header);
+
+	while (entry != 0 && numEntries > 0) {
+		uint64_t start = 0, end = 0;
+		vm_entry_get_range(entry, &start, &end);
 
 		BOOL stop = NO;
 		itBlock(start, end, entry, &stop);
-		if(stop) break;
+		if (stop) break;
 
-		entry = kread_ptr(link + 0x8);
-		numentry--;
+		entry = vm_map_entry_get_next_entry(entry);
+		numEntries--;
 	}
 }
 
-uint64_t vm_map_find_entry(uint64_t vm_map_ptr, uint64_t map_start)
+uint64_t vm_map_find_entry(uint64_t vm_map_ptr, uint64_t address)
 {
-	uint64_t header = vm_map_ptr + 0x10;
-	uint64_t link = header + 0x0;
-	uint64_t entry = kread_ptr(link + 0x8);
-	int numentry = kread32(header + 0x20);
-
-	while(entry != 0 && numentry > 0)
-	{
-		link = entry + 0x0;
-		uint64_t start = kread64(link + 0x10);
-
-		if (start == map_start) return entry;
-
-		entry = kread_ptr(link + 0x8);
-		numentry--;
-	}
-
-	return 0;
+	__block uint64_t found_entry = 0;
+	vm_map_iterate_entries(vm_map_ptr, ^(uint64_t start, uint64_t end, uint64_t entry, BOOL *stop) {
+		if (address >= start && address < end) {
+			found_entry = entry;
+			*stop = YES;
+		}
+	});
+	return found_entry;
 }
 
 #define FLAGS_PROT_SHIFT    7

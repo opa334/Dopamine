@@ -266,14 +266,6 @@ bool shouldEnableTweaks(void)
 		// System binaries
 		"/usr/libexec/xpcproxy",
 
-		// Bootstrap binaries
-		"/usr/sbin/sshd",
-		"/usr/bin/dash",
-		"/usr/bin/zsh",
-		"/usr/bin/apt-config",
-		"/usr/bin/apt-get",
-		"/usr/bin/dpkg-deb",
-
 		// Dopamine app itself (jailbreak detection bypass tweaks can break it)
 		"Dopamine.app/Dopamine",
 	};
