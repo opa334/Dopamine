@@ -60,6 +60,8 @@ void tcPagesChanged(void)
 	self = [super init];
 	if (self) {
 		_mappedInPage = NULL;
+		_kaddr = 0;
+		_mapRefCount = 0;
 		if (![self allocateInKernel]) return nil;
 		[self linkInKernel];
 	}
@@ -114,7 +116,7 @@ void tcPagesChanged(void)
 		JBLogDebug("got existing trust cache page at 0x%llX", _kaddr);
 	}
 	else {
-		_kaddr = kalloc(0x4000);
+		if (kalloc(&_kaddr, 0x4000) != 0) return NO;
 		JBLogDebug("allocated trust cache page at 0x%llX", _kaddr);
 	}
 
@@ -257,8 +259,6 @@ while (left <= right) {
 	__block int64_t index = -1;
 
 	[self ensureMappedInAndPerform:^{
-		// A higher order (definitely not ChatGPT) has optimized this code to be as fast as possible
-		// Let's hope it works :P
 		trustcache_entry *entries = _mappedInPage->file.entries;
 		int32_t count = _mappedInPage->file.length;
 		int32_t left = 0;

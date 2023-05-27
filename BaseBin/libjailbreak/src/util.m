@@ -56,24 +56,32 @@ NSString *prebootPath(NSString *path)
 	}
 }
 
-uint64_t kalloc(uint64_t size)
+int kalloc(uint64_t *addr, uint64_t size)
 {
 	uint64_t kalloc_data_external = bootInfo_getSlidUInt64(@"kalloc_data_external");
-	return kcall(kalloc_data_external, 2, (uint64_t[]){size, 1});
+	uint64_t allocation = kcall(kalloc_data_external, 2, (uint64_t[]){size, 1});
+	if (allocation != 0) {
+		if (addr) *addr = allocation;
+		return 0;
+	}
+	return 1;
 }
 
-uint64_t kfree(uint64_t addr, uint64_t size)
+int kfree(uint64_t addr, uint64_t size)
 {
 	uint64_t kfree_data_external = bootInfo_getSlidUInt64(@"kfree_data_external");
-	return kcall(kfree_data_external, 3, (uint64_t[]){addr, size});
+	return (int)kcall(kfree_data_external, 3, (uint64_t[]){addr, size});
 }
 
 uint64_t stringKalloc(const char *string)
 {
 	uint64_t stringLen = strlen(string) + 1;
-	uint64_t stringInKmem = kalloc(stringLen);
-	kwritebuf(stringInKmem, string, stringLen);
-	return stringInKmem;
+	uint64_t stringInKmem = 0;
+	if (kalloc(&stringInKmem, stringLen) == 0) {
+		kwritebuf(stringInKmem, string, stringLen);
+		return stringInKmem;
+	}
+	return 0;
 }
 
 void stringKFree(const char *string, uint64_t kmem)
@@ -106,7 +114,8 @@ uint64_t kpacda(uint64_t pointer, uint64_t modifier)
 	|----------------------|
 	*/
 
-	uint64_t outputAllocation = kalloc(0x8);
+	uint64_t outputAllocation = 0;
+	if (kalloc(&outputAllocation, 0x8) != 0) return 0;
 	KcallThreadState threadState = { 0 };
 	threadState.pc = pacda_gadget;
 	threadState.x[1] = pointer;

@@ -253,8 +253,9 @@ uint64_t staticTrustCacheUploadFile(trustcache_file *fileToUpload, size_t fileSi
 
 	uint64_t mapSize = sizeof(trustcache_page) + fileSize;
 
-	uint64_t mapKaddr = kalloc(mapSize);
-	if (!mapKaddr) {
+	uint64_t mapKaddr = 0;
+	uint64_t allocRet = kalloc(&mapKaddr, mapSize);
+	if (!mapKaddr || allocRet != 0) {
 		JBLogError("failed to allocate memory for trust cache file with size %zX", fileSize);
 		return 0;
 	}

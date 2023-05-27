@@ -370,10 +370,12 @@ void finalizePACPrimitives(void)
 
 	// Allocate a proper PPLRW placeholder page now if needed
 	if (!bootInfo_getUInt64(@"pplrw_placeholder_page")) {
-		uint64_t placeholderPage = kalloc(0x4000);
-		kwrite64(placeholderPage, placeholderPage);
-		bootInfo_setObject(@"pplrw_placeholder_page", @(placeholderPage));
-		PPLRW_updatePlaceholderPage(placeholderPage);
+		uint64_t placeholderPage = 0;
+		if (kalloc(&placeholderPage, 0x4000) == 0) {
+			kwrite64(placeholderPage, placeholderPage);
+			bootInfo_setObject(@"pplrw_placeholder_page", @(placeholderPage));
+			PPLRW_updatePlaceholderPage(placeholderPage);
+		}
 	}
 }
 
