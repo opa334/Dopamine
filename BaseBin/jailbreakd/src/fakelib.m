@@ -178,7 +178,7 @@ int makeFakeLib(void)
 
 	size_t dyldTCSize = 0;
 	uint64_t dyldTCKaddr = staticTrustCacheUploadCDHashesFromArray(@[dyldCDHash], &dyldTCSize);
-	if(dyldTCSize == 0 || dyldTCKaddr == 0) return 4;
+	if(dyldTCSize == 0 || dyldTCKaddr == 0) return 5;
 	bootInfo_setObject(@"dyld_trustcache_kaddr", @(dyldTCKaddr));
 	bootInfo_setObject(@"dyld_trustcache_size", @(dyldTCSize));
 	JBLogDebug("dyld trust cache inserted, allocated at %llX (size: %zX)", dyldTCKaddr, dyldTCSize);
