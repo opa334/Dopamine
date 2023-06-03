@@ -308,7 +308,10 @@ __attribute__((constructor)) static void initializer(void)
 			}
 		}
 		else if (strcmp(gExecutablePath, "/usr/libexec/watchdogd") == 0) {
-			dlopen_hook("/var/jb/basebin/watchdoghook.dylib", RTLD_NOW);
+			int64_t debugErr = jbdswDebugMe();
+			if (debugErr == 0) {
+				dlopen_hook("/var/jb/basebin/watchdoghook.dylib", RTLD_NOW);
+			}
 		}
 	}
 
