@@ -16,7 +16,7 @@ void boomerang_userspaceRebootIncoming()
 
 	// Wait until boomerang process has initialized primitives
 	dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-	FCHandler *handler = [[FCHandler alloc] initWithReceiveFilePath:prebootPath(@"basebin/.communication/boomerang_to_launchd") sendFilePath:prebootPath(@"basebin/.communication/launchd_to_boomerang")];
+	FCHandler *handler = [[FCHandler alloc] initWithReceiveFilePath:fakeRootPath(@"basebin/.communication/boomerang_to_launchd") sendFilePath:fakeRootPath(@"basebin/.communication/launchd_to_boomerang")];
 	__weak FCHandler *weakHandler = handler;
 	handler.receiveHandler = ^(NSDictionary *message) {
 		NSString *identifier = message[@"id"];
@@ -39,7 +39,7 @@ void boomerang_userspaceRebootIncoming()
 		}
 	};
 
-	int ret = posix_spawn_orig(&boomerangPid, prebootPath(@"basebin/boomerang").fileSystemRepresentation, NULL, NULL, NULL, NULL);
+	int ret = posix_spawn_orig(&boomerangPid, fakeRootPath(@"basebin/boomerang").fileSystemRepresentation, NULL, NULL, NULL, NULL);
 	if (ret != 0) return;
 
 	dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);

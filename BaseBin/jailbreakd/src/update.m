@@ -145,7 +145,7 @@ int basebinUpdateFromTar(NSString *basebinPath, bool rebootWhenDone)
 	NSArray *basebinItems = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:tmpBasebinPath error:nil];
 	for (NSString *basebinItem in basebinItems) {
 		@autoreleasepool {
-			NSString *oldBasebinPath = [prebootPath(@"basebin") stringByAppendingPathComponent:basebinItem];
+			NSString *oldBasebinPath = [fakeRootPath(@"basebin") stringByAppendingPathComponent:basebinItem];
 			NSString *newBasebinPath = [tmpBasebinPath stringByAppendingPathComponent:basebinItem];
 			if ([[NSFileManager defaultManager] fileExistsAtPath:oldBasebinPath]) {
 				[[NSFileManager defaultManager] removeItemAtPath:oldBasebinPath error:nil];
@@ -156,10 +156,10 @@ int basebinUpdateFromTar(NSString *basebinPath, bool rebootWhenDone)
 	patchBaseBinLaunchDaemonPlists();
 
 	// Update systemhook.dylib on bind mount
-	if ([[NSFileManager defaultManager] fileExistsAtPath:prebootPath(@"basebin/.fakelib/systemhook.dylib")]) {
-		[[NSFileManager defaultManager] removeItemAtPath:prebootPath(@"basebin/.fakelib/systemhook.dylib") error:nil];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:fakeRootPath(@"basebin/.fakelib/systemhook.dylib")]) {
+		[[NSFileManager defaultManager] removeItemAtPath:fakeRootPath(@"basebin/.fakelib/systemhook.dylib") error:nil];
 	}
-	[[NSFileManager defaultManager] copyItemAtPath:prebootPath(@"basebin/systemhook.dylib") toPath:prebootPath(@"basebin/.fakelib/systemhook.dylib") error:nil];
+	[[NSFileManager defaultManager] copyItemAtPath:fakeRootPath(@"basebin/systemhook.dylib") toPath:fakeRootPath(@"basebin/.fakelib/systemhook.dylib") error:nil];
 
 	trustCacheListRemove(existingTCKaddr);
 

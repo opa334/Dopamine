@@ -483,7 +483,7 @@ int main(int argc, char* argv[])
 
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 			if (bootInfo_getUInt64(@"jbdIconCacheNeedsRefresh")) {
-				spawn(prebootPath(@"usr/bin/uicache"), @[@"-a"]);
+				spawn(fakeRootPath(@"usr/bin/uicache"), @[@"-a"]);
 				bootInfo_setObject(@"jbdIconCacheNeedsRefresh", nil);
 			}
 		});

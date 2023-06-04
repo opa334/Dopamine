@@ -125,15 +125,15 @@ int carbonCopy(NSString *sourcePath, NSString *targetPath)
 
 int setFakeLibVisible(bool visible)
 {
-	bool isCurrentlyVisible = [[NSFileManager defaultManager] fileExistsAtPath:prebootPath(@"basebin/.fakelib/systemhook.dylib")];
+	bool isCurrentlyVisible = [[NSFileManager defaultManager] fileExistsAtPath:fakeRootPath(@"basebin/.fakelib/systemhook.dylib")];
 	if (isCurrentlyVisible != visible) {
-		NSString *stockDyldPath = prebootPath(@"basebin/.dyld");
-		NSString *patchedDyldPath = prebootPath(@"basebin/.dyld_patched");
-		NSString *dyldFakeLibPath = prebootPath(@"basebin/.fakelib/dyld");
+		NSString *stockDyldPath = fakeRootPath(@"basebin/.dyld");
+		NSString *patchedDyldPath = fakeRootPath(@"basebin/.dyld_patched");
+		NSString *dyldFakeLibPath = fakeRootPath(@"basebin/.fakelib/dyld");
 
-		NSString *systemhookPath = prebootPath(@"basebin/systemhook.dylib");
-		NSString *systemhookFakeLibPath = prebootPath(@"basebin/.fakelib/systemhook.dylib");
-		NSString *sandboxFakeLibPath = prebootPath(@"basebin/.fakelib/sandbox.plist");
+		NSString *systemhookPath = fakeRootPath(@"basebin/systemhook.dylib");
+		NSString *systemhookFakeLibPath = fakeRootPath(@"basebin/.fakelib/systemhook.dylib");
+		NSString *sandboxFakeLibPath = fakeRootPath(@"basebin/.fakelib/sandbox.plist");
 
 		if (visible) {
 			if (![[NSFileManager defaultManager] copyItemAtPath:systemhookPath toPath:systemhookFakeLibPath error:nil]) return 10;
@@ -154,9 +154,9 @@ int setFakeLibVisible(bool visible)
 int makeFakeLib(void)
 {
 	NSString *libPath = @"/usr/lib";
-	NSString *fakeLibPath = prebootPath(@"basebin/.fakelib");
-	NSString *dyldBackupPath = prebootPath(@"basebin/.dyld");
-	NSString *dyldToPatch = prebootPath(@"basebin/.dyld_patched");
+	NSString *fakeLibPath = fakeRootPath(@"basebin/.fakelib");
+	NSString *dyldBackupPath = fakeRootPath(@"basebin/.dyld");
+	NSString *dyldToPatch = fakeRootPath(@"basebin/.dyld_patched");
 
 	if (carbonCopy(libPath, fakeLibPath) != 0) return 1;
 	JBLogDebug("copied %s to %s", libPath.UTF8String, fakeLibPath.UTF8String);
@@ -203,7 +203,7 @@ int setFakeLibBindMountActive(bool active)
 	if (active != alreadyActive) {
 		if (active) {
 			run_unsandboxed(^{
-				ret = mount("bindfs", "/usr/lib", MNT_RDONLY, (void*)prebootPath(@"basebin/.fakelib").fileSystemRepresentation);
+				ret = mount("bindfs", "/usr/lib", MNT_RDONLY, (void*)fakeRootPath(@"basebin/.fakelib").fileSystemRepresentation);
 			});
 		}
 		else {

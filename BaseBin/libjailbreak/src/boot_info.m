@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "util.h"
 
-#define BOOT_INFO_PATH prebootPath(@"basebin/boot_info.plist")
+#define BOOT_INFO_PATH fakeRootPath(@"basebin/boot_info.plist")
 
 void bootInfo_setObject(NSString *name, __kindof NSObject *object)
 {

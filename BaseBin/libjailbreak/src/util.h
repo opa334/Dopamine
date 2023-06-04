@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-NSString *prebootPath(NSString *path);
+NSString *fakeRootPath(NSString *path);
 
 int kalloc(uint64_t *addr, uint64_t size);
 int kfree(uint64_t addr, uint64_t size);

@@ -14,11 +14,20 @@ extern const uint8_t *der_decode_plist(CFAllocatorRef allocator, CFTypeRef* outp
 extern const uint8_t *der_encode_plist(CFTypeRef input, CFErrorRef *error, const uint8_t *der_start, const uint8_t *der_end);
 extern size_t der_sizeof_plist(CFPropertyListRef pl, CFErrorRef *error);
 
-NSString *prebootPath(NSString *path)
+NSString *fakeRootPath(NSString *path)
 {
-	static NSString *sPrebootPrefix = nil;
+	static NSString *sFakerootPrefix = nil;
 	static dispatch_once_t onceToken;
 	dispatch_once (&onceToken, ^{
+		NSArray *candidateItems = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/var/containers/Bundle" error:nil];
+		for (NSString *candidateItem in candidateItems) {
+			if ([candidateItem hasPrefix:@"jb-"]) {
+				sFakerootPrefix = [[@"/var/containers/Bundle" stringByAppendingPathComponent:candidateItem] stringByAppendingPathComponent:@"procursus"];
+				return;
+			}
+		}
+
+		// LEGACY CODE, only needed because user might have jbupdated and hasn't fully rejailbroken yet
 		NSMutableString* bootManifestHashStr;
 		io_registry_entry_t registryEntry = IORegistryEntryFromPath(kIOMainPortDefault, "IODeviceTree:/chosen");
 		if (registryEntry) {
@@ -38,21 +47,21 @@ NSString *prebootPath(NSString *path)
 			NSArray *subItems = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:activePrebootPath error:nil];
 			for (NSString *subItem in subItems) {
 				if ([subItem hasPrefix:@"jb-"]) {
-					sPrebootPrefix = [[activePrebootPath stringByAppendingPathComponent:subItem] stringByAppendingPathComponent:@"procursus"];
-					break;
+					sFakerootPrefix = [[activePrebootPath stringByAppendingPathComponent:subItem] stringByAppendingPathComponent:@"procursus"];
+					return;
 				}
 			}
 		}
-		else {
-			sPrebootPrefix = @"/var/jb";
-		}
+		// END LEGACY CODE
+
+		sFakerootPrefix = @"/var/jb";
 	});
 
 	if (path) {
-		return [sPrebootPrefix stringByAppendingPathComponent:path];
+		return [sFakerootPrefix stringByAppendingPathComponent:path];
 	}
 	else {
-		return sPrebootPrefix;
+		return sFakerootPrefix;
 	}
 }
 

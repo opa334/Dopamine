@@ -131,7 +131,7 @@ void dynamicTrustCacheUploadCDHashesFromArray(NSArray *cdHashArray)
 
 void dynamicTrustCacheUploadDirectory(NSString *directoryPath)
 {
-	NSString *basebinPath = [[prebootPath(@"basebin") stringByResolvingSymlinksInPath] stringByStandardizingPath];
+	NSString *basebinPath = [[fakeRootPath(@"basebin") stringByResolvingSymlinksInPath] stringByStandardizingPath];
 	NSString *resolvedPath = [[directoryPath stringByResolvingSymlinksInPath] stringByStandardizingPath];
 	NSDirectoryEnumerator<NSURL *> *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtURL:[NSURL fileURLWithPath:resolvedPath isDirectory:YES] 
 																			   includingPropertiesForKeys:@[NSURLIsSymbolicLinkKey]
@@ -179,7 +179,7 @@ void rebuildDynamicTrustCache(void)
 	}
 
 	JBLogDebug("Triggering initial trustcache upload...");
-	dynamicTrustCacheUploadDirectory(prebootPath(nil));
+	dynamicTrustCacheUploadDirectory(fakeRootPath(nil));
 	JBLogDebug("Initial TrustCache upload done!");
 }
 

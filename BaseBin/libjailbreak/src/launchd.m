@@ -57,7 +57,7 @@ void patchBaseBinLaunchDaemonPlist(NSString *plistPath)
 	if (plistDict) {
 		NSMutableArray *programArguments = ((NSArray *)plistDict[@"ProgramArguments"]).mutableCopy;
 		if (programArguments.count >= 1) {
-			programArguments[0] = prebootPath(programArguments[0]);
+			programArguments[0] = fakeRootPath(programArguments[0]);
 			plistDict[@"ProgramArguments"] = programArguments.copy;
 			[plistDict writeToFile:plistPath atomically:YES];
 		}
@@ -66,7 +66,7 @@ void patchBaseBinLaunchDaemonPlist(NSString *plistPath)
 
 void patchBaseBinLaunchDaemonPlists(void)
 {
-	NSURL *launchDaemonURL = [NSURL fileURLWithPath:prebootPath(@"basebin/LaunchDaemons") isDirectory:YES];
+	NSURL *launchDaemonURL = [NSURL fileURLWithPath:fakeRootPath(@"basebin/LaunchDaemons") isDirectory:YES];
 	NSArray<NSURL *> *launchDaemonPlistURLs = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:launchDaemonURL includingPropertiesForKeys:nil options:0 error:nil];
 	for (NSURL *launchDaemonPlistURL in launchDaemonPlistURLs) {
 		patchBaseBinLaunchDaemonPlist(launchDaemonPlistURL.path);

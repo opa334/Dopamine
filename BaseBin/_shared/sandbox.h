@@ -110,4 +110,8 @@ int sandbox_extension_release(int64_t extension_handle);
 int sandbox_extension_release_file(int64_t extension_handle, const char *path);
 int sandbox_extension_update_file(int64_t extension_handle, const char *path);
 
+int sandbox_init(const char *profile, uint64_t flags, char **errorbuf);
+int sandbox_init_with_parameters(const char *profile, uint64_t flags, const char *const parameters[], char **errorbuf);
+int sandbox_init_with_extensions(const char *profile, uint64_t flags, const char *const extensions[], char **errorbuf);
+
 int __sandbox_ms(const char *policyname, int call, void *arg);
