@@ -42,8 +42,8 @@ void JBDLogV(const char* prefix, const char *format, va_list va)
 
 		time_t t = time(NULL);
 		struct tm *tm = localtime(&t);
-		char timestamp[20];
-		strftime(timestamp, sizeof(timestamp), "%Y-%m-%d_%H-%M-%S", tm);
+		char timestamp[64];
+		sprintf(&timestamp[0], "%lu", t);
 
 		logFilePath = malloc(strlen(LOGGING_PATH) + strlen(processName) + strlen(timestamp) + 6);
 		strcpy(logFilePath, LOGGING_PATH);
@@ -59,11 +59,8 @@ void JBDLogV(const char* prefix, const char *format, va_list va)
 		struct tm result;
 		char stime[32];
 		ltime = time(NULL);
-		localtime_r(&ltime, &result);
-		asctime_r(&result, stime);
-		stime[24] = 0;
 
-		fprintf(logFile, "[%s] [%s] ", stime, prefix);
+		fprintf(logFile, "[%lu] [%s] ", ltime, prefix);
 		vfprintf(logFile, format, va);
 		fprintf(logFile, "\n");
 
