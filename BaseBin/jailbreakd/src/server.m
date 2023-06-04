@@ -28,7 +28,7 @@ void setJetsamEnabled(bool enabled)
 	if (enabled) {
 		priorityToSet = 10;
 	}
-	int rc = memorystatus_control(MEMORYSTATUS_CMD_SET_JETSAM_HIGH_WATER_MARK, me, -1, NULL, 0);
+	int rc = memorystatus_control(MEMORYSTATUS_CMD_SET_JETSAM_HIGH_WATER_MARK, me, priorityToSet, NULL, 0);
 	if (rc < 0) { perror ("memorystatus_control"); exit(rc);}
 }
 
