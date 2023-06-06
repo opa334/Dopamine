@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AboutView: View {
-    @Environment(\.openURL) var openURL
     @State var easterEgg = false
     
     let columns = [
@@ -34,7 +33,7 @@ struct AboutView: View {
         VStack {
             VStack {
                 Button(action: {
-                    openURL(URL(string: "https://github.com/opa334/Dopamine")!)
+                    UIApplication.shared.open(URL(string: "https://github.com/opa334/Dopamine")!)
                 }) {
                     HStack {
                         Spacer()
@@ -50,7 +49,7 @@ struct AboutView: View {
                     .padding(.horizontal, 32)
                 }
                 Button(action: {
-                    openURL(URL(string: "https://github.com/opa334/Dopamine/LICENSE.md")!)
+                    UIApplication.shared.open(URL(string: "https://github.com/opa334/Dopamine/LICENSE.md")!)
                 }) {
                     HStack {
                         Spacer()
@@ -66,7 +65,7 @@ struct AboutView: View {
                     .padding(.horizontal, 32)
                 }
                 Button(action: {
-                    openURL(URL(string: "https://discord.gg/jb")!)
+                    UIApplication.shared.open(URL(string: "https://discord.gg/jb")!)
                 }) {
                     HStack {
                         Spacer()
@@ -108,7 +107,7 @@ struct AboutView: View {
             
             HStack(spacing: 12) {
                 Button {
-                    openURL(URL(string: "https://github.com/pinauten/Fugu15")!)
+                    UIApplication.shared.open(URL(string: "https://github.com/pinauten/Fugu15")!)
                 } label: {
                     Image("FuguTransparent")
                         .resizable()
@@ -118,7 +117,7 @@ struct AboutView: View {
                 }
                 
                 Button {
-                    openURL(URL(string: "https://pinauten.de/")!)
+                    UIApplication.shared.open(URL(string: "https://pinauten.de/")!)
                 } label: {
                     Image("PinautenLogo")
                         .resizable()
