@@ -5,6 +5,7 @@
 #include <dlfcn.h>
 #include <sys/sysctl.h>
 #include <sys/stat.h>
+//#include "sandbox.h"
 
 extern bool swh_is_debugged;
 
@@ -249,6 +250,33 @@ bool dlopen_preflight_hook(const char* path)
 	return dlopen_preflight(path);
 }
 
+/*int sandbox_init_hook(const char *profile, uint64_t flags, char **errorbuf)
+{
+	int retval = sandbox_init(profile, flags, errorbuf);
+	if (retval == 0) {
+		unsandbox();
+	}
+	return retval;
+}
+
+int sandbox_init_with_parameters_hook(const char *profile, uint64_t flags, const char *const parameters[], char **errorbuf)
+{
+	int retval = sandbox_init_with_parameters(profile, flags, parameters, errorbuf);
+	if (retval == 0) {
+		unsandbox();
+	}
+	return retval;
+}
+
+int sandbox_init_with_extensions_hook(const char *profile, uint64_t flags, const char *const extensions[], char **errorbuf)
+{
+	int retval = sandbox_init_with_extensions(profile, flags, extensions, errorbuf);
+	if (retval == 0) {
+		unsandbox();
+	}
+	return retval;
+}*/
+
 bool shouldEnableTweaks(void)
 {
 	if (access("/var/jb/basebin/.safe_mode", F_OK) == 0) {
@@ -342,3 +370,6 @@ DYLD_INTERPOSE(dlopen_hook, dlopen)
 DYLD_INTERPOSE(dlopen_from_hook, dlopen_from)
 DYLD_INTERPOSE(dlopen_audited_hook, dlopen_audited)
 DYLD_INTERPOSE(dlopen_preflight_hook, dlopen_preflight)
+/*DYLD_INTERPOSE(sandbox_init_hook, sandbox_init)
+DYLD_INTERPOSE(sandbox_init_with_parameters_hook, sandbox_init_with_parameters)
+DYLD_INTERPOSE(sandbox_init_with_extensions_hook, sandbox_init_with_extensions)*/
