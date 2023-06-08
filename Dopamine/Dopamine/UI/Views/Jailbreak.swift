@@ -144,6 +144,11 @@ func jailbrokenUpdateTweakInjectionPreference() {
     _ = execCmd(args: [CommandLine.arguments[0], "update_tweak_injection"])
 }
 
+func jailbrokenUpdateIDownloadEnabled() {
+    let iDownloadEnabled = dopamineDefaults().bool(forKey: "iDownloadEnabled")
+    _ = execCmd(args: [rootifyPath(path: "basebin/jbinit")!, iDownloadEnabled ? "start_idownload" : "stop_idownload"])
+}
+
 func changeMobilePassword(newPassword: String) {
     guard let dashPath = rootifyPath(path: "/usr/bin/dash") else {
         return;

@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-extern int64_t launchctlLoad(const char* plistPath);
+extern int64_t launchctl_load(const char* plistPath, bool unload);
 
 #if defined(__cplusplus)
 }

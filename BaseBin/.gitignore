@@ -9,6 +9,8 @@ systemhook/systemhook.dylib
 watchdoghook/watchdoghook.dylib
 libfilecom/libfilecom.dylib
 boomerang/boomerang
+idownloadd/idownloadd
+idownloadd/.build.xcarchive
 _shared/libjailbreak
 _shared/libfilecom
 .tmp

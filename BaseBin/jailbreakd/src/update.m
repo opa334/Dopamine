@@ -141,6 +141,10 @@ int basebinUpdateFromTar(NSString *basebinPath, bool rebootWhenDone)
 
 	bootInfo_setObject(@"basebin_trustcache_kaddr", @(newTCKaddr));
 
+	NSString *idownloaddEnabledPath = prebootPath(@"basebin/LaunchDaemons/com.opa334.idownloadd.plist");
+	NSString *idownloaddDisabledPath = prebootPath(@"basebin/LaunchDaemons/Disabled/com.opa334.idownloadd.plist");
+	BOOL iDownloadWasEnabled = [[NSFileManager defaultManager] fileExistsAtPath:idownloaddEnabledPath];
+
 	// Copy new basebin over old basebin
 	NSArray *basebinItems = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:tmpBasebinPath error:nil];
 	for (NSString *basebinItem in basebinItems) {
@@ -154,6 +158,10 @@ int basebinUpdateFromTar(NSString *basebinPath, bool rebootWhenDone)
 		}
 	}
 	patchBaseBinLaunchDaemonPlists();
+
+	if (iDownloadWasEnabled) {
+		[[NSFileManager defaultManager] moveItemAtPath:idownloaddDisabledPath toPath:idownloaddEnabledPath error:nil];
+	}
 
 	// Update systemhook.dylib on bind mount
 	if ([[NSFileManager defaultManager] fileExistsAtPath:prebootPath(@"basebin/.fakelib/systemhook.dylib")]) {

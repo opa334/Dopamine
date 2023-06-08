@@ -132,7 +132,7 @@ uint64_t jbdKcallThreadState(KcallThreadState *threadState, bool raw)
 	return xpc_dictionary_get_uint64(reply, "ret");
 }
 
-uint64_t jbdKcall(uint64_t func, uint64_t argc, uint64_t *argv)
+uint64_t jbdKcall(uint64_t func, uint64_t argc, const uint64_t *argv)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_DO_KCALL);

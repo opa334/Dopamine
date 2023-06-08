@@ -57,9 +57,12 @@ void patchBaseBinLaunchDaemonPlist(NSString *plistPath)
 	if (plistDict) {
 		NSMutableArray *programArguments = ((NSArray *)plistDict[@"ProgramArguments"]).mutableCopy;
 		if (programArguments.count >= 1) {
-			programArguments[0] = prebootPath(programArguments[0]);
-			plistDict[@"ProgramArguments"] = programArguments.copy;
-			[plistDict writeToFile:plistPath atomically:YES];
+			NSString *pathBefore = programArguments[0];
+			if (![pathBefore hasPrefix:@"/private/preboot"]) {
+				programArguments[0] = prebootPath(pathBefore);
+				plistDict[@"ProgramArguments"] = programArguments.copy;
+				[plistDict writeToFile:plistPath atomically:YES];
+			}
 		}
 	}
 }
@@ -70,5 +73,11 @@ void patchBaseBinLaunchDaemonPlists(void)
 	NSArray<NSURL *> *launchDaemonPlistURLs = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:launchDaemonURL includingPropertiesForKeys:nil options:0 error:nil];
 	for (NSURL *launchDaemonPlistURL in launchDaemonPlistURLs) {
 		patchBaseBinLaunchDaemonPlist(launchDaemonPlistURL.path);
+	}
+
+	NSURL *disabledLaunchDaemonURL = [NSURL fileURLWithPath:prebootPath(@"basebin/LaunchDaemons/Disabled") isDirectory:YES];
+	NSArray<NSURL *> *disabledLaunchDaemonPlistURLs = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:disabledLaunchDaemonURL includingPropertiesForKeys:nil options:0 error:nil];
+	for (NSURL *disabledLaunchDaemonPlistURL in disabledLaunchDaemonPlistURLs) {
+		patchBaseBinLaunchDaemonPlist(disabledLaunchDaemonPlistURL.path);
 	}
 }

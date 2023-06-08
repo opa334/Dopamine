@@ -155,7 +155,7 @@ uint64_t Fugu14Kcall_withThreadState(Fugu14KcallThread *callThread, KcallThreadS
 	return retval;
 }
 
-uint64_t Fugu14Kcall_withArguments(Fugu14KcallThread *callThread, uint64_t func, uint64_t argc, uint64_t *argv)
+uint64_t Fugu14Kcall_withArguments(Fugu14KcallThread *callThread, uint64_t func, uint64_t argc, const uint64_t *argv)
 {
 	if (argc >= 19) argc = 19;
 
@@ -193,7 +193,7 @@ uint64_t Fugu14Kcall_withArguments(Fugu14KcallThread *callThread, uint64_t func,
 	return Fugu14Kcall_withThreadState(callThread, &threadState);
 }
 
-uint64_t kcall(uint64_t func, uint64_t argc, uint64_t *argv)
+uint64_t kcall(uint64_t func, uint64_t argc, const uint64_t *argv)
 {
 	if (gKCallStatus != kKcallStatusFinalized) {
 		if (gIsJailbreakd) return 0;

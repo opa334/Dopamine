@@ -45,10 +45,17 @@ make
 cd -
 cp "./jailbreakd/jailbreakd" ".tmp/basebin/jailbreakd"
 
+# jailbreakd
+cd "idownloadd"
+make
+cd -
+cp "./idownloadd/idownloadd" ".tmp/basebin/idownloadd"
+
 # daemon plists
 # needs separate directory because launchd is picky
-mkdir -p ".tmp/basebin/LaunchDaemons"
+mkdir -p ".tmp/basebin/LaunchDaemons/Disabled"
 cp "./jailbreakd/daemon.plist" ".tmp/basebin/LaunchDaemons/com.opa334.jailbreakd.plist"
+cp "./idownloadd/daemon.plist" ".tmp/basebin/LaunchDaemons/Disabled/com.opa334.idownloadd.plist"
 cp "./jbctl/rebuild_daemon.plist" ".tmp/basebin/LaunchDaemons/com.opa334.trustcache_rebuild.plist"
 
 # boomerang

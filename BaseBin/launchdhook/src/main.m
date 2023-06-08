@@ -2,6 +2,7 @@
 #import <libjailbreak/libjailbreak.h>
 #import <libjailbreak/handoff.h>
 #import <libjailbreak/kcall.h>
+#import <libjailbreak/launchd.h>
 #import <libfilecom/FCHandler.h>
 #import <mach-o/dyld.h>
 #import <spawn.h>
@@ -17,6 +18,15 @@ __attribute__((constructor)) static void initializer(void)
 {
 	bool comingFromUserspaceReboot = bootInfo_getUInt64(@"environmentInitialized");
 	if (comingFromUserspaceReboot) {
+
+		// super hacky fix to support OTA updates from 1.0.x to 1.1
+		// I hate it, but there is no better way :/
+		NSURL *disabledLaunchDaemonURL = [NSURL fileURLWithPath:prebootPath(@"basebin/LaunchDaemons/Disabled") isDirectory:YES];
+		NSArray<NSURL *> *disabledLaunchDaemonPlistURLs = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:disabledLaunchDaemonURL includingPropertiesForKeys:nil options:0 error:nil];
+		for (NSURL *disabledLaunchDaemonPlistURL in disabledLaunchDaemonPlistURLs) {
+			patchBaseBinLaunchDaemonPlist(disabledLaunchDaemonPlistURL.path);
+		}
+
 		// Launchd was already initialized before, we are coming from a userspace reboot... recover primitives
 		// First get PPLRW primitives
 		__block pid_t boomerangPid = 0;

@@ -2,9 +2,10 @@
 #import <xpc/xpc.h>
 #import <libjailbreak/launchd.h>
 
-#define ROUTINE_LOAD 800
+#define ROUTINE_LOAD   800
+#define ROUTINE_UNLOAD 801
 
-int64_t launchctlLoad(const char* plistPath)
+int64_t launchctl_load(const char* plistPath, bool unload)
 {
 	xpc_object_t pathArray = xpc_array_create_empty();
 	xpc_array_set_string(pathArray, XPC_ARRAY_APPEND, plistPath);
@@ -15,7 +16,7 @@ int64_t launchctlLoad(const char* plistPath)
 	xpc_dictionary_set_uint64(msgDictionary, "type", 1);
 	xpc_dictionary_set_bool(msgDictionary, "legacy-load", true);
 	xpc_dictionary_set_bool(msgDictionary, "enable", false);
-	xpc_dictionary_set_uint64(msgDictionary, "routine", ROUTINE_LOAD);
+	xpc_dictionary_set_uint64(msgDictionary, "routine", unload ? ROUTINE_UNLOAD : ROUTINE_LOAD);
 	xpc_dictionary_set_value(msgDictionary, "paths", pathArray);
 	
 	xpc_object_t msgReply = launchd_xpc_send_message(msgDictionary);
