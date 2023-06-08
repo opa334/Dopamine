@@ -21,6 +21,11 @@ cd "jailbreakd"
 make clean
 cd -
 
+# jailbreakd
+cd "idownloadd"
+make clean
+cd -
+
 # boomerang
 cd "boomerang"
 make clean
