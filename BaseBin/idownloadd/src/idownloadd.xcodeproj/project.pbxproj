@@ -273,8 +273,9 @@
 		8C69A22A2A320BBE007E401C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3Z56NQJ65R;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				HEADER_SEARCH_PATHS = ../../_shared;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
@@ -293,8 +294,9 @@
 		8C69A22B2A320BBE007E401C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3Z56NQJ65R;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				HEADER_SEARCH_PATHS = ../../_shared;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
