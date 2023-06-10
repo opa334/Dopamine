@@ -69,7 +69,7 @@ __attribute__((constructor)) static void initializer(void)
 		}
 	}
 
-	proc_set_debugged(getpid());
+	proc_set_debugged_pid(getpid(), false);
 	initXPCHooks();
 	initDaemonHooks();
 	initSpawnHooks();

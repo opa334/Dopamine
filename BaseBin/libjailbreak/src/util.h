@@ -17,6 +17,7 @@ void proc_iterate(void (^itBlock)(uint64_t, BOOL*));
 uint64_t proc_for_pid(pid_t pidToFind, bool *needsRelease);
 int proc_rele(uint64_t proc);
 uint64_t proc_get_task(uint64_t proc_ptr);
+uint64_t proc_get_pptr(uint64_t proc_ptr);
 pid_t proc_get_pid(uint64_t proc_ptr);
 uint64_t proc_get_ucred(uint64_t proc_ptr);
 void proc_set_ucred(uint64_t proc_ptr, uint64_t ucred_ptr);
@@ -33,6 +34,7 @@ uint32_t proc_get_svgid(uint64_t proc_ptr);
 void proc_set_svgid(uint64_t proc_ptr, uid_t svgid);
 uint32_t proc_get_p_flag(uint64_t proc_ptr);
 void proc_set_p_flag(uint64_t proc_ptr, uint32_t p_flag);
+int proc_set_debugged(uint64_t proc_ptr, bool fully_debugged);
 uint64_t self_proc(void);
 
 uint32_t ucred_get_uid(uint64_t ucred_ptr);
@@ -97,7 +99,7 @@ void vnode_replace_entitlements(uint64_t vnode_ptr, NSDictionary *newEntitlement
 NSMutableDictionary *proc_dump_entitlements(uint64_t proc_ptr);
 void proc_replace_entitlements(uint64_t proc_ptr, NSDictionary *entitlements);
 
-int proc_set_debugged(pid_t pid);
+int proc_set_debugged_pid(pid_t pid, bool fully_debugged);
 pid_t proc_get_ppid(pid_t pid);
 NSString *proc_get_path(pid_t pid);
 int64_t proc_fix_setuid(pid_t pid);

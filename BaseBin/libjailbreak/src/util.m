@@ -144,6 +144,11 @@ uint64_t proc_get_task(uint64_t proc_ptr)
 	return kread_ptr(proc_ptr + 0x10);
 }
 
+uint64_t proc_get_pptr(uint64_t proc_ptr)
+{
+	return kread_ptr(proc_ptr + 0x18);
+}
+
 pid_t proc_get_pid(uint64_t proc_ptr)
 {
 	return kread32(proc_ptr + 0x68);
@@ -864,39 +869,47 @@ void proc_replace_entitlements(uint64_t proc_ptr, NSDictionary *newEntitlements)
 	//cr_label_replace_entitlements(cr_label_ptr, newEntitlements, vnode_get_csblob(text_vnode));
 }*/
 
-int proc_set_debugged(pid_t pid)
+int proc_set_debugged(uint64_t proc_ptr, bool fully_debugged)
 {
+	uint64_t task = proc_get_task(proc_ptr);
+	uint64_t vm_map = task_get_vm_map(task);
+	uint64_t pmap = vm_map_get_pmap(vm_map);
+
+	pmap_set_wx_allowed(pmap, true);
+
+	if (fully_debugged) {
+		// --- cs_flags, not needed, wx_allowed is enough
+		// uint32_t csflags = proc_get_csflags(proc);
+		// uint32_t new_csflags = ((csflags & ~0x703b10) | 0x10000024);
+		// proc_set_csflags(proc, new_csflags);
+
+		// --- some vm map crap, not needed
+		// uint32_t f1 = kread32(vm_map + 0x94);
+		// uint32_t f2 = kread32(vm_map + 0x98);
+		// printf("before f1: %X, f2: %X\n", f1, f2);
+		// f1 &= ~0x10u;
+		// f2++;
+		// f1 |= 0x8000;
+		// f2++;
+		// printf("after f1: %X, f2: %X\n", f1, f2);
+		// kwrite32(vm_map + 0x94, f1);
+		// kwrite32(vm_map + 0x98, f2);
+	}
+	return 0;
+}
+
+int proc_set_debugged_pid(pid_t pid, bool fully_debugged)
+{
+	int retval = -1;
 	if (pid > 0) {
 		bool proc_needs_release = false;
 		uint64_t proc = proc_for_pid(pid, &proc_needs_release);
 		if (proc != 0) {
-			uint64_t task = proc_get_task(proc);
-			uint64_t vm_map = task_get_vm_map(task);
-			uint64_t pmap = vm_map_get_pmap(vm_map);
-
-			pmap_set_wx_allowed(pmap, true);
-
-			// --- cs_flags, not needed, wx_allowed is enough
-			// uint32_t csflags = proc_get_csflags(proc);
-			// uint32_t new_csflags = ((csflags & ~0x703b10) | 0x10000024);
-			// proc_set_csflags(proc, new_csflags);
-
-			// --- some vm map crap, not needed
-			// uint32_t f1 = kread32(vm_map + 0x94);
-			// uint32_t f2 = kread32(vm_map + 0x98);
-			// printf("before f1: %X, f2: %X\n", f1, f2);
-			// f1 &= ~0x10u;
-			// f2++;
-			// f1 |= 0x8000;
-			// f2++;
-			// printf("after f1: %X, f2: %X\n", f1, f2);
-			// kwrite32(vm_map + 0x94, f1);
-			// kwrite32(vm_map + 0x98, f2);
-
+			retval = proc_set_debugged(proc, fully_debugged);
 			if (proc_needs_release) proc_rele(proc);
 		}
 	}
-	return 0;
+	return retval;
 }
 
 NSString *proc_get_path(pid_t pid)

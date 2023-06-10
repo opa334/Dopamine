@@ -27,7 +27,7 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 					xpc_object_t xreply = xpc_dictionary_create_reply(xdict);
 					switch (msgId) {
 						case JBD_MSG_DEBUG_ME: {
-							proc_set_debugged(clientPid);
+							proc_set_debugged_pid(clientPid, false);
 							xpc_dictionary_set_int64(xreply, "result", 0);
 							break;
 						}
