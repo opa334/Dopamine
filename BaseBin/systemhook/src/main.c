@@ -1,11 +1,10 @@
 #include "common.h"
-#include "unsandbox.h"
 
 #include <mach-o/dyld.h>
 #include <dlfcn.h>
 #include <sys/sysctl.h>
 #include <sys/stat.h>
-//#include "sandbox.h"
+#include "sandbox.h"
 
 extern bool swh_is_debugged;
 
@@ -20,6 +19,16 @@ bool dlopen_preflight(const char* path);
 #define DYLD_INTERPOSE(_replacement,_replacee) \
    __attribute__((used)) static struct{ const void* replacement; const void* replacee; } _interpose_##_replacee \
 			__attribute__ ((section ("__DATA,__interpose"))) = { (const void*)(unsigned long)&_replacement, (const void*)(unsigned long)&_replacee };
+
+void unsandbox(void) {
+	char extensionsCopy[strlen(JB_SandboxExtensions)];
+	strcpy(extensionsCopy, JB_SandboxExtensions);
+	char *extensionToken = strtok(extensionsCopy, "|");
+	while (extensionToken != NULL) {
+		sandbox_extension_consume(extensionToken);
+		extensionToken = strtok(NULL, "|");
+	}
+}
 
 static char *gExecutablePath = NULL;
 static void loadExecutablePath(void)
@@ -294,7 +303,7 @@ int ptrace_hook(int request, pid_t pid, caddr_t addr, int data)
 		static int64_t (*__jbdProcSetDebugged)(pid_t pid);
 		static dispatch_once_t onceToken;
 		dispatch_once(&onceToken, ^{
-			void *libjbHandle = dlopen("/var/jb/basebin/libjailbreak.dylib", RTLD_NOW);
+			void *libjbHandle = dlopen(JB_ROOT_PATH("/basebin/libjailbreak.dylib"), RTLD_NOW);
 			if (libjbHandle) {
 				__jbdProcSetDebugged = dlsym(libjbHandle, "jbdProcSetDebugged");
 			}
@@ -312,7 +321,7 @@ int ptrace_hook(int request, pid_t pid, caddr_t addr, int data)
 
 bool shouldEnableTweaks(void)
 {
-	if (access("/var/jb/basebin/.safe_mode", F_OK) == 0) {
+	if (access(JB_ROOT_PATH("/basebin/.safe_mode"), F_OK) == 0) {
 		return false;
 	}
 
@@ -348,6 +357,15 @@ void applyKbdFix(void)
 
 __attribute__((constructor)) static void initializer(void)
 {
+	JB_SandboxExtensions = getenv("JB_SANDBOX_EXTENSIONS");
+	unsetenv("JB_SANDBOX_EXTENSIONS");
+	JB_RootPath = getenv("JB_ROOT_PATH");
+
+	if (!strcmp(getenv("DYLD_INSERT_LIBRARIES"), "/usr/lib/systemhook.dylib")) {
+		// Unset DYLD_INSERT_LIBRARIES, but only if we are the only thing contained in it
+		unsetenv("DYLD_INSERT_LIBRARIES");
+	}
+
 	unsandbox();
 	loadExecutablePath();
 
@@ -365,13 +383,13 @@ __attribute__((constructor)) static void initializer(void)
 		else if (strcmp(gExecutablePath, "/usr/sbin/cfprefsd") == 0) {
 			int64_t debugErr = jbdswDebugMe();
 			if (debugErr == 0) {
-				dlopen_hook("/var/jb/basebin/rootlesshooks.dylib", RTLD_NOW);
+				dlopen_hook(JB_ROOT_PATH("/basebin/rootlesshooks.dylib"), RTLD_NOW);
 			}
 		}
 		else if (strcmp(gExecutablePath, "/usr/libexec/watchdogd") == 0) {
 			int64_t debugErr = jbdswDebugMe();
 			if (debugErr == 0) {
-				dlopen_hook("/var/jb/basebin/watchdoghook.dylib", RTLD_NOW);
+				dlopen_hook(JB_ROOT_PATH("/basebin/watchdoghook.dylib"), RTLD_NOW);
 			}
 		}
 	}
@@ -379,9 +397,10 @@ __attribute__((constructor)) static void initializer(void)
 	if (shouldEnableTweaks()) {
 		int64_t debugErr = jbdswDebugMe();
 		if (debugErr == 0) {
-			if(access("/var/jb/usr/lib/TweakLoader.dylib", F_OK) == 0)
+			char *tweakLoaderPath = JB_ROOT_PATH("/usr/lib/TweakLoader.dylib");
+			if(access(tweakLoaderPath, F_OK) == 0)
 			{
-				void *tweakLoaderHandle = dlopen_hook("/var/jb/usr/lib/TweakLoader.dylib", RTLD_NOW);
+				void *tweakLoaderHandle = dlopen_hook(tweakLoaderPath, RTLD_NOW);
 				if (tweakLoaderHandle != NULL) {
 					dlclose(tweakLoaderHandle);
 				}

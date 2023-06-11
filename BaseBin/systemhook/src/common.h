@@ -1,6 +1,15 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <spawn.h>
 
+extern char *JB_SandboxExtensions;
+extern char *JB_RootPath;
+#define JB_ROOT_PATH(path) ({ \
+	char outPath[PATH_MAX]; \
+	strlcpy(outPath, JB_RootPath, PATH_MAX); \
+	strlcat(outPath, path, PATH_MAX); \
+	outPath; \
+})
+
 bool stringStartsWith(const char *str, const char* prefix);
 bool stringEndsWith(const char* str, const char* suffix);
 

@@ -54,10 +54,7 @@ func userspaceReboot() {
     }
     
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-        guard let launchctlPath = rootifyPath(path: "/usr/bin/launchctl") else {
-            return
-        }
-        _ = execCmd(args: [launchctlPath, "reboot", "userspace"])
+        _ = execCmd(args: [rootifyPath(path: "/basebin/jbctl")!, "reboot_userspace"])
     })
 }
 

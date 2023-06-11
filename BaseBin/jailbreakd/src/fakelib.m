@@ -10,30 +10,6 @@
 
 extern void setJetsamEnabled(bool enabled);
 
-void generateSystemWideSandboxExtensions(NSString *targetPath)
-{
-	NSMutableArray *extensions = [NSMutableArray new];
-
-	char *extension = NULL;
-
-	// Make /var/jb readable
-	extension = sandbox_extension_issue_file("com.apple.app-sandbox.read", "/var/jb", 0);
-	if (extension) [extensions addObject:[NSString stringWithUTF8String:extension]];
-
-	// Make binaries in /var/jb executable
-	extension = sandbox_extension_issue_file("com.apple.sandbox.executable", "/var/jb", 0);
-	if (extension) [extensions addObject:[NSString stringWithUTF8String:extension]];
-
-	// Ensure the whole system has access to com.opa334.jailbreakd.systemwide
-	extension = sandbox_extension_issue_mach("com.apple.app-sandbox.mach", "com.opa334.jailbreakd.systemwide", 0);
-	if (extension) [extensions addObject:[NSString stringWithUTF8String:extension]];
-	extension = sandbox_extension_issue_mach("com.apple.security.exception.mach-lookup.global-name", "com.opa334.jailbreakd.systemwide", 0);
-	if (extension) [extensions addObject:[NSString stringWithUTF8String:extension]];
-
-	NSDictionary *dictToSave = @{ @"extensions" : extensions };
-	[dictToSave writeToFile:targetPath atomically:NO];
-}
-
 NSArray *writableFileAttributes(void)
 {
 	static NSArray *attributes = nil;
@@ -133,18 +109,15 @@ int setFakeLibVisible(bool visible)
 
 		NSString *systemhookPath = prebootPath(@"basebin/systemhook.dylib");
 		NSString *systemhookFakeLibPath = prebootPath(@"basebin/.fakelib/systemhook.dylib");
-		NSString *sandboxFakeLibPath = prebootPath(@"basebin/.fakelib/sandbox.plist");
 
 		if (visible) {
 			if (![[NSFileManager defaultManager] copyItemAtPath:systemhookPath toPath:systemhookFakeLibPath error:nil]) return 10;
 			if (carbonCopy(patchedDyldPath, dyldFakeLibPath) != 0) return 11;
-			generateSystemWideSandboxExtensions(sandboxFakeLibPath);
 			JBLogDebug("Made fakelib visible");
 		}
 		else {
 			if (![[NSFileManager defaultManager] removeItemAtPath:systemhookFakeLibPath error:nil]) return 12;
 			if (carbonCopy(stockDyldPath, dyldFakeLibPath) != 0) return 13;
-			if (![[NSFileManager defaultManager] removeItemAtPath:sandboxFakeLibPath error:nil]) return 14;
 			JBLogDebug("Made fakelib not visible");
 		}
 	}

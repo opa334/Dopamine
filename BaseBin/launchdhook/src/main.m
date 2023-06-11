@@ -7,12 +7,34 @@
 #import <mach-o/dyld.h>
 #import <spawn.h>
 
+#import <sandbox.h>
 #import "spawn_hook.h"
 #import "xpc_hook.h"
 #import "daemon_hook.h"
 #import "ipc_hook.h"
+#import "../systemhook/src/common.h"
 
 int gLaunchdImageIndex = -1;
+
+NSString *generateSystemWideSandboxExtensions(void)
+{
+	NSMutableString *extensionString = [NSMutableString new];
+
+	// Make /var/jb readable
+	[extensionString appendString:[NSString stringWithUTF8String:sandbox_extension_issue_file("com.apple.app-sandbox.read", "/var/jb", 0)]];
+	[extensionString appendString:@"|"];
+
+	// Make binaries in /var/jb executable
+	[extensionString appendString:[NSString stringWithUTF8String:sandbox_extension_issue_file("com.apple.sandbox.executable", "/var/jb", 0)]];
+	[extensionString appendString:@"|"];
+
+	// Ensure the whole system has access to com.opa334.jailbreakd.systemwide
+	[extensionString appendString:[NSString stringWithUTF8String:sandbox_extension_issue_mach("com.apple.app-sandbox.mach", "com.opa334.jailbreakd.systemwide", 0)]];
+	[extensionString appendString:@"|"];
+	[extensionString appendString:[NSString stringWithUTF8String:sandbox_extension_issue_mach("com.apple.security.exception.mach-lookup.global-name", "com.opa334.jailbreakd.systemwide", 0)]];
+
+	return extensionString;
+}
 
 __attribute__((constructor)) static void initializer(void)
 {
@@ -78,6 +100,12 @@ __attribute__((constructor)) static void initializer(void)
 	// This will ensure launchdhook is always reinjected after userspace reboots
 	// As this launchd will pass environ to the next launchd...
 	setenv("DYLD_INSERT_LIBRARIES", prebootPath(@"basebin/launchdhook.dylib").fileSystemRepresentation, 1);
+
+	// System wide sandbox extensions and root path
+	setenv("JB_SANDBOX_EXTENSIONS", generateSystemWideSandboxExtensions().UTF8String, 1);
+	setenv("JB_ROOT_PATH", prebootPath(nil).fileSystemRepresentation, 1);
+	JB_SandboxExtensions = getenv("JB_SANDBOX_EXTENSIONS");
+	JB_RootPath = getenv("JB_ROOT_PATH");
 
 	bootInfo_setObject(@"environmentInitialized", @1);
 }

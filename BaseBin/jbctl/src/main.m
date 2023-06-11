@@ -39,6 +39,8 @@ int main(int argc, char* argv[])
 	}
 	else if (!strcmp(cmd, "rebuild_trustcache")) {
 		jbdRebuildTrustCache();
+	} else if (!strcmp(cmd, "reboot_userspace")) {
+		return reboot3(RB2_USERREBOOT);
 	} else if (!strcmp(cmd, "update")) {
 		if (argc < 4) {
 			print_usage();

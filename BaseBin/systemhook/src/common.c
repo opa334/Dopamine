@@ -13,6 +13,9 @@
 #define POSIX_SPAWN_PROC_TYPE_DRIVER 0x700
 int posix_spawnattr_getprocesstype_np(const posix_spawnattr_t * __restrict, int * __restrict) __API_AVAILABLE(macos(10.8), ios(6.0));
 
+char *JB_SandboxExtensions = NULL;
+char *JB_RootPath = NULL;
+
 #define HOOK_DYLIB_PATH "/usr/lib/systemhook.dylib"
 #define JBD_MSG_SETUID_FIX 21
 #define JBD_MSG_PROCESS_BINARY 22
@@ -64,7 +67,7 @@ void loadForkFix(void)
 {
 	static dispatch_once_t onceToken;
 	dispatch_once (&onceToken, ^{
-		dlopen("/var/jb/basebin/forkfix.dylib", RTLD_NOW);
+		dlopen(JB_ROOT_PATH("/basebin/forkfix.dylib"), RTLD_NOW);
 	});
 }
 
@@ -346,12 +349,14 @@ done:
 	return (err);
 }
 
-void enumeratePathString(const char *pathsString, void (^enumBlock)(const char *pathString))
+void enumeratePathString(const char *pathsString, void (^enumBlock)(const char *pathString, bool *stop))
 {
 	char *pathsCopy = strdup(pathsString);
 	char *pathString = strtok(pathsCopy, ":");
 	while (pathString != NULL) {
-		enumBlock(pathString);
+		bool stop = false;
+		enumBlock(pathString, &stop);
+		if (stop) break;
 		pathString = strtok(NULL, ":");
 	}
 	free(pathsCopy);
@@ -425,7 +430,7 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 	const char *existingLibraryInserts = envbuf_getenv((const char **)envp, "DYLD_INSERT_LIBRARIES");
 	__block bool systemHookAlreadyInserted = false;
 	if (existingLibraryInserts) {
-		enumeratePathString(existingLibraryInserts, ^(const char *existingLibraryInsert) {
+		enumeratePathString(existingLibraryInserts, ^(const char *existingLibraryInsert, bool *stop) {
 			if (!strcmp(existingLibraryInsert, HOOK_DYLIB_PATH)) {
 				systemHookAlreadyInserted = true;
 			}
@@ -435,32 +440,40 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 		});
 	}
 
-	bool shouldInsertSystemHook = true;
-	bool envNeedsRemoval = systemHookAlreadyInserted;
+	int JBEnvAlreadyInsertedCount = (int)systemHookAlreadyInserted;
+
+	if (envbuf_getenv((const char **)envp, "JB_SANDBOX_EXTENSIONS")) {
+		JBEnvAlreadyInsertedCount++;
+	}
+
+	if (envbuf_getenv((const char **)envp, "JB_ROOT_PATH")) {
+		JBEnvAlreadyInsertedCount++;
+	}
+
+	// Check if we can find at least one reason to not insert jailbreak related environment variables
+	// In this case we also need to remove pre existing environment variables if they are already set
+	bool shouldInsertJBEnv = true;
 	do {
+		if (binaryConfig & kBinaryConfigDontInject) {
+			shouldInsertJBEnv = false;
+			break;
+		}
+
 		// Check if we can find a _SafeMode or _MSSafeMode variable
 		// In this case we do not want to inject anything
-		// But we also want to remove the variables before spawning the process
 		const char *safeModeValue = envbuf_getenv((const char **)envp, "_SafeMode");
 		const char *msSafeModeValue = envbuf_getenv((const char **)envp, "_MSSafeMode");
 		if (safeModeValue) {
 			if (!strcmp(safeModeValue, "1")) {
-				shouldInsertSystemHook = false;
-				envNeedsRemoval = true;
+				shouldInsertJBEnv = false;
 				break;
 			}
 		}
 		if (msSafeModeValue) {
 			if (!strcmp(msSafeModeValue, "1")) {
-				shouldInsertSystemHook = false;
-				envNeedsRemoval = true;
+				shouldInsertJBEnv = false;
 				break;
 			}
-		}
-
-		if (binaryConfig & kBinaryConfigDontInject) {
-			shouldInsertSystemHook = false;
-			break;
 		}
 
 		if (attrp) {
@@ -468,20 +481,20 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 			posix_spawnattr_getprocesstype_np(attrp, &proctype);
 			if (proctype == POSIX_SPAWN_PROC_TYPE_DRIVER) {
 				// Do not inject hook into DriverKit drivers
-				shouldInsertSystemHook = false;
+				shouldInsertJBEnv = false;
 				break;
 			}
 		}
 
 		if (access(HOOK_DYLIB_PATH, F_OK) != 0) {
 			// If the hook dylib doesn't exist, don't try to inject it (would crash the process)
-			shouldInsertSystemHook = false;
+			shouldInsertJBEnv = false;
 			break;
 		}
 	} while (0);
 
 	// If systemhook is being injected and Jetsam limits are set, increase them by a factor of JETSAM_MULTIPLIER
-	if (shouldInsertSystemHook) {
+	if (shouldInsertJBEnv) {
 		if (attrp) {
 			uint8_t *attrStruct = *attrp;
 			if (attrStruct) {
@@ -497,7 +510,7 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 		}
 	}
 
-	if (shouldInsertSystemHook == systemHookAlreadyInserted && !envNeedsRemoval) {
+	if ((shouldInsertJBEnv && JBEnvAlreadyInsertedCount == 3) || (!shouldInsertJBEnv && JBEnvAlreadyInsertedCount == 0)) {
 		// we already good, just call orig
 		return pspawn_orig(pid, path, file_actions, attrp, argv, envp);
 	}
@@ -506,18 +519,22 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 
 		char **envc = envbuf_mutcopy((const char **)envp);
 
-		if (shouldInsertSystemHook) {
-			char newLibraryInsert[strlen(HOOK_DYLIB_PATH) + (existingLibraryInserts ? (strlen(existingLibraryInserts) + 1) : 0) + 1];
-			strcpy(newLibraryInsert, HOOK_DYLIB_PATH);
-			if (existingLibraryInserts) {
-				strcat(newLibraryInsert, ":");
-				strcat(newLibraryInsert, existingLibraryInserts);
+		if (shouldInsertJBEnv) {
+			if (!systemHookAlreadyInserted) {
+				char newLibraryInsert[strlen(HOOK_DYLIB_PATH) + (existingLibraryInserts ? (strlen(existingLibraryInserts) + 1) : 0) + 1];
+				strcpy(newLibraryInsert, HOOK_DYLIB_PATH);
+				if (existingLibraryInserts) {
+					strcat(newLibraryInsert, ":");
+					strcat(newLibraryInsert, existingLibraryInserts);
+				}
+				envbuf_setenv(&envc, "DYLD_INSERT_LIBRARIES", newLibraryInsert);
 			}
 
-			envbuf_setenv(&envc, "DYLD_INSERT_LIBRARIES", newLibraryInsert);
+			envbuf_setenv(&envc, "JB_SANDBOX_EXTENSIONS", JB_SandboxExtensions);
+			envbuf_setenv(&envc, "JB_ROOT_PATH", JB_RootPath);
 		}
 		else {
-			if (existingLibraryInserts) {
+			if (systemHookAlreadyInserted && existingLibraryInserts) {
 				if (!strcmp(existingLibraryInserts, HOOK_DYLIB_PATH)) {
 					envbuf_unsetenv(&envc, "DYLD_INSERT_LIBRARIES");
 				}
@@ -526,7 +543,7 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 					newLibraryInsert[0] = '\0';
 
 					__block bool first = true;
-					enumeratePathString(existingLibraryInserts, ^(const char *existingLibraryInsert) {
+					enumeratePathString(existingLibraryInserts, ^(const char *existingLibraryInsert, bool *stop) {
 						if (strcmp(existingLibraryInsert, HOOK_DYLIB_PATH) != 0) {
 							if (first) {
 								strcpy(newLibraryInsert, existingLibraryInsert);
@@ -545,7 +562,10 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 			}
 			envbuf_unsetenv(&envc, "_SafeMode");
 			envbuf_unsetenv(&envc, "_MSSafeMode");
+			envbuf_unsetenv(&envc, "JB_SANDBOX_EXTENSIONS");
+			envbuf_unsetenv(&envc, "JB_ROOT_PATH");
 		}
+
 		int retval = pspawn_orig(pid, path, file_actions, attrp, argv, envc);
 		envbuf_free(envc);
 		return retval;
