@@ -300,6 +300,7 @@ int ptrace_hook(int request, pid_t pid, caddr_t addr, int data)
 			}
 		});
 
+		// we assume that when ptrace has worked, XPC to jailbreakd will also work
 		if (__jbdProcSetDebugged) {
 			__jbdProcSetDebugged(pid);
 			__jbdProcSetDebugged(getpid());
