@@ -21,11 +21,11 @@ NSString *generateSystemWideSandboxExtensions(void)
 	NSMutableString *extensionString = [NSMutableString new];
 
 	// Make /var/jb readable
-	[extensionString appendString:[NSString stringWithUTF8String:sandbox_extension_issue_file("com.apple.app-sandbox.read", "/var/jb", 0)]];
+	[extensionString appendString:[NSString stringWithUTF8String:sandbox_extension_issue_file("com.apple.app-sandbox.read", prebootPath(nil).fileSystemRepresentation, 0)]];
 	[extensionString appendString:@"|"];
 
 	// Make binaries in /var/jb executable
-	[extensionString appendString:[NSString stringWithUTF8String:sandbox_extension_issue_file("com.apple.sandbox.executable", "/var/jb", 0)]];
+	[extensionString appendString:[NSString stringWithUTF8String:sandbox_extension_issue_file("com.apple.sandbox.executable", prebootPath(nil).fileSystemRepresentation, 0)]];
 	[extensionString appendString:@"|"];
 
 	// Ensure the whole system has access to com.opa334.jailbreakd.systemwide
