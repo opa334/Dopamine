@@ -397,7 +397,7 @@ __attribute__((constructor)) static void initializer(void)
 	if (shouldEnableTweaks()) {
 		int64_t debugErr = jbdswDebugMe();
 		if (debugErr == 0) {
-			char *tweakLoaderPath = "/var/jb/usr/lib/TweakLoader.dylib";
+			const char *tweakLoaderPath = "/var/jb/usr/lib/TweakLoader.dylib";
 			if(access(tweakLoaderPath, F_OK) == 0)
 			{
 				void *tweakLoaderHandle = dlopen_hook(tweakLoaderPath, RTLD_NOW);
