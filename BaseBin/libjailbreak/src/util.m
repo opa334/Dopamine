@@ -1,6 +1,7 @@
 #import "util.h"
 #import "pplrw.h"
 #import "kcall.h"
+#import "csblob.h"
 #import "boot_info.h"
 #import "signatures.h"
 #import "log.h"
@@ -264,15 +265,14 @@ uint64_t proc_get_vnode_by_file_descriptor(uint64_t proc_ptr, int fd)
 	return kread_ptr(file_glob_ptr + 0x38);
 }
 
-/*uint32_t proc_get_csflags(uint64_t proc)
+uint32_t proc_get_csflags(uint64_t proc)
 {
 	if (@available(iOS 15.2, *)) {
 		uint64_t proc_ro = proc_get_proc_ro(proc);
 		return kread32(proc_ro + 0x1C);
 	}
 	else {
-		// TODO
-		return 0;
+		return kread32(proc + 0x300);
 	}
 }
 
@@ -283,9 +283,9 @@ void proc_set_csflags(uint64_t proc, uint32_t csflags)
 		kwrite32(proc_ro + 0x1C, csflags);
 	}
 	else {
-		// TODO
+		kwrite32(proc + 0x300, csflags);
 	}
-}*/
+}
 
 uint32_t proc_get_svuid(uint64_t proc_ptr)
 {
@@ -431,6 +431,18 @@ uint64_t task_get_vm_map(uint64_t task_ptr)
 	return kread_ptr(task_ptr + 0x28);
 }
 
+void task_set_memory_ownership_transfer(uint64_t task_ptr, uint8_t enabled)
+{
+	uint32_t offset = 0x0;
+	if (@available(iOS 15.2, *)) {
+		offset = 0x580;
+	}
+	else {
+		offset = 0x5C0;
+	}
+	kwrite8(task_ptr + offset, enabled);
+}
+
 uint64_t self_task(void)
 {
 	static uint64_t gSelfTask = 0;
@@ -503,6 +515,32 @@ uint64_t vm_map_find_entry(uint64_t vm_map_ptr, uint64_t address)
 		}
 	});
 	return found_entry;
+}
+
+vm_map_flags vm_map_get_flags(uint64_t vm_map_ptr)
+{
+	uint32_t flags_offset = 0;
+	if (@available(iOS 15.2, *)) {
+		flags_offset = 0x11C;
+	}
+	else {
+		flags_offset = 0x94;
+	}
+	vm_map_flags flags;
+	kreadbuf(vm_map_ptr + flags_offset, &flags, sizeof(flags));
+	return flags;
+}
+
+void vm_map_set_flags(uint64_t vm_map_ptr, vm_map_flags new_flags)
+{
+	uint32_t flags_offset = 0;
+	if (@available(iOS 15.2, *)) {
+		flags_offset = 0x11C;
+	}
+	else {
+		flags_offset = 0x94;
+	}
+	kwritebuf(vm_map_ptr + flags_offset, &new_flags, sizeof(new_flags));
 }
 
 #define FLAGS_PROT_SHIFT    7
@@ -875,25 +913,25 @@ int proc_set_debugged(uint64_t proc_ptr, bool fully_debugged)
 	uint64_t vm_map = task_get_vm_map(task);
 	uint64_t pmap = vm_map_get_pmap(vm_map);
 
+	// For most unrestrictions, just setting wx_allowed is enough
+	// This enabled hooks without being detectable at all, as cs_ops will not return CS_DEBUGGED
 	pmap_set_wx_allowed(pmap, true);
 
 	if (fully_debugged) {
-		// --- cs_flags, not needed, wx_allowed is enough
-		// uint32_t csflags = proc_get_csflags(proc);
-		// uint32_t new_csflags = ((csflags & ~0x703b10) | 0x10000024);
-		// proc_set_csflags(proc, new_csflags);
+		// When coming from ptrace, we want to fully emulate cs_allow_invalid though
 
-		// --- some vm map crap, not needed
-		// uint32_t f1 = kread32(vm_map + 0x94);
-		// uint32_t f2 = kread32(vm_map + 0x98);
-		// printf("before f1: %X, f2: %X\n", f1, f2);
-		// f1 &= ~0x10u;
-		// f2++;
-		// f1 |= 0x8000;
-		// f2++;
-		// printf("after f1: %X, f2: %X\n", f1, f2);
-		// kwrite32(vm_map + 0x94, f1);
-		// kwrite32(vm_map + 0x98, f2);
+		uint32_t flags = proc_get_csflags(proc_ptr) & ~(CS_KILL | CS_HARD);
+		if (flags & CS_VALID) {
+			flags |= CS_DEBUGGED;
+		}
+		proc_set_csflags(proc_ptr, flags);
+
+		task_set_memory_ownership_transfer(task, true);
+
+		vm_map_flags map_flags = vm_map_get_flags(vm_map);
+		map_flags.switch_protect = false;
+		map_flags.cs_debugged = true;
+		vm_map_set_flags(vm_map, map_flags);
 	}
 	return 0;
 }

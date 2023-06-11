@@ -9,6 +9,10 @@
 
 extern bool swh_is_debugged;
 
+int ptrace(int request, pid_t pid, caddr_t addr, int data);
+#define PT_ATTACH       10      /* trace some running process */
+#define PT_ATTACHEXC    14      /* attach to running process with signal exception */
+
 void* dlopen_from(const char* path, int mode, void* addressInCaller);
 void* dlopen_audited(const char* path, int mode);
 bool dlopen_preflight(const char* path);
@@ -277,6 +281,34 @@ int sandbox_init_with_extensions_hook(const char *profile, uint64_t flags, const
 	return retval;
 }*/
 
+int ptrace_hook(int request, pid_t pid, caddr_t addr, int data)
+{
+	int retval = ptrace(request, pid, addr, data);
+
+	/*
+		ptrace works on any process when the parent is unsandboxed,
+		but when the victim process does not have the get-task-allow entitlement,
+		it will fail to set the debug flags, therefore we patch ptrace to manually apply them
+	*/
+	if (retval == 0 && (request == PT_ATTACHEXC || request == PT_ATTACH)) {
+		static int64_t (*__jbdProcSetDebugged)(pid_t pid);
+		static dispatch_once_t onceToken;
+		dispatch_once(&onceToken, ^{
+			void *libjbHandle = dlopen("/var/jb/basebin/libjailbreak.dylib", RTLD_NOW);
+			if (libjbHandle) {
+				__jbdProcSetDebugged = dlsym(libjbHandle, "jbdProcSetDebugged");
+			}
+		});
+
+		if (__jbdProcSetDebugged) {
+			__jbdProcSetDebugged(pid);
+			__jbdProcSetDebugged(getpid());
+		}
+	}
+
+	return retval;
+}
+
 bool shouldEnableTweaks(void)
 {
 	if (access("/var/jb/basebin/.safe_mode", F_OK) == 0) {
@@ -373,3 +405,4 @@ DYLD_INTERPOSE(dlopen_preflight_hook, dlopen_preflight)
 /*DYLD_INTERPOSE(sandbox_init_hook, sandbox_init)
 DYLD_INTERPOSE(sandbox_init_with_parameters_hook, sandbox_init_with_parameters)
 DYLD_INTERPOSE(sandbox_init_with_extensions_hook, sandbox_init_with_extensions)*/
+DYLD_INTERPOSE(ptrace_hook, ptrace)
