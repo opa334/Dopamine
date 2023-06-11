@@ -7,7 +7,7 @@ LDFLAGS = -dynamiclib -rpath @loader_path/fallback -L../libjailbreak -L../_share
 sign: $(TARGET)
 	@ldid -S $^
 
-$(TARGET): $(wildcard src/*.m ../systemhook/src/common.c)
+$(TARGET): $(wildcard src/*.m ../systemhook/src/common.c ../systemhook/src/envbuf.c)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 	install_name_tool -change "/var/jb/basebin/libjailbreak.dylib" "@loader_path/libjailbreak.dylib" $@
 	install_name_tool -change "/var/jb/basebin/libfilecom.dylib" "@loader_path/libfilecom.dylib" $@
