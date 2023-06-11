@@ -44,7 +44,7 @@ BOOL new_CFPrefsGetPathForTriplet(CFStringRef bundleIdentifier, CFStringRef user
 {
 	BOOL orig = orig_CFPrefsGetPathForTriplet(bundleIdentifier, user, byHost, path, buffer);
 
-	if(orig && buffer && access("/var/jb", F_OK))
+	if(orig && buffer && !access("/var/jb", F_OK))
 	{
 		NSString* origPath = [NSString stringWithUTF8String:(char*)buffer];
 		BOOL needsRedirection = preferencePlistNeedsRedirection(origPath);
