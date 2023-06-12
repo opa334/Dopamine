@@ -31,6 +31,7 @@ char **envbuf_mutcopy(const char *envp[])
 void envbuf_free(char *envp[])
 {
 	if (envp == NULL) return;
+
 	int len = envbuf_len((const char**)envp);
 	for (int i = 0; i < len-1; i++) {
 		free(envp[i]);
