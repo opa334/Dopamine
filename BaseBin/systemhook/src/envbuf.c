@@ -3,7 +3,7 @@
 
 int envbuf_len(const char *envp[])
 {
-	if (!envp) return 1;
+	if (envp == NULL) return 1;
 
 	int k = 0;
 	const char *env = envp[k++];
