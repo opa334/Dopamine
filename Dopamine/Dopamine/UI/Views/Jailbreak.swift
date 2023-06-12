@@ -10,6 +10,7 @@ import Fugu15KernelExploit
 import CBindings
 
 var fakeRootPath: String? = nil
+var wifiEnabled: Bool = false
 public func rootifyPath(path: String) -> String? {
     if fakeRootPath == nil {
         fakeRootPath = Bootstrapper.locateExistingFakeRoot()
@@ -83,6 +84,7 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
         }
         else {
             if wifiIsEnabled() {
+                wifiEnabled = true
                 setWifiEnabled(false)
                 Logger.log("Disabling Wi-Fi", isStatus: true)
                 sleep(5)
@@ -110,8 +112,10 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
             // No Wifi fixup needed
         }
         else {
-            setWifiEnabled(true)
-            Logger.log("Enabling Wi-Fi", isStatus: true)
+            if wifiEnabled {
+                setWifiEnabled(true)
+                Logger.log("Enabling Wi-Fi", isStatus: true)
+            }
         }
         
         try Fugu15.startEnvironment()
