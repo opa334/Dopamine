@@ -6,6 +6,7 @@
 #define PTE_LEVEL3_ENTRY    PTE_VALID | 0x3
 
 #define KRW_URW_PERM        (0x60000000000040)
+#define KRW_UR_PERM         (0x600000000000C0)
 
 #define PTE_RESERVED        (0x3)
 #define PTE_REUSEABLE       (0x1)

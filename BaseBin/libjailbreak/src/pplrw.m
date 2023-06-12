@@ -25,7 +25,7 @@ PPLRWStatus gPPLRWStatus = kPPLRWStatusNotInitialized;
 
 #define PLACEHOLDER_PAGE_ADDR gMagicPage + 0x4000
 #define PLACEHOLDER_PAGE_KADDR gPlaceholderPage
-#define PLACEHOLDER_PAGE_PTE (PLACEHOLDER_PAGE_KADDR | KRW_URW_PERM | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY)
+#define PLACEHOLDER_PAGE_PTE (PLACEHOLDER_PAGE_KADDR | KRW_UR_PERM | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY)
 
 typedef struct PPLWindow
 {
@@ -138,7 +138,7 @@ void windowWaitUntilMapped(PPLWindow *window, uint64_t page)
 			cmpRet = memcmp((uint8_t *)PLACEHOLDER_PAGE_ADDR, (uint8_t *)window->address, 0x4000);
 		}
 		else {
-			cmpRet = !(*(uint64_t*)PLACEHOLDER_PAGE_ADDR == PLACEHOLDER_PAGE_KADDR);
+			cmpRet = ((*(uint64_t*)(window->address)) != PLACEHOLDER_PAGE_KADDR);
 		}
 
 		//JBLogDebug("memcmp(%p, %p, 0x100) => %d (i:%d)", (uint8_t *)PLACEHOLDER_PAGE_ADDR, (uint8_t *)window->address, cmpRet, i);
@@ -603,8 +603,8 @@ void initPPLPrimitives(uint64_t magicPage)
 		gMagicMappingsRefCounts[1] = 0xFFFFFFFF;
 
 		// If no proper placeholder page exist yet, use TTEP as placeholder page for the time being
-		uint64_t placeholderPageToUse = bootInfo_getUInt64(@"pplrw_placeholder_page") ?: gCpuTTEP; 
-		PPLRW_updatePlaceholderPage(placeholderPageToUse); 
+		uint64_t placeholderPageToUse = bootInfo_getUInt64(@"pplrw_placeholder_physpage") ?: gCpuTTEP;
+		PPLRW_updatePlaceholderPage(placeholderPageToUse);
 	
 		gPPLRWStatus = kPPLRWStatusInitialized;
 
