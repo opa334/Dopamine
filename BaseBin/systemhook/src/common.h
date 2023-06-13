@@ -4,7 +4,7 @@
 extern char *JB_SandboxExtensions;
 extern char *JB_RootPath;
 #define JB_ROOT_PATH(path) ({ \
-	char outPath = alloca(PATH_MAX); \
+	char *outPath = alloca(PATH_MAX); \
 	strlcpy(outPath, JB_RootPath, PATH_MAX); \
 	strlcat(outPath, path, PATH_MAX); \
 	(outPath); \
