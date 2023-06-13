@@ -357,9 +357,9 @@ void applyKbdFix(void)
 
 __attribute__((constructor)) static void initializer(void)
 {
-	JB_SandboxExtensions = getenv("JB_SANDBOX_EXTENSIONS");
+	JB_SandboxExtensions = strdup(getenv("JB_SANDBOX_EXTENSIONS"));
 	unsetenv("JB_SANDBOX_EXTENSIONS");
-	JB_RootPath = getenv("JB_ROOT_PATH");
+	JB_RootPath = strdup(getenv("JB_ROOT_PATH"));
 
 	if (!strcmp(getenv("DYLD_INSERT_LIBRARIES"), "/usr/lib/systemhook.dylib")) {
 		// Unset DYLD_INSERT_LIBRARIES, but only if we are the only thing contained in it

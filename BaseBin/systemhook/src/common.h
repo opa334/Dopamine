@@ -7,7 +7,7 @@ extern char *JB_RootPath;
 	char outPath[PATH_MAX]; \
 	strlcpy(outPath, JB_RootPath, PATH_MAX); \
 	strlcat(outPath, path, PATH_MAX); \
-	outPath; \
+	(outPath); \
 })
 
 bool stringStartsWith(const char *str, const char* prefix);
