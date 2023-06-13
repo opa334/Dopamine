@@ -91,6 +91,12 @@ __attribute__((constructor)) static void initializer(void)
 		}
 	}
 
+	// System wide sandbox extensions and root path
+	setenv("JB_SANDBOX_EXTENSIONS", generateSystemWideSandboxExtensions().UTF8String, 1);
+	setenv("JB_ROOT_PATH", prebootPath(nil).fileSystemRepresentation, 1);
+	JB_SandboxExtensions = strdup(getenv("JB_SANDBOX_EXTENSIONS"));
+	JB_RootPath = strdup(getenv("JB_ROOT_PATH"));
+
 	proc_set_debugged_pid(getpid(), false);
 	initXPCHooks();
 	initDaemonHooks();
@@ -100,12 +106,6 @@ __attribute__((constructor)) static void initializer(void)
 	// This will ensure launchdhook is always reinjected after userspace reboots
 	// As this launchd will pass environ to the next launchd...
 	setenv("DYLD_INSERT_LIBRARIES", prebootPath(@"basebin/launchdhook.dylib").fileSystemRepresentation, 1);
-
-	// System wide sandbox extensions and root path
-	setenv("JB_SANDBOX_EXTENSIONS", generateSystemWideSandboxExtensions().UTF8String, 1);
-	setenv("JB_ROOT_PATH", prebootPath(nil).fileSystemRepresentation, 1);
-	JB_SandboxExtensions = getenv("JB_SANDBOX_EXTENSIONS");
-	JB_RootPath = getenv("JB_ROOT_PATH");
 
 	bootInfo_setObject(@"environmentInitialized", @1);
 }
