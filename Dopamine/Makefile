@@ -5,10 +5,8 @@ all: Dopamine.tipa
 Dopamine.tipa: build/Build/Products/Debug-iphoneos/Dopamine.app
 	@echo Ad-Hoc signing Dopamine
 	xattr -rc build/Build/Products/Debug-iphoneos/Dopamine.app
-	codesign -s - --entitlements Dopamine/Dopamine.entitlements build/Build/Products/Debug-iphoneos/Dopamine.app
-	@echo Fake-signing Dopamine
-	../Tools/fastPathSign/fastPathSign build/Build/Products/Debug-iphoneos/Dopamine.app
-	@echo Creating ipa
+	ldid -SDopamine/Dopamine.entitlements build/Build/Products/Debug-iphoneos/Dopamine.app/Dopamine
+	ldid -s build/Build/Products/Debug-iphoneos/Dopamine.app
 	rm -rf Payload Dopamine.tipa
 	mkdir Payload
 	cp -r build/Build/Products/Debug-iphoneos/Dopamine.app Payload/Dopamine.app
