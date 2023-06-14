@@ -419,7 +419,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 								dumpUserspacePanicLog(messageString);
 							}
 							setTweaksEnabled(false);
-							bootInfo_setObject(@"showUserspacePanicMessage", @1);
+							bootInfo_setObject(@"jbdShowUserspacePanicMessage", @1);
 							reboot3(RB2_USERREBOOT);
 						}
 						xpc_dictionary_set_int64(reply, "result", result);
@@ -501,9 +501,9 @@ int main(int argc, char* argv[])
 				bootInfo_setObject(@"jbdIconCacheNeedsRefresh", nil);
 			}
 
-			if (bootInfo_getUInt64(@"showUserspacePanicMessage")) {
+			if (bootInfo_getUInt64(@"jbdShowUserspacePanicMessage")) {
 				CFUserNotificationDisplayAlert(0, 2/*kCFUserNotificationCautionAlertLevel*/, NULL, NULL, NULL, CFSTR("Watchdog Timeout"), CFSTR("Dopamine has protected you from a userspace panic by temporarily disabling tweak injection and triggering a userspace reboot instead. A detailed log is available under Analytics in the Preferences app. You can reenable tweak injection in the Dopamine app."), NULL, NULL, NULL, NULL);
-				bootInfo_setObject(@"showUserspacePanicMessage", nil);
+				bootInfo_setObject(@"jbdShowUserspacePanicMessage", nil);
 			}
 		});
 
