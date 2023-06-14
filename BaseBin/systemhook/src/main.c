@@ -263,7 +263,7 @@ bool dlopen_preflight_hook(const char* path)
 	return dlopen_preflight(path);
 }
 
-/*int sandbox_init_hook(const char *profile, uint64_t flags, char **errorbuf)
+int sandbox_init_hook(const char *profile, uint64_t flags, char **errorbuf)
 {
 	int retval = sandbox_init(profile, flags, errorbuf);
 	if (retval == 0) {
@@ -288,7 +288,7 @@ int sandbox_init_with_extensions_hook(const char *profile, uint64_t flags, const
 		unsandbox();
 	}
 	return retval;
-}*/
+}
 
 int ptrace_hook(int request, pid_t pid, caddr_t addr, int data)
 {
@@ -422,7 +422,7 @@ DYLD_INTERPOSE(dlopen_hook, dlopen)
 DYLD_INTERPOSE(dlopen_from_hook, dlopen_from)
 DYLD_INTERPOSE(dlopen_audited_hook, dlopen_audited)
 DYLD_INTERPOSE(dlopen_preflight_hook, dlopen_preflight)
-/*DYLD_INTERPOSE(sandbox_init_hook, sandbox_init)
+DYLD_INTERPOSE(sandbox_init_hook, sandbox_init)
 DYLD_INTERPOSE(sandbox_init_with_parameters_hook, sandbox_init_with_parameters)
-DYLD_INTERPOSE(sandbox_init_with_extensions_hook, sandbox_init_with_extensions)*/
+DYLD_INTERPOSE(sandbox_init_with_extensions_hook, sandbox_init_with_extensions)
 DYLD_INTERPOSE(ptrace_hook, ptrace)

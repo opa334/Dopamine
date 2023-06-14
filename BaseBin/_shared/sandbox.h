@@ -84,6 +84,10 @@ extern const uint32_t SANDBOX_EXTENSION_NO_STORAGE_CLASS;
 extern const uint32_t SANDBOX_EXTENSION_PREFIXMATCH;
 extern const uint32_t SANDBOX_EXTENSION_UNRESOLVED;
 
+int sandbox_init(const char *profile, uint64_t flags, char **errorbuf);
+int sandbox_init_with_parameters(const char *profile, uint64_t flags, const char *const parameters[], char **errorbuf);
+int sandbox_init_with_extensions(const char *profile, uint64_t flags, const char *const extensions[], char **errorbuf);
+
 int sandbox_check(pid_t, const char *operation, enum sandbox_filter_type, ...);
 int sandbox_check_by_audit_token(audit_token_t, const char *operation, enum sandbox_filter_type, ...);
 int sandbox_check_by_uniqueid(uid_t, pid_t, const char *operation, enum sandbox_filter_type, ...);
