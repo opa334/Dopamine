@@ -19,7 +19,7 @@ struct AboutView: View {
         ("opa334", "http://github.com/opa334"),
         ("Évelyne", "http://github.com/evelyneee"),
         ("sourcelocation", "http://github.com/sourcelocation"),
-        ("LinusHenze", "http://github.com/LinusHenze"),
+        ("Linus Henze", "http://github.com/LinusHenze"),
         ("Cryptic", "http://github.com/Cryptiiiic"),
         ("Clarity", "http://github.com/TheRealClarity"),
         ("Dhinakg", "http://github.com/dhinakg"),
