@@ -30,6 +30,11 @@ if isJailbroken() {
     if rootPrefix != nil {
         setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:\(rootPrefix!)/sbin:\(rootPrefix!)/bin:\(rootPrefix!)/usr/sbin:\(rootPrefix!)/usr/bin", 1)
     }
+
+    let dpDefaults = dopamineDefaults()
+    let safeModePath = rootifyPath(path: "basebin/.safe_mode")
+    let safeModeState = FileManager.default.fileExists(atPath: safeModePath!)
+    dpDefaults.set(!safeModeState, forKey: "tweakInjectionEnabled")
 }
 
 Fugu15App.main()

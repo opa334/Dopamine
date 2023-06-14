@@ -20,6 +20,7 @@
 #import "forkfix.h"
 
 kern_return_t bootstrap_check_in(mach_port_t bootstrap_port, const char *service, mach_port_t *server_port);
+SInt32 CFUserNotificationDisplayAlert(CFTimeInterval timeout, CFOptionFlags flags, CFURLRef iconURL, CFURLRef soundURL, CFURLRef localizationURL, CFStringRef alertHeader, CFStringRef alertMessage, CFStringRef defaultButtonTitle, CFStringRef alternateButtonTitle, CFStringRef otherButtonTitle, CFOptionFlags *responseFlags) API_AVAILABLE(ios(3.0));
 
 void setJetsamEnabled(bool enabled)
 {
@@ -30,6 +31,17 @@ void setJetsamEnabled(bool enabled)
 	}
 	int rc = memorystatus_control(MEMORYSTATUS_CMD_SET_JETSAM_HIGH_WATER_MARK, me, priorityToSet, NULL, 0);
 	if (rc < 0) { perror ("memorystatus_control"); exit(rc);}
+}
+
+void setTweaksEnabled(bool enabled)
+{
+	NSString *safeModePath = prebootPath(@"basebin/.safe_mode");
+	if (enabled) {
+		[[NSFileManager defaultManager] removeItemAtPath:safeModePath error:nil];
+	}
+	else {
+		[[NSFileManager defaultManager] createFileAtPath:safeModePath contents:[NSData data] attributes:nil];
+	}
 }
 
 int processBinary(NSString *binaryPath)
@@ -406,6 +418,8 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 							if (messageString) {
 								dumpUserspacePanicLog(messageString);
 							}
+							setTweaksEnabled(false);
+							bootInfo_setObject(@"showUserspacePanicMessage", @1);
 							reboot3(RB2_USERREBOOT);
 						}
 						xpc_dictionary_set_int64(reply, "result", result);
@@ -485,6 +499,11 @@ int main(int argc, char* argv[])
 			if (bootInfo_getUInt64(@"jbdIconCacheNeedsRefresh")) {
 				spawn(prebootPath(@"usr/bin/uicache"), @[@"-a"]);
 				bootInfo_setObject(@"jbdIconCacheNeedsRefresh", nil);
+			}
+
+			if (bootInfo_getUInt64(@"showUserspacePanicMessage")) {
+				CFUserNotificationDisplayAlert(0, 2/*kCFUserNotificationCautionAlertLevel*/, NULL, NULL, NULL, CFSTR("Watchdog Timeout"), CFSTR("Dopamine has protected you from a userspace panic by temporarily disabling tweak injection and triggering a userspace reboot instead. A detailed log is available under Analytics in the Preferences app. You can reenable tweak injection in the Dopamine app."), NULL, NULL, NULL, NULL);
+				bootInfo_setObject(@"showUserspacePanicMessage", nil);
 			}
 		});
 
