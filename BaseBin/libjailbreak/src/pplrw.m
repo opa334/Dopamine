@@ -29,7 +29,7 @@ void gPPLRWQueue_dispatch(void (^block)(void))
 	}
 }
 
-#define BOGUS_PTE_KADDR 0xFFFFFFE300000000 // BOGUS address, enough to make fast PPLRW work
+#define BOGUS_PTE_KADDR 0xFFFFFFE379F84000 // BOGUS address, enough to make fast PPLRW work
 #define BOGUS_PTE (BOGUS_PTE_KADDR | KRW_UR_PERM | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY)
 
 typedef struct PPLWindow
@@ -182,6 +182,7 @@ PPLWindow getWindow(uint64_t page)
 		else {
 			JBLogDebug("reusing page %ld for physical page 0x%llX (refCount:%u)", window.pteAddress - gMagicPage, page, *window.refCountAddress);
 		}
+		usleep(0); // VERY IMPORTANT, DO NOT REMOVE
 		return window;
 	}
 
@@ -247,6 +248,7 @@ PPLWindow* getConcurrentWindows(uint32_t count, uint64_t *pages)
 			else {
 				JBLogDebug("[batch] reusing page %ld for physical page 0x%llX (refCount:%u)", output[i].pteAddress - gMagicPage, page, *output[i].refCountAddress);
 			}
+			usleep(0); // VERY IMPORTANT, DO NOT REMOVE
 		}
 		return output;
 	}
