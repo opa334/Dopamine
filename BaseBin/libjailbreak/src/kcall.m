@@ -367,17 +367,6 @@ void finalizePACPrimitives(void)
 	// Done!
 	// Thread's fault handler is now set to the br x22 gadget
 	gKCallStatus = kKcallStatusFinalized;
-
-	// Allocate a proper PPLRW placeholder page now if needed
-	if (!bootInfo_getUInt64(@"pplrw_placeholder_physpage")) {
-		uint64_t placeholderPage = 0;
-		if (kalloc(&placeholderPage, 0x4000) == 0) {
-			uint64_t placeholderPhysPage = va_to_pa(bootInfo_getUInt64(@"physical_ttep"), placeholderPage, NULL);
-			physwrite64(placeholderPhysPage, placeholderPhysPage);
-			bootInfo_setObject(@"pplrw_placeholder_physpage", @(placeholderPhysPage));
-			//PPLRW_updatePlaceholderPage(placeholderPhysPage);
-		}
-	}
 }
 
 NSString *getExecutablePath(void)

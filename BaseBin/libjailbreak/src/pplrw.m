@@ -10,22 +10,27 @@
 #import <Foundation/Foundation.h>
 #define min(a,b) (((a)<(b))?(a):(b))
 
-//#undef JBLogDebug
-//#undef JBLogError
-//#define JBLogDebug(x ...) printf("DEBUG: " x); printf("\n")
-//#define JBLogError(x ...) printf("ERROR: " x); printf("\n"); abort()
-
 static uint64_t *gMagicPage = NULL;
 static uint32_t gMagicMappingsRefCounts[2048];
-static uint64_t gPlaceholderPage = 0;
 
 static uint64_t gCpuTTEP = 0;
-static NSLock* gLock = nil;
+static dispatch_queue_t gPPLRWQueue = 0;
+static void *kPPLRWQueueKey = &kPPLRWQueueKey;
 PPLRWStatus gPPLRWStatus = kPPLRWStatusNotInitialized;
 
-#define PLACEHOLDER_PAGE_ADDR gMagicPage + 0x4000
-#define PLACEHOLDER_PAGE_KADDR gPlaceholderPage
-#define PLACEHOLDER_PAGE_PTE (PLACEHOLDER_PAGE_KADDR | KRW_UR_PERM | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY)
+void gPPLRWQueue_dispatch(void (^block)(void))
+{
+	if (dispatch_get_specific(kPPLRWQueueKey) == (__bridge void *)gPPLRWQueue) {
+		// Code is already running on the serial queue
+		block();
+	} else {
+		// Code is not running on the serial queue
+		dispatch_sync(gPPLRWQueue, block);
+	}
+}
+
+#define BOGUS_PTE_KADDR 0xFFFFFFE300000000 // BOGUS address, enough to make fast PPLRW work
+#define BOGUS_PTE (BOGUS_PTE_KADDR | KRW_UR_PERM | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY)
 
 typedef struct PPLWindow
 {
@@ -108,57 +113,40 @@ uint64_t va_to_pa(uint64_t table, uint64_t virt, bool *err)
 	}
 }
 
+uint64_t kaddr_to_pa(uint64_t virt, bool *err)
+{
+	return va_to_pa(gCpuTTEP, virt, err);
+}
+
 // PPL primitives
 
 void clearWindows()
 {
-	tlbFlush();
-	for (int i = 1; i < 2048; i++) {
+	for (int i = 0; i < 10; i++) {
+		tlbFlush();
+	}
+	for (int i = 2; i < 2048; i++) {
 		if (gMagicMappingsRefCounts[i] == 0) {
-			gMagicPage[i] = PLACEHOLDER_PAGE_PTE;
+			gMagicPage[i] = BOGUS_PTE;
 		}
 	}
-	tlbFlush();
-}
-
-// This is the most fucking cursed shit I have ever written but it is fast + reliable
-// DO NOT FUCKING TOUCH ANYTHING IN HERE
-void windowWaitUntilMapped(PPLWindow *window, uint64_t page)
-{
-	//JBLogDebug("windowWaitUntilMapped pte %llX", *(uint64_t*)window->pteAddress);
-	bool toMapIsPlaceholderPage = (page == PLACEHOLDER_PAGE_KADDR);
-
-	bool worked = false;
-	for (int i = 0; i <= 20; i++) {
-		usleep(i*16);
-		__asm("dmb sy");
-
-		int cmpRet = 0;
-		if (PLACEHOLDER_PAGE_KADDR == gCpuTTEP) {
-			cmpRet = memcmp((uint8_t *)PLACEHOLDER_PAGE_ADDR, (uint8_t *)window->address, 0x4000);
-		}
-		else {
-			cmpRet = ((*(uint64_t*)(window->address)) != PLACEHOLDER_PAGE_KADDR);
-		}
-
-		//JBLogDebug("memcmp(%p, %p, 0x100) => %d (i:%d)", (uint8_t *)PLACEHOLDER_PAGE_ADDR, (uint8_t *)window->address, cmpRet, i);
-		bool mappedInIsPlaceholderPage = (cmpRet == 0);
-		if (toMapIsPlaceholderPage == mappedInIsPlaceholderPage) {
-			//JBLogDebug("Mapped in PA 0x%llX to local address %p after %dus (PTE: 0x%llX)", page, (uint8_t *)window->address, i+1, *(uint64_t*)window->pteAddress);
-			worked = true;
-			break;
-		}
-	}
-
-	if (!worked) {
-		// If shit is broken, just do an old flavour flush (not aware of a single instance of this ever not working) and continue
+	for (int i = 0; i < 10; i++) {
 		tlbFlush();
 	}
 }
 
 PPLWindow getWindow(uint64_t page)
 {
-	[gLock lock];
+	// This is a stress test
+	// If shit is broken and this is enabled, it will slow everything down but increse the amount of crashes by a lot
+	// If everything works however, it will not cause any crashes
+	/*static int shit = 0;
+	shit++;
+	if (shit == 15) {
+		JBLogDebug("shit clearWindows");
+		clearWindows();
+		shit = 0;
+	}*/
 
 	uint64_t pte = page | KRW_URW_PERM | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY;
 	int pteIndex = -1;
@@ -172,7 +160,7 @@ PPLWindow getWindow(uint64_t page)
 
 	if (pteIndex == -1) {
 		for (int i = 2; i < 2048; i++) {
-			if (gMagicPage[i] == PLACEHOLDER_PAGE_PTE) {
+			if (gMagicPage[i] == BOGUS_PTE) {
 				pteIndex = i;
 				//JBLogDebug("unused entry %d for page %llX", i, page);
 				break;
@@ -189,22 +177,20 @@ PPLWindow getWindow(uint64_t page)
 		(*window.refCountAddress)++;
 		if (*window.pteAddress != pte) {
 			*window.pteAddress = pte;
-			JBLogDebug("mapping page %ld to physical page 0x%llX", window.pteAddress - gMagicPage, page);
-			windowWaitUntilMapped(&window, page);
+			JBLogDebug("mapping page %ld to physical page 0x%llX (refCount:%u)", window.pteAddress - gMagicPage, page, *window.refCountAddress);
 		}
-		[gLock unlock];
+		else {
+			JBLogDebug("reusing page %ld for physical page 0x%llX (refCount:%u)", window.pteAddress - gMagicPage, page, *window.refCountAddress);
+		}
 		return window;
 	}
 
 	clearWindows();
-	[gLock unlock];
 	return getWindow(page);
 }
 
 PPLWindow* getConcurrentWindows(uint32_t count, uint64_t *pages)
 {
-	[gLock lock];
-
 	int contiguousPagesStartIndex = -1;
 
 	// Check if these pages are already mapped in contiguously somewhere
@@ -215,6 +201,7 @@ PPLWindow* getConcurrentWindows(uint32_t count, uint64_t *pages)
 			curMatchingCount++;
 			if (curMatchingCount >= count) {
 				contiguousPagesStartIndex = i - (count - 1);
+				break;
 			}
 		}
 		else {
@@ -226,10 +213,11 @@ PPLWindow* getConcurrentWindows(uint32_t count, uint64_t *pages)
 	uint32_t curUnusedCount = 0;
 	if (contiguousPagesStartIndex == -1) {
 		for (int i = 2; i < 2048; i++) {
-			if (gMagicPage[i] == PLACEHOLDER_PAGE_PTE) {
+			if (gMagicPage[i] == BOGUS_PTE) {
 				curUnusedCount++;
 				if (curUnusedCount >= count) {
 					contiguousPagesStartIndex = i - (count - 1);
+					break;
 				}
 			}
 			else
@@ -254,15 +242,16 @@ PPLWindow* getConcurrentWindows(uint32_t count, uint64_t *pages)
 			(*output[i].refCountAddress)++;
 			if (*output[i].pteAddress != pte) {
 				*output[i].pteAddress = pte;
-				windowWaitUntilMapped(&output[i], page);
+				JBLogDebug("[batch] mapping page %ld to physical page 0x%llX (refCount:%u)", output[i].pteAddress - gMagicPage, page, *output[i].refCountAddress);
+			}
+			else {
+				JBLogDebug("[batch] reusing page %ld for physical page 0x%llX (refCount:%u)", output[i].pteAddress - gMagicPage, page, *output[i].refCountAddress);
 			}
 		}
-		[gLock unlock];
 		return output;
 	}
 
 	clearWindows();
-	[gLock unlock];
 	return getConcurrentWindows(count, pages);
 }
 
@@ -281,34 +270,40 @@ void *mapInVirtual(uint64_t pageVirtStart, uint32_t pageCount, uint8_t **mapping
 		if (mappingStart) *mappingStart = 0;
 		return NULL;
 	}
-
-	uint64_t pagesToMap[pageCount];
-	for (int i = 0; i < pageCount; i++) {
-		bool err = false;
-		uint64_t page = va_to_pa(gCpuTTEP, pageVirtStart + (i * 0x4000), &err);
-		if (err) {
-			JBLogError("[mapInRange] fatal error, aborting");
-			return NULL;
+	
+	__block void *retval = NULL;
+	gPPLRWQueue_dispatch(^{
+		uint64_t pagesToMap[pageCount];
+		for (int i = 0; i < pageCount; i++) {
+			bool err = false;
+			uint64_t page = kaddr_to_pa(pageVirtStart + (i * 0x4000), &err);
+			if (err) {
+				JBLogError("[mapInRange] fatal error, aborting");
+				return;
+			}
+			pagesToMap[i] = page;
 		}
-		pagesToMap[i] = page;
-	}
 
-	PPLWindow *windows = getConcurrentWindows(pageCount, pagesToMap);
-	if (mappingStart) *mappingStart = (uint8_t *)windows[0].address;
-	MappingContext *mCtx = malloc(sizeof(MappingContext));
-	mCtx->windowsArray = windows;
-	mCtx->windowsCount = pageCount;
-	return (void *)mCtx;
+		PPLWindow *windows = getConcurrentWindows(pageCount, pagesToMap);
+		if (mappingStart) *mappingStart = (uint8_t *)windows[0].address;
+		MappingContext *mCtx = malloc(sizeof(MappingContext));
+		mCtx->windowsArray = windows;
+		mCtx->windowsCount = pageCount;
+		retval = mCtx;
+	});
+	return retval;
 }
 
 void mappingDestroy(void* ctx)
 {
-	MappingContext *mCtx = (MappingContext *)ctx;
-	for (int i = 0; i < mCtx->windowsCount; i++) {
-		windowDestroy(&mCtx->windowsArray[i]);
-	}
-	free(mCtx->windowsArray);
-	free(mCtx);
+	gPPLRWQueue_dispatch(^{
+		MappingContext *mCtx = (MappingContext *)ctx;
+		for (int i = 0; i < mCtx->windowsCount; i++) {
+			windowDestroy(&mCtx->windowsArray[i]);
+		}
+		free(mCtx->windowsArray);
+		free(mCtx);
+	});
 }
 
 // Physical read / write
@@ -320,30 +315,33 @@ int physreadbuf(uint64_t physaddr, void* output, size_t size)
 		return -1;
 	}
 
-	JBLogDebug("before physread of 0x%llX (size: %zd)", physaddr, size);
+	__block int retval = -1;
+	gPPLRWQueue_dispatch(^{
+		JBLogDebug("before physread of 0x%llX (size: %zd)", physaddr, size);
 
-	uint64_t pa = physaddr;
-	uint8_t *data = output;
-	size_t sizeLeft = size;
+		uint64_t pa = physaddr;
+		uint8_t *data = output;
+		size_t sizeLeft = size;
 
-	while (sizeLeft > 0) {
-		uint64_t page = pa & ~P_PAGE_MASK;
-		uint64_t pageOffset = pa & P_PAGE_MASK;
-		uint64_t readSize = min(sizeLeft, P_PAGE_SIZE - pageOffset);
+		while (sizeLeft > 0) {
+			uint64_t page = pa & ~P_PAGE_MASK;
+			uint64_t pageOffset = pa & P_PAGE_MASK;
+			uint64_t readSize = min(sizeLeft, P_PAGE_SIZE - pageOffset);
 
-		PPLWindow window = getWindow(page);
-		[gLock lock];
-		uint8_t *pageAddress = (uint8_t *)window.address;
-		memcpy(&data[size - sizeLeft], &pageAddress[pageOffset], readSize);
-		[gLock unlock];
-		windowDestroy(&window);
+			PPLWindow window = getWindow(page);
+			uint8_t *pageAddress = (uint8_t *)window.address;
+			memcpy(&data[size - sizeLeft], &pageAddress[pageOffset], readSize);
+			windowDestroy(&window);
 
-		pa += readSize;
-		sizeLeft -= readSize;
-	}
+			pa += readSize;
+			sizeLeft -= readSize;
+		}
 
-	JBLogDebug("after physread of 0x%llX", physaddr);
-	return 0;
+		JBLogDebug("after physread of 0x%llX", physaddr);
+		retval = 0;
+	});
+
+	return retval;
 }
 
 int physwritebuf(uint64_t physaddr, const void* input, size_t size)
@@ -352,30 +350,33 @@ int physwritebuf(uint64_t physaddr, const void* input, size_t size)
 		return -1;
 	}
 
-	JBLogDebug("before physwrite at 0x%llX (size: %zd)", physaddr, size);
+	__block int retval = -1;
+	gPPLRWQueue_dispatch(^{
+		JBLogDebug("before physwrite at 0x%llX (size: %zd)", physaddr, size);
 
-	uint64_t pa = physaddr;
-	const uint8_t *data = input;
-	size_t sizeLeft = size;
+		uint64_t pa = physaddr;
+		const uint8_t *data = input;
+		size_t sizeLeft = size;
 
-	while (sizeLeft > 0) {
-		uint64_t page = pa & ~P_PAGE_MASK;
-		uint64_t pageOffset = pa & P_PAGE_MASK;
-		uint64_t writeSize = min(sizeLeft, P_PAGE_SIZE - pageOffset);
+		while (sizeLeft > 0) {
+			uint64_t page = pa & ~P_PAGE_MASK;
+			uint64_t pageOffset = pa & P_PAGE_MASK;
+			uint64_t writeSize = min(sizeLeft, P_PAGE_SIZE - pageOffset);
 
-		PPLWindow window = getWindow(page);
-		[gLock lock];
-		uint8_t *pageAddress = (uint8_t *)window.address;
-		memcpy(&pageAddress[pageOffset], &data[size - sizeLeft], writeSize);
-		[gLock unlock];
-		windowDestroy(&window);
+			PPLWindow window = getWindow(page);
+			uint8_t *pageAddress = (uint8_t *)window.address;
+			memcpy(&pageAddress[pageOffset], &data[size - sizeLeft], writeSize);
+			windowDestroy(&window);
 
-		pa += writeSize;
-		sizeLeft -= writeSize;
-	}
+			pa += writeSize;
+			sizeLeft -= writeSize;
+		}
 
-	JBLogDebug("after physwrite at 0x%llX", physaddr);
-	return 0;
+		JBLogDebug("after physwrite at 0x%llX", physaddr);
+		retval = 0;
+	});
+
+	return retval;
 }
 
 // Virtual read / write
@@ -387,38 +388,40 @@ int kreadbuf(uint64_t kaddr, void* output, size_t size)
 		return -1;
 	}
 
-	JBLogDebug("before virtread of 0x%llX (size: %zd)", kaddr, size);
+	__block int retval = -1;
+	gPPLRWQueue_dispatch(^{
+		JBLogDebug("before virtread of 0x%llX (size: %zd)", kaddr, size);
 
-	uint64_t va = kaddr;
-	uint8_t *data = output;
-	size_t sizeLeft = size;
+		uint64_t va = kaddr;
+		uint8_t *data = output;
+		size_t sizeLeft = size;
 
-	while (sizeLeft > 0) {
-		uint64_t page = va & ~P_PAGE_MASK;
-		uint64_t pageOffset = va & P_PAGE_MASK;
-		uint64_t readSize = min(sizeLeft, P_PAGE_SIZE - pageOffset);
+		while (sizeLeft > 0) {
+			uint64_t page = va & ~P_PAGE_MASK;
+			uint64_t pageOffset = va & P_PAGE_MASK;
+			uint64_t readSize = min(sizeLeft, P_PAGE_SIZE - pageOffset);
 
-		bool failure = false;
-		uint64_t pa = va_to_pa(gCpuTTEP, page, &failure);
-		if (failure)
-		{
-			JBLogError("[kreadbuf] Lookup failure when trying to read %zu bytes at 0x%llX, aborting", size, kaddr);
-			return -1;
+			bool failure = false;
+			uint64_t pa = kaddr_to_pa(page, &failure);
+			if (failure)
+			{
+				JBLogError("[kreadbuf] Lookup failure when trying to read %zu bytes at 0x%llX, aborting", size, kaddr);
+				return;
+			}
+
+			PPLWindow window = getWindow(pa);
+			uint8_t *pageAddress = (uint8_t *)window.address;
+			memcpy(&data[size - sizeLeft], &pageAddress[pageOffset], readSize);
+			windowDestroy(&window);
+
+			va += readSize;
+			sizeLeft -= readSize;
 		}
+		JBLogDebug("after virtread of 0x%llX", kaddr);
+		retval = 0;
+	});
 
-		PPLWindow window = getWindow(pa);
-		[gLock lock];
-		uint8_t *pageAddress = (uint8_t *)window.address;
-		memcpy(&data[size - sizeLeft], &pageAddress[pageOffset], readSize);
-		[gLock unlock];
-		windowDestroy(&window);
-
-		va += readSize;
-		sizeLeft -= readSize;
-	}
-
-	JBLogDebug("after virtread of 0x%llX", kaddr);
-  return 0;
+	return retval;
 }
 
 int kwritebuf(uint64_t kaddr, const void* input, size_t size)
@@ -427,38 +430,41 @@ int kwritebuf(uint64_t kaddr, const void* input, size_t size)
 		return -1;
 	}
 
-	JBLogDebug("before virtwrite at 0x%llX (size: %zd)", kaddr, size);
+	__block int retval = -1;
+	gPPLRWQueue_dispatch(^{
+		JBLogDebug("before virtwrite at 0x%llX (size: %zd)", kaddr, size);
 
-	uint64_t va = kaddr;
-	const uint8_t *data = input;
-	size_t sizeLeft = size;
+		uint64_t va = kaddr;
+		const uint8_t *data = input;
+		size_t sizeLeft = size;
 
-	while (sizeLeft > 0) {
-		uint64_t page = va & ~P_PAGE_MASK;
-		uint64_t pageOffset = va & P_PAGE_MASK;
-		uint64_t writeSize = min(sizeLeft, P_PAGE_SIZE - pageOffset);
+		while (sizeLeft > 0) {
+			uint64_t page = va & ~P_PAGE_MASK;
+			uint64_t pageOffset = va & P_PAGE_MASK;
+			uint64_t writeSize = min(sizeLeft, P_PAGE_SIZE - pageOffset);
 
-		bool failure = false;
-		uint64_t pa = va_to_pa(gCpuTTEP, page, &failure);
-		if (failure)
-		{
-			JBLogError("[kwritebuf] Lookup failure when trying to write %zu bytes to 0x%llX, aborting", size, kaddr);
-			return -1;
+			bool failure = false;
+			uint64_t pa = kaddr_to_pa(page, &failure);
+			if (failure)
+			{
+				JBLogError("[kwritebuf] Lookup failure when trying to write %zu bytes to 0x%llX, aborting", size, kaddr);
+				return;
+			}
+
+			PPLWindow window = getWindow(pa);
+			uint8_t *pageAddress = (uint8_t *)window.address;
+			memcpy(&pageAddress[pageOffset], &data[size - sizeLeft], writeSize);
+			windowDestroy(&window);
+
+			va += writeSize;
+			sizeLeft -= writeSize;
 		}
 
-		PPLWindow window = getWindow(pa);
-		[gLock lock];
-		uint8_t *pageAddress = (uint8_t *)window.address;
-		memcpy(&pageAddress[pageOffset], &data[size - sizeLeft], writeSize);
-		[gLock unlock];
-		windowDestroy(&window);
+		JBLogDebug("after virtwrite at 0x%llX", kaddr);
+		retval = 0;
+	});
 
-		va += writeSize;
-		sizeLeft -= writeSize;
-	}
-
-	JBLogDebug("after virtwrite at 0x%llX", kaddr);
-	return 0;
+	return retval;
 }
 
 
@@ -573,39 +579,22 @@ int kwrite8(uint64_t va, uint8_t v)
 	return kwritebuf(va, &v, sizeof(v));
 }
 
-void PPLRW_updatePlaceholderPage(uint64_t kaddr)
-{
-	uint64_t oldPage = gPlaceholderPage;
-	uint64_t oldPTE = PLACEHOLDER_PAGE_PTE;
-	gPlaceholderPage = kaddr;
-
-	for (int i = 1; i < 2048; i++) {
-		if (oldPage == 0 || gMagicPage[i] == oldPTE) {
-			gMagicPage[i] = PLACEHOLDER_PAGE_PTE;
-		}
-	}
-	tlbFlush();
-}
-
 void initPPLPrimitives(uint64_t magicPage)
 {
 	if (gPPLRWStatus == kPPLRWStatusNotInitialized)
 	{
 		uint64_t kernelslide = bootInfo_getUInt64(@"kernelslide");
 
+		dispatch_queue_attr_t queueAttributes = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INTERACTIVE, 0);
+		gPPLRWQueue = dispatch_queue_create("com.opa334.pplrw", queueAttributes);
+		dispatch_queue_set_specific(gPPLRWQueue, kPPLRWQueueKey, (__bridge void *)gPPLRWQueue, NULL);
+
 		gCpuTTEP = bootInfo_getUInt64(@"physical_ttep");
-		gPlaceholderPage = 0;
 		gMagicPage = (uint64_t*)magicPage;
-		gLock = [[NSLock alloc] init];
 
 		memset(&gMagicMappingsRefCounts[0], 0, sizeof(gMagicMappingsRefCounts));
 		gMagicMappingsRefCounts[0] = 0xFFFFFFFF;
 		gMagicMappingsRefCounts[1] = 0xFFFFFFFF;
-
-		// If no proper placeholder page exist yet, use TTEP as placeholder page for the time being
-		uint64_t placeholderPageToUse = bootInfo_getUInt64(@"pplrw_placeholder_physpage") ?: gCpuTTEP;
-		PPLRW_updatePlaceholderPage(placeholderPageToUse);
-	
 		gPPLRWStatus = kPPLRWStatusInitialized;
 
 		JBLogDebug("Initialized PPL primitives with magic page: 0x%llX", magicPage);
