@@ -183,6 +183,7 @@ PPLWindow getWindow(uint64_t page)
 			JBLogDebug("reusing page %ld for physical page 0x%llX (refCount:%u)", window.pteAddress - gMagicPage, page, *window.refCountAddress);
 		}
 		usleep(0); // VERY IMPORTANT, DO NOT REMOVE
+		__asm("dmb sy");
 		return window;
 	}
 
@@ -249,6 +250,7 @@ PPLWindow* getConcurrentWindows(uint32_t count, uint64_t *pages)
 				JBLogDebug("[batch] reusing page %ld for physical page 0x%llX (refCount:%u)", output[i].pteAddress - gMagicPage, page, *output[i].refCountAddress);
 			}
 			usleep(0); // VERY IMPORTANT, DO NOT REMOVE
+			__asm("dmb sy");
 		}
 		return output;
 	}
