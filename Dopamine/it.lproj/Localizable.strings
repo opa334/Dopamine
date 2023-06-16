@@ -154,4 +154,4 @@
 
 "Title_Mismatching_Environment_Version" = "Versione dell'Ambiente Non Corrispondente";
 
-"Mismatching_Environment_Version_Update_Body" = "La versione dell'ambiente di questo dispositivo (%@) non corrisponde alla versione dell'applicazione (%@)\nPrememndo il bottone "aggiorna" aggiornerà l'ambiente jailbreak a quello dell'applicazione, il tuo dispositivo riavvierà userspace in seguito.";
+"Mismatching_Environment_Version_Update_Body" = "La versione dell'ambiente di questo dispositivo (%@) non corrisponde alla versione dell'applicazione (%@)\nPrememndo il bottone \"aggiorna\" aggiornerà l'ambiente jailbreak a quello dell'applicazione, il tuo dispositivo riavvierà userspace in seguito.";
