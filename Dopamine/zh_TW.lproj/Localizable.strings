@@ -38,7 +38,7 @@
 
 "Credits_Button_Discord" = "Discord";
 
-"Credits_Button_License" = "證照";
+"Credits_Button_License" = "授權";
 
 "Credits_Button_Source_Code" = "原始碼";
 
@@ -50,13 +50,13 @@
 
 "Credits_Made_By_Subheadline" = "介面：sourcelocation\n圖示：xerus";
 
-"Finalizing Bootstrap" = "已完成引導";
+"Finalizing Bootstrap" = "即將完成完成引導";
 
-"Gaining r/w" = "取得 讀/寫 權限";
+"Gaining r/w" = "正在取得 讀/寫 權限";
 
 "Hint_Hide_Jailbreak" = "在下次越獄前移除越獄檔案";
 
-"Hint_Hide_Jailbreak_Jailbroken" = "在越獄狀態時，\"隱藏越獄\" 選項會停用某些越獄功能來繞過越獄偵測。";
+"Hint_Hide_Jailbreak_Jailbroken" = "在越獄狀態時，\"隱藏越獄\" 選項會停用某些越獄功能來繞過越獄偵測。不過此功能不一定能成功發揮躲避偵測的效果。";
 
 "Initializing Environment" = "正在初始化環境";
 
@@ -64,13 +64,13 @@
 
 "Jailbreak_Done" = "完成！";
 
-"Launching kexploitd" = "啟動 kexploitd";
+"Launching kexploitd" = "正在啟動 kexploitd";
 
 "Enabling Wi-Fi" = "正在啟用 Wi-Fi";
 
 "Disabling Wi-Fi" = "正在停用 Wi-Fi";
 
-"Launching oobPCI" = "啟動 oobPCI";
+"Launching oobPCI" = "正在啟動 oobPCI";
 
 "Loading Basebin Trustcache" = "正在載入 Basebin Trustcache";
 
@@ -102,11 +102,11 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "裝置未安裝越獄環境";
 
-"Starting jailbreakd" = "啟動 jailbreakd";
+"Starting jailbreakd" = "正在啟動 jailbreakd";
 
-"Starting Launch Daemons" = "啟動 Launch 守護程序";
+"Starting Launch Daemons" = "正在啟動 Launch 守護程序";
 
-"Status_Title_Jailbreaking" = "正在越獄";
+"Status_Title_Jailbreaking" = "越獄中";
 
 "Status_Title_Jailbroken" = "已越獄";
 
@@ -118,11 +118,11 @@
 
 "Title_Changelog" = "版本日誌";
 
-"Title_Made_By" = "來自 opa334，évelyne\n界面來自 sourceloc\n基於 Fugu15";
+"Title_Made_By" = "來自於 opa334，évelyne\n界面由 sourceloc設計\n基於 Fugu15";
 
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15，M1";
 
-"Update_Log_Hint_Scrollable" = "捲動已查看日誌";
+"Update_Log_Hint_Scrollable" = "捲動以查看日誌";
 
 "Update_Status_Downloading" = "正在下載更新……";
 
@@ -154,7 +154,7 @@
 
 "Close" = "關閉";
 
-"Title_Mismatching_Environment_Version" = "環境版本不支援";
+"Title_Mismatching_Environment_Version" = "不支援此環境版本";
 
 "Mismatching_Environment_Version_Update_Body" = "此裝置越獄所使用的環境版本（%@）與目前已安裝的應用程式版本（%@）不相符。\n點擊更新將會更新越獄環境以符合目前安裝的應用程式版本，之後您的裝置將重新啟動使用者空間。";
 
