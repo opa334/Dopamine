@@ -28,6 +28,7 @@ struct SettingsView: View {
     @State var removeJailbreakAlertShown = false
     @State var isSelectingPackageManagers = false
     @State var tweakInjectionToggledAlertShown = false
+    @State var removeZplistAlertShown = false
     
     @State var isEnvironmentHiddenState = isEnvironmentHidden()
     
@@ -66,6 +67,24 @@ struct SettingsView: View {
                         if isBootstrapped() {
                             VStack {
                                 if isJailbroken() {
+                                    Button(action: {
+                                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                        removeZplistAlertShown = true
+                                    }) {
+                                        HStack {
+                                            Image(systemName: "trash")
+                                            Text("Button_Remove_Zplist")
+                                                .lineLimit(1)
+                                                .minimumScaleFactor(0.5)
+                                        }
+                                        .padding(.horizontal, 4)
+                                        .padding(8)
+                                        .frame(maxWidth: .infinity)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
+                                        )
+                                    }
                                     Button(action: {
                                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
                                         mobilePasswordChangeAlertShown = true
@@ -194,6 +213,12 @@ struct SettingsView: View {
                     }
                     
                     ZStack {}
+                        .alert("Settings_Remove_Zplist_Alert_Title", isPresented: $removeZplistAlertShown, actions: {
+                            Button("Button_Cancel", role: .cancel) { }
+                            Button("Button_Set", role: .destructive) {
+                                removeZplist()
+                            }
+                        }, message: { Text("Settings_Remove_Zplist_Alert_Body") })
                         .textFieldAlert(isPresented: $mobilePasswordChangeAlertShown) { () -> TextFieldAlert in
                             TextFieldAlert(title: NSLocalizedString("Popup_Change_Mobile_Password_Title", comment: ""), message: NSLocalizedString("Popup_Change_Mobile_Password_Message", comment: ""), text: Binding<String?>($mobilePasswordInput), onSubmit: {
                                 changeMobilePassword(newPassword: mobilePasswordInput)

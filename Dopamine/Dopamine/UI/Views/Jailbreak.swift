@@ -137,6 +137,10 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
     }
 }
 
+func removeZplist() {
+    _ = execCmd(args: [CommandLine.arguments[0], "uninstall_Zplist"])
+}
+
 func removeJailbreak() {
     dopamineDefaults().removeObject(forKey: "selectedPackageManagers")
     _ = execCmd(args: [CommandLine.arguments[0], "uninstall_environment"])
