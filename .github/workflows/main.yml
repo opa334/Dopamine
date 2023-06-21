@@ -1,28 +1,12 @@
-name: "Dopamine: build and upload"
-
+name: build_Release
 on:
   push:
     branches:
       - master
     paths-ignore:
       - ".gitignore"
-  pull_request:
-    branches:
-      - master
-    paths-ignore:
-      - ".gitignore"
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 1 1 *'
-    - cron: '0 0 1 4 *'
-    - cron: '0 0 30 6 *'
-    - cron: '0 0 28 9 *'
-    - cron: '0 0 27 12 *'
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
+ 
 jobs:
   build:
     runs-on: macos-latest
@@ -31,11 +15,11 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install Procursus
-        uses: dhinakg/procursus-action@main
+        uses: wwg135/procursus-action@main
         with:
           packages: ldid findutils sed coreutils trustcache make
 
-      - name: Install THEOS (without SDKs)
+      - name: Install THEOS
         run: |
           set -x
           export BASEDIR="$(pwd)"
@@ -46,37 +30,33 @@ jobs:
           bash install-theos.sh
           cd $BASEDIR
 
-      - name: Set Environment Variables
+      - name: Set Env
         run: |
           set -x
-          T2=$(TZ=UTC-2 date +'%Y%m%d_%H%M%S')
-          TS=$(date -j -f "%Y%m%d_%H%M%S" "${T2}" +%s)
           SHASH=$(git rev-parse --short HEAD)
-          echo "ctime=${T2}" >> $GITHUB_ENV
-          echo "ctimestamp=${TS}" >> $GITHUB_ENV
+          echo "shT=$(TZ=UTC-8 date +'%Y-%m-%d'' ''%H:%M:%S')" >> $GITHUB_ENV
           echo "shorthash=${SHASH}" >> $GITHUB_ENV
 
-      - name: Build
+      - name: Print Env
+        run: |
+          set -x
+          echo ${{ env.shT }}
+
+      - name: Build ipa
         run: |
           set -x
           sudo security import Exploits/fastPath/arm.pfx -k /Library/Keychains/System.keychain -P password -A
+          sed -i '' "s/AAA/更新时间/g" ./Dopamine/Dopamine/UI/Views/JailbreakView.swift
+          sed -i '' "s/AAB/${{ env.shT }}/g" ./Dopamine/Dopamine/UI/Views/JailbreakView.swift
           export BASEDIR="$(pwd)"
           export THEOS="${BASEDIR}/theos"
           gmake -j$(sysctl -n hw.physicalcpu)
-          cp -a Dopamine/Dopamine.tipa Dopamine/Dopamine_${{ env.shorthash }}_${{ env.ctime }}.tipa
-          cp -a Dopamine/Dopamine.tipa Dopamine/Dopamine_Latest.tipa
+          cp -a Dopamine/Dopamine.tipa Dopamine/Dopamine.ipa
 
-      - name: Upload Latest Artifact
-        id: dopamine-latest-upload
+      - name: Upload Artifact
+        id: dopamine-upload
         uses: actions/upload-artifact@v3
         with:
-          name: Dopamine_Latest
+          name: Dopamine
           path: |
-            ${{ github.workspace }}/Dopamine/Dopamine_Latest.tipa
-      - name: Upload Hashed Artifact
-        id: dopamine-hashed-upload
-        uses: actions/upload-artifact@v3
-        with:
-          name: Dopamine_${{ env.shorthash }}_${{ env.ctime }}
-          path: |
-            ${{ github.workspace }}/Dopamine/Dopamine_${{ env.shorthash }}_${{ env.ctime }}.tipa
+            ${{ github.workspace }}/Dopamine/Dopamine.ipa
