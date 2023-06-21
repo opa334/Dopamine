@@ -18,6 +18,8 @@ struct SettingsView: View {
     @AppStorage("iDownloadEnabled", store: dopamineDefaults()) var enableiDownload: Bool = false
     
     @Binding var isPresented: Bool
+
+    @AppStorage("rebuildEnvironment", store: dopamineDefaults()) var rebuildEnvironment: Bool = false
     
     @State var mobilePasswordChangeAlertShown = false
     @State var mobilePasswordInput = "alpine"
@@ -48,13 +50,14 @@ struct SettingsView: View {
                                         tweakInjectionToggledAlertShown = true
                                     }
                                 }
-                            Toggle("Settings_iDownload", isOn: $enableiDownload)
+                            if !isJailbroken() {
+                                Toggle("Options_Rebuild_Environment", isOn: $rebuildEnvironment)
+                                Toggle("Settings_iDownload", isOn: $enableiDownload)
                                 .onChange(of: enableiDownload) { newValue in
                                     if isJailbroken() {
                                         jailbrokenUpdateIDownloadEnabled()
                                     }
                                 }
-                            if !isJailbroken() {
                                 Toggle("Settings_Verbose_Logs", isOn: $verboseLogs)
                             }
                         }
