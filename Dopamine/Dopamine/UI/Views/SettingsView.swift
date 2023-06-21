@@ -104,9 +104,6 @@ struct SettingsView: View {
                                                 .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
                                         )
                                     }
-                                    .padding(.bottom)
-                                    
-                                    
                                     Button(action: {
                                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
                                         isSelectingPackageManagers = true
@@ -183,14 +180,19 @@ struct SettingsView: View {
                     .padding(.vertical, 16)
                     .padding(.horizontal, 32)
 
-                    Divider()
-                        .background(.white)
-                        .padding(.horizontal, 32)
-                        .opacity(0.25)
-                    VStack(spacing: 6) {
-                        Text("Welcome_To_Use_Dopamine_Development_Version")
-                            .font(.footnote)
-                            .opacity(0.6)
+                    if isJailbroken() {
+                        Divider()
+                            .background(.white)
+                            .padding(.horizontal, 32)
+                            .opacity(0.25)
+                        VStack(spacing: 6) {
+                            Text("Welcome_To_Use_Dopamine_Development_Version")
+                                .font(.footnote)
+                                .opacity(0.6)
+                                .padding(.top, 8)
+                                .frame(maxWidth: .infinity)
+                                .multilineTextAlignment(.center)
+                        }
                     }
                     
                     Divider()
@@ -201,9 +203,11 @@ struct SettingsView: View {
                         Text(isBootstrapped() ? "Settings_Footer_Device_Bootstrapped" :  "Settings_Footer_Device_Not_Bootstrapped")
                             .font(.footnote)
                             .opacity(0.6)
-                        Text("Success_Rate \(successRate())% (\(successfulJailbreaks)/\(totalJailbreaks))")
-                            .font(.footnote)
-                            .opacity(0.6)
+                        if isJailbroken() {
+                            Text("Success_Rate \(successRate())% (\(successfulJailbreaks)/\(totalJailbreaks))")
+                                .font(.footnote)
+                                .opacity(0.6)
+                        }
                     }
                     .padding(.top, 2)
                     
