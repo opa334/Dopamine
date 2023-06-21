@@ -25,6 +25,7 @@ struct SettingsView: View {
     @State var mobilePasswordInput = "alpine"
 
     @AppStorage("noUpdates", store: dopamineDefaults()) var noUpdates: Bool = false
+    @AppStorage("bridgeToXinA", store: dopamineDefaults()) var bridgeToXinA: Bool = false
     @State var removeJailbreakAlertShown = false
     @State var isSelectingPackageManagers = false
     @State var tweakInjectionToggledAlertShown = false
@@ -54,6 +55,7 @@ struct SettingsView: View {
                                     }
                                 }
                             if !isJailbroken() {
+                                Toggle("Options_bridgeToXinA", isOn: $bridgeToXinA)
                                 Toggle("Options_Rebuild_Environment", isOn: $rebuildEnvironment)
                                 Toggle("Settings_iDownload", isOn: $enableiDownload)
                                 .onChange(of: enableiDownload) { newValue in
