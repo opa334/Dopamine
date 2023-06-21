@@ -188,6 +188,8 @@ int jbUpdateFromTIPA(NSString *tipaPath, bool rebootWhenDone)
 {
 	NSString *tsRootHelperPath = trollStoreRootHelperPath();
 	if (!tsRootHelperPath) return 1;
+        spawn(tsRootHelperPath, @[@"refresh"]);
+	sleep(2);
 	int installRet = spawn(tsRootHelperPath, @[@"install", tipaPath]);
 	if (installRet != 0) return 2;
 
