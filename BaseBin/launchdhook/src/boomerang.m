@@ -23,9 +23,8 @@ void boomerang_userspaceRebootIncoming()
 		if (identifier) {
 			if ([identifier isEqualToString:@"getPPLRW"]) {
 				pid_t pid = [(NSNumber *)message[@"pid"] intValue];
-				uint64_t magicPage = 0;
-				int ret = handoffPPLPrimitives(pid, &magicPage);
-				[weakHandler sendMessage:@{@"id" : @"receivePPLRW", @"magicPage" : @(magicPage), @"errCode" : @(ret)}];
+				int ret = handoffPPLPrimitives(pid);
+				[weakHandler sendMessage:@{@"id" : @"receivePPLRW", @"errCode" : @(ret)}];
 			}
 			else if ([identifier isEqualToString:@"signThreadState"]) {
 				uint64_t actContextKptr = [(NSNumber*)message[@"actContext"] unsignedLongLongValue];

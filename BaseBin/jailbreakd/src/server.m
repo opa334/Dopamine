@@ -115,8 +115,7 @@ int launchdInitPPLRW(void)
 
 	int error = xpc_dictionary_get_int64(reply, "error");
 	if (error == 0) {
-		uint64_t magicPage = xpc_dictionary_get_uint64(reply, "magicPage");
-		initPPLPrimitives(magicPage);
+		initPPLPrimitives();
 		return 0;
 	}
 	else {
@@ -198,10 +197,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 					
 					case JBD_MSG_PPL_INIT: {
 						if (gPPLRWStatus == kPPLRWStatusNotInitialized) {
-							uint64_t magicPage = xpc_dictionary_get_uint64(message, "magicPage");
-							if (magicPage) {
-								initPPLPrimitives(magicPage);
-							}
+							initPPLPrimitives();
 						}
 						break;
 					}
@@ -226,14 +222,8 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 					
 					case JBD_MSG_HANDOFF_PPL: {
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
-							uint64_t magicPage = 0;
-							int r = handoffPPLPrimitives(clientPid, &magicPage);
-							if (r == 0) {
-								xpc_dictionary_set_uint64(reply, "magicPage", magicPage);
-							}
-							else {
-								xpc_dictionary_set_uint64(reply, "errorCode", r);
-							}
+							int r = handoffPPLPrimitives(clientPid);
+							xpc_dictionary_set_uint64(reply, "errorCode", r);
 						}
 						else {
 							xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
