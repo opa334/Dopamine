@@ -158,7 +158,7 @@ struct PackageManagerSelectionView: View {
 struct PackageManagerSelectionView_Previews: PreviewProvider {
     static var previews: some View {
         ZStack {
-            Image("Wallpaper")
+            Image(uiImage: #imageLiteral(resourceName: "Wallpaper.jpg"))
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .edgesIgnoringSafeArea(.all)
