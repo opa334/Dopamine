@@ -62,6 +62,11 @@ int main(int argc, char* argv[])
 			printf("Update failed with error code %lld\n", result);
 			return result;
 		}
+        } else if (!strcmp(cmd, "userspace_reboot")) {
+		execve(prebootPath(@"usr/bin/launchctl").fileSystemRepresentation,
+			(char *const[]){
+				(char *const)prebootPath(@"usr/bin/launchctl").fileSystemRepresentation, "reboot", "userspace", NULL
+			}, environ);
 	}
 
 	return 0;
