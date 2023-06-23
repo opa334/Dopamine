@@ -34,37 +34,41 @@ int pmap_map_in(uint64_t pmap, uint64_t target, uint64_t start, uint64_t size)
 		uint64_t curMapping = mappingStart + (i * mappingSize);
 
 		kern_return_t kr = pmap_enter_options_addr(pmap, FAKE_PHYSPAGE_TO_MAP, curTargetMapping);
-		if (kr == KERN_SUCCESS) {
-			// Temporarily change pmap type to nested
-			pmap_set_type(pmap, 3);
-
-			// Remove mapping (table will not be removed because we changed the pmap type)
-			pmap_remove(pmap, curTargetMapping, curTargetMapping + 0x4000);
-
-			// Change type back
-			pmap_set_type(pmap, 0);
-
-			// Create full table for this mapping
-			uint64_t tableToWrite[2048];
-			for (int k = 0; k < 2048; k++) {
-				uint64_t curMappingPage = curMapping + (k * 0x4000);
-				tableToWrite[k] = curMappingPage | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY;
-			}
-
-			// Replace table with the entries we generated
-			uint64_t table2Entry = pmap_lv2(pmap, curTargetMapping);
-			if ((table2Entry & 0x3) == 0x3) {
-				uint64_t table3 = table2Entry & 0xFFFFFFFFC000ULL;
-				physwritebuf(table3, tableToWrite, 0x4000);
-			}
-			else {
-				return -6;
-			}
-		}
-		else {
+		if (kr != KERN_SUCCESS) {
+			pmap_remove(pmap, targetMappingStart, curTargetMapping);
 			return -7;
 		}
 	}
+
+	// Temporarily change pmap type to nested
+	pmap_set_type(pmap, 3);
+	// Remove mapping (table will not be removed because we changed the pmap type)
+	pmap_remove(pmap, targetMappingStart, targetMappingStart + (mappingCount * mappingSize));
+	// Change type back
+	pmap_set_type(pmap, 0);
+
+	for (uint64_t i = 0; i < mappingCount; i++) {
+		uint64_t curTargetMapping = targetMappingStart + (i * mappingSize);
+		uint64_t curMapping = mappingStart + (i * mappingSize);
+
+		// Create full table for this mapping
+		uint64_t tableToWrite[2048];
+		for (int k = 0; k < 2048; k++) {
+			uint64_t curMappingPage = curMapping + (k * 0x4000);
+			tableToWrite[k] = curMappingPage | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY;
+		}
+
+		// Replace table with the entries we generated
+		uint64_t table2Entry = pmap_lv2(pmap, curTargetMapping);
+		if ((table2Entry & 0x3) == 0x3) {
+			uint64_t table3 = table2Entry & 0xFFFFFFFFC000ULL;
+			physwritebuf(table3, tableToWrite, 0x4000);
+		}
+		else {
+			return -6;
+		}
+	}
+
 	return 0;
 }
 

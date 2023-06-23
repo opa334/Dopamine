@@ -15,8 +15,8 @@ PPLRWStatus gPPLRWStatus = kPPLRWStatusNotInitialized;
 
 void tlbFlush(void)
 {
-	usleep(70);
-	usleep(70);
+	usleep(150);
+	usleep(150);
 	__asm("dmb sy");
 }
 
@@ -308,26 +308,8 @@ void initPPLPrimitives(void)
 		// Very anti-climatic now, just ensure TLBs are flushed and we should be good
 		// (At least as long as something else has mapped the kernel phys space into this process)
 		gCpuTTEP = bootInfo_getUInt64(@"physical_ttep");
-		for (int i = 0; i < 100; i++) {
-			tlbFlush();
-		}
+		tlbFlush();
 		JBLogDebug("Initialized PPL primitives");
 		gPPLRWStatus = kPPLRWStatusInitialized;
-
-		/*sleep(5);
-		FILE *f = fopen("/var/mobile/jbd_pplrw.log", "a");
-		fprintf(f, "test read: %llX\n", kread64(bootInfo_getUInt64(@"kernelslide") + 0xFFFFFFF007004000));
-		fflush(f); usleep(1000);
-		uint64_t pac = bootInfo_getUInt64(@"jailbreakd_pac_allocation");
-		fprintf(f, "PAC allocation at %llX\n", pac);
-		fflush(f); usleep(1000);
-		fprintf(f, "page 1 %llX -> %llX\n", pac, kaddr_to_pa(pac, NULL));
-		fflush(f); usleep(1000);
-		fprintf(f, "page 2 %llX -> %llX\n", pac+0x4000, kaddr_to_pa(pac+0x4000, NULL));
-		fflush(f); usleep(1000);
-		fprintf(f, "page 3 %llX -> %llX\n", pac+0x8000, kaddr_to_pa(pac+0x8000, NULL));
-		fprintf(f, "page 4 %llX -> %llX\n", pac+0xC000, kaddr_to_pa(pac+0xC000, NULL));
-		fclose(f);
-		sleep(5);*/
 	}
 }
