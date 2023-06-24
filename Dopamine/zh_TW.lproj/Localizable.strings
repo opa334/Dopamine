@@ -1,165 +1,191 @@
-"Bootstrapping" = "引導中";
+"Bootstrapping" = "正 在 引 導...";
 
-"Button_Cancel" = "取消";
+"Button_Cancel" = "取 消";
 
-"Button_Hide_Jailbreak" = "隱藏越獄";
+"Button_Hide_Jailbreak" = " 隱 藏 越 獄 ";
 
-"Button_Hide_Logs_Title" = "隱藏日誌";
+"Button_Hide_Logs_Title" = "隱 藏 日 志";
 
-"Button_Jailbreak_Title" = "越獄";
+"Button_Jailbreak_Title" = " 越  獄 ";
 
-"Button_Remove_Jailbreak" = "移除越獄";
+"Button_Remove_Jailbreak" = "清 除 越 獄 ";
 
-"Button_Set_Mobile_Password" = "設定 mobile 帳號密碼";
+"Button_Set_Mobile_Password" = " 設 置 密 碼 ";
 
-"Popup_Change_Mobile_Password_Message" = "設定裝置上 mobile 帳號的密碼。該密碼亦可用於 sudo 存取 root 權限。若想要更改\，可在 shell 中執行 \"sudo passwd root\"。";
+"Popup_Change_Mobile_Password_Message" = "設定你設備上的手機用戶密碼。該密碼也可用於通過 sudo 命令訪問 root 用戶許可權。若你想要修改 root 用戶密碼，可在設備 shell 中執行 \"sudo passwd root\"。";
 
-"Button_Reinstall_Package_Managers" = "重新安裝套件管理器";
+"Button_Reinstall_Package_Managers" = " 重 裝 商 店 ";
 
-"Button_Set" = "設定";
+"Button_Set" = "確 定";
 
-"Button_Show_Logs_Title" = "顯示日誌";
+"Button_Show_Logs_Title" = "顯 示 日 志";
 
-"Button_Unhide_Jailbreak" = "顯示越獄";
+"Button_Unhide_Jailbreak" = "取 消 隱 藏 越 獄";
 
-"Button_Update" = "更新";
+"Button_Update" = " 立 即 更 新 ";
 
-"Button_Update_Available" = "可用更新";
+"Button_Update_Available" = "有 新 版 本，請 點 擊 更 新";
 
-"Button_Update_Environment" = "更新環境";
+"Button_Update_Environment" = " 更 新 越 獄 環 境 ";
 
-"Bypassing PAC" = "正在繞過 PAC";
+"Bypassing PAC" = "繞 過 指 針 認 證 碼";
 
-"Bypassing PPL" = "正在繞過 PPL";
+"Bypassing PPL" = "繞 過 受 保 護 進 程 輕 型 驗 證";
 
-"Changelog_Unavailable_Text" = "無法存取版本日誌";
+"Changelog_Unavailable_Text" = "更 新 日 志 不 可 用";
 
-"Context_Menu_Copy_To_Clipboard" = "複製到剪貼簿";
+"Context_Menu_Copy_To_Clipboard" = "複 制";
 
 "Credits_Button_Discord" = "Discord";
 
-"Credits_Button_License" = "授權";
+"Credits_Button_License" = "許 可 證";
 
-"Credits_Button_Source_Code" = "原始碼";
+"Credits_Button_Source_Code" = "源 代 碼";
 
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine 版本 %@\n%@";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine 版 本 %@\n%@";
 
-"Credits_Header_Special_Thanks" = "特別緻謝：";
+"Credits_Header_Special_Thanks" = "特 別 感 謝 ：";
 
-"Credits_Made_By" = "開發者：opa334，évelyne";
+"Credits_Made_By" = "開 發 者：opa334 、 évelyne";
 
-"Credits_Made_By_Subheadline" = "介面：sourcelocation\n圖示：xerus";
+"Credits_Made_By_Subheadline" = "UI 設 計 ：sourcelocation\nLogo 及 icon 作 者 ：xerus";
 
-"Finalizing Bootstrap" = "即將完成完成引導";
+"Finalizing Bootstrap" = "完 成 引 導";
 
-"Gaining r/w" = "正在取得 讀/寫 權限";
+"Gaining r/w" = "獲 取 r/w 權 限";
 
-"Hint_Hide_Jailbreak" = "在下次越獄前移除越獄檔案";
+"Hint_Hide_Jailbreak" = "「隱 藏 越 獄」將在下次越獄前臨時移除越獄相關的檔。";
 
-"Hint_Hide_Jailbreak_Jailbroken" = "在越獄狀態時，\"隱藏越獄\" 選項會停用某些越獄功能來繞過越獄偵測。不過此功能不一定能成功發揮躲避偵測的效果。";
+"Hint_Hide_Jailbreak_Jailbroken" = "在已越獄狀態下，「隱 藏 越 獄」將部分\n禁用越獄功能以提升檢測越獄的難度。但\n是，它並非總是有效，也並沒有隱藏所有\n東西。";
 
-"Initializing Environment" = "正在初始化環境";
+"Initializing Environment" = "初 始 化 環 境";
 
-"Initializing System Hook" = "正在初始化系統 hook";
+"Initializing System Hook" = "初 始 化 系 統 補 丁";
 
-"Jailbreak_Done" = "完成！";
+"Jailbreak_Done" = "越 獄 成 功 ！";
 
-"Launching kexploitd" = "正在啟動 kexploitd";
+"Launching kexploitd" = "利 用 內 核 漏 洞";
 
-"Enabling Wi-Fi" = "正在啟用 Wi-Fi";
+"Enabling Wi-Fi" = "啟 用 無 線 局 域 網";
 
-"Disabling Wi-Fi" = "正在停用 Wi-Fi";
+"Disabling Wi-Fi" = "禁 用 無 線 局 域 網";
 
-"Launching oobPCI" = "正在啟動 oobPCI";
+"Launching oobPCI" = "啟 動 任 意 內 核 r/w";
 
-"Loading Basebin Trustcache" = "正在載入 Basebin Trustcache";
+"Loading Basebin Trustcache" = "等 待 基 本 文 件 系 統 信 任 緩 存";
 
-"Menu_Credits_Title" = "致謝";
+"Menu_Credits_Title" = " 關   於 ";
 
-"Menu_Settings_Title" = "設定";
+"Menu_Settings_Title" = "設   置";
 
-"Settings" = "設定";
+"Menu_Reboot_Userspace_Title" = " 重   啟 ";
 
-"Menu_Reboot_Userspace_Title" = "重新啟動使用者空間";
+"Menu_Restart_SpringBoard_Title" = " 注   銷 ";
 
-"Menu_Restart_SpringBoard_Title" = "重新啟動主畫面";
+"Settings_iDownload" = "開 發 者 終 端";
 
-"Settings_iDownload" = "iDownload (開發者终端)";
+"Settings_Tweak_Injection" = "插 件 注 入";
 
-"Settings_Tweak_Injection" = "載入插件";
+"Options_Rebuild_Environment" = "重 建 環 境";
 
-"Settings_Verbose_Logs" = "詳細日誌";
+"Settings_Verbose_Logs" = "詳 細 日 志";
 
-"Patchfinding" = "正在尋找修正檔";
+"Patchfinding" = "補 丁 查 找 中";
 
-"PM_Reinstall_Done_Text" = "選擇的套件管理器已重新安裝";
+"PM_Reinstall_Done_Text" = "選 中 的 越 獄 商 店 已 被 重 新 安 裝";
 
-"Rebuilding TrustCache" = "正在重新構建 TrustCache";
+"Rebuilding TrustCache" = "重 建 信 任 緩 存";
 
-"Refreshing Icon Cache" = "正在更新圖示快取";
+"Refreshing Icon Cache" = "刷 新 圖 標 緩 存";
 
-"Settings_Footer_Device_Bootstrapped" = "裝置已安裝越獄環境";
+"Settings_Footer_Device_Bootstrapped" = "設 備 已 安 裝 越 獄 環 境";
 
-"Settings_Footer_Device_Not_Bootstrapped" = "裝置未安裝越獄環境";
+"Settings_Footer_Device_Not_Bootstrapped" = "設 備 未 安 裝 越 獄 環 境";
 
-"Starting jailbreakd" = "正在啟動 jailbreakd";
+"Starting jailbreakd" = "開 始 越 獄...";
 
-"Starting Launch Daemons" = "正在啟動 Launch 守護程序";
+"Starting Launch Daemons" = "加 載 啟 動 項";
 
-"Status_Title_Jailbreaking" = "越獄中";
+"Status_Title_Jailbreaking" = "越 獄 中...";
 
-"Status_Title_Jailbroken" = "已越獄";
+"Status_Title_Jailbroken" = "已 越 獄";
 
-"Status_Title_Select_Package_Managers" = "選擇套件管理器";
+"Status_Title_Select_Package_Managers" = "選 擇 越 獄 商 店";
 
-"Status_Title_Unsuccessful" = "失敗";
+"Status_Title_Unsuccessful" = "越 獄 失 敗";
 
-"Success_Rate %@%% (%lld/%lld)" = "成功率：%@%% (%lld/%lld)";
+"Success_Rate %@%% (%lld/%lld)" = "成 功 率：%@%% ( %lld / %lld )";
 
-"Title_Changelog" = "版本日誌";
+"Title_Changelog" = "更 新 日 志";
 
-"Title_Made_By" = "來自於 opa334，évelyne\n界面由 sourceloc設計\n基於 Fugu15";
+"Title_Made_By" = "開 發 者 :  opa334 、 évelyne \nUI 設 計 :  sourceloc \nDopamine 越 獄 基 於 Fugu 15";
 
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15，M1";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1  |  A12 - A15 、 M1";
 
-"Update_Log_Hint_Scrollable" = "捲動以查看日誌";
+"Update_Log_Hint_Scrollable" = "滾 動 查 看 日 志";
 
-"Update_Status_Downloading" = "正在下載更新……";
+"Update_Status_Downloading" = "正 在 下 載 更 新...";
 
-"Update_Status_Installing" = "正在安裝更新……";
+"Update_Status_Installing" = "正 在 安 裝 更 新...";
 
-"Update_Status_Subtitle_Please_Wait" = "請等待檔案下載完畢";
+"Update_Status_Subtitle_Please_Wait" = "請 等 待 完 成 下 載...";
 
-"Update_Status_Subtitle_Restart_Soon" = "裝置即將重新啟動";
+"Update_Status_Subtitle_Restart_Soon" = "設 備 即 將 重 啟 用 戶 空 間...";
 
-"Alert_Button_Uninstall" = "清除越獄";
+"Alert_Button_Uninstall" = "清 除 越 獄";
 
-"Alert_Tweak_Injection_Toggled_Body" = "即將重新啟動使用者空間是否繼續？";
+"Alert_Tweak_Injection_Toggled_Body" = "為使變更生效需要重啟用戶空間，立即執行？";
 
-"Popup_Change_Mobile_Password_Title" = "修改 mobile 帳號密碼";
+"Popup_Change_Mobile_Password_Title" = "修 改 手 機 用 戶 密 碼";
 
-"Settings_Remove_Jailbreak_Alert_Body" = "移除越獄將移除所有和越獄相關的檔案，但將保留普通 App、檔案、資料。請注意，此動作無法復原。確定清除越獄嗎？";
+"Settings_Remove_Jailbreak_Alert_Body" = "「清 除 越 獄」將清除所有和越獄相關的檔，但將保留普通 App、檔、數據。請注意，此操作無法撤銷。確認清除越獄嗎？";
 
-"Settings_Remove_Jailbreak_Alert_Title" = "移除越獄";
+"Settings_Remove_Jailbreak_Alert_Title" = "清 除 越 獄";
 
-"Settings_Tweak_Injection_Toggled_Alert_Title" = "需要重新啟動使用者空間";
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "需 要 重 啟 用 戶 空 間";
 
-"Select_Package_Managers_Install_Message" = "如果您不確定要選哪個，請選擇 Sileo";
+"Select_Package_Managers_Install_Message" = "若 你 不 確 定 如 何 選 擇，請 使 用 Sileo";
 
-"Select_Package_Managers_Reinstall_Message" = "選擇要重新安裝的套件管理器";
+"Select_Package_Managers_Reinstall_Message" = "選 擇 需 要 重 新 安 裝 的 越 獄 商 店";
 
-"Reinstall" = "重新安裝";
+"Reinstall" = "重 新 安 裝";
 
-"Continue" = "繼續";
+"Continue" = "繼 續";
 
-"Close" = "關閉";
+"Close" = "關 閉";
 
-"Title_Mismatching_Environment_Version" = "不支援此環境版本";
+"Title_Mismatching_Environment_Version" = "越 獄 環 境 版 本 不 匹 配";
 
-"Mismatching_Environment_Version_Update_Body" = "此裝置越獄所使用的環境版本（%@）與目前已安裝的應用程式版本（%@）不相符。\n點擊更新將會更新越獄環境以符合目前安裝的應用程式版本，之後您的裝置將重新啟動使用者空間。";
+"Mismatching_Environment_Version_Update_Body" = "本機的越獄環境版本 (%@) 與 App 版本 (%@) 不匹配。 \n點按更新按鈕將安裝匹配 App 版本的越獄環境，並將隨後執行一次「重 啟 用 戶 空 間」。";
 
-"Options_Tweak_Injection" = "載入插件";
+"Options_Tweak_Injection" = "插 件 注 入";
 
-"Reboot_Userspace_Finish" = "重新啟動使用者空間";
+"Reboot_Userspace_Finish" = "重 啟 用 戶 空 間";
 
-"Restarting Userspace" = "正在重新啟動使用者空間";
+"Restarting Userspace" = "正 在 重 啟 用 戶 空 間";
+
+"Menu_Reboot_Title" = "重 啟";
+
+"Options_No_Update" = "屏 蔽 更 新";
+
+"Options_bridgeToXinA" = "橋 接 心 浪 (beta)";
+
+"Button_Remove_Zplist" = "清 除 屏 蔽";
+
+"Settings_Remove_Zplist_Alert_Title" = "刪除遮罩注入的配置檔";
+
+"Settings_Remove_Zplist_Alert_Body" = "此舉僅刪除/var/mobile/下的2個配置檔\nzp.unject.plist\nnewFakePath.plist";
+
+"Options_Enable_Mount_Path" = "啟 用 掛 載";
+
+"Button_Set_Mount_Path" = "新 增 掛 載";
+
+"Set_Mount_Path_Alert_Shown_Title" = "請輸入要新增的掛載目錄(原始路徑)";
+
+"Set_Mount_Path_Message" = "掛載後在\"/var/jb/原始路徑\"裏面替換內容";
+
+"Button_Remove_Zmount" = "解 除 掛 載";
+
+"Remove_Zmount_Alert_Shown_Title" = "請輸入要解除的掛載目錄(原始路徑)";
+
+"Remove_Zmount_Message" = "此舉會刪除系統掛載的檔\n\n如果在越獄狀態,請立即重啟用戶空間";
