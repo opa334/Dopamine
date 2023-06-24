@@ -2,7 +2,7 @@
 
 "Button_Cancel" = "取 消";
 
-"Button_Hide_Jailbreak" = " 隐 藏 越 狱 ";
+"Button_Hide_Jailbreak" = "隐 藏 越 狱";
 
 "Button_Hide_Logs_Title" = " 隐 藏 日 志 ";
 
@@ -14,7 +14,7 @@
 
 "Popup_Change_Mobile_Password_Message" = "设置你设备上的手机用户密码。该密码也可用于通过 sudo 命令访问 root 用户权限。若你想要修改 root 用户密码，可在设备 shell 中执行 \"sudo passwd root\"。";
 
-"Button_Reinstall_Package_Managers" = " 重 装 商 店 ";
+"Button_Reinstall_Package_Managers" = "重 装 商 店";
 
 "Button_Set" = "确 定";
 
