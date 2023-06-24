@@ -61,6 +61,7 @@ struct SettingsView: View {
                                 }
                             if !isJailbroken() {
                                 Toggle("Options_bridgeToXinA", isOn: $bridgeToXinA)
+                                Toggle("Options_Enable_Mount_Path", isOn: $enableMount)
                                 Toggle("Options_Rebuild_Environment", isOn: $rebuildEnvironment)
                                 Toggle("Settings_iDownload", isOn: $enableiDownload)
                                 .onChange(of: enableiDownload) { newValue in
@@ -74,6 +75,42 @@ struct SettingsView: View {
                         if isBootstrapped() {
                             VStack {
                                 if isJailbroken() {
+                                    Button(action: {
+                                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                        mountPathAlertShown = true
+                                    }) {
+                                        HStack {
+                                            Image(systemName: "mappin.circle")
+                                            Text("Button_Set_Mount_Path")
+                                                .lineLimit(1)
+                                                .minimumScaleFactor(0.5)
+                                        }
+                                        .padding(.horizontal, 4)
+                                        .padding(8)
+                                        .frame(maxWidth: .infinity)
+                                        .overlay(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
+                                        )
+                                    }
+                                    Button(action: {
+                                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                        removeZmountAlertShown = true
+                                    }) {
+                                        HStack {
+                                            Image(systemName: "mappin.slash.circle")
+                                            Text("Button_Remove_Zmount")
+                                                .lineLimit(1)
+                                                .minimumScaleFactor(0.5)
+                                        }
+                                        .padding(.horizontal, 4)
+                                        .padding(8)
+                                        .frame(maxWidth: .infinity)
+                                        .overlay(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
+                                        )
+                                    }
                                     Button(action: {
                                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
                                         removeZplistAlertShown = true
@@ -224,6 +261,20 @@ struct SettingsView: View {
                     }
                     
                     ZStack {}
+                        .textFieldAlert(isPresented: $mountPathAlertShown) { () -> TextFieldAlert in
+                            TextFieldAlert(title: NSLocalizedString("Set_Mount_Path_Alert_Shown_Title", comment: ""), message: NSLocalizedString("Set_Mount_Path_Message", comment: ""), text: Binding<String?>($mountPathInput), onSubmit: {
+                                if mountPathInput.count > 1 {
+                                    newMountPath(newPath: mountPathInput)
+                                }
+                            })
+                        }
+                        .textFieldAlert(isPresented: $removeZmountAlertShown) { () -> TextFieldAlert in
+                            TextFieldAlert(title: NSLocalizedString("Remove_Zmount_Alert_Shown_Title", comment: ""), message: NSLocalizedString("Remove_Zmount_Message", comment: ""), text: Binding<String?>($removeZmountInput), onSubmit: {
+                                if removeZmountInput.count > 1 {
+                                    removeZmount(rmpath: removeZmountInput)
+                                }
+                            })
+                        }
                         .alert("Settings_Remove_Zplist_Alert_Title", isPresented: $removeZplistAlertShown, actions: {
                             Button("Button_Cancel", role: .cancel) { }
                             Button("Button_Set", role: .destructive) {
