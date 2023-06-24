@@ -15,8 +15,8 @@ PPLRWStatus gPPLRWStatus = kPPLRWStatusNotInitialized;
 
 void tlbFlush(void)
 {
-	usleep(150);
-	usleep(150);
+	usleep(70);
+	usleep(70);
 	__asm("dmb sy");
 }
 
