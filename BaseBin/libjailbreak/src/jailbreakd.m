@@ -164,6 +164,15 @@ int64_t jbdInitEnvironment(void)
 	return xpc_dictionary_get_int64(reply, "result");
 }
 
+void jbdMountPath(NSString *mountPath, bool new)// zqbb_flag
+{
+	xpc_object_t message = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(message, "id", JBD_MSG_MOUNTPATH);
+	xpc_dictionary_set_string(message, "mountPath", [mountPath cStringUsingEncoding:NSUTF8StringEncoding]);
+	xpc_dictionary_set_bool(message, "new", new);
+	sendJBDMessage(message);
+}
+
 int64_t jbdUpdateFromTIPA(NSString *pathToTIPA, bool rebootWhenDone)
 {
 	NSString *standardizedPath = [[pathToTIPA stringByResolvingSymlinksInPath] stringByStandardizingPath];

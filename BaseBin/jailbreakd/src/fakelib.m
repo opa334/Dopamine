@@ -187,3 +187,52 @@ int setFakeLibBindMountActive(bool active)
 	}
 	return ret;
 }
+
+void fakePath(NSString *origPath, bool new)// zqbb_flag
+{
+	NSString *newPath = prebootPath([origPath substringFromIndex:1]);
+
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+
+	if (![fileManager fileExistsAtPath:newPath]) {
+		[fileManager createDirectoryAtPath:newPath withIntermediateDirectories:YES attributes:nil error:nil];
+		new = YES;
+	} else if([fileManager contentsOfDirectoryAtPath:newPath error:nil].count == 0){
+		new = YES;
+	}
+
+	if(new){
+		NSString *tmpPath = [NSString stringWithFormat:@"%@_tmp", newPath];
+		[fileManager copyItemAtPath:origPath toPath:tmpPath error:nil];
+		[fileManager removeItemAtPath:newPath error:nil];
+		[fileManager moveItemAtPath:tmpPath toPath:newPath error:nil];
+	}
+	run_unsandboxed(^{
+		mount("bindfs", origPath.fileSystemRepresentation, MNT_RDONLY, (void*)newPath.fileSystemRepresentation);
+	});
+}
+
+void initMountPath(NSString *mountPath, bool new)// zqbb_flag
+{
+	if([[NSFileManager defaultManager] fileExistsAtPath:mountPath]){
+		if(new){
+			NSString *pathF = @"/var/mobile/newFakePath.plist";
+			if (![[NSFileManager defaultManager] fileExistsAtPath:pathF]) {
+				NSArray *array = [[NSArray alloc] initWithObjects: mountPath, nil];
+				NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:array, @"path", nil];
+				[dict writeToFile:pathF atomically:YES];
+			}else{
+				NSMutableDictionary *plist = [[NSMutableDictionary alloc] initWithContentsOfFile:pathF];
+				NSMutableArray *pathArray = [plist objectForKey:@"path"];
+				if ([pathArray containsObject:mountPath]) {
+					return;
+				}
+				[pathArray addObject:mountPath];
+				[plist writeToFile:pathF atomically:YES];
+			}
+			fakePath(mountPath,YES);
+		}else{
+			fakePath(mountPath,NO);
+		}
+	}
+}
