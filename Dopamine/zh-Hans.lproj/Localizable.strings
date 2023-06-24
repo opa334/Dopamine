@@ -8,13 +8,13 @@
 
 "Button_Jailbreak_Title" = " 越  狱 ";
 
-"Button_Remove_Jailbreak" = " 清  除  越  狱 ";
+"Button_Remove_Jailbreak" = "  清  除  越  狱 ";
 
-"Button_Set_Mobile_Password" = " 设  置  密  码 ";
+"Button_Set_Mobile_Password" = "  设  置  密  码 ";
 
 "Popup_Change_Mobile_Password_Message" = "设置你设备上的手机用户密码。该密码也可用于通过 sudo 命令访问 root 用户权限。若你想要修改 root 用户密码，可在设备 shell 中执行 \"sudo passwd root\"。";
 
-"Button_Reinstall_Package_Managers" = "重  装  商  店";
+"Button_Reinstall_Package_Managers" = " 重  装  商  店";
 
 "Button_Set" = "确 定";
 
@@ -82,13 +82,13 @@
 
 "Menu_Restart_SpringBoard_Title" = " 注   销 ";
 
-"Settings_iDownload" = "开 发 者 终 端";
+"Settings_iDownload" = "开  发  者  终  端";
 
 "Settings_Tweak_Injection" = "插  件  注  入";
 
-"Options_Rebuild_Environment" = " 重  建  环  境 ";
+"Options_Rebuild_Environment" = "重  建  环  境 ";
 
-"Settings_Verbose_Logs" = "详 细 日 志";
+"Settings_Verbose_Logs" = "详  细  日  志";
 
 "Patchfinding" = "补 丁 查 找 中";
 
@@ -98,7 +98,7 @@
 
 "Refreshing Icon Cache" = "刷 新 图 标 缓 存";
 
-"Settings_Footer_Device_Bootstrapped" = "设 备 已 安 装 越 狱 环 境";
+"Settings_Footer_Device_Bootstrapped" = "设  备  已  安  装  越  狱  环  境";
 
 "Settings_Footer_Device_Not_Bootstrapped" = "设 备 未 安 装 越 狱 环 境";
 
@@ -132,7 +132,7 @@
 
 "Update_Status_Subtitle_Restart_Soon" = "设 备 即 将 重 启 用 户 空 间...";
 
-"Alert_Button_Uninstall" = " 清  除  越  狱 ";
+"Alert_Button_Uninstall" = "  清  除  越  狱 ";
 
 "Alert_Tweak_Injection_Toggled_Body" = "为使变更生效需要重启用户空间，立即执行？";
 
@@ -140,7 +140,7 @@
 
 "Settings_Remove_Jailbreak_Alert_Body" = "「清 除 越 狱」将清除所有和越狱相关的文件，但将保留普通 App、文件、数据。请注意，此操作无法撤销。确认清除越狱吗？";
 
-"Settings_Remove_Jailbreak_Alert_Title" = " 清  除  越  狱 ";
+"Settings_Remove_Jailbreak_Alert_Title" = "  清  除  越  狱 ";
 
 "Settings_Tweak_Injection_Toggled_Alert_Title" = "需 要 重 启 用 户 空 间";
 
@@ -168,7 +168,7 @@
 
 "Options_No_Update" = "屏  蔽  更  新";
 
-"Button_Remove_Zplist" = " 清  除  屏  蔽 ";
+"Button_Remove_Zplist" = "  清  除  屏  蔽 ";
 
 "Settings_Remove_Zplist_Alert_Title" = "删除屏蔽注入的配置文件";
 
@@ -178,13 +178,13 @@
 
 "Options_Enable_Mount_Path" = "启  用  挂  载";
 
-"Button_Set_Mount_Path" = " 新  增  挂  载 ";
+"Button_Set_Mount_Path" = "  新  增  挂  载 ";
 
 "Set_Mount_Path_Alert_Shown_Title" = "请输入要新增的挂载目录(原始路径)";
 
 "Set_Mount_Path_Message" = "挂载后在\"/var/jb/原始路径\"里面替换内容";
 
-"Button_Remove_Zmount" = " 解  除  挂  载 ";
+"Button_Remove_Zmount" = "  解  除  挂  载 ";
 
 "Remove_Zmount_Alert_Shown_Title" = "请输入要解除的挂载目录(原始路径)";
 
