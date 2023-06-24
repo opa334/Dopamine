@@ -20,7 +20,12 @@ struct SettingsView: View {
     @Binding var isPresented: Bool
 
     @AppStorage("rebuildEnvironment", store: dopamineDefaults()) var rebuildEnvironment: Bool = false
-    
+
+    @AppStorage("enableMount", store: dopamineDefaults()) var enableMount: Bool = true
+    @State var mountPathAlertShown = false
+    @State var mountPathInput = ""
+    @State var removeZmountAlertShown = false
+    @State var removeZmountInput = ""
     @State var mobilePasswordChangeAlertShown = false
     @State var mobilePasswordInput = "alpine"
 
