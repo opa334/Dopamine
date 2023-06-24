@@ -31,8 +31,6 @@ int pmap_map_in(uint64_t pmap, uint64_t target, uint64_t start, uint64_t size)
 
 	for (uint64_t i = 0; i < mappingCount; i++) {
 		uint64_t curTargetMapping = targetMappingStart + (i * mappingSize);
-		uint64_t curMapping = mappingStart + (i * mappingSize);
-
 		kern_return_t kr = pmap_enter_options_addr(pmap, FAKE_PHYSPAGE_TO_MAP, curTargetMapping);
 		if (kr != KERN_SUCCESS) {
 			pmap_remove(pmap, targetMappingStart, curTargetMapping);
@@ -55,7 +53,12 @@ int pmap_map_in(uint64_t pmap, uint64_t target, uint64_t start, uint64_t size)
 		uint64_t tableToWrite[2048];
 		for (int k = 0; k < 2048; k++) {
 			uint64_t curMappingPage = curMapping + (k * 0x4000);
-			tableToWrite[k] = curMappingPage | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY;
+			if (curMappingPage >= start || curMappingPage < (start + size)) {
+				tableToWrite[k] = curMappingPage | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY;
+			}
+			else {
+				tableToWrite[k] = 0;
+			}
 		}
 
 		// Replace table with the entries we generated
