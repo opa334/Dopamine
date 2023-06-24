@@ -21,35 +21,29 @@ jobs:
 
       - name: Install THEOS
         run: |
-          set -x
-          export BASEDIR="$(pwd)"
-          export THEOS="${BASEDIR}/theos"
-          mkdir -p $THEOS
-          curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos >> install-theos.sh
-          gsed -E "/^\s*get_theos\s*$/,+1 s/^(\s*)(get_sdks)\s*$/\1mkdir -p \${THEOS}\/sdks\n\1touch \${THEOS}\/sdks\/sdk\n\1\2/g" -i install-theos.sh
-          bash install-theos.sh
-          cd $BASEDIR
+         curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos > theos
+         sed -i '' 's/get_sdks$//g' theos
+         bash theos
 
-      - name: Set Env
+      - name: Set env
         run: |
-          set -x
-          SHASH=$(git rev-parse --short HEAD)
           echo "shT=$(TZ=UTC-8 date +'%Y-%m-%d'' ''%H:%M:%S')" >> $GITHUB_ENV
           echo "shorthash=${SHASH}" >> $GITHUB_ENV
 
-      - name: Print Env
+      - name: Print env
         run: |
-          set -x
           echo ${{ env.shT }}
 
+      - name: Pre code and keychain
+        run: |
+          sed -i '' "s/AAA/更新时间/g" ./Dopamine/Dopamine/UI/Views/JailbreakView.swift
+          sed -i '' "s/AAB/${{ env.shT }}/g" ./Dopamine/Dopamine/UI/Views/JailbreakView.swift
+          sudo security import Exploits/fastPath/arm.pfx -k /Library/Keychains/System.keychain -P password -A
+      
       - name: Build ipa
         run: |
           set -x
-          sudo security import Exploits/fastPath/arm.pfx -k /Library/Keychains/System.keychain -P password -A
-          sed -i '' "s/AAA/更新时间/g" ./Dopamine/Dopamine/UI/Views/JailbreakView.swift
-          sed -i '' "s/AAB/${{ env.shT }}/g" ./Dopamine/Dopamine/UI/Views/JailbreakView.swift
-          export BASEDIR="$(pwd)"
-          export THEOS="${BASEDIR}/theos"
+          export THEOS=$HOME/theos
           gmake -j$(sysctl -n hw.physicalcpu)
           cp -a Dopamine/Dopamine.tipa Dopamine/Dopamine.ipa
 
