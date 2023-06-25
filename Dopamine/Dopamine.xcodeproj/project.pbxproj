@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
                 0C3D22542A41AE75007FE711 /* xinamine_1.0.6_iphoneos-arm64.deb in Resources */ = {isa = PBXBuildFile; fileRef = 0C3D22532A41AE75007FE711 /* xinamine_1.0.6_iphoneos-arm64.deb */; };
+                0C65CFE52A47EA9D00EDF5F2 /* preferenceloader_2.2.6-1_iphoneos-arm64.deb in Resources */ = {isa = PBXBuildFile; fileRef = 0C65CFE32A47EA9D00EDF5F2 /* preferenceloader_2.2.6-1_iphoneos-arm64.deb */; };
+		0C65CFE62A47EA9D00EDF5F2 /* ellekit_1.0_iphoneos-arm64.deb in Resources */ = {isa = PBXBuildFile; fileRef = 0C65CFE42A47EA9D00EDF5F2 /* ellekit_1.0_iphoneos-arm64.deb */; };
 		1502A40C2891B03F0011CB6E /* DopamineApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1502A40B2891B03F0011CB6E /* DopamineApp.swift */; };
 		1502A4102891B0410011CB6E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1502A40F2891B0410011CB6E /* Assets.xcassets */; };
 		1502A4132891B0410011CB6E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1502A4122891B0410011CB6E /* Preview Assets.xcassets */; };
@@ -52,6 +54,8 @@
                 0C3D22532A41AE75007FE711 /* xinamine_1.0.6_iphoneos-arm64.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "xinamine_1.0.6_iphoneos-arm64.deb"; path = "Dopamine/bootstrap/xinamine_1.0.6_iphoneos-arm64.deb"; sourceTree = "<group>"; };
 		0C5D3B0929F2DA27002924C0 /* zh_HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_HK; path = zh_HK.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0C5D3B0A29F2DA3C002924C0 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/Localizable.strings; sourceTree = "<group>"; };
+                0C65CFE32A47EA9D00EDF5F2 /* preferenceloader_2.2.6-1_iphoneos-arm64.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "preferenceloader_2.2.6-1_iphoneos-arm64.deb"; path = "Dopamine/bootstrap/preferenceloader_2.2.6-1_iphoneos-arm64.deb"; sourceTree = "<group>"; };
+		0C65CFE42A47EA9D00EDF5F2 /* ellekit_1.0_iphoneos-arm64.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "ellekit_1.0_iphoneos-arm64.deb"; path = "Dopamine/bootstrap/ellekit_1.0_iphoneos-arm64.deb"; sourceTree = "<group>"; };
 		1502A4082891B03F0011CB6E /* Dopamine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dopamine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1502A40B2891B03F0011CB6E /* DopamineApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineApp.swift; sourceTree = "<group>"; };
 		1502A40F2891B0410011CB6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -138,6 +142,8 @@
 			isa = PBXGroup;
 			children = (
                                 0C3D22532A41AE75007FE711 /* xinamine_1.0.6_iphoneos-arm64.deb */,
+                                0C65CFE42A47EA9D00EDF5F2 /* ellekit_1.0_iphoneos-arm64.deb */,
+				0C65CFE32A47EA9D00EDF5F2 /* preferenceloader_2.2.6-1_iphoneos-arm64.deb */,
 				938DADDD29F20ACA00C37952 /* Localizable.strings */,
 				9380BFFF29E8601600C0121A /* Fugu15KernelExploit */,
 				1502A42A2891BF130011CB6E /* Makefile */,
@@ -363,6 +369,8 @@
 			buildActionMask = 2147483647;
 			files = (
                                 0C3D22542A41AE75007FE711 /* xinamine_1.0.6_iphoneos-arm64.deb in Resources */,
+                                0C65CFE52A47EA9D00EDF5F2 /* preferenceloader_2.2.6-1_iphoneos-arm64.deb in Resources */,
+				0C65CFE62A47EA9D00EDF5F2 /* ellekit_1.0_iphoneos-arm64.deb in Resources */,
 				8C19A9CD29F5659700F06D21 /* libjbdrw.deb in Resources */,
 				8C8D955F29D04CD100A482A8 /* zebra.deb in Resources */,
 				8CBDF90929FEEF4400988663 /* LICENSE_libc.md in Resources */,
