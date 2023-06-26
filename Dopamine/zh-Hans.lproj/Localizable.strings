@@ -168,13 +168,11 @@
 
 "Options_No_Update" = "屏  蔽  更  新";
 
-"Button_Remove_Zplist" = "  清  除  屏  蔽 ";
+"Button_Remove_Zplist" = "  清  除  配  置 ";
 
 "Settings_Remove_Zplist_Alert_Title" = "删除屏蔽注入的配置文件";
 
 "Settings_Remove_Zplist_Alert_Body" = "此举仅删除/var/mobile/下的2个配置文件\nzp.unject.plist\nnewFakePath.plist";
-
-"Options_bridgeToXinA" = "桥  接  心  浪 (beta)";
 
 "Options_Enable_Mount_Path" = "启  用  挂  载";
 
@@ -189,3 +187,7 @@
 "Remove_Zmount_Alert_Shown_Title" = "请输入要解除的挂载目录(原始路径)";
 
 "Remove_Zmount_Message" = "此举会删除系统挂载的文件\n\n如果在越狱状态,请立即重启用户空间";
+
+"Button_Respring_Finish" = "注 销 以 完 成 越 狱";
+
+"Button_Reboot_Userspace_Finish" = "重 启 用 户 空 间";
