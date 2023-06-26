@@ -396,36 +396,44 @@ struct JailbreakView: View {
     var endButtons: some View {
         switch jailbreakingProgress {
         case .finished:
-            //            Button {
-            //                userspaceReboot()
-            //            } label: {
-            //                Label(title: { Text("Reboot Userspace (Finish)") }, icon: {
-            //                    Image(systemName: "arrow.clockwise")
-            //                })
-            //                .foregroundColor(.white)
-            //                .padding()
-            //                .frame(maxWidth: 280, maxHeight: jailbreakingError != nil ? 0 : nil)
-            //                .background(MaterialView(.light)
-            //                    .opacity(0.5)
-            //                    .cornerRadius(8)
-            //                )
-            //                .opacity(jailbreakingError != nil ? 0 : 1)
-            //            }
-            if !advancedLogsByDefault, jailbreakingError != nil {
+            do {
+                let dpDefaults = dopamineDefaults()
+                let tweakInjectionEnabled = dpDefaults.bool(forKey: "tweakInjectionEnabled")
                 Button {
-                    advancedLogsTemporarilyEnabled.toggle()
+                    if tweakInjectionEnabled {
+                        userspaceReboot()
+                    } else {
+                        respring()
+                    }
                 } label: {
-                    Label(title: { Text(advancedLogsTemporarilyEnabled ? "Button_Hide_Logs_Title" : "Button_Show_Logs_Title") }, icon: {
-                        Image(systemName: "scroll")
-                    })
+                    Label(title: { Text(tweakInjectionEnabled ? "Button_Reboot_Userspace_Finish" : "Button_Respring_Finish") },
+                           icon: { Image(systemName: tweakInjectionEnabled ? "arrow.clockwise.circle" : "arrow.clockwise") }
+                    )
                     .foregroundColor(.white)
                     .padding()
-                    .frame(maxWidth: 280, maxHeight: jailbreakingError != nil ? nil : 0)
+                    .frame(maxWidth: 280, maxHeight: jailbreakingError != nil ? 0 : nil)
                     .background(MaterialView(.light)
                         .opacity(0.5)
                         .cornerRadius(8)
                     )
-                    .opacity(jailbreakingError != nil ? 1 : 0)
+                    .opacity(jailbreakingError != nil ? 0 : 1)
+                }
+                if !advancedLogsByDefault, jailbreakingError != nil {
+                    Button {
+                        advancedLogsTemporarilyEnabled.toggle()
+                    } label: {
+                        Label(title: { Text(advancedLogsTemporarilyEnabled ? "Button_Hide_Logs_Title" : "Button_Show_Logs_Title") }, icon: {
+                            Image(systemName: "scroll")
+                        })
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(maxWidth: 280, maxHeight: jailbreakingError != nil ? nil : 0)
+                        .background(MaterialView(.light)
+                            .opacity(0.5)
+                            .cornerRadius(8)
+                        )
+                        .opacity(jailbreakingError != nil ? 1 : 0)
+                    }
                 }
             }
         case .idle:
@@ -475,18 +483,6 @@ struct JailbreakView: View {
                 if e == nil {
                     dpDefaults.set(dpDefaults.integer(forKey: "successfulJailbreaks") + 1, forKey: "successfulJailbreaks")
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
-                    let tweakInjectionEnabled = dpDefaults.bool(forKey: "tweakInjectionEnabled")
-                    
-                    Logger.log(NSLocalizedString("Restarting Userspace", comment: ""), type: .continuous, isStatus: true)
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        if tweakInjectionEnabled {
-                            userspaceReboot()
-                        } else {
-                            respring()
-                            exit(0)
-                        }
-                    }
                 } else {
                     UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }
