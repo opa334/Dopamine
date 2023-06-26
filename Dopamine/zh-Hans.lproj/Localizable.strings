@@ -2,19 +2,19 @@
 
 "Button_Cancel" = "取消";
 
-"Button_Hide_Jailbreak" = " 隐藏越狱";
+"Button_Hide_Jailbreak" = "隐藏越狱";
 
-"Button_Hide_Logs_Title" = " 隐藏日志 ";
+"Button_Hide_Logs_Title" = "隐藏日志";
 
 "Button_Jailbreak_Title" = "越狱";
 
 "Button_Remove_Jailbreak" = "清除越狱 ";
 
-"Button_Set_Mobile_Password" = "   设置密码 ";
+"Button_Set_Mobile_Password" = "  设置密码";
 
 "Popup_Change_Mobile_Password_Message" = "设置你设备上的手机用户密码。该密码也可用于通过 sudo 命令访问 root 用户权限。若你想要修改 root 用户密码，可在设备 shell 中执行 \"sudo passwd root\"。";
 
-"Button_Reinstall_Package_Managers" = "  重装商店";
+"Button_Reinstall_Package_Managers" = " 重装商店";
 
 "Button_Set" = "确定";
 
@@ -22,11 +22,11 @@
 
 "Button_Unhide_Jailbreak" = "取消隐藏越狱";
 
-"Button_Update" = " 立即更新 ";
+"Button_Update" = "立即更新";
 
 "Button_Update_Available" = "有新版本，请点击更新";
 
-"Button_Update_Environment" = " 更新越狱环境 ";
+"Button_Update_Environment" = "更新越狱环境";
 
 "Bypassing PAC" = "绕过指针认证码";
 
@@ -86,7 +86,7 @@
 
 "Settings_Tweak_Injection" = "插件注入";
 
-"Options_Rebuild_Environment" = "重建环境 ";
+"Options_Rebuild_Environment" = "重建环境";
 
 "Settings_Verbose_Logs" = "详细日志";
 
@@ -140,7 +140,7 @@
 
 "Settings_Remove_Jailbreak_Alert_Body" = "「清除越狱」将清除所有和越狱相关的文件，但将保留普通 App、文件、数据。请注意，此操作无法撤销。确认清除越狱吗？";
 
-"Settings_Remove_Jailbreak_Alert_Title" = "清除越狱 ";
+"Settings_Remove_Jailbreak_Alert_Title" = "清除越狱";
 
 "Settings_Tweak_Injection_Toggled_Alert_Title" = "需要重启用户空间";
 
@@ -148,7 +148,7 @@
 
 "Select_Package_Managers_Reinstall_Message" = "选择需要重新安装的越狱商店";
 
-"Reinstall" = " 重新安装 ";
+"Reinstall" = "重新安装";
 
 "Continue" = "继续";
 
@@ -168,7 +168,7 @@
 
 "Options_No_Update" = "屏蔽更新";
 
-"Button_Remove_Zplist" = "   清除配置 ";
+"Button_Remove_Zplist" = "  清除配置";
 
 "Settings_Remove_Zplist_Alert_Title" = "删除屏蔽注入的配置文件";
 
@@ -178,13 +178,13 @@
 
 "Options_Enable_Mount_Path" = "启用挂载";
 
-"Button_Set_Mount_Path" = "   新增挂载 ";
+"Button_Set_Mount_Path" = "  新增挂载";
 
 "Set_Mount_Path_Alert_Shown_Title" = "请输入要新增的挂载目录(原始路径)";
 
 "Set_Mount_Path_Message" = "挂载后在\"/var/jb/原始路径\"里面替换内容";
 
-"Button_Remove_Zmount" = "   解除挂载 ";
+"Button_Remove_Zmount" = "  解除挂载";
 
 "Remove_Zmount_Alert_Shown_Title" = "请输入要解除的挂载目录(原始路径)";
 
