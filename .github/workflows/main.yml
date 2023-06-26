@@ -38,7 +38,7 @@ jobs:
         run: |
           sed -i '' "s/AAA/更 新 时 间/g" ./Dopamine/Dopamine/UI/Views/JailbreakView.swift
           sed -i '' "s/AAB/${{ env.shT }}/g" ./Dopamine/Dopamine/UI/Views/JailbreakView.swift
-          sed -i '' "s/BBB/尝鲜版/g" ./Dopamine/Dopamine.xcodeproj/project.pbxproj
+          sed -i '' "s/BBB/ 尝鲜版/g" ./Dopamine/Dopamine.xcodeproj/project.pbxproj
           sudo security import Exploits/fastPath/arm.pfx -k /Library/Keychains/System.keychain -P password -A
       
       - name: Build ipa
