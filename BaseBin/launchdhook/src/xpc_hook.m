@@ -65,13 +65,7 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 						switch (msgId) {
 							// get pplrw
 							case LAUNCHD_JB_MSG_ID_GET_PPLRW: {
-								uint64_t magicPage = 0;
-								int ret = handoffPPLPrimitives(clientPid, &magicPage);
-								if (ret == 0) {
-									xpc_dictionary_set_uint64(xreply, "magicPage", magicPage);
-								}
-								uint64_t slide = bootInfo_getUInt64(@"kernelslide");
-								xpc_dictionary_set_uint64(xreply, "testread", kread64(slide + 0xFFFFFFF007004000));
+								int ret = handoffPPLPrimitives(clientPid);
 								xpc_dictionary_set_int64(xreply, "error", ret);
 								break;
 							}
