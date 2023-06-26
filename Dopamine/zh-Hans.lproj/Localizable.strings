@@ -42,7 +42,7 @@
 
 "Credits_Button_Source_Code" = "源代码";
 
-"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine 版本 %@\n%@";
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine 版本 %@ 尝鲜版\n%@";
 
 "Credits_Header_Special_Thanks" = "特别感谢 ：";
 
@@ -187,7 +187,3 @@
 "Remove_Zmount_Alert_Shown_Title" = "请输入要解除的挂载目录(原始路径)";
 
 "Remove_Zmount_Message" = "此举会删除系统挂载的文件\n\n如果在越狱状态,请立即重启用户空间";
-
-"Button_Respring_Finish" = "注销以完成越狱";
-
-"Button_Reboot_Userspace_Finish" = "重启用户空间";
