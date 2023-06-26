@@ -396,44 +396,36 @@ struct JailbreakView: View {
     var endButtons: some View {
         switch jailbreakingProgress {
         case .finished:
-            do {
-                let dpDefaults = dopamineDefaults()
-                let tweakInjectionEnabled = dpDefaults.bool(forKey: "tweakInjectionEnabled")
+            //            Button {
+            //                userspaceReboot()
+            //            } label: {
+            //                Label(title: { Text("Reboot Userspace (Finish)") }, icon: {
+            //                    Image(systemName: "arrow.clockwise")
+            //                })
+            //                .foregroundColor(.white)
+            //                .padding()
+            //                .frame(maxWidth: 280, maxHeight: jailbreakingError != nil ? 0 : nil)
+            //                .background(MaterialView(.light)
+            //                    .opacity(0.5)
+            //                    .cornerRadius(8)
+            //                )
+            //                .opacity(jailbreakingError != nil ? 0 : 1)
+            //            }
+            if !advancedLogsByDefault, jailbreakingError != nil {
                 Button {
-                    if tweakInjectionEnabled {
-                        userspaceReboot()
-                    } else {
-                        respring()
-                    }
+                    advancedLogsTemporarilyEnabled.toggle()
                 } label: {
-                    Label(title: { Text(tweakInjectionEnabled ? "Button_Reboot_Userspace_Finish" : "Button_Respring_Finish") },
-                           icon: { Image(systemName: tweakInjectionEnabled ? "arrow.clockwise.circle" : "arrow.clockwise") }
-                    )
+                    Label(title: { Text(advancedLogsTemporarilyEnabled ? "Button_Hide_Logs_Title" : "Button_Show_Logs_Title") }, icon: {
+                        Image(systemName: "scroll")
+                    })
                     .foregroundColor(.white)
                     .padding()
-                    .frame(maxWidth: 280, maxHeight: jailbreakingError != nil ? 0 : nil)
+                    .frame(maxWidth: 280, maxHeight: jailbreakingError != nil ? nil : 0)
                     .background(MaterialView(.light)
                         .opacity(0.5)
                         .cornerRadius(8)
                     )
-                    .opacity(jailbreakingError != nil ? 0 : 1)
-                }
-                if !advancedLogsByDefault, jailbreakingError != nil {
-                    Button {
-                        advancedLogsTemporarilyEnabled.toggle()
-                    } label: {
-                        Label(title: { Text(advancedLogsTemporarilyEnabled ? "Button_Hide_Logs_Title" : "Button_Show_Logs_Title") }, icon: {
-                            Image(systemName: "scroll")
-                        })
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(maxWidth: 280, maxHeight: jailbreakingError != nil ? nil : 0)
-                        .background(MaterialView(.light)
-                            .opacity(0.5)
-                            .cornerRadius(8)
-                        )
-                        .opacity(jailbreakingError != nil ? 1 : 0)
-                    }
+                    .opacity(jailbreakingError != nil ? 1 : 0)
                 }
             }
         case .idle:
