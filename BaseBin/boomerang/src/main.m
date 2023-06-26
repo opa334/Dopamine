@@ -16,8 +16,7 @@ int launchdInitPPLRW(void)
 
 	int error = xpc_dictionary_get_int64(reply, "error");
 	if (error == 0) {
-		uint64_t magicPage = xpc_dictionary_get_uint64(reply, "magicPage");
-		initPPLPrimitives(magicPage);
+		initPPLPrimitives();
 		return 0;
 	}
 	else {
@@ -35,10 +34,7 @@ void getPrimitives(void)
 		if (identifier) {
 			if ([identifier isEqualToString:@"receivePPLRW"])
 			{
-				uint64_t magicPage = [(NSNumber*)message[@"magicPage"] unsignedLongLongValue];
-				if (magicPage) {
-					initPPLPrimitives(magicPage);
-				}
+				initPPLPrimitives();
 				dispatch_semaphore_signal(sema);
 			}
 		}
@@ -60,9 +56,8 @@ void sendPrimitives(void)
 		NSString *identifier = message[@"id"];
 		if (identifier) {
 			if ([identifier isEqualToString:@"getPPLRW"]) {
-				uint64_t magicPage = 0;
-				int ret = handoffPPLPrimitives(1, &magicPage);
-				[gHandler sendMessage:@{@"id" : @"receivePPLRW", @"magicPage" : @(magicPage), @"errorCode" : @(ret), @"boomerangPid" : @(getpid())}];
+				int ret = handoffPPLPrimitives(1);
+				[gHandler sendMessage:@{@"id" : @"receivePPLRW", @"errorCode" : @(ret), @"boomerangPid" : @(getpid())}];
 			}
 			else if ([identifier isEqualToString:@"signThreadState"]) {
 				uint64_t actContextKptr = [(NSNumber*)message[@"actContext"] unsignedLongLongValue];
