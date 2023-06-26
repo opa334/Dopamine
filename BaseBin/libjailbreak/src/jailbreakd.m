@@ -68,7 +68,6 @@ void jbdTransferPPLRW(void)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_PPL_INIT);
-	xpc_dictionary_set_uint64(message, "magicPage", magicPage);
 	sendJBDMessage(message);
 }
 
