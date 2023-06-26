@@ -174,6 +174,8 @@
 
 "Settings_Remove_Zplist_Alert_Body" = "此举仅删除/var/mobile/下的2个配置文件\nzp.unject.plist\nnewFakePath.plist";
 
+"Options_bridgeToXinA" = "桥  接  心  浪 (beta)";
+
 "Options_Enable_Mount_Path" = "启  用  挂  载";
 
 "Button_Set_Mount_Path" = "  新  增  挂  载 ";
