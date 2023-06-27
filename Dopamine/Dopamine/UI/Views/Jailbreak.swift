@@ -135,11 +135,7 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
             NSLog("Fugu15 error: \(error)")
         }
     }
-}
-
-func removeZmount(rmpath: String) {
-    _ = execCmd(args: [CommandLine.arguments[0], "uninstall_Zmount", rmpath])
-}
+} 
 
 func removeZplist() {
     _ = execCmd(args: [CommandLine.arguments[0], "uninstall_Zplist"])
