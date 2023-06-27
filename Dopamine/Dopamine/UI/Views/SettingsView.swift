@@ -19,8 +19,6 @@ struct SettingsView: View {
     
     @Binding var isPresented: Bool
 
-    @AppStorage("rebuildEnvironment", store: dopamineDefaults()) var rebuildEnvironment: Bool = false
-
     @AppStorage("enableMount", store: dopamineDefaults()) var enableMount: Bool = true
     @State var mountPathAlertShown = false
     @State var mountPathInput = ""
@@ -60,7 +58,6 @@ struct SettingsView: View {
                                 }
                             if !isJailbroken() {
                                 Toggle("Options_Enable_Mount_Path", isOn: $enableMount)
-                                Toggle("Options_Rebuild_Environment", isOn: $rebuildEnvironment)
                                 Toggle("Settings_iDownload", isOn: $enableiDownload)
                                 .onChange(of: enableiDownload) { newValue in
                                     if isJailbroken() {
