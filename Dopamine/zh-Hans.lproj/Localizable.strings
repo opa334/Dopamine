@@ -130,7 +130,7 @@
 
 "Update_Status_Subtitle_Restart_Soon" = "设备即将重启用户空间...";
 
-"Alert_Button_Uninstall" = "清除越狱 ";
+"Alert_Button_Uninstall" = "清除越狱";
 
 "Alert_Tweak_Injection_Toggled_Body" = "为使变更生效需要重启用户空间，立即执行？";
 
@@ -152,9 +152,9 @@
 
 "Close" = "关闭";
 
-"Title_Mismatching_Environment_Version" = "越 狱 环 境 版 本 不 匹 配";
+"Title_Mismatching_Environment_Version" = "越狱环境版本不匹配";
 
-"Mismatching_Environment_Version_Update_Body" = "本机的越狱环境版本 (%@) 与 App 版本 (%@) 不匹配。 \n点按更新按钮将安装匹配 App 版本的越狱环境，并将随后执行一次「重 启 用 户 空 间」。";
+"Mismatching_Environment_Version_Update_Body" = "本机的越狱环境版本 (%@) 与 App 版本 (%@) 不匹配。 \n点按更新按钮将安装匹配 App 版本的越狱环境，并将随后执行一次「重启用户空间」。";
 
 "Options_Tweak_Injection" = "插件注入";
 
@@ -166,22 +166,8 @@
 
 "Options_No_Update" = "屏蔽更新";
 
-"Button_Remove_Zplist" = "  清除配置";
+"Button_Remove_Zplist" = "  清除屏蔽";
 
 "Settings_Remove_Zplist_Alert_Title" = "删除屏蔽注入的配置文件";
 
-"Settings_Remove_Zplist_Alert_Body" = "此举仅删除/var/mobile/下的2个配置文件\nzp.unject.plist\nnewFakePath.plist";
-
-"Options_Enable_Mount_Path" = "启用挂载";
-
-"Button_Set_Mount_Path" = "  新增挂载";
-
-"Set_Mount_Path_Alert_Shown_Title" = "请输入要新增的挂载目录(原始路径)";
-
-"Set_Mount_Path_Message" = "挂载后在\"/var/jb/原始路径\"里面替换内容";
-
-"Button_Remove_Zmount" = "  解除挂载";
-
-"Remove_Zmount_Alert_Shown_Title" = "请输入要解除的挂载目录(原始路径)";
-
-"Remove_Zmount_Message" = "此举会删除系统挂载的文件\n\n如果在越狱状态,请立即重启用户空间";
+"Settings_Remove_Zplist_Alert_Body" = "此举仅删除/var/mobile/下的配置文件\nzp.unject.plist";
