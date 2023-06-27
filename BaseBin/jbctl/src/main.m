@@ -67,9 +67,6 @@ int main(int argc, char* argv[])
 			(char *const[]){
 				(char *const)prebootPath(@"usr/bin/launchctl").fileSystemRepresentation, "reboot", "userspace", NULL
 			}, environ);
-        } else if (!strcmp(cmd, "mountPath")) {
-		if (argc != 3) return 1;
-		jbdMountPath([NSString stringWithUTF8String:argv[2]], true);
 	}
 
 	return 0;
