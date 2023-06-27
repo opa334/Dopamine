@@ -309,7 +309,7 @@ struct JailbreakView: View {
                 if requiresEnvironmentUpdate {
                     showingUpdatePopupType = .environment
                 } else {
-                    if (dopamineDefaults().bool(forKey: "rebuildEnvironment") || ((dopamineDefaults().array(forKey: "selectedPackageManagers") as? [String] ?? []).isEmpty && !isBootstrapped())) {
+                    if (dopamineDefaults().array(forKey: "selectedPackageManagers") as? [String] ?? []).isEmpty && !isBootstrapped() {
                         jailbreakingProgress = .selectingPackageManager
                     } else {
                         uiJailbreak()
