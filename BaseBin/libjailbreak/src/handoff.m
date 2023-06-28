@@ -97,7 +97,7 @@ int handoffPPLPrimitives(pid_t pid)
 					// Map the entire kernel physical address space into the userland process 1:1
 					uint64_t physBase = kread64(bootInfo_getSlidUInt64(@"gPhysBase"));
 					uint64_t physSize = kread64(bootInfo_getSlidUInt64(@"gPhysSize"));
-					ret = pmap_map_in(pmap, physBase, physBase, physSize);
+					ret = pmap_map_in(pmap, physBase+USER_MAPPING_OFFSET, physBase, physSize);
 				}
 				else { ret = -5; }
 			}
