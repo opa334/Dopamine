@@ -72,7 +72,7 @@ void tcPagesChanged(void)
 {
 	if (!_kaddr) return NO;
 	if (_mapRefCount == 0) {
-		_mappedInPage = (trustcache_page *)kaddr_to_uaddr(_kaddr, NULL);
+		_mappedInPage = (trustcache_page *)kaddr_to_pa(_kaddr, NULL);
 	};
 	_mapRefCount++;
 	return YES;
