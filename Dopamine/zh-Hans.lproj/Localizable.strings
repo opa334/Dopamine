@@ -62,7 +62,7 @@
 
 "Initializing System Hook" = "初始化系统补丁";
 
-"Jailbreak_Done" = "越狱成功 ！";
+"Jailbreak_Done" = "越狱成功";
 
 "Launching kexploitd" = "利用内核漏洞";
 
@@ -165,9 +165,3 @@
 "Menu_Reboot_Title" = "重启";
 
 "Options_No_Update" = "屏蔽更新";
-
-"Button_Remove_Zplist" = "  清除屏蔽";
-
-"Settings_Remove_Zplist_Alert_Title" = "删除屏蔽注入的配置文件";
-
-"Settings_Remove_Zplist_Alert_Body" = "此举仅删除/var/mobile/下的配置文件\nzp.unject.plist";
