@@ -293,7 +293,7 @@ struct JailbreakView: View {
             }
         }
         .padding()
-        .background(MaterialView(.systemUltraThinMaterialDark) .opacity(0.15))
+        .background(MaterialView(.systemUltraThinMaterialDark))
         .cornerRadius(16)
         .frame(maxWidth: 320, maxHeight: isJailbreaking ? 0 : nil)
         .opacity(isJailbreaking ? 0 : 1)
@@ -387,7 +387,7 @@ struct JailbreakView: View {
             .cornerRadius(isJailbreaking ? 20 : 8)
             .ignoresSafeArea(.all, edges: isJailbreaking ? .all : .top)
             .offset(y: isJailbreaking ? 16 : 0)
-            .opacity((isJailbroken() && !requiresEnvironmentUpdate) ? 0.5 : 1) .opacity(0.3)
+            .opacity((isJailbroken() && !requiresEnvironmentUpdate) ? 0.5 : 1)
         )
         .animation(.spring(), value: isJailbreaking)
     }
