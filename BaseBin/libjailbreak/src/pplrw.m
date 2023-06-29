@@ -81,28 +81,16 @@ uint64_t va_to_pa(uint64_t table, uint64_t virt, bool *err)
 	}
 }
 
-void *pa_to_uaddr(uint64_t pa)
+uint64_t kaddr_to_pa(uint64_t virt, bool *err)
 {
-	return (void *)(pa + USER_MAPPING_OFFSET);	
-}
-
-uint64_t kaddr_to_pa(uint64_t va, bool *err)
-{
-	return va_to_pa(gCpuTTEP, va, err);
-}
-
-void *kaddr_to_uaddr(uint64_t va, bool *err)
-{
-	uint64_t pa = kaddr_to_pa(va, err);
-	if (!pa) return 0;
-	return pa_to_uaddr(pa);
+	return va_to_pa(gCpuTTEP, virt, err);
 }
 
 // PPL primitives
 
 // Physical read / write
 
-int physreadbuf(uint64_t pa, void* output, size_t size)
+int physreadbuf(uint64_t physaddr, void* output, size_t size)
 {
 	if(gPPLRWStatus == kPPLRWStatusNotInitialized) {
 		bzero(output, size);
@@ -110,17 +98,17 @@ int physreadbuf(uint64_t pa, void* output, size_t size)
 	}
 
 	asm volatile("dmb sy");
-	memcpy(output, pa_to_uaddr(pa), size);
+	memcpy(output, (void *)physaddr, size);
 	return 0;
 }
 
-int physwritebuf(uint64_t pa, const void* input, size_t size)
+int physwritebuf(uint64_t physaddr, const void* input, size_t size)
 {
 	if(gPPLRWStatus == kPPLRWStatusNotInitialized) {
 		return -1;
 	}
 
-	memcpy(pa_to_uaddr(pa), input, size);
+	memcpy((void *)physaddr, input, size);
 	asm volatile("dmb sy");
 	return 0;
 }
@@ -154,7 +142,7 @@ int kreadbuf(uint64_t kaddr, void* output, size_t size)
 			return -1;
 		}
 
-		uint8_t *pageAddress = pa_to_uaddr(pa);
+		uint8_t *pageAddress = (uint8_t *)pa;
 		memcpy(&data[size - sizeLeft], &pageAddress[pageOffset], readSize);
 
 		va += readSize;
@@ -189,7 +177,7 @@ int kwritebuf(uint64_t kaddr, const void* input, size_t size)
 			return -1;
 		}
 
-		uint8_t *pageAddress = pa_to_uaddr(pa);
+		uint8_t *pageAddress = (uint8_t *)pa;
 		memcpy(&pageAddress[pageOffset], &data[size - sizeLeft], writeSize);
 
 		va += writeSize;
