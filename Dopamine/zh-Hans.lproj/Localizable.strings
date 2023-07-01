@@ -8,7 +8,7 @@
 
 "Button_Jailbreak_Title" = "越狱";
 
-"Button_Remove_Jailbreak" = "清除越狱 ";
+"Button_Remove_Jailbreak" = "清除越狱";
 
 "Button_Set_Mobile_Password" = "  设置密码";
 
@@ -164,4 +164,4 @@
 
 "Menu_Reboot_Title" = "重启";
 
-"Options_No_Update" = "屏蔽更新";
+"Check_For_Updates" = "检查更新";
