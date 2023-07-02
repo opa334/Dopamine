@@ -12,6 +12,7 @@
 #import "xpc_hook.h"
 #import "daemon_hook.h"
 #import "ipc_hook.h"
+#import "crashreporter.h"
 #import "../systemhook/src/common.h"
 
 int gLaunchdImageIndex = -1;
@@ -41,6 +42,7 @@ __attribute__((constructor)) static void initializer(void)
 	FILE *launchdLog = fopen("/var/mobile/launchd.log", "a");
 	fprintf(launchdLog, "Hello from launchd\n"); fflush(launchdLog);
 
+	crashreporter_start();
 	bool comingFromUserspaceReboot = bootInfo_getUInt64(@"environmentInitialized");
 	if (comingFromUserspaceReboot) {
 

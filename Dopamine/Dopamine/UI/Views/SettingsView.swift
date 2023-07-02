@@ -10,8 +10,8 @@ import Fugu15KernelExploit
 
 struct SettingsView: View {
     
-    @AppStorage("totalJailbreaks", store: dopamineDefaults()) var totalJailbreaks: Int = 0
-    @AppStorage("successfulJailbreaks", store: dopamineDefaults()) var successfulJailbreaks: Int = 0
+    @AppStorage("total_jailbreaks", store: dopamineDefaults()) var totalJailbreaks: Int = 0
+    @AppStorage("successful_jailbreaks", store: dopamineDefaults()) var successfulJailbreaks: Int = 0
     
     @AppStorage("verboseLogsEnabled", store: dopamineDefaults()) var verboseLogs: Bool = false
     @AppStorage("tweakInjectionEnabled", store: dopamineDefaults()) var tweakInjection: Bool = true
