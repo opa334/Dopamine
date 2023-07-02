@@ -309,27 +309,30 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 					}
 
 					case JBD_MSG_JBUPDATE: {
-						int64_t result = 0;
-						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
-							const char *basebinPath = xpc_dictionary_get_string(message, "basebinPath");
-							const char *tipaPath = xpc_dictionary_get_string(message, "tipaPath");
-							bool rebootWhenDone = xpc_dictionary_get_bool(message, "rebootWhenDone");
+						dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+							int64_t result = 0;
+							if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+								const char *basebinPath = xpc_dictionary_get_string(message, "basebinPath");
+								const char *tipaPath = xpc_dictionary_get_string(message, "tipaPath");
+								bool rebootWhenDone = xpc_dictionary_get_bool(message, "rebootWhenDone");
 
-							if (basebinPath) {
-								result = basebinUpdateFromTar([NSString stringWithUTF8String:basebinPath], rebootWhenDone);
-							}
-							else if (tipaPath) {
-								result = jbUpdateFromTIPA([NSString stringWithUTF8String:tipaPath], rebootWhenDone);
+								if (basebinPath) {
+									result = basebinUpdateFromTar([NSString stringWithUTF8String:basebinPath], rebootWhenDone);
+								}
+								else if (tipaPath) {
+									result = jbUpdateFromTIPA([NSString stringWithUTF8String:tipaPath], rebootWhenDone);
+								}
+								else {
+									result = 101;
+								}
 							}
 							else {
-								result = 101;
+								result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
 							}
-						}
-						else {
-							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
-						}
-						xpc_dictionary_set_int64(reply, "result", result);
-						break;
+							xpc_dictionary_set_int64(reply, "result", result);
+							xpc_pipe_routine_reply(reply);
+						});
+						return;
 					}
 
 
