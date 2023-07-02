@@ -70,6 +70,7 @@
 		21BFE80B29F4447E00F0ABCD /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Localizable.strings; sourceTree = "<group>"; };
 		21C376B329F43EA0001ECD18 /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/Localizable.strings; sourceTree = "<group>"; };
 		21DCC6D929FC521100B54B63 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Localizable.strings; sourceTree = "<group>"; };
+		31F906F02A3CD449007ED31E /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8C10C47029FDDE3B00930377 /* LICENSE_Fugu15.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = LICENSE_Fugu15.md; path = ../../../LICENSE_Fugu15.md; sourceTree = "<group>"; };
 		8C10C47129FDDE3B00930377 /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = LICENSE.md; path = ../../../LICENSE.md; sourceTree = "<group>"; };
 		8C19A9AC29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bootstrap-iphoneos-arm64.tar.zst"; sourceTree = "<group>"; };
@@ -334,6 +335,7 @@
 				el,
 				da,
 				zh_CN,
+				it,
 			);
 			mainGroup = 1502A3FF2891B03F0011CB6E;
 			packageReferences = (
@@ -425,6 +427,7 @@
 				21BFE80B29F4447E00F0ABCD /* el */,
 				21DCC6D929FC521100B54B63 /* da */,
 				0C1F280A2A029FB10053DDD6 /* zh_CN */,
+				31F906F02A3CD449007ED31E /* it */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
