@@ -434,7 +434,9 @@ struct JailbreakView: View {
     func uiJailbreak() {
         jailbreakingProgress = .jailbreaking
         let dpDefaults = dopamineDefaults()
-        dpDefaults.set(dpDefaults.integer(forKey: "totalJailbreaks") + 1, forKey: "totalJailbreaks")
+        dpDefaults.set(dpDefaults.integer(forKey: "total_jailbreaks") + 1, forKey: "total_jailbreaks")
+        dpDefaults.synchronize()
+        
         DispatchQueue(label: "Dopamine").async {
             sleep(1)
             
@@ -443,7 +445,8 @@ struct JailbreakView: View {
                 jailbreakingError = e
                 
                 if e == nil {
-                    dpDefaults.set(dpDefaults.integer(forKey: "successfulJailbreaks") + 1, forKey: "successfulJailbreaks")
+                    dpDefaults.set(dpDefaults.integer(forKey: "successful_jailbreaks") + 1, forKey: "successful_jailbreaks")
+                    dpDefaults.synchronize()
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                     let tweakInjectionEnabled = dpDefaults.bool(forKey: "tweakInjectionEnabled")
                     
