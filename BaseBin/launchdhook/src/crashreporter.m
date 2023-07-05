@@ -23,8 +23,7 @@
 		EXC_MASK_ARITHMETIC |				  \
 		EXC_MASK_EMULATION |				  \
 		EXC_MASK_SOFTWARE |					  \
-		EXC_MASK_BREAKPOINT |				  \
-		EXC_MASK_CRASH)
+		EXC_MASK_BREAKPOINT)
 
 __attribute__((noinline))
 static void pthread_backtrace(pthread_t pthread, vm_address_t *buffer, unsigned max, unsigned *nb,
