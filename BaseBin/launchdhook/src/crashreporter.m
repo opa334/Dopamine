@@ -58,6 +58,7 @@ static void pthread_backtrace(pthread_t pthread, vm_address_t *buffer, unsigned 
 
 mach_port_t gExceptionPort = MACH_PORT_NULL;
 dispatch_queue_t gExceptionQueue = NULL;
+pthread_t gExceptionThread = 0;
 
 const char *crashreporter_string_for_code(int code)
 {
@@ -204,31 +205,31 @@ void crashreporter_catch(exception_raise_request *request, exception_raise_reply
 	}
 }
 
+void *crashreporter_listen(void *arg)
+{
+	while (true) {
+		mach_msg_header_t msg;
+		msg.msgh_local_port = gExceptionPort;
+		msg.msgh_size = 1024;
+		mach_msg_receive(&msg);
+
+		exception_raise_reply reply;
+		crashreporter_catch((exception_raise_request *)&msg, &reply);
+
+		reply.header.msgh_bits = MACH_MSGH_BITS(MACH_MSGH_BITS_REMOTE(msg.msgh_bits), 0);
+		reply.header.msgh_size = sizeof(exception_raise_reply);
+		reply.header.msgh_remote_port = msg.msgh_remote_port;
+		reply.header.msgh_local_port = MACH_PORT_NULL;
+		reply.header.msgh_id = msg.msgh_id + 0x64;
+
+		mach_msg(&reply.header, MACH_SEND_MSG | MACH_MSG_OPTION_NONE, reply.header.msgh_size, 0, MACH_PORT_NULL, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
+	}
+}
+
 void crashreporter_start(void)
 {
-	gExceptionQueue = dispatch_queue_create("com.opa334.crashreporter", DISPATCH_QUEUE_SERIAL);
-
 	mach_port_allocate(mach_task_self_, MACH_PORT_RIGHT_RECEIVE, &gExceptionPort);
 	mach_port_insert_right(mach_task_self_, gExceptionPort, gExceptionPort, MACH_MSG_TYPE_MAKE_SEND);
-	task_set_exception_ports(mach_task_self_, EXC_MASK_ALL, gExceptionPort, EXCEPTION_DEFAULT, ARM_THREAD_STATE64);
-
-	dispatch_async(gExceptionQueue, ^{
-		while (true) {
-			mach_msg_header_t msg;
-			msg.msgh_local_port = gExceptionPort;
-			msg.msgh_size = 1024;
-			mach_msg_receive(&msg);
-
-			exception_raise_reply reply;
-			crashreporter_catch((exception_raise_request *)&msg, &reply);
-
-			reply.header.msgh_bits = MACH_MSGH_BITS(MACH_MSGH_BITS_REMOTE(msg.msgh_bits), 0);
-			reply.header.msgh_size = sizeof(exception_raise_reply);
-            reply.header.msgh_remote_port = msg.msgh_remote_port;
-            reply.header.msgh_local_port = MACH_PORT_NULL;
-            reply.header.msgh_id = msg.msgh_id + 0x64;
-
-			mach_msg(&reply.header, MACH_SEND_MSG | MACH_MSG_OPTION_NONE, reply.header.msgh_size, 0, MACH_PORT_NULL, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
-		}
-	});
+	task_set_exception_ports(mach_task_self_, EXC_MASK_BAD_ACCESS | EXC_MASK_BAD_INSTRUCTION, gExceptionPort, EXCEPTION_DEFAULT, ARM_THREAD_STATE64);
+	pthread_create(&gExceptionThread, NULL, crashreporter_listen, "crashreporter");
 }
