@@ -375,12 +375,16 @@ kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 		return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
 	}
 
-	// Don't do anything for xpcproxy if it's called on jailbreakd because this also implies jbd is not running currently
 	if (!strcmp(path, "/usr/libexec/xpcproxy")) {
 		if (argv) {
 			if (argv[0]) {
 				if (argv[1]) {
 					if (!strcmp(argv[1], "com.opa334.jailbreakd")) {
+						// Don't do anything for xpcproxy if it's called on jailbreakd because this also implies jbd is not running currently
+						return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
+					}
+					else if (!strcmp(argv[1], "com.apple.ReportCrash")) {
+						// Skip ReportCrash too as it might need to execute while jailbreakd is in a crashed state
 						return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
 					}
 				}
