@@ -7,12 +7,40 @@
 #define PERM_KRW_URW 0x7 // R/W for kernel and user
 #define FAKE_PHYSPAGE_TO_MAP 0x13370000
 
+uint64_t pmap_alloc_page_for_kern(unsigned int options)
+{
+	return kcall(bootInfo_getSlidUInt64(@"pmap_alloc_page_for_kern"), 1, (const uint64_t[]){ options });
+}
+
+void pmap_mark_page_as_ppl_page(uint64_t pa)
+{
+	kcall(bootInfo_getSlidUInt64(@"pmap_mark_page_as_ppl_page"), 1, (const uint64_t[]){ pa });
+}
+
+void pmap_alloc_page_for_ppl(unsigned int options)
+{
+	//thread_t self = current_thread();
+
+	//uint16_t thread_options = self->options;
+	//self->options |= TH_OPT_VMPRIV;
+	uint64_t pa = pmap_alloc_page_for_kern(options);
+	//self->options = thread_options;
+
+	if (pa != 0) {
+		pmap_mark_page_as_ppl_page(pa);
+	}
+}
+
 kern_return_t pmap_enter_options_addr(uint64_t pmap, uint64_t pa, uint64_t va) {
     while (1) {
-        kern_return_t kr = (kern_return_t) kcall8(bootInfo_getSlidUInt64(@"pmap_enter_options_addr"), pmap, va, pa, VM_PROT_READ | VM_PROT_WRITE, 0, 0, 1, 1);
+        kern_return_t kr = (kern_return_t)kcall8(bootInfo_getSlidUInt64(@"pmap_enter_options_addr"), pmap, va, pa, VM_PROT_READ | VM_PROT_WRITE, 0, 0, 1, 1);
         if (kr != KERN_RESOURCE_SHORTAGE) {
             return kr;
         }
+		else {
+			// On resource shortage, alloc new page
+			pmap_alloc_page_for_ppl(0);
+		}
     }
 }
 
