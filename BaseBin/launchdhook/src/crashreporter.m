@@ -18,6 +18,13 @@
 #define	ISALIGNED(a)	((((uintptr_t)(a)) & 0x1) == 0)
 #endif
 
+#define EXC_MASK_CRASH (EXC_MASK_BAD_ACCESS | \
+		EXC_MASK_BAD_INSTRUCTION |			  \
+		EXC_MASK_ARITHMETIC |				  \
+		EXC_MASK_EMULATION |				  \
+		EXC_MASK_SOFTWARE |					  \
+		EXC_MASK_BREAKPOINT)
+
 __attribute__((noinline))
 static void pthread_backtrace(pthread_t pthread, vm_address_t *buffer, unsigned max, unsigned *nb,
 		unsigned skip, void *startfp)
@@ -230,6 +237,6 @@ void crashreporter_start(void)
 {
 	mach_port_allocate(mach_task_self_, MACH_PORT_RIGHT_RECEIVE, &gExceptionPort);
 	mach_port_insert_right(mach_task_self_, gExceptionPort, gExceptionPort, MACH_MSG_TYPE_MAKE_SEND);
-	task_set_exception_ports(mach_task_self_, EXC_MASK_BAD_ACCESS | EXC_MASK_BAD_INSTRUCTION, gExceptionPort, EXCEPTION_DEFAULT, ARM_THREAD_STATE64);
+	task_set_exception_ports(mach_task_self_, EXC_MASK_CRASH, gExceptionPort, EXCEPTION_DEFAULT, ARM_THREAD_STATE64);
 	pthread_create(&gExceptionThread, NULL, crashreporter_listen, "crashreporter");
 }
