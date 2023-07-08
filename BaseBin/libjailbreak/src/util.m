@@ -531,10 +531,10 @@ vm_map_flags vm_map_get_flags(uint64_t vm_map_ptr)
 {
 	uint32_t flags_offset = 0;
 	if (@available(iOS 15.2, *)) {
-		flags_offset = 0x11C;
+		flags_offset = 0x94;
 	}
 	else {
-		flags_offset = 0x94;
+		flags_offset = 0x11C;
 	}
 	vm_map_flags flags;
 	kreadbuf(vm_map_ptr + flags_offset, &flags, sizeof(flags));
@@ -545,10 +545,10 @@ void vm_map_set_flags(uint64_t vm_map_ptr, vm_map_flags new_flags)
 {
 	uint32_t flags_offset = 0;
 	if (@available(iOS 15.2, *)) {
-		flags_offset = 0x11C;
+		flags_offset = 0x94;
 	}
 	else {
-		flags_offset = 0x94;
+		flags_offset = 0x11C;
 	}
 	kwritebuf(vm_map_ptr + flags_offset, &new_flags, sizeof(new_flags));
 }
