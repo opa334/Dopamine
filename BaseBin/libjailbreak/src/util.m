@@ -530,7 +530,7 @@ uint64_t vm_map_find_entry(uint64_t vm_map_ptr, uint64_t address)
 vm_map_flags vm_map_get_flags(uint64_t vm_map_ptr)
 {
 	uint32_t flags_offset = 0;
-	if (@available(iOS 15.2, *)) {
+	if (@available(iOS 15.4, *)) {
 		flags_offset = 0x94;
 	}
 	else {
@@ -544,7 +544,7 @@ vm_map_flags vm_map_get_flags(uint64_t vm_map_ptr)
 void vm_map_set_flags(uint64_t vm_map_ptr, vm_map_flags new_flags)
 {
 	uint32_t flags_offset = 0;
-	if (@available(iOS 15.2, *)) {
+	if (@available(iOS 15.4, *)) {
 		flags_offset = 0x94;
 	}
 	else {
