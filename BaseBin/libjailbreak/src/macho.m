@@ -211,7 +211,7 @@ void _machoEnumerateDependencies(FILE *machoFile, uint32_t archOffset, NSString 
 						if (nextFileIsMacho) {
 							int64_t nextBestArchCandidate = machoFindBestArch(nextFile);
 							if (nextBestArchCandidate >= 0) {
-								_machoEnumerateDependencies(nextFile, nextBestArchCandidate, imagePath, sourceExecutablePath, enumeratedCache, enumerateBlock);
+								_machoEnumerateDependencies(nextFile, nextBestArchCandidate, resolvedPath, sourceExecutablePath, enumeratedCache, enumerateBlock);
 							}
 							else {
 								JBLogError("[_machoEnumerateDependencies] Failed to find best arch of dependency %s", resolvedPath.UTF8String);
