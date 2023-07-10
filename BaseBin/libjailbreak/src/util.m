@@ -453,6 +453,31 @@ void task_set_memory_ownership_transfer(uint64_t task_ptr, uint8_t enabled)
 	kwrite8(task_ptr + offset, enabled);
 }
 
+uint64_t task_get_mach_port_kaddr(uint64_t task_ptr, mach_port_t port)
+{
+	uint64_t itk_space = kread_ptr(task_ptr + bootInfo_getUInt64(@"ITK_SPACE"));
+	uint64_t is_table = kread_ptr(itk_space + 0x20);
+	uint32_t port_index = port >> 8;
+	return kread_ptr(is_table + (0x18 * port_index));
+}
+
+uint64_t task_get_mach_port_kobj(uint64_t task_ptr, mach_port_t port)
+{
+	return kread_ptr(task_get_mach_port_kaddr(task_ptr, port) + bootInfo_getUInt64(@"PORT_KOBJECT"));
+}
+
+uint64_t task_get_thread(uint64_t task_ptr, thread_act_t thread)
+{
+	return task_get_mach_port_kobj(task_ptr, thread);
+}
+
+uint64_t self_thread(void)
+{
+	//Todo: maybe cache in thread specific variable
+	mach_port_t tid = pthread_mach_thread_np(pthread_self());
+	return task_get_thread(self_task(), tid);
+}
+
 uint64_t self_task(void)
 {
 	static uint64_t gSelfTask = 0;

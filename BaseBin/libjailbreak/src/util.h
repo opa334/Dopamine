@@ -72,7 +72,7 @@ int ucred_set_svgid(uint64_t ucred_ptr, uint32_t svgid);
 uint64_t ucred_get_cr_label(uint64_t ucred_ptr);
 
 uint64_t task_get_first_thread(uint64_t task_ptr);
-uint64_t task_get_thread(uint64_t task_ptr, thread_act_t thread);
+//uint64_t task_get_thread(uint64_t task_ptr, thread_act_t thread);
 uint64_t self_thread(void);
 uint64_t thread_get_id(uint64_t thread_ptr);
 uint64_t thread_get_act_context(uint64_t thread_ptr);
