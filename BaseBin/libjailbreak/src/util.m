@@ -10,6 +10,7 @@
 #import <IOKit/IOKitLib.h>
 #import <sys/sysctl.h>
 #include <sys/utsname.h>
+#import <pthread.h>
 
 #define P_SUGID 0x00000100
 
@@ -165,7 +166,7 @@ void proc_iterate(void (^itBlock)(uint64_t, BOOL*))
 	{
 		BOOL stop = NO;
 		itBlock(proc, &stop);
-		if(stop == 1) return;
+		if(stop == 1) break;
 	}
 }
 
