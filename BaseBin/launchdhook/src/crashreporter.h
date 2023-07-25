@@ -1,3 +1,5 @@
+#import <mach/mach.h>
+
 typedef int                             exception_type_t;
 typedef integer_t                       exception_data_type_t;
 
@@ -29,4 +31,12 @@ typedef struct {
     natural_t new_state[614];
 } exception_raise_state_reply;
 
+typedef enum {
+	kCrashReporterStateNotActive = 0,
+	kCrashReporterStateActive = 1,
+	kCrashReporterStatePaused = 2
+} crash_reporter_state;
+
 void crashreporter_start(void);
+void crashreporter_pause(void);
+void crashreporter_resume(void);

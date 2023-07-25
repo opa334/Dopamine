@@ -63,6 +63,7 @@ static void pthread_backtrace(pthread_t pthread, vm_address_t *buffer, unsigned 
 	}
 }
 
+static crash_reporter_state gCrashReporterState = kCrashReporterStateNotActive;
 mach_port_t gExceptionPort = MACH_PORT_NULL;
 dispatch_queue_t gExceptionQueue = NULL;
 pthread_t gExceptionThread = 0;
@@ -235,8 +236,27 @@ void *crashreporter_listen(void *arg)
 
 void crashreporter_start(void)
 {
-	mach_port_allocate(mach_task_self_, MACH_PORT_RIGHT_RECEIVE, &gExceptionPort);
-	mach_port_insert_right(mach_task_self_, gExceptionPort, gExceptionPort, MACH_MSG_TYPE_MAKE_SEND);
-	task_set_exception_ports(mach_task_self_, EXC_MASK_CRASH_RELATED, gExceptionPort, EXCEPTION_DEFAULT, ARM_THREAD_STATE64);
-	pthread_create(&gExceptionThread, NULL, crashreporter_listen, "crashreporter");
+	if (gCrashReporterState == kCrashReporterStateNotActive) {
+		mach_port_allocate(mach_task_self_, MACH_PORT_RIGHT_RECEIVE, &gExceptionPort);
+		mach_port_insert_right(mach_task_self_, gExceptionPort, gExceptionPort, MACH_MSG_TYPE_MAKE_SEND);
+		task_set_exception_ports(mach_task_self_, EXC_MASK_CRASH_RELATED, gExceptionPort, EXCEPTION_DEFAULT, ARM_THREAD_STATE64);
+		pthread_create(&gExceptionThread, NULL, crashreporter_listen, "crashreporter");
+		gCrashReporterState = kCrashReporterStateActive;
+	}
+}
+
+void crashreporter_pause(void)
+{
+	if (gCrashReporterState == kCrashReporterStateActive) {
+		task_set_exception_ports(mach_task_self_, EXC_MASK_CRASH_RELATED, 0, EXCEPTION_DEFAULT, ARM_THREAD_STATE64);
+		gCrashReporterState = kCrashReporterStatePaused;
+	}
+}
+
+void crashreporter_resume(void)
+{
+	if (gCrashReporterState == kCrashReporterStatePaused) {
+		task_set_exception_ports(mach_task_self_, EXC_MASK_CRASH_RELATED, gExceptionPort, EXCEPTION_DEFAULT, ARM_THREAD_STATE64);
+		gCrashReporterState = kCrashReporterStateActive;
+	}
 }

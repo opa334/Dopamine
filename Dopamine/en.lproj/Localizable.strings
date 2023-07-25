@@ -120,6 +120,8 @@
 
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
+"Unsupported" = "Unsupported";
+
 "Update_Log_Hint_Scrollable" = "Log view can be scrolled";
 
 "Update_Status_Downloading" = "Downloading update...";

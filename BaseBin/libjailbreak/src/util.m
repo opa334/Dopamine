@@ -8,6 +8,8 @@
 #import <libproc.h>
 #import <libproc_private.h>
 #import <IOKit/IOKitLib.h>
+#import <sys/sysctl.h>
+#include <sys/utsname.h>
 
 #define P_SUGID 0x00000100
 
@@ -433,12 +435,20 @@ uint64_t task_get_vm_map(uint64_t task_ptr)
 
 void task_set_memory_ownership_transfer(uint64_t task_ptr, uint8_t enabled)
 {
+	cpu_subtype_t cpuFamily = 0;
+    size_t cpuFamilySize = sizeof(cpuFamily);
+    sysctlbyname("hw.cpufamily", &cpuFamily, &cpuFamilySize, NULL, 0);
+	uint64_t A15_offset = 0x0;
+	if (cpuFamily == CPUFAMILY_ARM_BLIZZARD_AVALANCHE) {
+		A15_offset = 0x10;
+	}
+
 	uint32_t offset = 0x0;
 	if (@available(iOS 15.2, *)) {
-		offset = 0x580;
+		offset = 0x580 + A15_offset;
 	}
 	else {
-		offset = 0x5C0;
+		offset = 0x5B0 + A15_offset;
 	}
 	kwrite8(task_ptr + offset, enabled);
 }
@@ -520,11 +530,11 @@ uint64_t vm_map_find_entry(uint64_t vm_map_ptr, uint64_t address)
 vm_map_flags vm_map_get_flags(uint64_t vm_map_ptr)
 {
 	uint32_t flags_offset = 0;
-	if (@available(iOS 15.2, *)) {
-		flags_offset = 0x11C;
+	if (@available(iOS 15.4, *)) {
+		flags_offset = 0x94;
 	}
 	else {
-		flags_offset = 0x94;
+		flags_offset = 0x11C;
 	}
 	vm_map_flags flags;
 	kreadbuf(vm_map_ptr + flags_offset, &flags, sizeof(flags));
@@ -534,11 +544,11 @@ vm_map_flags vm_map_get_flags(uint64_t vm_map_ptr)
 void vm_map_set_flags(uint64_t vm_map_ptr, vm_map_flags new_flags)
 {
 	uint32_t flags_offset = 0;
-	if (@available(iOS 15.2, *)) {
-		flags_offset = 0x11C;
+	if (@available(iOS 15.4, *)) {
+		flags_offset = 0x94;
 	}
 	else {
-		flags_offset = 0x94;
+		flags_offset = 0x11C;
 	}
 	kwritebuf(vm_map_ptr + flags_offset, &new_flags, sizeof(new_flags));
 }
