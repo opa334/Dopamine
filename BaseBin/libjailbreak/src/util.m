@@ -592,9 +592,14 @@ void pmap_set_type(uint64_t pmap_ptr, uint8_t type)
 	kwrite8(pmap_ptr + 0xC8 + el2_adjust, type);
 }
 
+uint64_t pmap_get_ttep(uint64_t pmap_ptr)
+{
+	return kread64(pmap_ptr + 0x8);
+}
+
 uint64_t pmap_lv2(uint64_t pmap_ptr, uint64_t virt)
 {
-	uint64_t ttep = kread64(pmap_ptr + 0x8);
+	uint64_t ttep = pmap_get_ttep(pmap_ptr);
 	
 	uint64_t table1Off   = (virt >> 36ULL) & 0x7ULL;
 	uint64_t table1Entry = physread64(ttep + (8ULL * table1Off));

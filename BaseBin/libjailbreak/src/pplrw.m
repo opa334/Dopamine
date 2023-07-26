@@ -83,7 +83,7 @@ uint64_t va_to_pa(uint64_t table, uint64_t virt, bool *err)
 
 void *pa_to_uaddr(uint64_t pa)
 {
-	return (void *)(pa + USER_MAPPING_OFFSET);	
+	return (void *)(pa + PPLRW_USER_MAPPING_OFFSET);	
 }
 
 uint64_t kaddr_to_pa(uint64_t va, bool *err)

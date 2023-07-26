@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 
-#define USER_MAPPING_OFFSET 0x7000000000
+#define PPLRW_USER_MAPPING_OFFSET   0x7000000000
+#define PPLRW_USER_MAPPING_TTEP_IDX (PPLRW_USER_MAPPING_OFFSET / 0x1000000000)
 
 typedef enum {
 	kPPLRWStatusNotInitialized = 0,

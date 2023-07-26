@@ -6,9 +6,9 @@
 
 #define PERM_KRW_URW 0x7 // R/W for kernel and user
 #define FAKE_PHYSPAGE_TO_MAP 0x13370000
-#define L2_MAPPING_SIZE 0x2000000
-#define L2_MAPPING_PAGECOUNT (L2_MAPPING_SIZE / PAGE_SIZE)
-#define L2_MAPPING_MASK (L2_MAPPING_SIZE-1)
+#define L2_BLOCK_SIZE 0x2000000
+#define L2_BLOCK_PAGECOUNT (L2_BLOCK_SIZE / PAGE_SIZE)
+#define L2_BLOCK_MASK (L2_BLOCK_SIZE-1)
 
 uint64_t pmap_alloc_page_for_kern(unsigned int options)
 {
@@ -53,16 +53,16 @@ void pmap_remove(uint64_t pmap, uint64_t start, uint64_t end) {
 
 int pmap_map_in(uint64_t pmap, uint64_t ua, uint64_t pa, uint64_t size)
 {
-	uint64_t mappingUaddr = ua & ~L2_MAPPING_MASK;
-	uint64_t mappingPA = pa & ~L2_MAPPING_MASK;
+	uint64_t mappingUaddr = ua & ~L2_BLOCK_MASK;
+	uint64_t mappingPA = pa & ~L2_BLOCK_MASK;
 
 	uint64_t endPA = pa + size;
-	uint64_t mappingEndPA = endPA & ~L2_MAPPING_MASK;
+	uint64_t mappingEndPA = endPA & ~L2_BLOCK_MASK;
 
-	uint64_t mappingCount = ((mappingEndPA - mappingPA) / L2_MAPPING_SIZE) + 1;
+	uint64_t l2Count = ((mappingEndPA - mappingPA) / L2_BLOCK_SIZE) + 1;
 
-	for (uint64_t i = 0; i < mappingCount; i++) {
-		uint64_t curMappingUaddr = mappingUaddr + (i * L2_MAPPING_SIZE);
+	for (uint64_t i = 0; i < l2Count; i++) {
+		uint64_t curMappingUaddr = mappingUaddr + (i * L2_BLOCK_SIZE);
 		kern_return_t kr = pmap_enter_options_addr(pmap, FAKE_PHYSPAGE_TO_MAP, curMappingUaddr);
 		if (kr != KERN_SUCCESS) {
 			pmap_remove(pmap, mappingUaddr, curMappingUaddr);
@@ -73,13 +73,13 @@ int pmap_map_in(uint64_t pmap, uint64_t ua, uint64_t pa, uint64_t size)
 	// Temporarily change pmap type to nested
 	pmap_set_type(pmap, 3);
 	// Remove mapping (table will not be removed because we changed the pmap type)
-	pmap_remove(pmap, mappingUaddr, mappingUaddr + (mappingCount * L2_MAPPING_SIZE));
+	pmap_remove(pmap, mappingUaddr, mappingUaddr + (l2Count * L2_BLOCK_SIZE));
 	// Change type back
 	pmap_set_type(pmap, 0);
 
-	for (uint64_t i = 0; i < mappingCount; i++) {
-		uint64_t curMappingUaddr = mappingUaddr + (i * L2_MAPPING_SIZE);
-		uint64_t curMappingPA = mappingPA + (i * L2_MAPPING_SIZE);
+	for (uint64_t i = 0; i < l2Count; i++) {
+		uint64_t curMappingUaddr = mappingUaddr + (i * L2_BLOCK_SIZE);
+		uint64_t curMappingPA = mappingPA + (i * L2_BLOCK_SIZE);
 
 		// Create full table for this mapping
 		uint64_t tableToWrite[2048];
@@ -122,10 +122,18 @@ int handoffPPLPrimitives(pid_t pid)
 			if (vmMap) {
 				uint64_t pmap = vm_map_get_pmap(vmMap);
 				if (pmap) {
-					// Map the entire kernel physical address space into the userland process 1:1
-					uint64_t physBase = kread64(bootInfo_getSlidUInt64(@"gPhysBase"));
-					uint64_t physSize = kread64(bootInfo_getSlidUInt64(@"gPhysSize"));
-					ret = pmap_map_in(pmap, physBase+USER_MAPPING_OFFSET, physBase, physSize);
+					uint64_t existingLevel1Entry = kread64(pmap_get_ttep(pmap) + (8 * PPLRW_USER_MAPPING_TTEP_IDX));
+					// If there is an existing level 1 entry, we assume the process already has PPLRW primitives
+					// Normally there cannot be mappings above 0x3D6000000, so this assumption should always be true
+					// If we would try to handoff PPLRW twice, the second time would cause a panic because the mapping already exists
+					// So this check protects the device from kernel panics, by not adding the mapping if the process already has it
+					if (existingLevel1Entry == 0)
+					{
+						// Map the entire kernel physical address space into the userland process, starting at PPLRW_USER_MAPPING_OFFSET
+						uint64_t physBase = kread64(bootInfo_getSlidUInt64(@"gPhysBase"));
+						uint64_t physSize = kread64(bootInfo_getSlidUInt64(@"gPhysSize"));
+						ret = pmap_map_in(pmap, physBase+PPLRW_USER_MAPPING_OFFSET, physBase, physSize);
+					}
 				}
 				else { ret = -5; }
 			}
