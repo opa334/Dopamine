@@ -6,8 +6,6 @@
 #include <sys/stat.h>
 #include "sandbox.h"
 
-extern bool swh_is_debugged;
-
 int ptrace(int request, pid_t pid, caddr_t addr, int data);
 #define PT_ATTACH       10      /* trace some running process */
 #define PT_ATTACHEXC    14      /* attach to running process with signal exception */
@@ -319,6 +317,32 @@ int ptrace_hook(int request, pid_t pid, caddr_t addr, int data)
 	return retval;
 }
 
+void loadForkFix(void)
+{
+	if (swh_is_debugged) {
+		static dispatch_once_t onceToken;
+		dispatch_once (&onceToken, ^{
+			// Once this process has wx_allowed, we need to load forkfix to ensure forking will work
+			// Optimization: If the process cannot fork at all due to sandbox, we don't need to load forkfix
+			if (sandbox_check(getpid(), "process-fork", SANDBOX_CHECK_NO_REPORT, NULL) == 0) {
+				dlopen(JB_ROOT_PATH("/basebin/forkfix.dylib"), RTLD_NOW);
+			}
+		});
+	}
+}
+
+pid_t fork_hook(void)
+{
+	loadForkFix();
+	return fork();
+}
+
+pid_t vfork_hook(void)
+{
+	loadForkFix();
+	return vfork();
+}
+
 bool shouldEnableTweaks(void)
 {
 	if (access(JB_ROOT_PATH("/basebin/.safe_mode"), F_OK) == 0) {
@@ -426,3 +450,5 @@ DYLD_INTERPOSE(sandbox_init_hook, sandbox_init)
 DYLD_INTERPOSE(sandbox_init_with_parameters_hook, sandbox_init_with_parameters)
 DYLD_INTERPOSE(sandbox_init_with_extensions_hook, sandbox_init_with_extensions)
 DYLD_INTERPOSE(ptrace_hook, ptrace)
+DYLD_INTERPOSE(fork_hook, fork)
+DYLD_INTERPOSE(vfork_hook, vfork)

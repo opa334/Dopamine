@@ -63,14 +63,6 @@ bool stringEndsWith(const char* str, const char* suffix)
 	return !strcmp(str + str_len - suffix_len, suffix);
 }
 
-void loadForkFix(void)
-{
-	static dispatch_once_t onceToken;
-	dispatch_once (&onceToken, ^{
-		dlopen(JB_ROOT_PATH("/basebin/forkfix.dylib"), RTLD_NOW);
-	});
-}
-
 extern char **environ;
 kern_return_t bootstrap_look_up(mach_port_t port, const char *service, mach_port_t *server_port);
 
@@ -213,11 +205,6 @@ int64_t jbdswDebugMe(void)
 	}
 	if (result == 0) {
 		swh_is_debugged = true;
-		// Once this process has wx_allowed, we need to load forkfix to ensure forking will work
-		// Optimization: If the process cannot fork at all due to sandbox, we don't need to load forkfix
-		if (sandbox_check(getpid(), "process-fork", SANDBOX_CHECK_NO_REPORT, NULL) == 0) {
-			loadForkFix();
-		}
 	} 
 	return result;
 }
