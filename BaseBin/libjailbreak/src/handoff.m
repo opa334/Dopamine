@@ -35,20 +35,20 @@ void pmap_alloc_page_for_ppl(unsigned int options)
 }
 
 kern_return_t pmap_enter_options_addr(uint64_t pmap, uint64_t pa, uint64_t va) {
-    while (1) {
-        kern_return_t kr = (kern_return_t)kcall8(bootInfo_getSlidUInt64(@"pmap_enter_options_addr"), pmap, va, pa, VM_PROT_READ | VM_PROT_WRITE, 0, 0, 1, 1);
-        if (kr != KERN_RESOURCE_SHORTAGE) {
-            return kr;
-        }
+	while (1) {
+		kern_return_t kr = (kern_return_t)kcall8(bootInfo_getSlidUInt64(@"pmap_enter_options_addr"), pmap, va, pa, VM_PROT_READ | VM_PROT_WRITE, 0, 0, 1, 1);
+		if (kr != KERN_RESOURCE_SHORTAGE) {
+			return kr;
+		}
 		else {
 			// On resource shortage, alloc new page
 			pmap_alloc_page_for_ppl(0);
 		}
-    }
+	}
 }
 
 void pmap_remove(uint64_t pmap, uint64_t start, uint64_t end) {
-    kcall8(bootInfo_getSlidUInt64(@"pmap_remove_options"), pmap, start, end, 0x100, 0, 0, 0, 0);
+	kcall8(bootInfo_getSlidUInt64(@"pmap_remove_options"), pmap, start, end, 0x100, 0, 0, 0, 0);
 }
 
 int pmap_map_in(uint64_t pmap, uint64_t ua, uint64_t pa, uint64_t size)
