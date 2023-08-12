@@ -12,8 +12,9 @@ _ffsys_fork:
 	b.cs _ffsys_fork_err
 	cbz x1, _ffsys_fork_end
 	mov w0, #0
-	// normally _current_pid is set here
-	// I do it in C, because I couldn't figure out how to properly do it in ASM
+	adrp x9, __current_pid@GOTPAGE
+	ldr x9, [x9, __current_pid@GOTPAGEOFF]
+	str w0, [x9]
 	b _ffsys_fork_end
 
 _ffsys_fork_err:
