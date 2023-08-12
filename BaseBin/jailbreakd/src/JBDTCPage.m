@@ -8,8 +8,6 @@
 NSMutableArray<JBDTCPage *> *gTCPages = nil;
 NSMutableArray<NSNumber *> *gTCUnusedAllocations = nil;
 
-dispatch_queue_t gTCAccessQueue;
-
 extern void trustCacheListAdd(uint64_t trustCacheKaddr);
 extern void trustCacheListRemove(uint64_t trustCacheKaddr);
 extern int tcentryComparator(const void * vp1, const void * vp2);
@@ -48,9 +46,8 @@ void tcPagesChanged(void)
 {
 	self = [super init];
 	if (self) {
-		_mappedInPage = NULL;
-		_kaddr = kaddr;
-		_mapRefCount = 0;
+		_page = NULL;
+		self.kaddr = kaddr;
 	}
 	return self;
 }
@@ -59,69 +56,46 @@ void tcPagesChanged(void)
 {
 	self = [super init];
 	if (self) {
-		_mappedInPage = NULL;
-		_kaddr = 0;
-		_mapRefCount = 0;
+		_page = NULL;
+		self.kaddr = 0;
 		if (![self allocateInKernel]) return nil;
 		[self linkInKernel];
 	}
 	return self;
 }
 
-- (BOOL)mapIn
+- (void)setKaddr:(uint64_t)kaddr
 {
-	if (!_kaddr) return NO;
-	if (_mapRefCount == 0) {
-		_mappedInPage = (trustcache_page *)kaddr_to_uaddr(_kaddr, NULL);
-	};
-	_mapRefCount++;
-	return YES;
-}
-
-- (void)mapOut
-{
-	if (_mapRefCount == 0) {
-		JBLogError("attempted to map out a map with a ref count of 0");
-		abort();
-	}
-	_mapRefCount--;
-}
-
-- (void)ensureMappedInAndPerform:(void (^)(void))block
-{
-	[self mapIn];
-	const char *curLabel = dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL);
-	if (!strcmp(curLabel, "com.opa334.jailbreakd.tcAccessQueue")) {
-		block();
+	_kaddr = kaddr;
+	if (kaddr) {
+		_page = kvtouaddr(_kaddr);
 	}
 	else {
-		dispatch_sync(gTCAccessQueue, block);
+		_page = 0;
 	}
-	[self mapOut];
 }
 
 - (BOOL)allocateInKernel
 {
+	uint64_t kaddr;
 	if (gTCUnusedAllocations.count) {
-		_kaddr = [gTCUnusedAllocations.firstObject unsignedLongLongValue];
+		kaddr = [gTCUnusedAllocations.firstObject unsignedLongLongValue];
 		[gTCUnusedAllocations removeObjectAtIndex:0];
 		JBLogDebug("got existing trust cache page at 0x%llX", _kaddr);
 	}
 	else {
-		if (kalloc(&_kaddr, 0x4000) != 0) return NO;
+		if (kalloc(&kaddr, 0x4000) != 0) return NO;
 		JBLogDebug("allocated trust cache page at 0x%llX", _kaddr);
 	}
 
 	if (_kaddr == 0) return NO;
+	self.kaddr = kaddr;
 
-	[self ensureMappedInAndPerform:^{
-		_mappedInPage->nextPtr = 0;
-		_mappedInPage->selfPtr = _kaddr + 0x10;
-
-		_mappedInPage->file.version = 1;
-		uuid_generate(_mappedInPage->file.uuid);
-		_mappedInPage->file.length = 0;
-	}];
+	_page->nextPtr = 0;
+	_page->selfPtr = kaddr + 0x10;
+	_page->file.version = 1;
+	uuid_generate(_page->file.uuid);
+	_page->file.length = 0;
 
 	[gTCPages addObject:self];
 	tcPagesChanged();
@@ -152,126 +126,54 @@ void tcPagesChanged(void)
 
 - (void)unlinkAndFree
 {
-	dispatch_sync(gTCAccessQueue, ^{
-		[self unlinkInKernel];
-		[self freeInKernel];
-	});
+	[self unlinkInKernel];
+	[self freeInKernel];
 }
 
 - (void)sort
 {
-	[self ensureMappedInAndPerform:^{
-		uint32_t length = _mappedInPage->file.length;
-		qsort(_mappedInPage->file.entries, length, sizeof(trustcache_entry), tcentryComparator);
-	}];
+	qsort(_page->file.entries, _page->file.length, sizeof(trustcache_entry), tcentryComparator);
 }
 
 - (uint32_t)amountOfSlotsLeft
 {
-	__block uint32_t length = 0;
-	[self ensureMappedInAndPerform:^{
-		length = _mappedInPage->file.length;
-	}];
-	return TC_ENTRY_COUNT_PER_PAGE - length;
+	return TC_ENTRY_COUNT_PER_PAGE - _page->file.length;
 }
 
 // Put entry at end, the caller of this is supposed to be calling "sort" after it's done adding everything desired
 - (BOOL)addEntry:(trustcache_entry)entry
 {
-	__block BOOL success = YES;
+	uint32_t index = _page->file.length;
+	if (index >= TC_ENTRY_COUNT_PER_PAGE) {
+		return NO;
+	}
+	_page->file.entries[index] = entry;
+	_page->file.length++;
 
-	[self ensureMappedInAndPerform:^{
-		uint32_t index = _mappedInPage->file.length;
-		if (index >= TC_ENTRY_COUNT_PER_PAGE) {
-			success = NO;
-			return;
-		}
-		_mappedInPage->file.entries[index] = entry;
-		_mappedInPage->file.length++;
-	}];
-
-	return success;
+	return YES;
 }
 
-/*
-
-Feb 18 03:06:35 jailbreakd[313] <Notice>: left: 0, right: 367, mid: 183
-Feb 18 03:06:35 jailbreakd[313] <Notice>: left: 0, right: 182, mid: 91
-Feb 18 03:06:35 jailbreakd[313] <Notice>: left: 0, right: 90, mid: 45
-Feb 18 03:06:35 jailbreakd[313] <Notice>: left: 0, right: 44, mid: 22
-Feb 18 03:06:35 jailbreakd[313] <Notice>: left: 0, right: 21, mid: 10
-Feb 18 03:06:35 jailbreakd[313] <Notice>: left: 0, right: 9, mid: 4
-Feb 18 03:06:35 jailbreakd[313] <Notice>: left: 0, right: 3, mid: 1
-Feb 18 03:06:35 jailbreakd[313] <Notice>: left: 0, right: 0, mid: 0
-Feb 18 03:06:35 jailbreakd[313] <Notice>: left: 0, right: 4294967295, mid: 2147483647
-
-old code: (broken)
-
-trustcache_entry *entries = _mappedInPage->file.entries;
-uint32_t count = _mappedInPage->file.length;
-uint32_t left = 0;
-uint32_t right = count - 1;
-
-register uint32_t mid, cmp, i;
-while (left <= right) {
-	mid = (left + right) >> 1;
-	JBLogDebug("left: %u, right: %u, mid: %u", left, right, mid);
-	cmp = entries[mid].hash[0] - entry.hash[0];
-	
-	if (cmp == 0) {
-		// If the first byte of the hash matches, compare the remaining bytes
-		i = 1;
-		while (i < CS_CDHASH_LEN) {
-			cmp = entries[mid].hash[i] - entry.hash[i];
-			if (cmp) {
-				break;
-			}
-			i++;
-		}
-		
-		// If all bytes match, return the index
-		if (i == CS_CDHASH_LEN) {
-			index = mid;
-			return;
-		}
-	}
-	
-	if (cmp < 0) {
-		left = mid + 1;
-	} else {
-		right = mid - 1;
-	}
-}
-
-*/
-
-// This only works when the entries are sorted, so the caller needs to ensure they are
+// This method only works when the entries are sorted, so the caller needs to ensure they are
 - (int64_t)_indexOfEntry:(trustcache_entry)entry
 {
-	__block int64_t index = -1;
+	trustcache_entry *entries = _page->file.entries;
+	int32_t count = _page->file.length;
+	int32_t left = 0;
+	int32_t right = count - 1;
 
-	[self ensureMappedInAndPerform:^{
-		trustcache_entry *entries = _mappedInPage->file.entries;
-		int32_t count = _mappedInPage->file.length;
-		int32_t left = 0;
-		int32_t right = count - 1;
-
-		while (left <= right) {
-			int32_t mid = (left + right) / 2;
-			int32_t cmp = memcmp(entry.hash, entries[mid].hash, CS_CDHASH_LEN);
-			if (cmp == 0) {
-				index = mid;
-				return;
-			}
-			if (cmp < 0) {
-				right = mid - 1;
-			} else {
-				left = mid + 1;
-			}
+	while (left <= right) {
+		int32_t mid = (left + right) / 2;
+		int32_t cmp = memcmp(entry.hash, entries[mid].hash, CS_CDHASH_LEN);
+		if (cmp == 0) {
+			return mid;
 		}
-	}];
-
-	return index;
+		if (cmp < 0) {
+			right = mid - 1;
+		} else {
+			left = mid + 1;
+		}
+	}
+	return -1;
 }
 
 // The idea here is to move the entry to remove to the end and then decrement length by one
@@ -282,12 +184,9 @@ while (left <= right) {
 	if (entryIndexOrNot == -1) return NO; // Entry isn't in here, do nothing
 	uint32_t entryIndex = (uint32_t)entryIndexOrNot;
 
-	[self ensureMappedInAndPerform:^{
-		trustcache_entry* entryPtr = &_mappedInPage->file.entries[entryIndex];
-		memset(entryPtr->hash, 0xFF, CS_CDHASH_LEN);
-		[self sort];
-		_mappedInPage->file.length--;
-	}];
+	memset(_page->file.entries[entryIndex].hash, 0xFF, CS_CDHASH_LEN);
+	[self sort];
+	_page->file.length--;
 
 	return YES;
 }

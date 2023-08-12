@@ -23,9 +23,8 @@ public class iDownloadKRW: KRWHandler {
     }
     
     public func virtToPhys(address: UInt64) throws -> UInt64 {
-        var failure: Bool = false
-        let phys = va_to_pa(bootInfo_getUInt64("physical_ttep"), address, &failure)
-        if (failure) {
+        let phys = kvtophys(address);
+        if (phys == 0) {
             throw KRWError.customError(description: "Address translation failure")
         }
         return phys;

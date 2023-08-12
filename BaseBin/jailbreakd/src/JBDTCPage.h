@@ -9,25 +9,19 @@
 
 extern NSMutableArray<JBDTCPage *> *gTCPages;
 extern NSMutableArray<NSNumber *> *gTCUnusedAllocations;
-extern dispatch_queue_t gTCAccessQueue;
 BOOL tcPagesRecover(void);
 void tcPagesChanged(void);
 
 
 @interface JBDTCPage : NSObject
 {
-	trustcache_page* _mappedInPage;
-	void *_mappedInPageCtx;
-	uint32_t _mapRefCount;
+	trustcache_page* _page;
 }
 
-@property (nonatomic,readonly) uint64_t kaddr;
+@property (nonatomic) uint64_t kaddr;
 
 - (instancetype)initWithKernelAddress:(uint64_t)kaddr;
 - (instancetype)initAllocateAndLink;
-
-- (BOOL)mapIn;
-- (void)mapOut;
 
 - (void)sort;
 - (uint32_t)amountOfSlotsLeft;
