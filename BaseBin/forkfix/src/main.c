@@ -34,11 +34,6 @@ static void closePipes(void)
 
 void child_fixup(void)
 {
-	// late fixup, normally done in ASM
-	// ASM is a bitch though and I couldn't figure out how to do this
-	extern pid_t _current_pid;
-	_current_pid = 0;
-
 	// Tell parent we are waiting for fixup now
 	char msg = ' ';
 	ffsys_write(childToParentPipe[1], &msg, sizeof(msg));
