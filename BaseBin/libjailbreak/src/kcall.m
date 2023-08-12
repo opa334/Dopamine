@@ -284,14 +284,14 @@ uint64_t initPACPrimitives(uint64_t kernelAllocation)
 	// Include in signed state since it is rarely changed
 	kwrite64(actContext + offsetof(kRegisterState, x[2]), get_cspr_kern_intr_en());
 
-	kRegisterState *mappedState = kaddr_to_uaddr(stack, NULL);
+	kRegisterState *mappedState = kvtouaddr(stack);
 
 	gFugu14KcallThread.thread              = thread;
 	gFugu14KcallThread.kernelStack         = stack;
 	gFugu14KcallThread.scratchMemory       = stack + 0x7000ULL;
 	gFugu14KcallThread.mappedState         = mappedState;
 	gFugu14KcallThread.actContext          = actContext;
-	gFugu14KcallThread.scratchMemoryMapped = kaddr_to_uaddr(kernelAllocation + 0xF000ULL, NULL);
+	gFugu14KcallThread.scratchMemoryMapped = kvtouaddr(kernelAllocation + 0xF000ULL);
 
 	gKCallStatus = kKcallStatusPrepared;
 

@@ -12,9 +12,13 @@ extern PPLRWStatus gPPLRWStatus;
 // This can be called manually to batch together multiple PPLRW operations for maximum performance
 void gPPLRWQueue_dispatch(void (^block)(void));
 
-uint64_t va_to_pa(uint64_t table, uint64_t virt, bool *err);
-void *pa_to_uaddr(uint64_t pa);
-void *kaddr_to_uaddr(uint64_t va, bool *err);
+uint64_t unsign_kptr(uint64_t a);
+
+uint64_t phystokv(uint64_t pa);
+uint64_t vtophys(uint64_t ttep, uint64_t va);
+uint64_t kvtophys(uint64_t va);
+void *phystouaddr(uint64_t pa);
+void *kvtouaddr(uint64_t va);
 
 uint64_t kaddr_to_pa(uint64_t virt, bool *err);
 

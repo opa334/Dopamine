@@ -24,31 +24,26 @@ int tcentryComparator(const void * vp1, const void * vp2)
 	return memcmp(tc1->hash, tc2->hash, CS_CDHASH_LEN);
 }
 
-JBDTCPage *trustCacheMapInFreePage(void)
+JBDTCPage *trustCacheFindFreePage(void)
 {
 	// Find page that has slots left
 	for (JBDTCPage *page in gTCPages) {
 		@autoreleasepool {
-			[page mapIn];
 			if (page.amountOfSlotsLeft > 0) {
 				return page;
 			}
-			[page mapOut];
 		}
 	}
 
 	// No page found, allocate new one
-	JBDTCPage *newPage = [[JBDTCPage alloc] initAllocateAndLink];
-	[newPage mapIn];
-	return newPage;
+	return [[JBDTCPage alloc] initAllocateAndLink];
 }
 
 void dynamicTrustCacheAddEntry(trustcache_entry entry)
 {
-	JBDTCPage *freePage = trustCacheMapInFreePage();
+	JBDTCPage *freePage = trustCacheFindFreePage();
 	[freePage addEntry:entry];
 	[freePage sort];
-	[freePage mapOut];
 }
 
 void dynamicTrustCacheRemoveEntry(trustcache_entry entry)
@@ -108,10 +103,9 @@ void dynamicTrustCacheUploadCDHashesFromArray(NSArray *cdHashArray)
 				// If there is still a page mapped, map it out now
 				if (mappedInPage) {
 					[mappedInPage sort];
-					[mappedInPage mapOut];
 				}
 
-				mappedInPage = trustCacheMapInFreePage();
+				mappedInPage = trustCacheFindFreePage();
 			}
 
 			trustcache_entry entry;
@@ -125,7 +119,6 @@ void dynamicTrustCacheUploadCDHashesFromArray(NSArray *cdHashArray)
 
 	if (mappedInPage) {
 		[mappedInPage sort];
-		[mappedInPage mapOut];
 	}
 }
 
@@ -150,10 +143,9 @@ void dynamicTrustCacheUploadDirectory(NSString *directoryPath)
 						// If there is still a page mapped, map it out now
 						if (mappedInPage) {
 							[mappedInPage sort];
-							[mappedInPage mapOut];
 						}
 						JBLogDebug("mapping in a new tc page");
-						mappedInPage = trustCacheMapInFreePage();
+						mappedInPage = trustCacheFindFreePage();
 					}
 
 					JBLogDebug("[dynamicTrustCacheUploadDirectory %s] Uploading cdhash of %s", directoryPath.UTF8String, enumURL.path.UTF8String);
@@ -165,7 +157,6 @@ void dynamicTrustCacheUploadDirectory(NSString *directoryPath)
 
 	if (mappedInPage) {
 		[mappedInPage sort];
-		[mappedInPage mapOut];
 	}
 }
 
