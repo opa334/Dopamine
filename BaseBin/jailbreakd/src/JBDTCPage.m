@@ -68,7 +68,7 @@ void tcPagesChanged(void)
 {
 	_kaddr = kaddr;
 	if (kaddr) {
-		_page = kvtouaddr(_kaddr);
+		_page = kvtouaddr(kaddr);
 	}
 	else {
 		_page = 0;
@@ -77,18 +77,18 @@ void tcPagesChanged(void)
 
 - (BOOL)allocateInKernel
 {
-	uint64_t kaddr;
+	uint64_t kaddr = 0;
 	if (gTCUnusedAllocations.count) {
 		kaddr = [gTCUnusedAllocations.firstObject unsignedLongLongValue];
 		[gTCUnusedAllocations removeObjectAtIndex:0];
-		JBLogDebug("got existing trust cache page at 0x%llX", _kaddr);
+		JBLogDebug("got existing trust cache page at 0x%llX", self.kaddr);
 	}
 	else {
 		if (kalloc(&kaddr, 0x4000) != 0) return NO;
-		JBLogDebug("allocated trust cache page at 0x%llX", _kaddr);
+		JBLogDebug("allocated trust cache page at 0x%llX", self.kaddr);
 	}
 
-	if (_kaddr == 0) return NO;
+	if (kaddr == 0) return NO;
 	self.kaddr = kaddr;
 
 	_page->nextPtr = 0;
@@ -104,21 +104,21 @@ void tcPagesChanged(void)
 
 - (void)linkInKernel
 {
-	trustCacheListAdd(_kaddr);
+	trustCacheListAdd(self.kaddr);
 }
 
 - (void)unlinkInKernel
 {
-	trustCacheListRemove(_kaddr);
+	trustCacheListRemove(self.kaddr);
 }
 
 - (void)freeInKernel
 {
-	if (_kaddr == 0) return;
+	if (self.kaddr == 0) return;
 
-	[gTCUnusedAllocations addObject:@(_kaddr)];
-	JBLogDebug("moved trust cache page at 0x%llX to unused list", _kaddr);
-	_kaddr = 0;
+	[gTCUnusedAllocations addObject:@(self.kaddr)];
+	JBLogDebug("moved trust cache page at 0x%llX to unused list", self.kaddr);
+	self.kaddr = 0;
 
 	[gTCPages removeObject:self];
 	tcPagesChanged();
