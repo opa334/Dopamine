@@ -124,9 +124,12 @@ kern_return_t litehook_hook_function(void *source, void *target)
 {
 	kern_return_t kr = KERN_SUCCESS;
 
+	uint32_t *toHook = (uint32_t*)xpaci((uint64_t)source);
+	uint64_t target64 = (uint64_t)xpaci((uint64_t)target);
+
 	mach_vm_address_t regionStart = 0;
 	mach_vm_address_t regionSize = 0;
-	int suc = getSectionBounds(source, &regionStart, &regionSize);
+	int suc = getSectionBounds(toHook, &regionStart, &regionSize);
 	if (suc != 0) return suc;
 
 	vm_address_t preWarmAllocation = 0;
@@ -140,8 +143,6 @@ kern_return_t litehook_hook_function(void *source, void *target)
 	kr = vm_deallocate(mach_task_self_, preWarmAllocation, regionSize*2);
 	if (kr != KERN_SUCCESS) return kr;
 
-	uint32_t *toHook = (uint32_t*)xpaci((uint64_t)source);
-	uint64_t target64 = (uint64_t)xpaci((uint64_t)target);
 
 	kr = litehook_unprotect((vm_address_t)toHook, 5*4);
 	if (kr != KERN_SUCCESS) return kr;
@@ -151,11 +152,12 @@ kern_return_t litehook_hook_function(void *source, void *target)
 	toHook[2] = movk(16, target64 >> 32, 32);
 	toHook[3] = movk(16, target64 >> 48, 48);
 	toHook[4] = br(16);
+	uint32_t hookSize = 5 * sizeof(uint32_t);
 
-	kr = litehook_protect((vm_address_t)toHook, 5*4);
+	kr = litehook_protect((vm_address_t)toHook, hookSize);
 	if (kr != KERN_SUCCESS) return kr;
 
-	sys_icache_invalidate(source, VM_PAGE_SIZE);
+	sys_icache_invalidate(toHook, hookSize);
 
 	for (mach_vm_address_t page = regionStart; page < regionSize; page += PAGE_SIZE) {
 		// page in
