@@ -203,8 +203,6 @@ int kreadbuf(uint64_t kaddr, void* output, size_t size)
 		return -1;
 	}
 
-	JBLogDebug("before virtread of 0x%llX (size: %zd)", kaddr, size);
-
 	uint64_t va = kaddr;
 	uint8_t *data = output;
 	size_t sizeLeft = size;
@@ -230,7 +228,7 @@ int kreadbuf(uint64_t kaddr, void* output, size_t size)
 		va += readSize;
 		sizeLeft -= readSize;
 	}
-	JBLogDebug("after virtread of 0x%llX", kaddr);
+
 	return 0;
 }
 
