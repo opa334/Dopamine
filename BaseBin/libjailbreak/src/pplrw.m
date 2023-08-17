@@ -167,8 +167,14 @@ int physreadbuf(uint64_t pa, void* output, size_t size)
 		return -1;
 	}
 
+	void *uaddr = phystouaddr(pa);
+	if (!uaddr && errno != 0) {
+		memset(output, 0x0, size);
+		return errno;
+	}
+
 	asm volatile("dmb sy");
-	memcpy(output, phystouaddr(pa), size);
+	memcpy(output, uaddr, size);
 	return 0;
 }
 
@@ -178,7 +184,12 @@ int physwritebuf(uint64_t pa, const void* input, size_t size)
 		return -1;
 	}
 
-	memcpy(phystouaddr(pa), input, size);
+	void *uaddr = phystouaddr(pa);
+	if (!uaddr && errno != 0) {
+		return errno;
+	}
+
+	memcpy(uaddr, input, size);
 	asm volatile("dmb sy");
 	return 0;
 }
@@ -193,26 +204,28 @@ int kreadbuf(uint64_t kaddr, void* output, size_t size)
 	}
 
 	JBLogDebug("before virtread of 0x%llX (size: %zd)", kaddr, size);
-	asm volatile("dmb sy");
 
 	uint64_t va = kaddr;
 	uint8_t *data = output;
 	size_t sizeLeft = size;
 
 	while (sizeLeft > 0) {
-		uint64_t page = va & ~P_PAGE_MASK;
+		uint64_t virtPage = va & ~P_PAGE_MASK;
 		uint64_t pageOffset = va & P_PAGE_MASK;
 		uint64_t readSize = min(sizeLeft, P_PAGE_SIZE - pageOffset);
 
-		uint64_t pa = kvtophys(page);
-		if (pa == 0 && errno != 0)
+		uint64_t physPage = kvtophys(virtPage);
+		if (physPage == 0 && errno != 0)
 		{
 			JBLogError("[kreadbuf] Lookup failure when trying to read %zu bytes at 0x%llX, aborting", size, kaddr);
-			return -1;
+			return errno;
 		}
 
-		uint8_t *pageAddress = phystouaddr(pa);
-		memcpy(&data[size - sizeLeft], &pageAddress[pageOffset], readSize);
+		int pr = physreadbuf(physPage + pageOffset, &data[size - sizeLeft], readSize);
+		if (pr != 0) {
+			JBLogError("[kreadbuf] Physical read at %llx failed: %d", physPage + pageOffset, pr);
+			return pr;
+		}
 
 		va += readSize;
 		sizeLeft -= readSize;
@@ -232,25 +245,27 @@ int kwritebuf(uint64_t kaddr, const void* input, size_t size)
 	size_t sizeLeft = size;
 
 	while (sizeLeft > 0) {
-		uint64_t page = va & ~P_PAGE_MASK;
+		uint64_t virtPage = va & ~P_PAGE_MASK;
 		uint64_t pageOffset = va & P_PAGE_MASK;
 		uint64_t writeSize = min(sizeLeft, P_PAGE_SIZE - pageOffset);
 
-		bool failure = false;
-		uint64_t pa = kvtophys(page);
-		if (pa == 0 && errno != 0)
+		uint64_t physPage = kvtophys(virtPage);
+		if (physPage == 0 && errno != 0)
 		{
+			JBLogError("[kwritebuf] Lookup failure when trying to read %zu bytes at 0x%llX, aborting", size, kaddr);
 			return errno;
 		}
 
-		uint8_t *pageAddress = phystouaddr(pa);
-		memcpy(&pageAddress[pageOffset], &data[size - sizeLeft], writeSize);
+		int pr = physwritebuf(physPage + pageOffset, &data[size - sizeLeft], writeSize);
+		if (pr != 0) {
+			JBLogError("[kwritebuf] Physical write at %llx failed: %d", physPage + pageOffset, pr);
+			return pr;
+		}
 
 		va += writeSize;
 		sizeLeft -= writeSize;
 	}
 
-	asm volatile("dmb sy");
 	return 0;
 }
 
