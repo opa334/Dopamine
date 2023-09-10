@@ -5,6 +5,7 @@
 #include <sys/sysctl.h>
 #include <sys/stat.h>
 #include "sandbox.h"
+#include "oldabi.h"
 
 int ptrace(int request, pid_t pid, caddr_t addr, int data);
 #define PT_ATTACH       10      /* trace some running process */
@@ -392,6 +393,10 @@ __attribute__((constructor)) static void initializer(void)
 
 	unsandbox();
 	loadExecutablePath();
+
+	//if (stringEndsWith(gExecutablePath, "oldabi_tests")) {
+		enable_arm64e_oldabi_fix();
+	//}
 
 	struct stat sb;
 	if(stat(gExecutablePath, &sb) == 0) {

@@ -1,0 +1,1 @@
+void enable_arm64e_oldabi_fix(void);
