@@ -383,15 +383,17 @@ void initPPLPrimitives(void)
 {
 	if (gPPLRWStatus == kPPLRWStatusNotInitialized)
 	{
+		tlbFlush();
+
 		// Needed for address translation
 		gCpuTTEP = bootInfo_getUInt64(@"physical_ttep");
 
-		tlbFlush();
+		gPPLRWStatus = kPPLRWStatusInitialized;
+		
 		gPhysBase = kread64(bootInfo_getSlidUInt64(@"gPhysBase"));
 		gPhysSize = kread64(bootInfo_getSlidUInt64(@"gPhysSize"));
 		gVirtBase = kread64(bootInfo_getSlidUInt64(@"gVirtBase"));
 
 		JBLogDebug("Initialized PPL Primitives");
-		gPPLRWStatus = kPPLRWStatusInitialized;
 	}
 }
