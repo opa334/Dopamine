@@ -12,6 +12,7 @@
 #import "xpc_hook.h"
 #import "daemon_hook.h"
 #import "ipc_hook.h"
+#import "dsc_hook.h"
 #import "crashreporter.h"
 #import "../systemhook/src/common.h"
 
@@ -104,6 +105,7 @@ __attribute__((constructor)) static void initializer(void)
 	initDaemonHooks();
 	initSpawnHooks();
 	initIPCHooks();
+	initDSCHooks();
 
 	// This will ensure launchdhook is always reinjected after userspace reboots
 	// As this launchd will pass environ to the next launchd...
