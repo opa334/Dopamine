@@ -1,12 +1,12 @@
 --- !tapi-tbd
 tbd-version:           4
-targets:               [ arm64, arm64e ]
+targets:               [ arm64-ios, arm64e-ios ]
 flags:                 [ flat_namespace, not_app_extension_safe ]
 install-name:          '@rpath/CydiaSubstrate.framework/CydiaSubstrate'
 current-version:       1
 compatibility-version: 1
 exports:
-  - targets:              [ arm64, arm64e ]
+  - targets:              [ arm64-ios, arm64e-ios ]
     symbols:              [ _$s7ellekit10LHStrErrorySVSgSo13LIBHOOKER_ERRVF,
                             _$s7ellekit10MSHookIvarySvSgyXlXp_SStF,
                             _$s7ellekit10findSymbol5image6symbolSVSgSV_SStKF,
