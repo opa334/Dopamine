@@ -13,19 +13,16 @@
 		1502A4242891BD800011CB6E /* Fugu15KernelExploit in Frameworks */ = {isa = PBXBuildFile; productRef = 1502A4232891BD800011CB6E /* Fugu15KernelExploit */; };
 		151CAFAD2893645C00B2A6BA /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 151CAFAC2893645C00B2A6BA /* CoreServices.framework */; };
 		151CAFB32894041D00B2A6BA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151CAFB22894041D00B2A6BA /* main.swift */; };
-		15372EA628DDFF9000514A73 /* sileo.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 15372EA528DDFF9000514A73 /* sileo.deb */; };
 		15372EA728DDFF9A00514A73 /* sileo.deb in Resources */ = {isa = PBXBuildFile; fileRef = 15372EA528DDFF9000514A73 /* sileo.deb */; };
 		8C10C47229FDDE3B00930377 /* LICENSE_Fugu15.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C10C47029FDDE3B00930377 /* LICENSE_Fugu15.md */; };
 		8C10C47329FDDE3B00930377 /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C10C47129FDDE3B00930377 /* LICENSE.md */; };
 		8C19A9AB29F54BEA00F06D21 /* libzstd in Frameworks */ = {isa = PBXBuildFile; productRef = 8C19A9AA29F54BEA00F06D21 /* libzstd */; };
 		8C19A9AD29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst in Resources */ = {isa = PBXBuildFile; fileRef = 8C19A9AC29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst */; };
-		8C19A9CC29F5608200F06D21 /* libjbdrw.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C19A9CB29F5608200F06D21 /* libjbdrw.deb */; };
 		8C19A9CD29F5659700F06D21 /* libjbdrw.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C19A9CB29F5608200F06D21 /* libjbdrw.deb */; };
 		8C2EDE1929F0AAF70060D192 /* oobPCI in Resources */ = {isa = PBXBuildFile; fileRef = 8C2EDE1829F0AAF70060D192 /* oobPCI */; };
 		8C2EDE1B29F0ACA60060D192 /* basebin.tar in Resources */ = {isa = PBXBuildFile; fileRef = 8C2EDE1A29F0ACA60060D192 /* basebin.tar */; };
 		8C2EDE1D29F0AE3A0060D192 /* basebin.tc in Resources */ = {isa = PBXBuildFile; fileRef = 8C2EDE1C29F0ACC80060D192 /* basebin.tc */; };
 		8C8D955B29D04B4C00A482A8 /* tar in Resources */ = {isa = PBXBuildFile; fileRef = 8C8D955A29D04B4C00A482A8 /* tar */; };
-		8C8D955E29D04C4D00A482A8 /* zebra.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C8D955D29D04C4D00A482A8 /* zebra.deb */; };
 		8C8D955F29D04CD100A482A8 /* zebra.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C8D955D29D04C4D00A482A8 /* zebra.deb */; };
 		8CBDF90929FEEF4400988663 /* LICENSE_libc.md in Resources */ = {isa = PBXBuildFile; fileRef = 8CBDF90829FEEF4400988663 /* LICENSE_libc.md */; };
 		93532B3129FE6CC8007135BE /* PopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93532B3029FE6CC8007135BE /* PopupView.swift */; };
@@ -118,9 +115,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1502A4242891BD800011CB6E /* Fugu15KernelExploit in Frameworks */,
-				15372EA628DDFF9000514A73 /* sileo.deb in Frameworks */,
-				8C8D955E29D04C4D00A482A8 /* zebra.deb in Frameworks */,
-				8C19A9CC29F5608200F06D21 /* libjbdrw.deb in Frameworks */,
 				8C19A9AB29F54BEA00F06D21 /* libzstd in Frameworks */,
 				151CAFAD2893645C00B2A6BA /* CoreServices.framework in Frameworks */,
 				CE27798929D459220030E28D /* SwiftfulLoadingIndicators in Frameworks */,
