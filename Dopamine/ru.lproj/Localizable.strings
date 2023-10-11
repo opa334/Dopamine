@@ -12,7 +12,7 @@
 
 "Button_Set_Mobile_Password" = "Установить пароль пользователя mobile";
 
-"Popup_Change_Mobile_Password_Message" = "Установка пароля пользователя mobile, его также можно использовать для выполнения какой-либо команды с правами root, используя команду sudo. Если вы хотите установить пароль для пользователя root, вы можете сделать это из командной строки, используя \"sudo passwd root\".";
+"Popup_Change_Mobile_Password_Message" = "Установите пароль mobile вашего устройства, его также можно использовать для root-доступа с помощью sudo. Если вы хотите установить пароль root, вы можете сделать это из мобильной оболочки, используя \"sudo passwd root\".";
 
 "Button_Reinstall_Package_Managers" = "Переустановить менеджеры пакетов";
 
@@ -20,7 +20,7 @@
 
 "Button_Show_Logs_Title" = "Показать логи";
 
-"Button_Unhide_Jailbreak" = "Не скрывать джейлбрейк";
+"Button_Unhide_Jailbreak" = "Отобразить джейлбрейк";
 
 "Button_Update" = "Обновить";
 
@@ -32,7 +32,7 @@
 
 "Bypassing PPL" = "Обход PPL";
 
-"Changelog_Unavailable_Text" = "Список изменений не доступен";
+"Changelog_Unavailable_Text" = "Список изменений недоступен";
 
 "Context_Menu_Copy_To_Clipboard" = "Копировать в буфер обмена";
 
@@ -56,7 +56,7 @@
 
 "Hint_Hide_Jailbreak" = "\"Скрыть джейлбрейк\" временно удаляет файлы, связанные с джейлбрейком, до следующего джейлбрейка";
 
-"Hint_Hide_Jailbreak_Jailbroken" = "\"Скрыть джейлбрейк\" частично отключает джейлбрейк для того, чтобы сделать его обнаружение более трудным. Однако это не совсем эффективно и маскирует не все.";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Скрыть джейлбрейк\" частично отключает джейлбрейк и стремится сделать обнаружение более сложным. Однако это не совсем эффективно и скрывает не всё.";
 
 "Initializing Environment" = "Инициализация переменной среды";
 
@@ -116,9 +116,11 @@
 
 "Title_Changelog" = "Список изменении";
 
-"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
+"Title_Made_By" = "от opa334, évelyne\nUI от sourceloc\nОсновано на Fugu15";
 
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
+
+"Unsupported" = "Не поддерживается";
 
 "Update_Log_Hint_Scrollable" = "Журнал может прокручиваться";
 
@@ -126,7 +128,7 @@
 
 "Update_Status_Installing" = "Установка обновления...";
 
-"Update_Status_Subtitle_Please_Wait" = "Пожалуйста, подождите, пока файлы будут загружены";
+"Update_Status_Subtitle_Please_Wait" = "Пожалуйста подождите, пока файлы будут загружены";
 
 "Update_Status_Subtitle_Restart_Soon" = "Устройство скоро перезагрузится";
 
