@@ -69,7 +69,7 @@ int64_t machoFindArch(FILE *machoFile, uint32_t subtypeToSearch)
 		struct mach_header_64 mh;
 		fseek(machoFile, archOffset, SEEK_SET);
 		fread(&mh, sizeof(mh), 1, machoFile);
-		uint32_t maskedSubtype = OSSwapLittleToHostInt32(mh.cpusubtype) & ~0x80000000;
+		uint32_t maskedSubtype = OSSwapLittleToHostInt32(mh.cpusubtype);
 		if (maskedSubtype == subtypeToSearch) {
 			outArchOffset = archOffset;
 			*stop = YES;
@@ -82,7 +82,10 @@ int64_t machoFindArch(FILE *machoFile, uint32_t subtypeToSearch)
 int64_t machoFindBestArch(FILE *machoFile)
 {
 #if __arm64e__
-	int64_t archOffsetCandidate = machoFindArch(machoFile, CPU_SUBTYPE_ARM64E);
+	int64_t archOffsetCandidate = machoFindArch(machoFile, CPU_SUBTYPE_ARM64E|0x80000000);
+	if (archOffsetCandidate < 0) {
+		archOffsetCandidate = machoFindArch(machoFile, CPU_SUBTYPE_ARM64E);
+	}
 	if (archOffsetCandidate < 0) {
 		archOffsetCandidate = machoFindArch(machoFile, CPU_SUBTYPE_ARM64_ALL);
 	}
