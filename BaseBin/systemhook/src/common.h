@@ -1,6 +1,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <spawn.h>
 
+#define HOOK_DYLIB_PATH "/usr/lib/systemhook.dylib"
 extern char *JB_SandboxExtensions;
 extern char *JB_RootPath;
 extern bool swh_is_debugged;

@@ -389,8 +389,8 @@ __attribute__((constructor)) static void initializer(void)
 	unsetenv("JB_SANDBOX_EXTENSIONS");
 	JB_RootPath = strdup(getenv("JB_ROOT_PATH"));
 
-	if (!strcmp(getenv("DYLD_INSERT_LIBRARIES"), "/usr/lib/systemhook.dylib")) {
-		// Unset DYLD_INSERT_LIBRARIES, but only if we are the only thing contained in it
+	if (!strcmp(getenv("DYLD_INSERT_LIBRARIES"), HOOK_DYLIB_PATH)) {
+		// Unset DYLD_INSERT_LIBRARIES, but only if systemhook itself is the only thing contained in it
 		unsetenv("DYLD_INSERT_LIBRARIES");
 	}
 
