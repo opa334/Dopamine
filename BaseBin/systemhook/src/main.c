@@ -134,16 +134,17 @@ int execle_hook(const char *path, const char *arg0, ... /*, (char *)0, char *con
 	// Get argument count
 	va_list args_copy;
 	va_copy(args_copy, args);
-	int arg_count = 0;
+	int arg_count = 1;
 	for (char *arg = va_arg(args_copy, char *); arg != NULL; arg = va_arg(args_copy, char *)) {
 		arg_count++;
 	}
 	va_end(args_copy);
 
 	char *argv[arg_count+1];
+	argv[0] = (char*)arg0;
 	for (int i = 0; i < arg_count-1; i++) {
 		char *arg = va_arg(args, char*);
-		argv[i] = arg;
+		argv[i+1] = arg;
 	}
 	argv[arg_count] = NULL;
 
@@ -161,21 +162,22 @@ int execlp_hook(const char *file, const char *arg0, ... /*, (char *)0 */)
 	// Get argument count
 	va_list args_copy;
 	va_copy(args_copy, args);
-	int arg_count = 0;
+	int arg_count = 1;
 	for (char *arg = va_arg(args_copy, char*); arg != NULL; arg = va_arg(args_copy, char*)) {
 		arg_count++;
 	}
 	va_end(args_copy);
 
 	char **argv = malloc((arg_count+1) * sizeof(char *));
+	argv[0] = (char*)arg0;
 	for (int i = 0; i < arg_count-1; i++) {
 		char *arg = va_arg(args, char*);
-		argv[i] = arg;
+		argv[i+1] = arg;
 	}
 	argv[arg_count] = NULL;
 
 	int r = resolvePath(file, NULL, ^int(char *path) {
-		return execve_hook(path, argv, NULL);
+		return execve_hook(path, argv, environ);
 	});
 
 	free(argv);
@@ -191,38 +193,39 @@ int execl_hook(const char *path, const char *arg0, ... /*, (char *)0 */)
 	// Get argument count
 	va_list args_copy;
 	va_copy(args_copy, args);
-	int arg_count = 0;
+	int arg_count = 1;
 	for (char *arg = va_arg(args_copy, char*); arg != NULL; arg = va_arg(args_copy, char*)) {
 		arg_count++;
 	}
 	va_end(args_copy);
 
 	char *argv[arg_count+1];
+	argv[0] = (char*)arg0;
 	for (int i = 0; i < arg_count-1; i++) {
 		char *arg = va_arg(args, char*);
-		argv[i] = arg;
+		argv[i+1] = arg;
 	}
 	argv[arg_count] = NULL;
 
-	return execve_hook(path, argv, NULL);
+	return execve_hook(path, argv, environ);
 }
 
 int execv_hook(const char *path, char *const argv[])
 {
-	return execve_hook(path, argv, NULL);
+	return execve_hook(path, argv, environ);
 }
 
 int execvp_hook(const char *file, char *const argv[])
 {
 	return resolvePath(file, NULL, ^int(char *path) {
-		return execve_hook(path, argv, NULL);
+		return execve_hook(path, argv, environ);
 	});
 }
 
 int execvP_hook(const char *file, const char *search_path, char *const argv[])
 {
 	return resolvePath(file, search_path, ^int(char *path) {
-		return execve_hook(path, argv, NULL);
+		return execve_hook(path, argv, environ);
 	});
 }
 
@@ -440,6 +443,7 @@ DYLD_INTERPOSE(execve_hook, execve)
 DYLD_INTERPOSE(execle_hook, execle)
 DYLD_INTERPOSE(execlp_hook, execlp)
 DYLD_INTERPOSE(execv_hook, execv)
+DYLD_INTERPOSE(execl_hook, execl)
 DYLD_INTERPOSE(execvp_hook, execvp)
 DYLD_INTERPOSE(execvP_hook, execvP)
 DYLD_INTERPOSE(dlopen_hook, dlopen)
