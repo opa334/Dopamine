@@ -253,8 +253,13 @@ int resolvePath(const char *file, const char *searchPath, int (^attemptHandler)(
 	struct stat sb;
 	char path_buf[PATH_MAX];
 
-	if ((env_path = getenv("PATH")) == NULL)
-		env_path = _PATH_DEFPATH;
+	env_path = searchPath;
+	if (!env_path) {
+		env_path = getenv("PATH");
+		if (!env_path) {
+			env_path = _PATH_DEFPATH;
+		}
+	}
 
 	/* If it's an absolute or relative path name, it's easy. */
 	if (index(file, '/')) {
