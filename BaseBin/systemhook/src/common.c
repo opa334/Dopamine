@@ -16,7 +16,6 @@ int posix_spawnattr_getprocesstype_np(const posix_spawnattr_t * __restrict, int 
 char *JB_SandboxExtensions = NULL;
 char *JB_RootPath = NULL;
 
-#define HOOK_DYLIB_PATH "/usr/lib/systemhook.dylib"
 #define JBD_MSG_SETUID_FIX 21
 #define JBD_MSG_PROCESS_BINARY 22
 #define JBD_MSG_DEBUG_ME 24
