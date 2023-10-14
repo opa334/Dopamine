@@ -81,19 +81,19 @@ int64_t machoFindArch(FILE *machoFile, uint32_t subtypeToSearch)
 
 int64_t machoFindBestArch(FILE *machoFile)
 {
+	int64_t archOffsetCandidate = 0;
 #if __arm64e__
-	int64_t archOffsetCandidate = machoFindArch(machoFile, CPU_SUBTYPE_ARM64E|0x80000000);
+	archOffsetCandidate = machoFindArch(machoFile, CPU_SUBTYPE_ARM64E | 0x80000000); // arm64e new ABI
 	if (archOffsetCandidate < 0) {
-		archOffsetCandidate = machoFindArch(machoFile, CPU_SUBTYPE_ARM64E);
+		archOffsetCandidate = machoFindArch(machoFile, CPU_SUBTYPE_ARM64E); // arm64e old ABI
 		if (archOffsetCandidate < 0) {
+#endif
 			archOffsetCandidate = machoFindArch(machoFile, CPU_SUBTYPE_ARM64_ALL);
+#if __arm64e__
   		}
 	}
-	return archOffsetCandidate;
-#else
-	int64_t archOffsetCandidate = machoFindArch(machoFile, CPU_SUBTYPE_ARM64_ALL);
-	return archOffsetCandidate;
 #endif
+	return archOffsetCandidate;
 }
 
 void machoEnumerateLoadCommands(FILE *machoFile, uint32_t archOffset, void (^enumerateBlock)(struct load_command cmd, uint32_t cmdOffset))
