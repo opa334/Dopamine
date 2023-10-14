@@ -15,7 +15,7 @@ int envbuf_len(const char *envp[])
 
 char **envbuf_mutcopy(const char *envp[])
 {
-	if (envp == NULL) return NULL;
+	//if (envp == NULL) return NULL;
 
 	int len = envbuf_len(envp);
 	char **envcopy = malloc(len * sizeof(char *));
