@@ -89,6 +89,7 @@ int64_t machoFindBestArch(FILE *machoFile)
 			archOffsetCandidate = machoFindArch(machoFile, CPU_SUBTYPE_ARM64_ALL);
   		}
 	}
+	return archOffsetCandidate;
 #else
 	int64_t archOffsetCandidate = machoFindArch(machoFile, CPU_SUBTYPE_ARM64_ALL);
 	return archOffsetCandidate;
