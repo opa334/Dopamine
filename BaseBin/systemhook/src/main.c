@@ -5,6 +5,7 @@
 #include <sys/sysctl.h>
 #include <sys/stat.h>
 #include "sandbox.h"
+extern char **environ;
 
 int ptrace(int request, pid_t pid, caddr_t addr, int data);
 #define PT_ATTACH       10      /* trace some running process */
