@@ -9,9 +9,6 @@ typedef enum {
 } PPLRWStatus;
 extern PPLRWStatus gPPLRWStatus;
 
-// This can be called manually to batch together multiple PPLRW operations for maximum performance
-void gPPLRWQueue_dispatch(void (^block)(void));
-
 uint64_t unsign_kptr(uint64_t a);
 
 uint64_t phystokv(uint64_t pa);
