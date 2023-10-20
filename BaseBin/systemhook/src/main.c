@@ -4,6 +4,7 @@
 #include <dlfcn.h>
 #include <sys/sysctl.h>
 #include <sys/stat.h>
+#include <paths.h>
 #include "sandbox.h"
 extern char **environ;
 
@@ -216,18 +217,27 @@ int execv_hook(const char *path, char *const argv[])
 	return execve_hook(path, argv, environ);
 }
 
-int execvp_hook(const char *file, char *const argv[])
-{
-	return resolvePath(file, NULL, ^int(char *path) {
-		return execve_hook(path, argv, environ);
-	});
-}
-
 int execvP_hook(const char *file, const char *search_path, char *const argv[])
 {
-	return resolvePath(file, search_path, ^int(char *path) {
-		return execve_hook(path, argv, environ);
+	__block bool execve_failed = false;
+	int err = resolvePath(file, search_path, ^int(char *path) {
+		(void)execve_hook(path, argv, environ);
+		execve_failed = true;
+		return 0;
 	});
+	if (!execve_failed) {
+		errno = err;
+	}
+	return -1;
+}
+
+int execvp_hook(const char *name, char * const *argv)
+{
+	const char *path;
+	/* Get the path we're searching. */
+	if ((path = getenv("PATH")) == NULL)
+		path = _PATH_DEFPATH;
+	return execvP_hook(name, path, argv);
 }
 
 
