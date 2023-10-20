@@ -187,7 +187,7 @@ void _machoEnumerateDependencies(FILE *machoFile, uint32_t archOffset, NSString 
 	// Second iteration: Find dependencies
 	machoEnumerateLoadCommands(machoFile, archOffset, ^(struct load_command cmd, uint32_t cmdOffset) {
 		uint32_t cmdId = OSSwapLittleToHostInt32(cmd.cmd);
-		if (cmdId == LC_LOAD_DYLIB || cmdId == LC_LOAD_WEAK_DYLIB || cmdId == LC_REEXPORT_DYLIB) {
+		if (cmdId == LC_LOAD_DYLIB || cmdId == LC_LOAD_WEAK_DYLIB || cmdId == LC_REEXPORT_DYLIB || cmdId == LC_LAZY_LOAD_DYLIB || cmdId == LC_LOAD_UPWARD_DYLIB) {
 			struct dylib_command dylibCommand;
 			fseek(machoFile, cmdOffset, SEEK_SET);
 			fread(&dylibCommand,sizeof(dylibCommand),1,machoFile);
@@ -195,6 +195,7 @@ void _machoEnumerateDependencies(FILE *machoFile, uint32_t archOffset, NSString 
 			char *imagePathC = malloc(stringLength);
 			fseek(machoFile, cmdOffset + OSSwapLittleToHostInt32(dylibCommand.dylib.name.offset), SEEK_SET);
 			fread(imagePathC, stringLength, 1, machoFile);
+			if (!strlen(imagePathC)) return; // Skip malformed dylib commands
 			NSString *imagePath = [NSString stringWithUTF8String:imagePathC];
 			free(imagePathC);
 
