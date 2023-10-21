@@ -256,7 +256,7 @@ int kwritebuf(uint64_t kaddr, const void* input, size_t size)
 
 		int pr = physwritebuf(physPage + pageOffset, &data[size - sizeLeft], writeSize);
 		if (pr != 0) {
-			JBLogError("[kwritebuf] Physical write at %llx failed: %d", physPage + pageOffset, pr);
+			JBLogError("[kwritebuf] Physical write at 0x%llx failed: %d", physPage + pageOffset, pr);
 			return pr;
 		}
 

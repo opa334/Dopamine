@@ -1,0 +1,3 @@
+[submodule "Exploits/oobPCI/Sources/kfd"]
+	path = Exploits/oobPCI/Sources/kfd
+	url = https://github.com/opa334/kfd.git
