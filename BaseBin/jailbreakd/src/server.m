@@ -428,9 +428,10 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 							}
 							setTweaksEnabled(false);
 							bootInfo_setObject(@"jbdShowUserspacePanicMessage", @1);
-							reboot3(RB2_USERREBOOT);
+							result = reboot3(RB2_USERREBOOT);
 						}
 						xpc_dictionary_set_int64(reply, "result", result);
+						break;
 					}
 
 					case JBD_SET_FAKELIB_VISIBLE: {
