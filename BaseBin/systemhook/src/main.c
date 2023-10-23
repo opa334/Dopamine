@@ -122,10 +122,14 @@ int posix_spawnp_hook(pid_t *restrict pid, const char *restrict file,
 
 int execve_hook(const char *path, char *const argv[], char *const envp[])
 {
-	posix_spawnattr_t attr;
+	posix_spawnattr_t attr = NULL;
 	posix_spawnattr_init(&attr);
 	posix_spawnattr_setflags(&attr, POSIX_SPAWN_SETEXEC);
-	return spawn_hook_common(NULL, path, NULL, &attr, argv, envp, (void *)posix_spawn);
+	int result = spawn_hook_common(NULL, path, NULL, &attr, argv, envp, (void *)posix_spawn);
+	if (attr) {
+		posix_spawnattr_destroy(&attr);
+	}
+	return result;
 }
 
 int execle_hook(const char *path, const char *arg0, ... /*, (char *)0, char *const envp[] */)
