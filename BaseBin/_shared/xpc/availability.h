@@ -6,6 +6,22 @@
 // Certain parts of the project use all the project's headers but have to build
 // against newer OSX SDKs than ebuild uses -- liblaunch_host being the example.
 // So we need to define these.
+#ifndef __MAC_10_16
+#define __MAC_10_16 101600
+#endif // __MAC_10_16
+
+#ifndef __MAC_10_15
+#define __MAC_10_15 101500
+#define __AVAILABILITY_INTERNAL__MAC_10_15 \
+__attribute__((availability(macosx, introduced=10.15)))
+#endif // __MAC_10_15
+
+#ifndef __MAC_10_14
+#define __MAC_10_14 101400
+#define __AVAILABILITY_INTERNAL__MAC_10_14 \
+__attribute__((availability(macosx, introduced=10.14)))
+#endif // __MAC_10_14
+
 #ifndef __MAC_10_13
 #define __MAC_10_13 101300
 #define __AVAILABILITY_INTERNAL__MAC_10_13 \
@@ -23,6 +39,16 @@
 #define __AVAILABILITY_INTERNAL__MAC_10_11 \
 	__attribute__((availability(macosx, introduced=10.11)))
 #endif // __MAC_10_11
+
+#ifndef __MAC_12_0
+#define __MAC_12_0 120000
+#define __AVAILABILITY_INTERNAL__MAC_12_0 \
+	__attribute__((availability(macosx, introduced=12.0)))
+#endif // __MAC_12_0
+
+#ifndef __MAC_13_3
+#define __MAC_13_3 130300
+#endif // __MAC_13_3
 
 #ifndef __AVAILABILITY_INTERNAL__MAC_10_2_DEP__MAC_10_11
 #define __AVAILABILITY_INTERNAL__MAC_10_2_DEP__MAC_10_11

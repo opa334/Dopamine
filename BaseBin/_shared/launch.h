@@ -1,48 +1,30 @@
-/*
- * Copyright (c) 2005 Apple Computer, Inc. All rights reserved.
+#ifndef __XPC_LAUNCH_H__
+#define __XPC_LAUNCH_H__
+
+/*!
+ * @header
+ * These interfaces were only ever documented for the purpose of allowing a
+ * launchd job to obtain file descriptors associated with the sockets it
+ * advertised in its launchd.plist(5). That functionality is now available in a
+ * much more straightforward fashion through the {@link launch_activate_socket}
+ * API.
  *
- * @APPLE_APACHE_LICENSE_HEADER_START@
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * @APPLE_APACHE_LICENSE_HEADER_END@
+ * There are currently no replacements for other uses of the {@link launch_msg}
+ * API, including submitting, removing, starting, stopping and listing jobs.
  */
 
-#ifndef __LAUNCH_H__
-#define __LAUNCH_H__
+#include <os/base.h>
+#include <Availability.h>
 
 #include <mach/mach.h>
-#include <sys/cdefs.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <sys/cdefs.h>
 
-#pragma GCC visibility push(default)
-
-__BEGIN_DECLS
-
-#ifdef __GNUC__
-#define __ld_normal __attribute__((__nothrow__))
-#define __ld_setter __attribute__((__nothrow__, __nonnull__))
-#define __ld_getter __attribute__((__nothrow__, __nonnull__, __pure__, __warn_unused_result__))
-#define __ld_iterator(x, y) __attribute__((__nonnull__(x, y)))
-#define __ld_allocator __attribute__((__nothrow__, __malloc__, __nonnull__, __warn_unused_result__))
-#else
-#define __ld_normal
-#define __ld_setter
-#define __ld_getter
-#define __ld_iterator(x, y)
-#define __ld_allocator
+#if __has_feature(assume_nonnull)
+_Pragma("clang assume_nonnull begin")
 #endif
+__BEGIN_DECLS
 
 #define LAUNCH_KEY_SUBMITJOB "SubmitJob"
 #define LAUNCH_KEY_REMOVEJOB "RemoveJob"
@@ -83,6 +65,8 @@ __BEGIN_DECLS
 #define LAUNCH_JOBKEY_HOPEFULLYEXITSFIRST "HopefullyExitsFirst"
 #define LAUNCH_JOBKEY_HOPEFULLYEXITSLAST "HopefullyExitsLast"
 #define LAUNCH_JOBKEY_LOWPRIORITYIO "LowPriorityIO"
+#define LAUNCH_JOBKEY_LOWPRIORITYBACKGROUNDIO "LowPriorityBackgroundIO"
+#define LAUNCH_JOBKEY_MATERIALIZEDATALESSFILES "MaterializeDatalessFiles"
 #define LAUNCH_JOBKEY_SESSIONCREATE "SessionCreate"
 #define LAUNCH_JOBKEY_STARTONMOUNT "StartOnMount"
 #define LAUNCH_JOBKEY_SOFTRESOURCELIMITS "SoftResourceLimits"
@@ -93,6 +77,7 @@ __BEGIN_DECLS
 #define LAUNCH_JOBKEY_DEBUG "Debug"
 #define LAUNCH_JOBKEY_WAITFORDEBUGGER "WaitForDebugger"
 #define LAUNCH_JOBKEY_QUEUEDIRECTORIES "QueueDirectories"
+#define LAUNCH_JOBKEY_HOMERELATIVEQUEUEDIRECTORIES "HomeRelativeQueueDirectories"
 #define LAUNCH_JOBKEY_WATCHPATHS "WatchPaths"
 #define LAUNCH_JOBKEY_STARTINTERVAL "StartInterval"
 #define LAUNCH_JOBKEY_STARTCALENDARINTERVAL "StartCalendarInterval"
@@ -102,22 +87,31 @@ __BEGIN_DECLS
 #define LAUNCH_JOBKEY_THROTTLEINTERVAL "ThrottleInterval"
 #define LAUNCH_JOBKEY_LAUNCHONLYONCE "LaunchOnlyOnce"
 #define LAUNCH_JOBKEY_ABANDONPROCESSGROUP "AbandonProcessGroup"
-#define LAUNCH_JOBKEY_IGNOREPROCESSGROUPATSHUTDOWN	"IgnoreProcessGroupAtShutdown"
-#define LAUNCH_JOBKEY_POLICIES "Policies"
+#define LAUNCH_JOBKEY_IGNOREPROCESSGROUPATSHUTDOWN \
+	"IgnoreProcessGroupAtShutdown"
+#define LAUNCH_JOBKEY_LEGACYTIMERS "LegacyTimers"
+#define LAUNCH_JOBKEY_ENABLEPRESSUREDEXIT "EnablePressuredExit"
 #define LAUNCH_JOBKEY_ENABLETRANSACTIONS "EnableTransactions"
+#define LAUNCH_JOBKEY_DRAINMESSAGESONFAILEDINIT "DrainMessagesOnFailedInit"
+#define LAUNCH_JOBKEY_POLICIES "Policies"
+#define LAUNCH_JOBKEY_BUNDLEPROGRAM "BundleProgram"
+#define LAUNCH_JOBKEY_ASSOCIATEDBUNDLEIDENTIFIERS "AssociatedBundleIdentifiers"
+
+#define LAUNCH_JOBKEY_PUBLISHESEVENTS "PublishesEvents"
+#define LAUNCH_KEY_PUBLISHESEVENTS_DOMAININTERNAL "DomainInternal"
 
 #define LAUNCH_JOBPOLICY_DENYCREATINGOTHERJOBS "DenyCreatingOtherJobs"
 
 #define LAUNCH_JOBINETDCOMPATIBILITY_WAIT "Wait"
+#define LAUNCH_JOBINETDCOMPATIBILITY_INSTANCES "Instances"
 
 #define LAUNCH_JOBKEY_MACH_RESETATCLOSE "ResetAtClose"
 #define LAUNCH_JOBKEY_MACH_HIDEUNTILCHECKIN "HideUntilCheckIn"
-#define LAUNCH_JOBKEY_MACH_DRAINMESSAGESONCRASH "DrainMessagesOnCrash"
-#define LAUNCH_JOBKEY_MACH_PINGEVENTUPDATES "PingEventUpdates"
 
 #define LAUNCH_JOBKEY_KEEPALIVE_SUCCESSFULEXIT "SuccessfulExit"
 #define LAUNCH_JOBKEY_KEEPALIVE_NETWORKSTATE "NetworkState"
 #define LAUNCH_JOBKEY_KEEPALIVE_PATHSTATE "PathState"
+#define LAUNCH_JOBKEY_KEEPALIVE_HOMERELATIVEPATHSTATE "HomeRelativePathState"
 #define LAUNCH_JOBKEY_KEEPALIVE_OTHERJOBACTIVE "OtherJobActive"
 #define LAUNCH_JOBKEY_KEEPALIVE_OTHERJOBENABLED "OtherJobEnabled"
 #define LAUNCH_JOBKEY_KEEPALIVE_AFTERINITIALDEMAND	"AfterInitialDemand"
@@ -144,23 +138,69 @@ __BEGIN_DECLS
 #define LAUNCH_JOBKEY_DISABLED_MACHINETYPE "MachineType"
 #define LAUNCH_JOBKEY_DISABLED_MODELNAME "ModelName"
 
+#define LAUNCH_JOBKEY_DATASTORES "Datastores"
+#define LAUNCH_JOBKEY_DATASTORES_SIZELIMIT "SizeLimit"
+
 #define LAUNCH_JOBSOCKETKEY_TYPE "SockType"
 #define LAUNCH_JOBSOCKETKEY_PASSIVE "SockPassive"
 #define LAUNCH_JOBSOCKETKEY_BONJOUR "Bonjour"
 #define LAUNCH_JOBSOCKETKEY_SECUREWITHKEY "SecureSocketWithKey"
 #define LAUNCH_JOBSOCKETKEY_PATHNAME "SockPathName"
 #define LAUNCH_JOBSOCKETKEY_PATHMODE "SockPathMode"
+#define LAUNCH_JOBSOCKETKEY_PATHOWNER "SockPathOwner"
+#define LAUNCH_JOBSOCKETKEY_PATHGROUP "SockPathGroup"
 #define LAUNCH_JOBSOCKETKEY_NODENAME "SockNodeName"
 #define LAUNCH_JOBSOCKETKEY_SERVICENAME "SockServiceName"
 #define LAUNCH_JOBSOCKETKEY_FAMILY "SockFamily"
 #define LAUNCH_JOBSOCKETKEY_PROTOCOL "SockProtocol"
 #define LAUNCH_JOBSOCKETKEY_MULTICASTGROUP "MulticastGroup"
 
-/* These APIs are NOT suitable for general use. Their use should be constrained
- * to checking into launchd to obtain socket file descriptors using the
- * LAUNCH_CHECK_IN message type.
+#define LAUNCH_JOBKEY_PROCESSTYPE "ProcessType"
+#define LAUNCH_KEY_PROCESSTYPE_APP "App"
+#define LAUNCH_KEY_PROCESSTYPE_STANDARD "Standard"
+#define LAUNCH_KEY_PROCESSTYPE_BACKGROUND "Background"
+#define LAUNCH_KEY_PROCESSTYPE_INTERACTIVE "Interactive"
+#define LAUNCH_KEY_PROCESSTYPE_ADAPTIVE "Adaptive"
+
+/*!
+ * @function launch_activate_socket
+ *
+ * @abstract
+ * Retrieves the file descriptors for sockets specified in the process'
+ * launchd.plist(5).
+ *
+ * @param name
+ * The name of the socket entry in the service's Sockets dictionary.
+ *
+ * @param fds
+ * On return, this parameter will be populated with an array of file
+ * descriptors. One socket can have many descriptors associated with it
+ * depending on the characteristics of the network interfaces on the system.
+ * The descriptors in this array are the results of calling getaddrinfo(3) with
+ * the parameters described in launchd.plist(5).
+ *
+ * The caller is responsible for calling free(3) on the returned pointer.
+ *
+ * @param cnt
+ * The number of file descriptor entries in the returned array.
+ *
+ * @result
+ * On success, zero is returned. Otherwise, an appropriate POSIX-domain is
+ * returned. Possible error codes are:
+ *
+ * ENOENT -> There was no socket of the specified name owned by the caller.
+ * ESRCH -> The caller is not a process managed by launchd.
+ * EALREADY -> The socket has already been activated by the caller.
  */
+__OSX_AVAILABLE_STARTING(__MAC_10_10, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT OS_NONNULL1 OS_NONNULL2 OS_NONNULL3
+int
+launch_activate_socket(const char *name,
+	int * _Nonnull * _Nullable fds, size_t *cnt);
+
 typedef struct _launch_data *launch_data_t;
+typedef void (*launch_data_dict_iterator_t)(const launch_data_t lval,
+	const char *key, void * _Nullable ctx);
 
 typedef enum {
 	LAUNCH_DATA_DICTIONARY = 1,
@@ -175,167 +215,197 @@ typedef enum {
 	LAUNCH_DATA_MACHPORT,
 } launch_data_type_t;
 
-__ld_allocator
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_MALLOC OS_WARN_RESULT
 launch_data_t
-launch_data_alloc(launch_data_type_t);
+launch_data_alloc(launch_data_type_t type);
 
-__ld_allocator
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_MALLOC OS_WARN_RESULT OS_NONNULL1
 launch_data_t
-launch_data_copy(launch_data_t);
+launch_data_copy(launch_data_t ld);
 
-__ld_getter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT OS_NONNULL1
 launch_data_type_t
-launch_data_get_type(const launch_data_t);
+launch_data_get_type(const launch_data_t ld);
 
-__ld_setter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_NONNULL1
 void
-launch_data_free(launch_data_t);
+launch_data_free(launch_data_t ld);
 
-__ld_setter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_NONNULL1 OS_NONNULL2 OS_NONNULL3
 bool
-launch_data_dict_insert(launch_data_t, const launch_data_t, const char *);
+launch_data_dict_insert(launch_data_t ldict, const launch_data_t lval,
+	const char *key);
 
-__ld_getter
-launch_data_t
-launch_data_dict_lookup(const launch_data_t, const char *);
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT OS_NONNULL1 OS_NONNULL2
+launch_data_t _Nullable
+launch_data_dict_lookup(const launch_data_t ldict, const char *key);
 
-__ld_setter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_NONNULL1 OS_NONNULL2
 bool
-launch_data_dict_remove(launch_data_t, const char *);
+launch_data_dict_remove(launch_data_t ldict, const char *key);
 
-__ld_iterator(1, 2)
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_NONNULL1 OS_NONNULL2
 void
-launch_data_dict_iterate(const launch_data_t,
-	void (*)(const launch_data_t, const char *, void *), void *);
+launch_data_dict_iterate(const launch_data_t ldict,
+	launch_data_dict_iterator_t iterator, void * _Nullable ctx);
 
-__ld_getter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT OS_NONNULL1
 size_t
-launch_data_dict_get_count(const launch_data_t);
+launch_data_dict_get_count(const launch_data_t ldict);
 
-__ld_setter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_NONNULL1 OS_NONNULL2
 bool
-launch_data_array_set_index(launch_data_t, const launch_data_t, size_t);
+launch_data_array_set_index(launch_data_t larray, const launch_data_t lval,
+	size_t idx);
 
-__ld_getter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT OS_NONNULL1
 launch_data_t
-launch_data_array_get_index(const launch_data_t, size_t);
+launch_data_array_get_index(const launch_data_t larray, size_t idx);
 
-__ld_getter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT OS_NONNULL1
 size_t
-launch_data_array_get_count(const launch_data_t);
+launch_data_array_get_count(const launch_data_t larray);
 
-__ld_allocator
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_MALLOC OS_WARN_RESULT
 launch_data_t
-launch_data_new_fd(int);
+launch_data_new_fd(int fd);
 
-__ld_allocator
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_MALLOC OS_WARN_RESULT
 launch_data_t
-launch_data_new_machport(mach_port_t);
+launch_data_new_machport(mach_port_t val);
 
-__ld_allocator
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_MALLOC OS_WARN_RESULT
 launch_data_t
-launch_data_new_integer(long long);
+launch_data_new_integer(long long val);
 
-__ld_allocator
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_MALLOC OS_WARN_RESULT
 launch_data_t
-launch_data_new_bool(bool);
+launch_data_new_bool(bool val);
 
-__ld_allocator
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_MALLOC OS_WARN_RESULT
 launch_data_t
-launch_data_new_real(double);
+launch_data_new_real(double val);
 
-__ld_allocator
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_MALLOC OS_WARN_RESULT
 launch_data_t
-launch_data_new_string(const char *);
+launch_data_new_string(const char *val);
 
-__ld_allocator
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_MALLOC OS_WARN_RESULT
 launch_data_t
-launch_data_new_opaque(const void *, size_t);
+launch_data_new_opaque(const void *bytes, size_t sz);
 
- __ld_setter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_NONNULL1
 bool
-launch_data_set_fd(launch_data_t, int);
+launch_data_set_fd(launch_data_t ld, int fd);
 
- __ld_setter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_NONNULL1
 bool
-launch_data_set_machport(launch_data_t, mach_port_t);
+launch_data_set_machport(launch_data_t ld, mach_port_t mp);
 
- __ld_setter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_NONNULL1
 bool
-launch_data_set_integer(launch_data_t, long long);
+launch_data_set_integer(launch_data_t ld, long long val);
 
- __ld_setter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_NONNULL1
 bool
-launch_data_set_bool(launch_data_t, bool);
+launch_data_set_bool(launch_data_t ld, bool val);
 
- __ld_setter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_NONNULL1
 bool
-launch_data_set_real(launch_data_t, double);
+launch_data_set_real(launch_data_t ld, double val);
 
- __ld_setter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_NONNULL1
 bool
-launch_data_set_string(launch_data_t, const char *);
+launch_data_set_string(launch_data_t ld, const char *val);
 
- __ld_setter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_NONNULL1
 bool
-launch_data_set_opaque(launch_data_t, const void *, size_t);
+launch_data_set_opaque(launch_data_t ld, const void *bytes, size_t sz);
 
-__ld_getter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT OS_NONNULL1
 int
-launch_data_get_fd(const launch_data_t);
+launch_data_get_fd(const launch_data_t ld);
 
-__ld_getter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT OS_NONNULL1
 mach_port_t
-launch_data_get_machport(const launch_data_t);
+launch_data_get_machport(const launch_data_t ld);
 
-__ld_getter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT OS_NONNULL1
 long long
-launch_data_get_integer(const launch_data_t);
+launch_data_get_integer(const launch_data_t ld);
 
-__ld_getter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT OS_NONNULL1
 bool
-launch_data_get_bool(const launch_data_t);
+launch_data_get_bool(const launch_data_t ld);
 
-__ld_getter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT OS_NONNULL1
 double
-launch_data_get_real(const launch_data_t);
+launch_data_get_real(const launch_data_t ld);
 
-__ld_getter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT OS_NONNULL1
 const char *
-launch_data_get_string(const launch_data_t);
+launch_data_get_string(const launch_data_t ld);
 
-__ld_getter
-void *
-launch_data_get_opaque(const launch_data_t);
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT OS_NONNULL1
+void * _Nullable
+launch_data_get_opaque(const launch_data_t ld);
 
-__ld_getter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT OS_NONNULL1
 size_t
-launch_data_get_opaque_size(const launch_data_t);
+launch_data_get_opaque_size(const launch_data_t ld);
 
-__ld_getter
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT OS_NONNULL1
 int
-launch_data_get_errno(const launch_data_t);
+launch_data_get_errno(const launch_data_t ld);
 
-
-/* launch_get_fd()
- *
- * Use this to get the FD if you're doing asynchronous I/O with select(),
- * poll() or kevent().
- */
-__ld_normal
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_WARN_RESULT
 int
 launch_get_fd(void);
 
-/* launch_msg()
- *
- * Use this API to check in. Nothing else.
- */
-__ld_normal
+__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_10, __IPHONE_2_0, __IPHONE_8_0)
+OS_EXPORT OS_MALLOC OS_WARN_RESULT OS_NONNULL1
 launch_data_t
-launch_msg(const launch_data_t);
+launch_msg(const launch_data_t request);
 
 __END_DECLS
+#if __has_feature(assume_nonnull)
+_Pragma("clang assume_nonnull end")
+#endif
 
-#pragma GCC visibility pop
-
-#endif /* __LAUNCH_H__ */
+#endif // __XPC_LAUNCH_H__

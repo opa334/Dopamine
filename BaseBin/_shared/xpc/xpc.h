@@ -1,4 +1,4 @@
-// Copyright (c) 2009-2011 Apple Inc. All rights reserved. 
+// Copyright (c) 2009-2020 Apple Inc. All rights reserved. 
 
 #ifndef __XPC_H__
 #define __XPC_H__
@@ -24,6 +24,12 @@
 
 #include <xpc/base.h>
 
+#if __has_include(<xpc/xpc_transaction_deprecate.h>)
+#include <xpc/xpc_transaction_deprecate.h>
+#else // __has_include(<xpc/transaction_deprecate.h>)
+#define XPC_TRANSACTION_DEPRECATED
+#endif // __has_include(<xpc/transaction_deprecate.h>)
+
 XPC_ASSUME_NONNULL_BEGIN
 __BEGIN_DECLS
 
@@ -31,16 +37,16 @@ __BEGIN_DECLS
 #define __OSX_AVAILABLE_STARTING(x, y)
 #endif // __OSX_AVAILABLE_STARTING
 
-#define XPC_API_VERSION 20121012
+#define XPC_API_VERSION 20200610
 
 /*!
  * @typedef xpc_type_t
  * A type that describes XPC object types.
  */
 typedef const struct _xpc_type_s * xpc_type_t;
-#ifndef __XPC_BUILDING_XPC__
+#ifndef XPC_TYPE
 #define XPC_TYPE(type) const struct _xpc_type_s type
-#endif // __XPC_BUILDING_XPC__
+#endif // XPC_TYPE
 
 /*!
  * @typedef xpc_object_t
@@ -61,17 +67,16 @@ typedef const struct _xpc_type_s * xpc_type_t;
  * See <os/object.h> for details.
  */
 OS_OBJECT_DECL(xpc_object);
-#ifndef __XPC_PROJECT_BUILD__
+#ifndef XPC_DECL
 #define XPC_DECL(name) typedef xpc_object_t name##_t
-#endif // __XPC_PROJECT_BUILD__
+#endif // XPC_DECL
 
 #define XPC_GLOBAL_OBJECT(object) ((OS_OBJECT_BRIDGE xpc_object_t)&(object))
 #define XPC_RETURNS_RETAINED OS_OBJECT_RETURNS_RETAINED
 XPC_INLINE XPC_NONNULL_ALL
 void
 _xpc_object_validate(xpc_object_t object) {
-	void *isa = *(void * volatile *)(OS_OBJECT_BRIDGE void *)object;
-	(void)isa;
+	(void)*(unsigned long volatile *)(OS_OBJECT_BRIDGE void *)object;
 }
 #else // OS_OBJECT_USE_OBJC
 typedef void * xpc_object_t;
@@ -205,7 +210,7 @@ XPC_TYPE(_xpc_type_double);
 
 /*!
  * @define XPC_TYPE_DATE
-* A type representing a date interval. The interval is with respect to the
+ * A type representing a date interval. The interval is with respect to the
  * Unix epoch. XPC dates are in Unix time and are thus unaware of local time
  * or leap seconds.
  */
@@ -308,7 +313,7 @@ XPC_TYPE(_xpc_type_error);
 #define XPC_ERROR_KEY_DESCRIPTION _xpc_error_key_description
 __OSX_AVAILABLE_STARTING(__MAC_10_7, __IPHONE_5_0)
 XPC_EXPORT
-const char *const _xpc_error_key_description;
+const char * const _xpc_error_key_description;
 
 /*!
  * @define XPC_EVENT_KEY_NAME
@@ -318,20 +323,50 @@ const char *const _xpc_error_key_description;
 #define XPC_EVENT_KEY_NAME _xpc_event_key_name
 __OSX_AVAILABLE_STARTING(__MAC_10_7, __IPHONE_5_0)
 XPC_EXPORT
-const char *const _xpc_event_key_name;
+const char * const _xpc_event_key_name;
+
+/*!
+ * @define XPC_TYPE_SESSION
+ *
+ * @discussion
+ * Sessions represent a stateful connection between a client and a service. When either end of the connection
+ * disconnects, the entire session will be invalidated. In this case the system will make no attempt to
+ * reestablish the connection or relaunch the service.
+ *
+ * Clients can initiate a session with a service that accepts xpc_connection_t connections but session
+ * semantics will be maintained.
+ *
+ */
+#define XPC_TYPE_SESSION (&_xpc_type_session)
+XPC_EXPORT
+XPC_TYPE(_xpc_type_session);
+XPC_DECL(xpc_session);
+
+/*!
+ * @define XPC_TYPE_RICH_ERROR
+ *
+ * @discussion
+ * Rich errors provide a simple dynamic error type that can indicate whether an
+ * error is retry-able or not.
+ */
+#define XPC_TYPE_RICH_ERROR (&_xpc_type_rich_error)
+XPC_EXPORT
+XPC_TYPE(_xpc_type_rich_error);
+XPC_DECL(xpc_rich_error);
 
 XPC_ASSUME_NONNULL_END
-#ifndef __XPC_BUILDING_XPC__
+#if !defined(__XPC_BUILDING_XPC__) || !__XPC_BUILDING_XPC__
 #include <xpc/endpoint.h>
 #include <xpc/debug.h>
 #if __BLOCKS__
-#include <xpc/connection.h>
 #include <xpc/activity.h>
+#include <xpc/connection.h>
+#include <xpc/rich_error.h>
+#include <xpc/session.h>
 #endif // __BLOCKS__
 #undef __XPC_INDIRECT__
 #include <launch.h>
-#endif // __XPC_BUILDING_XPC__
-#include <xpc/private.h>
+#endif // !defined(__XPC_BUILDING_XPC__) || !__XPC_BUILDING_XPC__
 XPC_ASSUME_NONNULL_BEGIN
 
 #pragma mark XPC Object Protocol
@@ -403,6 +438,24 @@ __OSX_AVAILABLE_STARTING(__MAC_10_7, __IPHONE_5_0)
 XPC_EXPORT XPC_NONNULL_ALL XPC_WARN_RESULT
 xpc_type_t
 xpc_get_type(xpc_object_t object);
+
+/*!
+ * @function xpc_type_get_name
+ *
+ * @abstract
+ * Returns a string describing an XPC object type.
+ *
+ * @param type
+ * The type to describe.
+ *
+ * @result
+ * A string describing the type of an object, like "string" or "int64".
+ * This string should not be freed or modified.
+ */
+__OSX_AVAILABLE_STARTING(__MAC_10_15, __IPHONE_13_0)
+XPC_EXPORT XPC_NONNULL1
+const char *
+xpc_type_get_name(xpc_type_t type);
 
 /*!
  * @function xpc_copy
@@ -735,7 +788,7 @@ xpc_date_get_value(xpc_object_t xdate);
 __OSX_AVAILABLE_STARTING(__MAC_10_7, __IPHONE_5_0)
 XPC_EXPORT XPC_MALLOC XPC_RETURNS_RETAINED XPC_WARN_RESULT
 xpc_object_t
-xpc_data_create(const void * _Nullable bytes, size_t length);
+xpc_data_create(const void * _Nullable XPC_SIZEDBY(length) bytes, size_t length);
 
 /*!
  * @function xpc_data_create_with_dispatch_data
@@ -1144,7 +1197,26 @@ typedef bool (^xpc_array_applier_t)(size_t index, xpc_object_t _Nonnull value);
 __OSX_AVAILABLE_STARTING(__MAC_10_7, __IPHONE_5_0)
 XPC_EXPORT XPC_MALLOC XPC_RETURNS_RETAINED XPC_WARN_RESULT
 xpc_object_t
-xpc_array_create(const xpc_object_t _Nonnull * _Nullable objects, size_t count);
+xpc_array_create(
+	const xpc_object_t _Nonnull *XPC_COUNTEDBY(count) _Nullable objects,
+	size_t count);
+
+/*!
+ * @function xpc_array_create_empty
+ *
+ * @abstract
+ * Creates an XPC object representing an array of XPC objects.
+ *
+ * @result
+ * A new array object.
+ *
+ * @see
+ * xpc_array_create
+ */
+API_AVAILABLE(macos(11.0), ios(14.0), tvos(14.0), watchos(7.0))
+XPC_EXPORT XPC_MALLOC XPC_RETURNS_RETAINED XPC_WARN_RESULT
+xpc_object_t
+xpc_array_create_empty(void);
 
 /*!
  * @function xpc_array_set_value
@@ -1418,8 +1490,8 @@ xpc_array_set_date(xpc_object_t xarray, size_t index, int64_t value);
 __OSX_AVAILABLE_STARTING(__MAC_10_7, __IPHONE_5_0)
 XPC_EXPORT XPC_NONNULL1 XPC_NONNULL3
 void
-xpc_array_set_data(xpc_object_t xarray, size_t index, const void *bytes,
-	size_t length);
+xpc_array_set_data(xpc_object_t xarray, size_t index,
+	const void *XPC_SIZEDBY(length) bytes, size_t length);
 
 /*!
  * @function xpc_array_set_string
@@ -1791,7 +1863,7 @@ xpc_array_create_connection(xpc_object_t xarray, size_t index);
 __OSX_AVAILABLE_STARTING(__MAC_10_11, __IPHONE_9_0)
 XPC_EXPORT XPC_WARN_RESULT XPC_NONNULL_ALL
 xpc_object_t _Nullable
-xpc_array_get_dictionary(xpc_object_t self, size_t index);
+xpc_array_get_dictionary(xpc_object_t xarray, size_t index);
 
 /*!
  * @function xpc_array_get_array
@@ -1818,7 +1890,7 @@ xpc_array_get_dictionary(xpc_object_t self, size_t index);
 __OSX_AVAILABLE_STARTING(__MAC_10_11, __IPHONE_9_0)
 XPC_EXPORT XPC_WARN_RESULT XPC_NONNULL_ALL
 xpc_object_t _Nullable
-xpc_array_get_array(xpc_object_t self, size_t index);
+xpc_array_get_array(xpc_object_t xarray, size_t index);
 
 #pragma mark Dictionary
 /*!
@@ -1872,8 +1944,27 @@ typedef bool (^xpc_dictionary_applier_t)(const char * _Nonnull key,
 __OSX_AVAILABLE_STARTING(__MAC_10_7, __IPHONE_5_0)
 XPC_EXPORT XPC_MALLOC XPC_RETURNS_RETAINED XPC_WARN_RESULT
 xpc_object_t
-xpc_dictionary_create(const char * _Nonnull const * _Nullable keys,
-	const xpc_object_t _Nullable * _Nullable values, size_t count);
+xpc_dictionary_create(
+	const char *XPC_CSTRING _Nonnull const *XPC_COUNTEDBY(count) _Nullable keys,
+	const xpc_object_t _Nullable *XPC_COUNTEDBY(count) _Nullable values, size_t count);
+
+/*!
+ * @function xpc_dictionary_create_empty
+ *
+ * @abstract
+ * Creates an XPC object representing a dictionary of XPC objects keyed to
+ * C-strings.
+ *
+ * @result
+ * The new dictionary object.
+ *
+ * @see
+ * xpc_dictionary_create
+ */
+API_AVAILABLE(macos(11.0), ios(14.0), tvos(14.0), watchos(7.0))
+XPC_EXPORT XPC_MALLOC XPC_RETURNS_RETAINED XPC_WARN_RESULT
+xpc_object_t
+xpc_dictionary_create_empty(void);
 
 /*!
  * @function xpc_dictionary_create_reply
@@ -2153,8 +2244,8 @@ xpc_dictionary_set_date(xpc_object_t xdict, const char *key, int64_t value);
 __OSX_AVAILABLE_STARTING(__MAC_10_7, __IPHONE_5_0)
 XPC_EXPORT XPC_NONNULL1 XPC_NONNULL2 XPC_NONNULL3
 void
-xpc_dictionary_set_data(xpc_object_t xdict, const char *key, const void *bytes,
-	size_t length);
+xpc_dictionary_set_data(xpc_object_t xdict, const char *key,
+	const void *XPC_SIZEDBY(length) bytes, size_t length);
 
 /*!
  * @function xpc_dictionary_set_string
@@ -2503,7 +2594,7 @@ xpc_dictionary_create_connection(xpc_object_t xdict, const char *key);
 __OSX_AVAILABLE_STARTING(__MAC_10_11, __IPHONE_9_0)
 XPC_EXPORT XPC_WARN_RESULT XPC_NONNULL_ALL
 xpc_object_t _Nullable
-xpc_dictionary_get_dictionary(xpc_object_t self, const char *key);
+xpc_dictionary_get_dictionary(xpc_object_t xdict, const char *key);
 
 /*!
  * @function xpc_dictionary_get_array
@@ -2529,7 +2620,7 @@ xpc_dictionary_get_dictionary(xpc_object_t self, const char *key);
 __OSX_AVAILABLE_STARTING(__MAC_10_11, __IPHONE_9_0)
 XPC_EXPORT XPC_WARN_RESULT XPC_NONNULL_ALL
 xpc_object_t _Nullable
-xpc_dictionary_get_array(xpc_object_t self, const char *key);
+xpc_dictionary_get_array(xpc_object_t xdict, const char *key);
 
 #pragma mark Runtime
 /*!
@@ -2547,16 +2638,6 @@ __OSX_AVAILABLE_STARTING(__MAC_10_7, __IPHONE_5_0)
 XPC_EXPORT XPC_NORETURN XPC_NONNULL1
 void
 xpc_main(xpc_connection_handler_t handler);
-
-#if XPC_HOSTING_OLD_MAIN
-typedef void (*xpc_service_event_handler_t)(xpc_connection_t, xpc_object_t);
-
-__OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_7, __MAC_10_7, __IPHONE_5_0, __IPHONE_5_0)
-XPC_EXPORT XPC_NORETURN XPC_NONNULL3
-void
-xpc_service_main(int argc, const char *argv[],
-	xpc_service_event_handler_t handler);
-#endif // XPC_HOSTING_OLD_MAIN
 
 #pragma mark Transactions
 /*!
@@ -2576,7 +2657,7 @@ xpc_service_main(int argc, const char *argv[],
  *
  * The XPC runtime will automatically begin a transaction on behalf of a service
  * when a new message is received. If no reply message is expected, the
- * transaction is automatically ended when the connection event handler returns.
+ * transaction is automatically ended when the last reference to the message is released.
  * If a reply message is created, the transaction will end when the reply
  * message is sent or released. An XPC service may use xpc_transaction_begin()
  * and xpc_transaction_end() to inform the XPC runtime about activity that
@@ -2590,6 +2671,7 @@ xpc_service_main(int argc, const char *argv[],
  * connection.
  */
 __OSX_AVAILABLE_STARTING(__MAC_10_7, __IPHONE_5_0)
+XPC_TRANSACTION_DEPRECATED
 XPC_EXPORT
 void
 xpc_transaction_begin(void);
@@ -2606,6 +2688,7 @@ xpc_transaction_begin(void);
  * the XPC runtime's idle-exit policy.
  */
 __OSX_AVAILABLE_STARTING(__MAC_10_7, __IPHONE_5_0)
+XPC_TRANSACTION_DEPRECATED
 XPC_EXPORT
 void
 xpc_transaction_end(void);
@@ -2633,6 +2716,10 @@ xpc_transaction_end(void);
  * @discussion
  * Multiple calls to this function for the same event stream will result in
  * undefined behavior.
+ *
+ * There is no API to pause delivery of XPC events. If a process that
+ * has set an XPC event handler exits, events may be dropped due to races
+ * between the event handler running and the process exiting.
  */
 #if __BLOCKS__
 __OSX_AVAILABLE_STARTING(__MAC_10_7, __IPHONE_5_0)
@@ -2645,4 +2732,5 @@ xpc_set_event_stream_handler(const char *stream,
 __END_DECLS
 XPC_ASSUME_NONNULL_END
 
+#include <xpc/private.h>
 #endif // __XPC_H__ 
