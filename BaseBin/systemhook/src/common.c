@@ -404,8 +404,8 @@ kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 	return 0;
 }
 
-// Make sure the about to be spawned binary and all of it's dependencies are trust cached
-// Insert "DYLD_INSERT_LIBRARIES=/usr/lib/systemhook.dylib" into all binaries spawned
+// 1. Make sure the about to be spawned binary and all of it's dependencies are trust cached
+// 2. Insert "DYLD_INSERT_LIBRARIES=/usr/lib/systemhook.dylib" into all binaries spawned
 
 int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 					   const posix_spawn_file_actions_t *restrict file_actions,
@@ -513,7 +513,7 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 	}
 
 	if ((shouldInsertJBEnv && JBEnvAlreadyInsertedCount == 3) || (!shouldInsertJBEnv && JBEnvAlreadyInsertedCount == 0 && !hasSafeModeVariable)) {
-		// we already good, just call orig
+		// we're already good, just call orig
 		return pspawn_orig(pid, path, file_actions, attrp, argv, envp);
 	}
 	else {
