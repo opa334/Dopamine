@@ -9,6 +9,20 @@
 #import <sandbox.h>
 #import "substrate.h"
 
+/*#undef JBLogDebug
+void JBLogDebug(const char *format, ...)
+{
+	va_list va;
+	va_start(va, format);
+
+	FILE *launchdLog = fopen("/var/mobile/launchd-xpc.log", "a");
+	vfprintf(launchdLog, format, va);
+	fprintf(launchdLog, "\n");
+	fclose(launchdLog);
+
+	va_end(va);	
+}*/
+
 // Server routine to make jailbreakd able to get back primitives when it restarts
 void (*xpc_handler_orig)(uint64_t a1, uint64_t a2, xpc_object_t xdict);
 void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
@@ -23,6 +37,10 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 				NSString *clientPath = proc_get_path(clientPid);
 				NSString *jailbreakdPath = prebootPath(@"basebin/jailbreakd");
 				if (xpc_dictionary_get_bool(xdict, "jailbreak-systemwide")) {
+					char *xdictDescription = xpc_copy_description(xdict);
+					JBLogDebug("jailbreak related systemwide message %s coming from binary: %s", xdictDescription, clientPath.UTF8String);
+					free(xdictDescription);
+
 					uint64_t msgId = xpc_dictionary_get_uint64(xdict, "id");
 					xpc_object_t xreply = xpc_dictionary_create_reply(xdict);
 					switch (msgId) {
@@ -42,6 +60,11 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 									result = jbdProcessBinary(filePath);
 								}
 								xpc_dictionary_set_uint64(xreply, "result", result);
+
+								char *replyDescription = xpc_copy_description(xreply);
+								JBLogDebug("async responding to jailbreak related systemwide message %llu with %s", msgId, replyDescription);
+								free(replyDescription);
+
 								xpc_pipe_routine_reply(xreply);
 							});
 							return;
@@ -52,6 +75,11 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 							break;
 						}
 					}
+
+					char *replyDescription = xpc_copy_description(xreply);
+					JBLogDebug("responding to jailbreak related systemwide message %llu with %s", msgId, replyDescription);
+					free(replyDescription);
+
 					xpc_pipe_routine_reply(xreply);
 					return;
 				}
@@ -59,17 +87,14 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 					char *xdictDescription = xpc_copy_description(xdict);
 					JBLogDebug("jailbreak related message %s coming from binary: %s", xdictDescription, clientPath.UTF8String);
 					free(xdictDescription);
+
 					if ([clientPath isEqualToString:jailbreakdPath]) {
 						uint64_t msgId = xpc_dictionary_get_uint64(xdict, "id");
 						xpc_object_t xreply = xpc_dictionary_create_reply(xdict);
 						switch (msgId) {
 							// get pplrw
 							case LAUNCHD_JB_MSG_ID_GET_PPLRW: {
-								uint64_t magicPage = 0;
-								int ret = handoffPPLPrimitives(clientPid, &magicPage);
-								if (ret == 0) {
-									xpc_dictionary_set_uint64(xreply, "magicPage", magicPage);
-								}
+								int ret = handoffPPLPrimitives(clientPid);
 								xpc_dictionary_set_int64(xreply, "error", ret);
 								break;
 							}
@@ -85,6 +110,10 @@ void xpc_handler_hook(uint64_t a1, uint64_t a2, xpc_object_t xdict)
 								break;
 							}
 						}
+
+						char *replyDescription = xpc_copy_description(xreply);
+						JBLogDebug("responding to jailbreak related message %llu with %s", msgId, replyDescription);
+						free(replyDescription);
 
 						xpc_pipe_routine_reply(xreply);
 						return;

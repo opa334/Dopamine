@@ -72,8 +72,7 @@ void tcPagesChanged(void)
 {
 	if (!_kaddr) return NO;
 	if (_mapRefCount == 0) {
-		_mappedInPageCtx = mapInVirtual(_kaddr, 1, (uint8_t**)&_mappedInPage);
-		JBLogDebug("mapped in page %p", _mappedInPage);
+		_mappedInPage = (trustcache_page *)kaddr_to_uaddr(_kaddr, NULL);
 	};
 	_mapRefCount++;
 	return YES;
@@ -86,13 +85,6 @@ void tcPagesChanged(void)
 		abort();
 	}
 	_mapRefCount--;
-	
-	if (_mapRefCount == 0) {
-		JBLogDebug("mapping out page %p", _mappedInPage);
-		mappingDestroy(_mappedInPageCtx);
-		_mappedInPage = NULL;
-		_mappedInPageCtx = NULL;
-	}
 }
 
 - (void)ensureMappedInAndPerform:(void (^)(void))block

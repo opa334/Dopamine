@@ -19,6 +19,20 @@
 #import "update.h"
 #import "forkfix.h"
 
+/*#undef JBLogDebug
+void JBLogDebug(const char *format, ...)
+{
+	va_list va;
+	va_start(va, format);
+
+	FILE *launchdLog = fopen("/var/mobile/jailbreakd-xpc.log", "a");
+	vfprintf(launchdLog, format, va);
+	fprintf(launchdLog, "\n");
+	fclose(launchdLog);
+
+	va_end(va);	
+}*/
+
 kern_return_t bootstrap_check_in(mach_port_t bootstrap_port, const char *service, mach_port_t *server_port);
 SInt32 CFUserNotificationDisplayAlert(CFTimeInterval timeout, CFOptionFlags flags, CFURLRef iconURL, CFURLRef soundURL, CFURLRef localizationURL, CFStringRef alertHeader, CFStringRef alertMessage, CFStringRef defaultButtonTitle, CFStringRef alternateButtonTitle, CFStringRef otherButtonTitle, CFOptionFlags *responseFlags) API_AVAILABLE(ios(3.0));
 
@@ -115,8 +129,7 @@ int launchdInitPPLRW(void)
 
 	int error = xpc_dictionary_get_int64(reply, "error");
 	if (error == 0) {
-		uint64_t magicPage = xpc_dictionary_get_uint64(reply, "magicPage");
-		initPPLPrimitives(magicPage);
+		initPPLPrimitives();
 		return 0;
 	}
 	else {
@@ -179,7 +192,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 			msgId = xpc_dictionary_get_uint64(message, "id");
 
 			char *description = xpc_copy_description(message);
-			JBLogDebug("received %s message %d with dictionary: %s", systemwide ? "systemwide" : "", msgId, description);
+			JBLogDebug("received %s message %d with dictionary: %s (from binary: %s)", systemwide ? "systemwide" : "", msgId, description, proc_get_path(clientPid).UTF8String);
 			free(description);
 
 			BOOL isAllowedSystemWide = msgId == JBD_MSG_PROCESS_BINARY || 
@@ -198,10 +211,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 					
 					case JBD_MSG_PPL_INIT: {
 						if (gPPLRWStatus == kPPLRWStatusNotInitialized) {
-							uint64_t magicPage = xpc_dictionary_get_uint64(message, "magicPage");
-							if (magicPage) {
-								initPPLPrimitives(magicPage);
-							}
+							initPPLPrimitives();
 						}
 						break;
 					}
@@ -226,14 +236,8 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 					
 					case JBD_MSG_HANDOFF_PPL: {
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
-							uint64_t magicPage = 0;
-							int r = handoffPPLPrimitives(clientPid, &magicPage);
-							if (r == 0) {
-								xpc_dictionary_set_uint64(reply, "magicPage", magicPage);
-							}
-							else {
-								xpc_dictionary_set_uint64(reply, "errorCode", r);
-							}
+							int r = handoffPPLPrimitives(clientPid);
+							xpc_dictionary_set_uint64(reply, "errorCode", r);
 						}
 						else {
 							xpc_dictionary_set_uint64(reply, "error", JBD_ERR_PRIMITIVE_NOT_INITIALIZED);
@@ -380,6 +384,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						int64_t result = 0;
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 							pid_t pid = xpc_dictionary_get_int64(message, "pid");
+							JBLogDebug("setting other process %s as debugged", proc_get_path(pid).UTF8String);
 							result = proc_set_debugged_pid(pid, true);
 						}
 						else {

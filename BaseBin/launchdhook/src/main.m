@@ -39,6 +39,9 @@ NSString *generateSystemWideSandboxExtensions(void)
 
 __attribute__((constructor)) static void initializer(void)
 {
+	FILE *launchdLog = fopen("/var/mobile/launchd.log", "a");
+	fprintf(launchdLog, "Hello from launchd\n"); fflush(launchdLog);
+
 	crashreporter_start();
 	bool comingFromUserspaceReboot = bootInfo_getUInt64(@"environmentInitialized");
 	if (comingFromUserspaceReboot) {
@@ -61,48 +64,70 @@ __attribute__((constructor)) static void initializer(void)
 			if (identifier) {
 				if ([identifier isEqualToString:@"receivePPLRW"])
 				{
-					uint64_t magicPage = [(NSNumber*)message[@"magicPage"] unsignedLongLongValue];
+					fprintf(launchdLog, "Boomerang responded\n"); fflush(launchdLog);
 					boomerangPid = [(NSNumber*)message[@"boomerangPid"] intValue];
-					initPPLPrimitives(magicPage);
+					initPPLPrimitives();
+					fprintf(launchdLog, "Initialized PPLRW\n"); fflush(launchdLog);
 					dispatch_semaphore_signal(sema);
 				}
 			}
 		};
+		fprintf(launchdLog, "Contacting boomerang to get back PPLRW\n"); fflush(launchdLog);
 		[handler sendMessage:@{ @"id" : @"getPPLRW" }];
 		dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+		fprintf(launchdLog, "Recovering PAC primitives...\n"); fflush(launchdLog);
 		recoverPACPrimitives();
+		fprintf(launchdLog, "Recovered PAC primitives!\n"); fflush(launchdLog);
 		[handler sendMessage:@{ @"id" : @"primitivesInitialized" }];
+		fprintf(launchdLog, "Cleaning up boomerang...\n"); fflush(launchdLog);
 		[[NSFileManager defaultManager] removeItemAtPath:prebootPath(@"basebin/.communication") error:nil];
 		if (boomerangPid != 0) {
 			int status;
 			waitpid(boomerangPid, &status, WEXITED);
 			waitpid(boomerangPid, &status, 0);
 		}
+		fprintf(launchdLog, "Cleaned up boomerang!\n"); fflush(launchdLog);
 		bootInfo_setObject(@"jbdIconCacheNeedsRefresh", @1);
 	}
 	else {
 		// Launchd hook loaded for first time, get primitives from jailbreakd
+		fprintf(launchdLog, "Getting PPLRW from jailbreakd...\n"); fflush(launchdLog);
 		jbdInitPPLRW();
+		fprintf(launchdLog, "Got PPLRW from jailbreakd!\n"); fflush(launchdLog);
+		fprintf(launchdLog, "Recovering kcall...\n"); fflush(launchdLog);
 		recoverPACPrimitives();
+		fprintf(launchdLog, "Recovered kcall!\n"); fflush(launchdLog);
 	}
 
+	fprintf(launchdLog, "Finding launchd image index...\n"); fflush(launchdLog);
 	for (int i = 0; i < _dyld_image_count(); i++) {
 		if(!strcmp(_dyld_get_image_name(i), "/sbin/launchd")) {
 			gLaunchdImageIndex = i;
 			break;
 		}
 	}
+	fprintf(launchdLog, "Found launchd image index: %d...!\n", gLaunchdImageIndex); fflush(launchdLog);
 
+	fprintf(launchdLog, "Setting Sandbox / RootPath environment variables...\n"); fflush(launchdLog);
 	// System wide sandbox extensions and root path
 	setenv("JB_SANDBOX_EXTENSIONS", generateSystemWideSandboxExtensions().UTF8String, 1);
 	setenv("JB_ROOT_PATH", prebootPath(nil).fileSystemRepresentation, 1);
 	JB_SandboxExtensions = strdup(getenv("JB_SANDBOX_EXTENSIONS"));
 	JB_RootPath = strdup(getenv("JB_ROOT_PATH"));
+	fprintf(launchdLog, "Set Sandbox / RootPath environment variables!\n"); fflush(launchdLog);
 
+	fprintf(launchdLog, "Setting launchd as debugged...\n"); fflush(launchdLog);
 	proc_set_debugged_pid(getpid(), false);
+	fprintf(launchdLog, "Set launchd as debugged!\n"); fflush(launchdLog);
+	
+	
+	fprintf(launchdLog, "Initializing XPC hooks...\n"); fflush(launchdLog);
 	initXPCHooks();
+	fprintf(launchdLog, "Initializing daemon hooks...\n"); fflush(launchdLog);
 	initDaemonHooks();
+	fprintf(launchdLog, "Initializing spawn hooks...\n"); fflush(launchdLog);
 	initSpawnHooks();
+	fprintf(launchdLog, "Initializing IPC hooks...\n"); fflush(launchdLog);
 	initIPCHooks();
 
 	// This will ensure launchdhook is always reinjected after userspace reboots
@@ -110,4 +135,6 @@ __attribute__((constructor)) static void initializer(void)
 	setenv("DYLD_INSERT_LIBRARIES", prebootPath(@"basebin/launchdhook.dylib").fileSystemRepresentation, 1);
 
 	bootInfo_setObject(@"environmentInitialized", @1);
+	fprintf(launchdLog, "Done for now\n"); fflush(launchdLog);
+	fclose(launchdLog);
 }

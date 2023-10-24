@@ -64,11 +64,10 @@ void jbdGetStatus(uint64_t *PPLRWStatus, uint64_t *kcallStatus, pid_t *pid)
 	if (pid) *pid = serverPid;
 }
 
-void jbdTransferPPLRW(uint64_t magicPage)
+void jbdTransferPPLRW(void)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_PPL_INIT);
-	xpc_dictionary_set_uint64(message, "magicPage", magicPage);
 	sendJBDMessage(message);
 }
 
@@ -88,7 +87,7 @@ void jbdFinalizeKcall(void)
 	sendJBDMessage(message);
 }
 
-uint64_t jbdGetPPLRWPage(int64_t* errOut)
+int64_t jbdGetPPLRW(void)
 {
 	xpc_object_t message = xpc_dictionary_create_empty();
 	xpc_dictionary_set_uint64(message, "id", JBD_MSG_HANDOFF_PPL);
@@ -96,18 +95,15 @@ uint64_t jbdGetPPLRWPage(int64_t* errOut)
 	if (!reply) return -10;
 
 	int64_t errorCode = xpc_dictionary_get_int64(reply, "errorCode");
-	uint64_t magicPage = xpc_dictionary_get_uint64(reply, "magicPage");
 
-	if (errOut) *errOut = errorCode;
-	return magicPage;
+	return errorCode;
 }
 
 int jbdInitPPLRW(void)
 {
-	int64_t errorCode = 0;
-	uint64_t magicPage = jbdGetPPLRWPage(&errorCode);
+	int64_t errorCode = jbdGetPPLRW();
 	if (errorCode) return errorCode;
-	initPPLPrimitives(magicPage);
+	initPPLPrimitives();
 	return 0;
 }
 

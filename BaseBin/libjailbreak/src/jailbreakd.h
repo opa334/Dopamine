@@ -46,7 +46,7 @@ mach_port_t jbdMachPort(void);
 xpc_object_t sendJBDMessage(xpc_object_t message);
 
 void jbdGetStatus(uint64_t *PPLRWStatus, uint64_t *kcallStatus, pid_t *pid);
-void jbdTransferPPLRW(uint64_t magicPage);
+void jbdTransferPPLRW(void);
 uint64_t jbdTransferKcall();
 void jbdFinalizeKcall(void);
 

@@ -96,6 +96,7 @@ void vm_map_entry_set_prot(uint64_t entry_ptr, vm_prot_t prot, vm_prot_t max_pro
 
 void pmap_set_wx_allowed(uint64_t pmap_ptr, bool wx_allowed);
 void pmap_set_type(uint64_t pmap_ptr, uint8_t type);
+uint64_t pmap_get_ttep(uint64_t pmap_ptr);
 uint64_t pmap_lv2(uint64_t pmap_ptr, uint64_t virt);
 uint64_t get_cspr_kern_intr_en(void);
 uint64_t get_cspr_kern_intr_dis(void);

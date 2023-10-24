@@ -1,5 +1,8 @@
 #import <Foundation/Foundation.h>
 
+#define PPLRW_USER_MAPPING_OFFSET   0x7000000000
+#define PPLRW_USER_MAPPING_TTEP_IDX (PPLRW_USER_MAPPING_OFFSET / 0x1000000000)
+
 typedef enum {
 	kPPLRWStatusNotInitialized = 0,
 	kPPLRWStatusInitialized = 1
@@ -10,9 +13,10 @@ extern PPLRWStatus gPPLRWStatus;
 void gPPLRWQueue_dispatch(void (^block)(void));
 
 uint64_t va_to_pa(uint64_t table, uint64_t virt, bool *err);
+void *pa_to_uaddr(uint64_t pa);
+void *kaddr_to_uaddr(uint64_t va, bool *err);
+
 uint64_t kaddr_to_pa(uint64_t virt, bool *err);
-void *mapInVirtual(uint64_t pageStart, uint32_t pageCount, uint8_t** mappingStart);
-void mappingDestroy(void* ctx);
 
 int physreadbuf(uint64_t physaddr, void* output, size_t size);
 int physwritebuf(uint64_t physaddr, const void* input, size_t size);
@@ -41,5 +45,5 @@ int kwrite32(uint64_t va, uint32_t v);
 int kwrite16(uint64_t va, uint16_t v);
 int kwrite8(uint64_t va, uint8_t v);
 
-void initPPLPrimitives(uint64_t magicPage);
+void initPPLPrimitives(void);
 

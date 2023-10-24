@@ -38,7 +38,6 @@ typedef struct {
 } Fugu14KcallThread;
 
 static void* gThreadMapContext;
-static uint8_t* gThreadMapStart;
 static Fugu14KcallThread gFugu14KcallThread;
 KcallStatus gKCallStatus = kKcallStatusNotInitialized;
 
@@ -257,13 +256,6 @@ uint64_t initPACPrimitives(uint64_t kernelAllocation)
 		return false;
 	}
 
-	// Map in previously allocated memory for stack (4 Pages)
-	gThreadMapContext = mapInVirtual(kernelAllocation, 4, &gThreadMapStart);
-	if (!gThreadMapContext)
-	{
-		JBLogError("ERROR: gThreadMapContext lookup failure");
-	}
-
 	// stack is at middle of allocation
 	uint64_t stack = kernelAllocation + 0x8000ULL;
 
@@ -292,14 +284,14 @@ uint64_t initPACPrimitives(uint64_t kernelAllocation)
 	// Include in signed state since it is rarely changed
 	kwrite64(actContext + offsetof(kRegisterState, x[2]), get_cspr_kern_intr_en());
 
-	kRegisterState *mappedState = (kRegisterState*)((uintptr_t)gThreadMapStart + 0x8000ULL);
+	kRegisterState *mappedState = kaddr_to_uaddr(stack, NULL);
 
 	gFugu14KcallThread.thread              = thread;
 	gFugu14KcallThread.kernelStack         = stack;
 	gFugu14KcallThread.scratchMemory       = stack + 0x7000ULL;
 	gFugu14KcallThread.mappedState         = mappedState;
 	gFugu14KcallThread.actContext          = actContext;
-	gFugu14KcallThread.scratchMemoryMapped = (uint64_t*) ((uintptr_t)gThreadMapStart + 0xF000ULL);
+	gFugu14KcallThread.scratchMemoryMapped = kaddr_to_uaddr(kernelAllocation + 0xF000ULL, NULL);
 
 	gKCallStatus = kKcallStatusPrepared;
 
@@ -317,8 +309,7 @@ void finalizePACPrimitives(void)
 
 	uint64_t actContext = gFugu14KcallThread.actContext;
 	thread_t thread = gFugu14KcallThread.thread;
-
-	kRegisterState *mappedState = (kRegisterState*)((uintptr_t)gThreadMapStart + 0x8000ULL);
+	kRegisterState *mappedState = gFugu14KcallThread.mappedState;
 
 	// Create a copy of signed state
 	kreadbuf(actContext, &gFugu14KcallThread.signedState, sizeof(kRegisterState));

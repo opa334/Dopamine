@@ -3,6 +3,8 @@
 #define PTE_OUTER_SHAREABLE (2 << 8)
 #define PTE_INNER_SHAREABLE (3 << 8)
 
+//#define PTE_LEVEL2_BLOCK    PTE_VALID | (0x1)
+#define PTE_LEVEL2_BLOCK    PTE_VALID | (0x0)
 #define PTE_LEVEL3_ENTRY    PTE_VALID | 0x3
 
 #define KRW_URW_PERM        (0x60000000000040)
