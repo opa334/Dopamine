@@ -42,7 +42,7 @@ kern_return_t pmap_enter_options_addr(uint64_t pmap, uint64_t pa, uint64_t va) {
 		}
 		else {
 			// On resource shortage, alloc new page
-			pmap_alloc_page_for_ppl(0);
+			//pmap_alloc_page_for_ppl(0);
 		}
 	}
 }
