@@ -1,6 +1,5 @@
-DEVICE=root@localhost
-PORT=5500
+DEVICE=iPhone13Pro.Remote
 
-ssh $DEVICE -p $PORT "rm -rf /var/mobile/Documents/Dopamine.tipa"
-scp -P$PORT ./Dopamine/Dopamine.tipa $DEVICE:/var/mobile/Documents/Dopamine.tipa
-ssh $DEVICE -p $PORT "/var/jb/basebin/jbctl update tipa /var/mobile/Documents/Dopamine.tipa"
+ssh $DEVICE "rm -rf /var/mobile/Documents/Dopamine.tipa"
+scp ./Dopamine/Dopamine.tipa $DEVICE:/var/mobile/Documents/Dopamine.tipa
+ssh $DEVICE "/var/jb/basebin/jbctl update tipa /var/mobile/Documents/Dopamine.tipa"

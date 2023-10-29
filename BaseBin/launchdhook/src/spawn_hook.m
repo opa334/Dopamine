@@ -6,6 +6,8 @@
 #import <mach-o/dyld.h>
 #import <Foundation/Foundation.h>
 
+#define LOG_PROCESS_LAUNCHES 0
+
 void *posix_spawn_orig;
 
 int posix_spawn_orig_wrapper(pid_t *restrict pid, const char *restrict path,
@@ -51,27 +53,34 @@ int posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
 			// But before, we want to pass the primitives to boomerang
 			boomerang_userspaceRebootIncoming();
 
-			//FILE *f = fopen("/var/mobile/launch_log.txt", "a");
-			//fprintf(f, "==== USERSPACE REBOOT ====\n");
-			//fclose(f);
+#if LOG_PROCESS_LAUNCHES
+			FILE *f = fopen("/var/mobile/launch_log.txt", "a");
+			fprintf(f, "==== USERSPACE REBOOT ====\n");
+			fclose(f);
+#endif
 
 			// Say goodbye to this process
 			return posix_spawn_orig_wrapper(pid, path, file_actions, attrp, argv, envp);
 		}
 	}
 
-	/*if (path) {
-		const char *firstArg = "<none>";
-		if (argv[0]) {
-			if (argv[1]) {
-				firstArg = argv[1];
+#if LOG_PROCESS_LAUNCHES
+	if (path) {
+		FILE *f = fopen("/var/mobile/launch_log.txt", "a");
+		fprintf(f, "%s", path);
+		int ai = 0;
+		while (true) {
+			if (argv[ai]) {
+				fprintf(f, " %s", argv[ai++]);
+			}
+			else {
+				break;
 			}
 		}
-		FILE *f = fopen("/var/mobile/launch_log.txt", "a");
-		fprintf(f, "posix_spawn %s %s\n", path, firstArg);
+		fprintf(f, "\n");
 		fclose(f);
 
-		if (!strcmp(path, "/usr/libexec/xpcproxy")) {
+		/*if (!strcmp(path, "/usr/libexec/xpcproxy")) {
 			const char *tmpBlacklist[] = {
 				"com.apple.logd"
 			};
@@ -86,8 +95,9 @@ int posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
 					return orig(pid, path, file_actions, attrp, argv, envp);
 				}
 			}
-		}
-	}*/
+		}*/
+	}
+#endif
 
 	return spawn_hook_common(pid, path, file_actions, attrp, argv, envp, posix_spawn_orig_wrapper);
 }
