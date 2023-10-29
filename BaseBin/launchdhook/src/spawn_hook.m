@@ -35,13 +35,6 @@ int posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
 					   char *const envp[restrict])
 {
 	if (path) {
-		const char *firstArg = "<none>";
-		if (argv[0]) {
-			if (argv[1]) {
-				firstArg = argv[1];
-			}
-		}
-
 		char executablePath[1024];
 		uint32_t bufsize = sizeof(executablePath);
 		_NSGetExecutablePath(&executablePath[0], &bufsize);
@@ -71,7 +64,10 @@ int posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
 		int ai = 0;
 		while (true) {
 			if (argv[ai]) {
-				fprintf(f, " %s", argv[ai++]);
+				if (ai >= 1) {
+					fprintf(f, " %s", argv[ai]);
+				}
+				ai++;
 			}
 			else {
 				break;
