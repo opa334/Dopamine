@@ -41,7 +41,7 @@ xpc_object_t xpc_dictionary_get_value_hook(xpc_object_t xdict, const char *key)
 		xpc_dictionary_add_launch_daemon_plist_at_path(origXdict, prebootPath(@"basebin/LaunchDaemons/com.opa334.trustcache_rebuild.plist").fileSystemRepresentation);
 		for (NSString *daemonPlistName in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:prebootPath(@"Library/LaunchDaemons") error:nil]) {
 			if ([daemonPlistName.pathExtension isEqualToString:@"plist"]) {
-				addLaunchDaemon(origXdict, [prebootPath(@"Library/LaunchDaemons") stringByAppendingPathComponent:daemonPlistName].fileSystemRepresentation);
+				xpc_dictionary_add_launch_daemon_plist_at_path(origXdict, [prebootPath(@"Library/LaunchDaemons") stringByAppendingPathComponent:daemonPlistName].fileSystemRepresentation);
 			}
 		}
 	}
