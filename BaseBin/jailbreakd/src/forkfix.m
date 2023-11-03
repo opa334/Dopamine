@@ -7,14 +7,6 @@
 #import <libjailbreak/libjailbreak.h>
 extern int pid_resume(int pid);
 
-typedef struct {
-	mach_vm_address_t address;
-	mach_vm_size_t size;
-	vm_prot_t prot;
-	vm_prot_t max_prot;
-} mem_region_info_t;
-extern kern_return_t mach_vm_region_recurse(vm_map_read_t target_task, mach_vm_address_t *address, mach_vm_size_t *size, natural_t *nesting_depth, vm_region_recurse_info_t info, mach_msg_type_number_t *infoCnt);
-
 int64_t apply_fork_fixup(pid_t parentPid, pid_t childPid)
 {
 	int64_t retval = 3;
