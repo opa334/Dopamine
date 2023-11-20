@@ -5,6 +5,7 @@
 #include <sys/sysctl.h>
 #include <sys/stat.h>
 #include <paths.h>
+#include <util.h>
 #include "sandbox.h"
 extern char **environ;
 
