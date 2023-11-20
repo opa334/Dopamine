@@ -5,6 +5,7 @@
 #include <sys/sysctl.h>
 #include <sys/stat.h>
 #include <paths.h>
+#include <util.h>
 #include "sandbox.h"
 extern char **environ;
 
@@ -129,6 +130,12 @@ int execve_hook(const char *path, char *const argv[], char *const envp[])
 	if (attr) {
 		posix_spawnattr_destroy(&attr);
 	}
+	
+	if(result != 0) { // posix_spawn will return errno and restore errno if it fails
+		errno = result; // so we need to set errno by ourself
+		return -1;
+	}
+
 	return result;
 }
 
@@ -361,6 +368,18 @@ pid_t vfork_hook(void)
 	return vfork();
 }
 
+pid_t forkpty_hook(int *amaster, char *name, struct termios *termp, struct winsize *winp)
+{
+	loadForkFix();
+	return forkpty(amaster, name, termp, winp);
+}
+
+int daemon_hook(int __nochdir, int __noclose)
+{
+	loadForkFix();
+	return daemon(__nochdir, __noclose);
+}
+
 bool shouldEnableTweaks(void)
 {
 	if (access(JB_ROOT_PATH("/basebin/.safe_mode"), F_OK) == 0) {
@@ -471,3 +490,5 @@ DYLD_INTERPOSE(sandbox_init_with_extensions_hook, sandbox_init_with_extensions)
 DYLD_INTERPOSE(ptrace_hook, ptrace)
 DYLD_INTERPOSE(fork_hook, fork)
 DYLD_INTERPOSE(vfork_hook, vfork)
+DYLD_INTERPOSE(forkpty_hook, forkpty)
+DYLD_INTERPOSE(daemon_hook, daemon)

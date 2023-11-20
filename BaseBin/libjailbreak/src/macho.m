@@ -70,6 +70,10 @@ int64_t machoFindArch(FILE *machoFile, uint32_t subtypeToSearch)
 		fseek(machoFile, archOffset, SEEK_SET);
 		fread(&mh, sizeof(mh), 1, machoFile);
 		uint32_t maskedSubtype = OSSwapLittleToHostInt32(mh.cpusubtype);
+
+		if(OSSwapLittleToHostInt32(mh.filetype)==MH_EXECUTE && maskedSubtype==CPU_SUBTYPE_ARM64E)
+			return; //skip arm64e old ABI for executable on ios15
+			
 		if (maskedSubtype == subtypeToSearch) {
 			outArchOffset = archOffset;
 			*stop = YES;
