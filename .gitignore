@@ -1,0 +1,13 @@
+.DS_Store
+/.build
+/*.xcodeproj
+xcuserdata/
+DerivedData/
+.swiftpm/xcode/
+/Package.resolved
+/Server/orig.ipa
+/Server/serverCert/fullchain.cer
+/Server/serverCert/server.key
+Dopamine/Dopamine/bootstrap/tmp/
+.idea
+Tools/fastPathSign/.build_*
