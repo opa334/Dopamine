@@ -85,25 +85,19 @@ uint64_t vtophys_lvl(uint64_t tte_ttep, uint64_t va, uint64_t *leaf_level, uint6
 		if (gPrimitives.physreadbuf && physical) {
 			uint64_t tte_pa = tte_ttep + (tteIndex * sizeof(uint64_t));
 			tteEntry = physread64(tte_pa);
-			if (tteEntry) {
-				if (leaf_tte_ttep) *leaf_tte_ttep = tte_pa;
-				if (leaf_level) *leaf_level = curLevel;
-			}
+			if (leaf_tte_ttep) *leaf_tte_ttep = tte_pa;
+			if (leaf_level) *leaf_level = curLevel;
 		}
 		else if (gPrimitives.kreadbuf && !physical) {
 			uint64_t tte_va = tte_ttep + (tteIndex * sizeof(uint64_t));
 			tteEntry = kread64(tte_va);
-			if (tteEntry) {
-				if (leaf_tte_ttep) *leaf_tte_ttep = tte_va;
-				if (leaf_level) *leaf_level = curLevel;
-			}
+			if (leaf_tte_ttep) *leaf_tte_ttep = tte_va;
+			if (leaf_level) *leaf_level = curLevel;
 		}
 		else {
 			errno = 1043;
 			return 0;
 		}
-
-		//printf("tteEntry: 0x%llx\n", tteEntry);
 
 		if ((tteEntry & validMask) != validMask) {
 			errno = 1042;
@@ -111,8 +105,8 @@ uint64_t vtophys_lvl(uint64_t tte_ttep, uint64_t va, uint64_t *leaf_level, uint6
 		}
 
 		if ((tteEntry & typeMask) == typeBlock) {
-			pa = ((tteEntry & ARM_TTE_PA_MASK & ~offMask) | (va & offMask));
-			break;
+			// Found block mapping, no matter what level we are in, this is the end
+			return ((tteEntry & ARM_TTE_PA_MASK & ~offMask) | (va & offMask));
 		}
 
 		if (physical) {
@@ -123,7 +117,9 @@ uint64_t vtophys_lvl(uint64_t tte_ttep, uint64_t va, uint64_t *leaf_level, uint6
 		}
 	}
 
-	return pa;
+	// If we end up here, it means we did not find a block mapping
+	// In this case, return the last page table address we traversed
+	return tte_ttep;
 }
 
 uint64_t vtophys(uint64_t tte_ttep, uint64_t va)
