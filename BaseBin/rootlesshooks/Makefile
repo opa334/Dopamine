@@ -1,4 +1,4 @@
-TARGET := iphone:clang:16.4:15.0
+TARGET := iphone:clang:16.5:15.0
 INSTALL_TARGET_PROCESSES = lsd cfprefsd
 FINALPACKAGE = 1
 THEOS_PACKAGE_SCHEME = rootless
