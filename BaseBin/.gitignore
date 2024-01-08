@@ -2,3 +2,5 @@
 .include
 basebin.tar
 basebin.tc
+
+libjailbreak/libjailbreak.dylib
