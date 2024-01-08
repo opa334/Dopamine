@@ -94,7 +94,7 @@ uint64_t _alloc_page_table(void)
 	// Deallocate page (our allocated page table will stay, because we bumped it's reference count)
 	vm_deallocate(mach_task_self(), free_lvl2, 0x4000);
 
-	// Decrement reference count of the page table again
+	// Decrement reference count of our allocated page table again
 	kwrite16(pinfo, kread16(pinfo)-1);
 
 	// Remove our allocated page table from it's original location
@@ -116,7 +116,7 @@ uint64_t pmap_alloc_page_table(uint64_t pmap, uint64_t va)
 
 	// At this point the allocated page table is associated
 	// to the pmap of this process alongside the address it was allocated on
-	// We now assoicate it to with the place in which it will be used
+	// We now need to replace the association with the context in which it will be used
 	kwrite64(ptdp + 0x10, pmap);
 	kwrite64(ptdp + 0x18, va);  // TODO: Fake 16k devices (4 values)
 
