@@ -1,0 +1,6 @@
+[submodule "BaseBin/ChOma"]
+	path = BaseBin/ChOma
+	url = https://github.com/opa334/ChOma
+[submodule "BaseBin/XPF"]
+	path = BaseBin/XPF
+	url = https://github.com/opa334/XPF
