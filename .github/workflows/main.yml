@@ -49,10 +49,10 @@ jobs:
       - name: Install SDK
         run: |
           set -x
-          curl -L https://github.com/theos/sdks/releases/latest/download/iPhoneOS16.5.sdk.tar.xz --output $(THEOS)/sdks
-          gunzip $(THEOS)/sdks/iPhoneOS16.5.sdk.tar.xz
-          tar -xf $(THEOS)/sdks/iPhoneOS16.5.sdk.tar -C $(THEOS)/sdks
-          rm $(THEOS)/sdks/iPhoneOS16.5.sdk.tar
+          curl -L https://github.com/theos/sdks/releases/latest/download/iPhoneOS16.5.sdk.tar.xz --output $THEOS/sdks
+          gunzip $THEOS/sdks/iPhoneOS16.5.sdk.tar.xz
+          tar -xf $THEOS/sdks/iPhoneOS16.5.sdk.tar -C $THEOS/sdks
+          rm $THEOS/sdks/iPhoneOS16.5.sdk.tar
 
       - name: Build and Install trustcache
         run: |
