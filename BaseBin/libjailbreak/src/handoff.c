@@ -2,6 +2,7 @@
 #include "kernel.h"
 #include "pte.h"
 #include "translation.h"
+#include "physrw.h"
 #include <mach/mach.h>
 #include <stdio.h>
 #include <errno.h>
@@ -178,28 +179,25 @@ int handoffPPLPrimitives(pid_t pid)
 
 	int ret = 0;
 
-	/*bool proc_needs_release = false;
-	uint64_t proc = proc_for_pid(pid, &proc_needs_release);
+	uint64_t proc = proc_find(pid);
 	if (proc) {
-		uint64_t task = proc_get_task(proc);
+		uint64_t task = proc_task(proc);
 		if (task) {
-			uint64_t vmMap = task_get_vm_map(task);
+			uint64_t vmMap = kread_ptr(task + koffsetof(task, map));
 			if (vmMap) {
-				uint64_t pmap = vm_map_get_pmap(vmMap);
+				uint64_t pmap = kread_ptr(task + koffsetof(vm_map, pmap));
 				if (pmap) {
 					// Map the entire kernel physical address space into the userland process, starting at PPLRW_USER_MAPPING_OFFSET
-					uint64_t physBase = kread64(bootInfo_getSlidUInt64(@"gPhysBase"));
-					uint64_t physSize = kread64(bootInfo_getSlidUInt64(@"gPhysSize"));
-					ret = pmap_map_in(pmap, physBase+PPLRW_USER_MAPPING_OFFSET, physBase, physSize);
+					ret = pmap_map_in(pmap, kconstant(physBase)+PPLRW_USER_MAPPING_OFFSET, kconstant(physBase), kconstant(physSize));
 				}
 				else { ret = -5; }
 			}
 			else { ret = -4; }
 		}
 		else { ret = -3; }
-		if (proc_needs_release) proc_rele(proc);
+		proc_rele(proc);
 	}
-	else { ret = -2; }*/
+	else { ret = -2; }
 
 	return ret;
 }

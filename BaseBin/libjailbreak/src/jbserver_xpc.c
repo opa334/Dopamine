@@ -6,14 +6,14 @@ extern struct jbserver_domain gWatchdogDomain;
 extern struct jbserver_domain gRootDomain;
 
 struct jbserver_impl gGlobalServer = {
-    .maxDomain = 1,
-    .domains = (struct jbserver_domain*[]){
-        &gSystemwideDomain,
+	.maxDomain = 1,
+	.domains = (struct jbserver_domain*[]){
+		&gSystemwideDomain,
 		&gPlatformDomain,
 		&gWatchdogDomain,
 		&gRootDomain,
 		NULL,
-    }
+	}
 };
 
 int jbserver_received_xpc_message(struct jbserver_impl *server, xpc_object_t xmsg)
@@ -61,6 +61,9 @@ int jbserver_received_xpc_message(struct jbserver_impl *server, xpc_object_t xms
 					}
 					break;
 				}
+				case JBS_TYPE_DICTIONARY:
+				args[i] = (void *)xpc_dictionary_get_dictionary(xmsg, argDesc->name);
+				break;
 				case JBS_TYPE_CALLER_TOKEN:
 				args[i] = (void *)&clientToken;
 				break;
@@ -97,6 +100,13 @@ int jbserver_received_xpc_message(struct jbserver_impl *server, xpc_object_t xms
 							xpc_dictionary_set_data(xreply, argDesc->name, (const void *)argsOut[i], (size_t)argsOut[i+1]);
 							free(argsOut[i]);
 						}
+					}
+					break;
+				}
+				case JBS_TYPE_DICTIONARY: {
+					if (argsOut[i]) {
+						xpc_dictionary_set_value(xreply, argDesc->name, (xpc_object_t)argsOut[i]);
+						xpc_release((xpc_object_t)argsOut[i]);
 					}
 					break;
 				}

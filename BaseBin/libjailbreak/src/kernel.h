@@ -68,6 +68,7 @@ struct system_info {
 
 			uint32_t ucred;
 			uint32_t csflags;
+			uint32_t struct_size;
 		} proc;
 
 		struct {
@@ -144,9 +145,9 @@ struct system_info {
 		} tt_free_entry;
 
 		struct {
-			uint64_t next;
-			uint64_t this;
-			uint64_t struct_size;
+			uint32_t next;
+			uint32_t this;
+			uint32_t struct_size;
 		} trustcache;
 	} kernelStruct;
 };
@@ -276,6 +277,7 @@ extern struct system_info gSystemInfo;
 #define ksizeof(structname) (gSystemInfo.kernelStruct.structname.struct_size)
 
 uint64_t proc_find(pid_t pidToFind);
+uint64_t proc_task(uint64_t proc);
 int proc_rele(uint64_t proc);
 uint64_t proc_self(void);
 uint64_t task_self(void);

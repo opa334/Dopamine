@@ -45,7 +45,7 @@ struct jbserver_domain gSystemwideDomain = {
 		{
 			.handler = systemwide_get_jb_root,
 			.args = (jbserver_arg[]){
-				{ .name = "jb-path", .type = JBS_TYPE_STRING, .out = true },
+				{ .name = "root-path", .type = JBS_TYPE_STRING, .out = true },
 				{ 0 },
 			},
 		},

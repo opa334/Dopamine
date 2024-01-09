@@ -7,17 +7,17 @@ static bool platform_domain_allowed(audit_token_t clientToken)
 
 static int platform_set_process_debugged(uint64_t pid)
 {
-
+	return 0;
 }
 
 static int platform_jailbreak_update(const char *updateTar)
 {
-
+	return 0;
 }
 
 static int platform_set_jailbreak_visible(bool visible)
 {
-
+	return 0;
 }
 
 struct jbserver_domain gPlatformDomain = {

@@ -7,22 +7,22 @@ static bool root_domain_allowed(audit_token_t clientToken)
 
 static int root_get_physrw(audit_token_t *clientToken)
 {
-
+	return 0;
 }
 
-static int root_get_kcall(audit_token_t *clientToken)
+static int root_get_kcall(audit_token_t *clientToken, uint64_t stackAllocation, uint64_t *arcContextOut)
 {
-
+	return 0;
 }
 
-static int root_get_sysinfo(void)
+static int root_get_sysinfo(xpc_object_t *sysInfoOut)
 {
-
+	return 0;
 }
 
-static int root_add_cdhash(uint8_t *cdhashData, size_t cdHashLen)
+static int root_add_cdhash(uint8_t *cdhashData, size_t cdhashLen)
 {
-
+	return 0;
 }
 
 struct jbserver_domain gRootDomain = {
@@ -41,6 +41,8 @@ struct jbserver_domain gRootDomain = {
 			.handler = root_get_kcall,
 			.args = (jbserver_arg[]){
 				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
+				{ .name = "stack-allocation", .type = JBS_TYPE_UINT64, .out = false },
+				{ .name = "arc-context", .type = JBS_TYPE_UINT64, .out = true },
 				{ 0 },
 			},
 		},
@@ -48,6 +50,7 @@ struct jbserver_domain gRootDomain = {
 		{
 			.handler = root_get_sysinfo,
 			.args = (jbserver_arg[]){
+				{ .name = "sysinfo", .type = JBS_TYPE_DICTIONARY, .out = true },
 				{ 0 },
 			},
 		},

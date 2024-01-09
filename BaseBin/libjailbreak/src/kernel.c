@@ -34,6 +34,18 @@ int proc_rele(uint64_t proc)
 	return -1;
 }
 
+uint64_t proc_task(uint64_t proc)
+{
+	if (koffsetof(proc, task)) {
+		// iOS <= 15: proc has task attribute
+		return kread_ptr(proc + koffsetof(proc, task));
+	}
+	else {
+		// iOS >= 16: task is always at "proc + sizeof(proc)"
+		return proc + ksizeof(proc);
+	}
+}
+
 uint64_t proc_self(void)
 {
 	static uint64_t gSelfProc = 0;
@@ -52,7 +64,7 @@ uint64_t task_self(void)
 	static uint64_t gSelfTask = 0;
 	static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
-		gSelfTask = kread_ptr(proc_self() + koffsetof(proc, task));
+		gSelfTask = proc_task(proc_self());
 	});
 	return gSelfTask;
 }
