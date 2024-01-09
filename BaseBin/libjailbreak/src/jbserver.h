@@ -2,8 +2,10 @@
 #include <stdint.h>
 
 typedef enum {
+    JBS_TYPE_BOOL,
 	JBS_TYPE_UINT64,
 	JBS_TYPE_STRING,
+	JBS_TYPE_DATA,
 	JBS_TYPE_CALLER_TOKEN,
 } jbserver_type;
 
@@ -16,13 +18,11 @@ typedef struct s_jbserver_arg
 
 struct jbserver_action {
     void *handler;
-	uint64_t argCount;
     jbserver_arg *args;
 };
 
 struct jbserver_domain {
     void *permissionHandler;
-    uint64_t actionCount;
     struct jbserver_action actions[];  // Flexible array member moved to the end
 };
 
@@ -49,8 +49,8 @@ extern struct jbserver_impl gGlobalServer;
 // Reachable from all processes that have CS_PLATFORMIZED or are entitled with platform-application or are the Dopamine app itself
 #define JBS_DOMAIN_PLATFORM 2
 #define JBS_PLATFORM_SET_PROCESS_DEBUGGED 1
-#define JBS_ROOT_JAILBREAK_UPDATE 2
-#define JBS_ROOT_SET_JAILBREAK_VISIBLE 3
+#define JBS_PLATFORM_JAILBREAK_UPDATE 2
+#define JBS_PLATFORM_SET_JAILBREAK_VISIBLE 3
 
 // Domain: Watchdog
 // Only reachable from watchdogd
