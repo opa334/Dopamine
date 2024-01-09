@@ -35,7 +35,7 @@ jobs:
         with:
           packages: ldid findutils sed coreutils make
 
-      - name: Install THEOS (without SDKs)
+      - name: Install THEOS
         run: |
           set -x
           export BASEDIR="$(pwd)"
@@ -44,15 +44,11 @@ jobs:
           curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos >> install-theos.sh
           gsed -E "/^\s*get_theos\s*$/,+1 s/^(\s*)(get_sdks)\s*$/\1mkdir -p \${THEOS}\/sdks\n\1touch \${THEOS}\/sdks\/sdk\n\1\2/g" -i install-theos.sh
           bash install-theos.sh
-          cd $BASEDIR
-
-      - name: Install SDK
-        run: |
-          set -x
           curl -L https://github.com/theos/sdks/releases/latest/download/iPhoneOS16.5.sdk.tar.xz --output $THEOS/sdks
           gunzip $THEOS/sdks/iPhoneOS16.5.sdk.tar.xz
           tar -xf $THEOS/sdks/iPhoneOS16.5.sdk.tar -C $THEOS/sdks
           rm $THEOS/sdks/iPhoneOS16.5.sdk.tar
+          cd $BASEDIR
 
       - name: Build and Install trustcache
         run: |
