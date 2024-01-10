@@ -7,6 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8C029F432B4DFD5D0071DE58 /* ExploitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F422B4DFD5D0071DE58 /* ExploitManager.m */; };
+		8C029F462B4DFD910071DE58 /* Bootstrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F452B4DFD910071DE58 /* Bootstrapper.m */; };
+		8C029F4A2B4DFDCD0071DE58 /* kfd.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F472B4DFDC30071DE58 /* kfd.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8C029F4E2B4E1FF30071DE58 /* Exploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F4D2B4E1FF30071DE58 /* Exploit.m */; };
+		8C029F512B4E21450071DE58 /* libchoma.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F502B4E21450071DE58 /* libchoma.dylib */; };
+		8C029F532B4E214E0071DE58 /* libxpf.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F522B4E214E0071DE58 /* libxpf.dylib */; };
+		8C029F572B4E21CE0071DE58 /* libfragmentzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F542B4E21CE0071DE58 /* libfragmentzip.a */; };
+		8C029F582B4E21CE0071DE58 /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F552B4E21CE0071DE58 /* libcurl.a */; };
+		8C029F592B4E21CE0071DE58 /* libgrabkernel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F562B4E21CE0071DE58 /* libgrabkernel.a */; };
+		8C029F5B2B4E21F50071DE58 /* libchoma.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 8C029F502B4E21450071DE58 /* libchoma.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		8C029F5D2B4E21F70071DE58 /* libxpf.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 8C029F522B4E214E0071DE58 /* libxpf.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		8C029F602B4E25350071DE58 /* EnvironmentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F5F2B4E25350071DE58 /* EnvironmentManager.m */; };
+		8C029F632B4E2E140071DE58 /* Jailbreaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F622B4E2E140071DE58 /* Jailbreaker.m */; };
+		8C029F662B4E2E970071DE58 /* libcompression.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F652B4E2E7D0071DE58 /* libcompression.tbd */; };
+		8C029F682B4E31D50071DE58 /* libMobileGestalt.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F672B4E31D50071DE58 /* libMobileGestalt.tbd */; };
+		8C029F6B2B4E320E0071DE58 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F6A2B4E320E0071DE58 /* libz.tbd */; };
 		8C3245552AD58309001EC3CA /* ExpandableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3245542AD58309001EC3CA /* ExpandableButton.m */; };
 		8C3245582AD5E24F001EC3CA /* GlobalAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3245572AD5E24F001EC3CA /* GlobalAppearance.m */; };
 		8C71981A2ABF0E82003C6658 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7198192ABF0E82003C6658 /* AppDelegate.m */; };
@@ -19,7 +35,52 @@
 		8CB2E7642AD1788F000A6B90 /* ActionMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB2E7632AD1788F000A6B90 /* ActionMenuView.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		8C029F4B2B4DFDCD0071DE58 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Exploits;
+			dstSubfolderSpec = 10;
+			files = (
+				8C029F4A2B4DFDCD0071DE58 /* kfd.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8C029F5C2B4E21F50071DE58 /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				8C029F5B2B4E21F50071DE58 /* libchoma.dylib in Embed Libraries */,
+				8C029F5D2B4E21F70071DE58 /* libxpf.dylib in Embed Libraries */,
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		8C029F412B4DFD5D0071DE58 /* ExploitManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploitManager.h; sourceTree = "<group>"; };
+		8C029F422B4DFD5D0071DE58 /* ExploitManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploitManager.m; sourceTree = "<group>"; };
+		8C029F442B4DFD910071DE58 /* Bootstrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bootstrapper.h; sourceTree = "<group>"; };
+		8C029F452B4DFD910071DE58 /* Bootstrapper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Bootstrapper.m; sourceTree = "<group>"; };
+		8C029F472B4DFDC30071DE58 /* kfd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = kfd.framework; path = ../../../../Exploits/kfd/kfd.framework; sourceTree = "<group>"; };
+		8C029F4C2B4E1FF30071DE58 /* Exploit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Exploit.h; sourceTree = "<group>"; };
+		8C029F4D2B4E1FF30071DE58 /* Exploit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Exploit.m; sourceTree = "<group>"; };
+		8C029F502B4E21450071DE58 /* libchoma.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libchoma.dylib; path = ../../../../BaseBin/.build/libchoma.dylib; sourceTree = "<group>"; };
+		8C029F522B4E214E0071DE58 /* libxpf.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxpf.dylib; path = ../../../../BaseBin/.build/libxpf.dylib; sourceTree = "<group>"; };
+		8C029F542B4E21CE0071DE58 /* libfragmentzip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libfragmentzip.a; sourceTree = "<group>"; };
+		8C029F552B4E21CE0071DE58 /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcurl.a; sourceTree = "<group>"; };
+		8C029F562B4E21CE0071DE58 /* libgrabkernel.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgrabkernel.a; sourceTree = "<group>"; };
+		8C029F5E2B4E25350071DE58 /* EnvironmentManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EnvironmentManager.h; sourceTree = "<group>"; };
+		8C029F5F2B4E25350071DE58 /* EnvironmentManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EnvironmentManager.m; sourceTree = "<group>"; };
+		8C029F612B4E2E140071DE58 /* Jailbreaker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Jailbreaker.h; sourceTree = "<group>"; };
+		8C029F622B4E2E140071DE58 /* Jailbreaker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Jailbreaker.m; sourceTree = "<group>"; };
+		8C029F652B4E2E7D0071DE58 /* libcompression.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcompression.tbd; path = usr/lib/libcompression.tbd; sourceTree = SDKROOT; };
+		8C029F672B4E31D50071DE58 /* libMobileGestalt.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libMobileGestalt.tbd; path = usr/lib/libMobileGestalt.tbd; sourceTree = SDKROOT; };
+		8C029F6A2B4E320E0071DE58 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		8C3245532AD58309001EC3CA /* ExpandableButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExpandableButton.h; sourceTree = "<group>"; };
 		8C3245542AD58309001EC3CA /* ExpandableButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExpandableButton.m; sourceTree = "<group>"; };
 		8C3245562AD5E24F001EC3CA /* GlobalAppearance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlobalAppearance.h; sourceTree = "<group>"; };
@@ -47,17 +108,65 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C029F6B2B4E320E0071DE58 /* libz.tbd in Frameworks */,
+				8C029F682B4E31D50071DE58 /* libMobileGestalt.tbd in Frameworks */,
+				8C029F582B4E21CE0071DE58 /* libcurl.a in Frameworks */,
+				8C029F572B4E21CE0071DE58 /* libfragmentzip.a in Frameworks */,
+				8C029F592B4E21CE0071DE58 /* libgrabkernel.a in Frameworks */,
+				8C029F512B4E21450071DE58 /* libchoma.dylib in Frameworks */,
+				8C029F532B4E214E0071DE58 /* libxpf.dylib in Frameworks */,
+				8C029F662B4E2E970071DE58 /* libcompression.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8C029F402B4DFCFE0071DE58 /* Jailbreak */ = {
+			isa = PBXGroup;
+			children = (
+				8C029F442B4DFD910071DE58 /* Bootstrapper.h */,
+				8C029F452B4DFD910071DE58 /* Bootstrapper.m */,
+				8C029F612B4E2E140071DE58 /* Jailbreaker.h */,
+				8C029F622B4E2E140071DE58 /* Jailbreaker.m */,
+				8C029F4C2B4E1FF30071DE58 /* Exploit.h */,
+				8C029F4D2B4E1FF30071DE58 /* Exploit.m */,
+				8C029F412B4DFD5D0071DE58 /* ExploitManager.h */,
+				8C029F422B4DFD5D0071DE58 /* ExploitManager.m */,
+				8C029F5E2B4E25350071DE58 /* EnvironmentManager.h */,
+				8C029F5F2B4E25350071DE58 /* EnvironmentManager.m */,
+			);
+			path = Jailbreak;
+			sourceTree = "<group>";
+		};
+		8C029F4F2B4E211E0071DE58 /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				8C029F502B4E21450071DE58 /* libchoma.dylib */,
+				8C029F522B4E214E0071DE58 /* libxpf.dylib */,
+				8C029F552B4E21CE0071DE58 /* libcurl.a */,
+				8C029F542B4E21CE0071DE58 /* libfragmentzip.a */,
+				8C029F562B4E21CE0071DE58 /* libgrabkernel.a */,
+			);
+			path = Dependencies;
+			sourceTree = "<group>";
+		};
+		8C029F642B4E2E7D0071DE58 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8C029F6A2B4E320E0071DE58 /* libz.tbd */,
+				8C029F672B4E31D50071DE58 /* libMobileGestalt.tbd */,
+				8C029F652B4E2E7D0071DE58 /* libcompression.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		8C71980C2ABF0E82003C6658 = {
 			isa = PBXGroup;
 			children = (
 				8C7198172ABF0E82003C6658 /* Dopamine */,
 				8C7198162ABF0E82003C6658 /* Products */,
+				8C029F642B4E2E7D0071DE58 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -75,7 +184,9 @@
 				8C7198332ABF133D003C6658 /* App Delegates */,
 				8C7198312ABF12F4003C6658 /* UI */,
 				8C9E46262ACA1C5800B5456A /* Extensions */,
+				8C029F402B4DFCFE0071DE58 /* Jailbreak */,
 				8C7198322ABF130A003C6658 /* Exploits */,
+				8C029F4F2B4E211E0071DE58 /* Dependencies */,
 				8C7198242ABF0E84003C6658 /* Assets.xcassets */,
 				8C7198262ABF0E84003C6658 /* LaunchScreen.storyboard */,
 				8C7198292ABF0E84003C6658 /* Info.plist */,
@@ -103,6 +214,7 @@
 		8C7198322ABF130A003C6658 /* Exploits */ = {
 			isa = PBXGroup;
 			children = (
+				8C029F472B4DFDC30071DE58 /* kfd.framework */,
 			);
 			path = Exploits;
 			sourceTree = "<group>";
@@ -137,6 +249,8 @@
 				8C7198112ABF0E82003C6658 /* Sources */,
 				8C7198122ABF0E82003C6658 /* Frameworks */,
 				8C7198132ABF0E82003C6658 /* Resources */,
+				8C029F4B2B4DFDCD0071DE58 /* Embed Frameworks */,
+				8C029F5C2B4E21F50071DE58 /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -197,10 +311,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C7198202ABF0E82003C6658 /* RootViewController.m in Sources */,
+				8C029F432B4DFD5D0071DE58 /* ExploitManager.m in Sources */,
 				8C71981A2ABF0E82003C6658 /* AppDelegate.m in Sources */,
+				8C029F632B4E2E140071DE58 /* Jailbreaker.m in Sources */,
 				8C9E46292ACA1CC700B5456A /* UIImage+Blur.m in Sources */,
+				8C029F462B4DFD910071DE58 /* Bootstrapper.m in Sources */,
 				8CB2E7642AD1788F000A6B90 /* ActionMenuView.m in Sources */,
 				8C71982B2ABF0E84003C6658 /* main.m in Sources */,
+				8C029F602B4E25350071DE58 /* EnvironmentManager.m in Sources */,
+				8C029F4E2B4E1FF30071DE58 /* Exploit.m in Sources */,
 				8C3245552AD58309001EC3CA /* ExpandableButton.m in Sources */,
 				8C3245582AD5E24F001EC3CA /* GlobalAppearance.m in Sources */,
 				8C71981D2ABF0E82003C6658 /* SceneDelegate.m in Sources */,
@@ -345,7 +464,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3Z56NQJ65R;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../Exploits/**";
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../../BaseBin/.include";
 				INFOPLIST_FILE = Dopamine/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -355,6 +476,11 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Dopamine/Dependencies",
+					"$(SRCROOT)/../../BaseBin/.build",
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.opa334.Dopamine;
@@ -372,7 +498,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3Z56NQJ65R;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../Exploits/**";
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../../BaseBin/.include";
 				INFOPLIST_FILE = Dopamine/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -382,6 +510,11 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Dopamine/Dependencies",
+					"$(SRCROOT)/../../BaseBin/.build",
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.opa334.Dopamine;

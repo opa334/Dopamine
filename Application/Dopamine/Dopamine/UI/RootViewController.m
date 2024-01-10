@@ -8,6 +8,9 @@
 #import "RootViewController.h"
 #import "ActionMenuView.h"
 
+#import "EnvironmentManager.h"
+#import "Jailbreaker.h"
+
 #import "GlobalAppearance.h"
 #import "UIImage+Blur.h"
 
@@ -66,6 +69,9 @@
     _jailbreakButton = [ExpandableButton buttonWithConfiguration:[GlobalAppearance defaultButtonConfigurationWithImagePadding:5] primaryAction:[UIAction actionWithTitle:@"Jailbreak" image:jailbreakImage identifier:@"jailbreak" handler:^(__kindof UIAction * _Nonnull action) {
         //self.updateIsAvailable = !self.updateIsAvailable;
         [self setJailbreakButtonExpanded:!self.jailbreakButtonExpanded animated:YES];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
+            [Jailbreaker run];
+        });
     }]];
     _jailbreakButton.translatesAutoresizingMaskIntoConstraints = NO;
     _jailbreakButton.configuration.imagePadding = 100;
@@ -101,7 +107,7 @@
     _subtitleLabel = [[UILabel alloc] init];
     _subtitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _subtitleLabel.numberOfLines = 0;
-    _subtitleLabel.text = @"iOS 15.0 - 15.4.1 | A12 - A15, M1\niOS 15.0 - 15.7.6 | A8 - A11\nby opa334, évelyne\nBased on Fugu15, kfd, golb";
+    _subtitleLabel.text = [NSString stringWithFormat:@"for %@\nby opa334, ElleKit by évelyne", [EnvironmentManager versionSupportString]];
     _subtitleLabel.font = [_subtitleLabel.font fontWithSize:12];
     _subtitleLabel.textColor = [UIColor whiteColor];
     
