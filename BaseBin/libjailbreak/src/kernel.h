@@ -15,9 +15,7 @@ struct system_info {
 	} kernelConstant;
 
 	struct {
-		uint64_t cpu_ttep;
-		uint64_t ptov_table;
-		uint64_t allproc;
+		// Functions
 		uint64_t proc_find;
 		uint64_t proc_rele;
 		uint64_t kalloc_data_external;
@@ -33,12 +31,22 @@ struct system_info {
 		uint64_t hw_lck_ticket_reserve_orig_allow_invalid;
 		uint64_t exception_return;
 
-		uint64_t pmap_image4_trust_caches;
+		// Variables
+		uint64_t allproc;
 		uint64_t gPhysBase;
 		uint64_t gPhysSize;
 		uint64_t gVirtBase;
+		uint64_t cpu_ttep;
+		uint64_t ptov_table;
 		uint64_t vm_first_phys;
+		uint64_t vm_first_phys_ppnum;
+		uint64_t vm_last_phys;
 		uint64_t pv_head_table;
+		uint64_t pp_attr_table;
+		uint64_t vm_page_array_beginning_addr;
+		uint64_t vm_page_array_ending_addr;
+		uint64_t pmap_image4_trust_caches;
+		uint64_t ppl_trust_cache_rt;
 	} kernelSymbol;
 
 	struct {
@@ -58,13 +66,13 @@ struct system_info {
 			uint32_t list_prev;
 			uint32_t task;
 			uint32_t pptr;
+			uint32_t proc_ro;
 			uint32_t svuid;
 			uint32_t svgid;
 			uint32_t pid;
-			uint32_t textvp;
 			uint32_t fd;
 			uint32_t flag;
-			uint32_t proc_ro;
+			uint32_t textvp;
 
 			uint32_t ucred;
 			uint32_t csflags;
@@ -97,6 +105,9 @@ struct system_info {
 		} task;
 
 		struct {
+			uint32_t recover;
+			uint32_t machine_kstackptr;
+			uint32_t machine_CpuDatap;
 			uint32_t machine_contextData;
 		} thread;
 
@@ -165,8 +176,6 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelConstant.exceptionLevel);
 
 #define KERNEL_SYMBOLS_ITERATE(ctx, iterator) \
-    iterator(ctx, kernelSymbol.ptov_table); \
-    iterator(ctx, kernelSymbol.allproc); \
     iterator(ctx, kernelSymbol.proc_find); \
     iterator(ctx, kernelSymbol.proc_rele); \
     iterator(ctx, kernelSymbol.kalloc_data_external); \
@@ -181,12 +190,22 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelSymbol.pmap_set_nested); \
     iterator(ctx, kernelSymbol.hw_lck_ticket_reserve_orig_allow_invalid); \
     iterator(ctx, kernelSymbol.exception_return); \
-    iterator(ctx, kernelSymbol.pmap_image4_trust_caches); \
+	\
+    iterator(ctx, kernelSymbol.allproc); \
     iterator(ctx, kernelSymbol.gPhysBase); \
     iterator(ctx, kernelSymbol.gPhysSize); \
     iterator(ctx, kernelSymbol.gVirtBase); \
+    iterator(ctx, kernelSymbol.cpu_ttep); \
+    iterator(ctx, kernelSymbol.ptov_table); \
     iterator(ctx, kernelSymbol.vm_first_phys); \
-    iterator(ctx, kernelSymbol.pv_head_table);
+    iterator(ctx, kernelSymbol.vm_first_phys_ppnum); \
+    iterator(ctx, kernelSymbol.vm_last_phys); \
+    iterator(ctx, kernelSymbol.pv_head_table); \
+    iterator(ctx, kernelSymbol.pp_attr_table); \
+    iterator(ctx, kernelSymbol.vm_page_array_beginning_addr); \
+    iterator(ctx, kernelSymbol.vm_page_array_ending_addr); \
+    iterator(ctx, kernelSymbol.pmap_image4_trust_caches); \
+    iterator(ctx, kernelSymbol.ppl_trust_cache_rt);
 
 #define KERNEL_GADGETS_ITERATE(ctx, iterator) \
     iterator(ctx, kernelGadget.pacda); \
@@ -203,15 +222,16 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelStruct.proc.list_prev); \
     iterator(ctx, kernelStruct.proc.task); \
     iterator(ctx, kernelStruct.proc.pptr); \
+    iterator(ctx, kernelStruct.proc.proc_ro); \
     iterator(ctx, kernelStruct.proc.svuid); \
     iterator(ctx, kernelStruct.proc.svgid); \
     iterator(ctx, kernelStruct.proc.pid); \
-    iterator(ctx, kernelStruct.proc.textvp); \
     iterator(ctx, kernelStruct.proc.fd); \
     iterator(ctx, kernelStruct.proc.flag); \
-    iterator(ctx, kernelStruct.proc.proc_ro); \
+    iterator(ctx, kernelStruct.proc.textvp); \
     iterator(ctx, kernelStruct.proc.ucred); \
     iterator(ctx, kernelStruct.proc.csflags); \
+    iterator(ctx, kernelStruct.proc.struct_size); \
 	\
     iterator(ctx, kernelStruct.proc_ro.exists); \
     iterator(ctx, kernelStruct.proc_ro.ucred); \
@@ -230,6 +250,9 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelStruct.task.itk_space); \
     iterator(ctx, kernelStruct.task.task_can_transfer_memory_ownership); \
 	\
+    iterator(ctx, kernelStruct.thread.machine_contextData); \
+    iterator(ctx, kernelStruct.thread.machine_kstackptr); \
+    iterator(ctx, kernelStruct.thread.machine_CpuDatap); \
     iterator(ctx, kernelStruct.thread.machine_contextData); \
 	\
     iterator(ctx, kernelStruct.ipc_space.table); \
@@ -254,9 +277,15 @@ extern struct system_info gSystemInfo;
 	\
     iterator(ctx, kernelStruct.pmap.tte); \
     iterator(ctx, kernelStruct.pmap.ttep); \
+    iterator(ctx, kernelStruct.pmap.tt_entry_free); \
     iterator(ctx, kernelStruct.pmap.wx_allowed); \
-    iterator(ctx, kernelStruct.pmap.type);
-
+    iterator(ctx, kernelStruct.pmap.type); \
+	\
+    iterator(ctx, kernelStruct.tt_free_entry.next); \
+	\
+    iterator(ctx, kernelStruct.trustcache.next); \
+    iterator(ctx, kernelStruct.trustcache.this); \
+    iterator(ctx, kernelStruct.trustcache.struct_size);
 
 #define SYSTEM_INFO_ITERATE(ctx, iterator) \
     KERNEL_CONSTANTS_ITERATE(ctx, iterator); \

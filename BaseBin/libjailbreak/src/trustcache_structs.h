@@ -5,16 +5,7 @@
 // TODO: Move to ChOma
 #define CS_CDHASH_LEN 20
 
-/*struct cdhash {
-	uint8_t data[CS_CDHASH_LEN];
-} __attribute__((__packed__));
-typedef struct cdhash cdhash_t;*/
 typedef uint8_t cdhash_t[CS_CDHASH_LEN];
-
-// iOS 16:
-// ppl_trust_cache_rt has trustcache runtime
-// **(ppl_trust_cache_rt+0x20) seems to have the loaded trustcache linked list
-// trustcache struct changed, "next" is still at +0x0, but "this" is at +0x20
 
 typedef struct trustcache_entry_v1
 {
@@ -35,7 +26,7 @@ typedef struct s_trustcache_file_v1
 typedef struct jb_trustcache
 {
 	// On iOS 15, the trustcache struct has a size of 0x10
-	// On iOS 16, it has one of 0x28, we just have to make sure it's higher
+	// On iOS 16, it has one of 0x28, we just have to make sure our field is bigger
 	uint8_t trustcache[0x40];
 	uint64_t magic;
 	trustcache_file_v1 file;

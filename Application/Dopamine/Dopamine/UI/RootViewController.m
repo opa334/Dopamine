@@ -70,7 +70,11 @@
         //self.updateIsAvailable = !self.updateIsAvailable;
         [self setJailbreakButtonExpanded:!self.jailbreakButtonExpanded animated:YES];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
-            [Jailbreaker run];
+            Jailbreaker *jailbreaker = [[Jailbreaker alloc] init];
+            NSError *error = [jailbreaker run];
+            if (error) {
+                NSLog(@"FAIL: %@", error);
+            }
         });
     }]];
     _jailbreakButton.translatesAutoresizingMaskIntoConstraints = NO;

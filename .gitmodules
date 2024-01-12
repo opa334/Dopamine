@@ -5,7 +5,7 @@
 	path = BaseBin/XPF
 	url = https://github.com/opa334/XPF
 [submodule "Exploits/kfd/src/kfd"]
-	path = Exploits/kfd/src/kfd
+	path = Application/Dopamine/Dopamine/Exploits/kfd/kfd
 	url = https://github.com/opa334/kfd
 [submodule "BaseBin/opainject"]
 	path = BaseBin/opainject

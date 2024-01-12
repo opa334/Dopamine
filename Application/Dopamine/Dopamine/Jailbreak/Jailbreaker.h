@@ -13,10 +13,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface Jailbreaker : NSObject
 {
-    xpc_object_t _offsetXdict;
+    xpc_object_t _systemInfoXdict;
 }
 
-+ (void)run;
+- (NSError *)run;
 
 @end
 

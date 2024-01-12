@@ -28,7 +28,7 @@ libjailbreak:
 	$(MAKE) -C libjailbreak
 	@cp libjailbreak/libjailbreak.dylib .build
 	@mkdir -p .include/libjailbreak
-	@cp libjailbreak/src/*.c .include/libjailbreak
+	@cp libjailbreak/src/*.h .include/libjailbreak
 
 .build:
 	rm -rf .build

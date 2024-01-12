@@ -13,23 +13,30 @@ void _trustcache_file_init(trustcache_file_v1 *file)
 	uuid_generate(file->uuid);
 }
 
+// iOS 16:
+// ppl_trust_cache_rt has trustcache runtime
+// **(ppl_trust_cache_rt+0x20) seems to have the loaded trustcache linked list
+// trustcache struct changed, "next" is still at +0x0, but "this" is at +0x20
+
 uint64_t _trustcache_list_get_start(void)
 {
-	if (ksymbol(pmap_image4_trust_caches)) {
+	if (ksymbol(pmap_image4_trust_caches)) { // iOS <=15
 		return kread64(ksymbol(pmap_image4_trust_caches));
 	}
-	else {
-		return 0; //TODO: iOS 16
+	else if (ksymbol(ppl_trust_cache_rt)) {  // iOS >=16
+		return kread64(kread64(ksymbol(ppl_trust_cache_rt) + 0x20));
 	}
+
+	return 0;
 }
 
 void _trustcache_list_set_start(uint64_t newStart)
 {
-	if (ksymbol(pmap_image4_trust_caches)) {
+	if (ksymbol(pmap_image4_trust_caches)) { // iOS <=15
 		kwrite64(ksymbol(pmap_image4_trust_caches), newStart);
 	}
-	else {
-		//TODO: iOS 16
+	else if (ksymbol(ppl_trust_cache_rt)) {  // iOS >=16
+		kwrite64(kread64(ksymbol(ppl_trust_cache_rt) + 0x20), newStart);
 	}
 }
 
