@@ -12,10 +12,15 @@ struct system_info {
 		uint64_t physSize;
 		uint64_t cpuTTEP;
 		uint64_t exceptionLevel;
+		uint64_t pointer_mask;
+		uint64_t T1SZ_BOOT;
+		uint64_t ARM_TT_L1_INDEX_MASK;
 	} kernelConstant;
 
 	struct {
 		// Functions
+		uint64_t perfmon_dev_open;
+		uint64_t vn_kqfilter;
 		uint64_t proc_find;
 		uint64_t proc_rele;
 		uint64_t kalloc_data_external;
@@ -32,6 +37,8 @@ struct system_info {
 		uint64_t exception_return;
 
 		// Variables
+		uint64_t perfmon_devices;
+		uint64_t cdevsw;
 		uint64_t allproc;
 		uint64_t gPhysBase;
 		uint64_t gPhysSize;
@@ -173,9 +180,14 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelConstant.physBase); \
     iterator(ctx, kernelConstant.physSize); \
     iterator(ctx, kernelConstant.cpuTTEP); \
-    iterator(ctx, kernelConstant.exceptionLevel);
+    iterator(ctx, kernelConstant.exceptionLevel); \
+    iterator(ctx, kernelConstant.pointer_mask); \
+    iterator(ctx, kernelConstant.T1SZ_BOOT); \
+    iterator(ctx, kernelConstant.ARM_TT_L1_INDEX_MASK);
 
 #define KERNEL_SYMBOLS_ITERATE(ctx, iterator) \
+    iterator(ctx, kernelSymbol.perfmon_dev_open); \
+    iterator(ctx, kernelSymbol.vn_kqfilter); \
     iterator(ctx, kernelSymbol.proc_find); \
     iterator(ctx, kernelSymbol.proc_rele); \
     iterator(ctx, kernelSymbol.kalloc_data_external); \
@@ -191,6 +203,8 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelSymbol.hw_lck_ticket_reserve_orig_allow_invalid); \
     iterator(ctx, kernelSymbol.exception_return); \
 	\
+    iterator(ctx, kernelSymbol.perfmon_devices); \
+    iterator(ctx, kernelSymbol.cdevsw); \
     iterator(ctx, kernelSymbol.allproc); \
     iterator(ctx, kernelSymbol.gPhysBase); \
     iterator(ctx, kernelSymbol.gPhysSize); \

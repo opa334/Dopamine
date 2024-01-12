@@ -24,7 +24,6 @@
 		8C2131972B50CA4B008E682C /* kwrite_sem_open.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C2131812B50CA4B008E682C /* kwrite_sem_open.h */; };
 		8C2131982B50CA4B008E682C /* kwrite_dup.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C2131822B50CA4B008E682C /* kwrite_dup.h */; };
 		8C2131992B50CA4B008E682C /* static_info.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C2131842B50CA4B008E682C /* static_info.h */; };
-		8C21319A2B50CA4B008E682C /* IOSurface.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C2131862B50CA4B008E682C /* IOSurface.h */; };
 		8C21319B2B50CA4B008E682C /* dynamic_info.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C2131872B50CA4B008E682C /* dynamic_info.h */; };
 		8C21319C2B50CA4B008E682C /* puaf.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C2131882B50CA4B008E682C /* puaf.h */; };
 		8C21319D2B50CA4B008E682C /* common.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C2131892B50CA4B008E682C /* common.h */; };
@@ -119,7 +118,6 @@
 		8C2131812B50CA4B008E682C /* kwrite_sem_open.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kwrite_sem_open.h; sourceTree = "<group>"; };
 		8C2131822B50CA4B008E682C /* kwrite_dup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kwrite_dup.h; sourceTree = "<group>"; };
 		8C2131842B50CA4B008E682C /* static_info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = static_info.h; sourceTree = "<group>"; };
-		8C2131862B50CA4B008E682C /* IOSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurface.h; sourceTree = "<group>"; };
 		8C2131872B50CA4B008E682C /* dynamic_info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dynamic_info.h; sourceTree = "<group>"; };
 		8C2131882B50CA4B008E682C /* puaf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = puaf.h; sourceTree = "<group>"; };
 		8C2131892B50CA4B008E682C /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
@@ -253,8 +251,8 @@
 			isa = PBXGroup;
 			children = (
 				8C21317A2B50CA4B008E682C /* kread */,
-				8C21317E2B50CA4B008E682C /* IOSurface_shared.h */,
 				8C21317F2B50CA4B008E682C /* kwrite */,
+				8C21317E2B50CA4B008E682C /* IOSurface_shared.h */,
 			);
 			path = krkw;
 			sourceTree = "<group>";
@@ -283,18 +281,9 @@
 			isa = PBXGroup;
 			children = (
 				8C2131842B50CA4B008E682C /* static_info.h */,
-				8C2131852B50CA4B008E682C /* dynamic_types */,
 				8C2131872B50CA4B008E682C /* dynamic_info.h */,
 			);
 			path = info;
-			sourceTree = "<group>";
-		};
-		8C2131852B50CA4B008E682C /* dynamic_types */ = {
-			isa = PBXGroup;
-			children = (
-				8C2131862B50CA4B008E682C /* IOSurface.h */,
-			);
-			path = dynamic_types;
 			sourceTree = "<group>";
 		};
 		8C21318A2B50CA4B008E682C /* puaf */ = {
@@ -413,7 +402,6 @@
 				8C2131A02B50CA4B008E682C /* landa.h in Headers */,
 				8C2131972B50CA4B008E682C /* kwrite_sem_open.h in Headers */,
 				8C21319D2B50CA4B008E682C /* common.h in Headers */,
-				8C21319A2B50CA4B008E682C /* IOSurface.h in Headers */,
 				8CDD07AA2B4F619000A32B61 /* kfd.h in Headers */,
 				8C2131932B50CA4B008E682C /* kread_IOSurface.h in Headers */,
 				8C2131992B50CA4B008E682C /* static_info.h in Headers */,
