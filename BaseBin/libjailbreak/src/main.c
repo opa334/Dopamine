@@ -132,7 +132,7 @@ void libjailbreak_initialize_hardcoded_offsets(void)
 					gSystemInfo.kernelStruct.proc.svuid  =  0x3C;
 					gSystemInfo.kernelStruct.proc.svgid  =  0x40;
 					gSystemInfo.kernelStruct.proc.pid    =  0x60;
-					gSystemInfo.kernelStruct.proc.fd     =  0xD0;
+					gSystemInfo.kernelStruct.proc.fd     =  0xD8;
 					gSystemInfo.kernelStruct.proc.flag   = 0x25C;
 					gSystemInfo.kernelStruct.proc.textvp = 0x350;
 
