@@ -1,4 +1,5 @@
 #include "primitives.h"
+#include "info.h"
 #include "kernel.h"
 #include "pte.h"
 #include "translation.h"

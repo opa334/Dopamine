@@ -2,6 +2,7 @@
 #include "primitives.h"
 #include "kernel.h"
 #include "translation.h"
+#include "info.h"
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,3 +1,6 @@
+#ifndef TRUSTCACHE_H
+#define TRUSTCACHE_H
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -25,3 +28,5 @@ int trustcache_file_build_from_path(const char *filePath, trustcache_file_v1 **t
 
 bool is_cdhash_in_trustcache(uint64_t tcKaddr, cdhash_t CDHash);
 bool is_cdhash_trustcached(cdhash_t CDHash);
+
+#endif

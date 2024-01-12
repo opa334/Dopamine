@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "kernel.h"
+#include "info.h"
 #include "primitives.h"
 
 void _trustcache_file_init(trustcache_file_v1 *file)

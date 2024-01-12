@@ -1,3 +1,6 @@
+#ifndef PTE_H
+#define PTE_H
+
 #define PTE_NON_GLOBAL      (1 << 11)
 #define PTE_VALID           (1 << 10) // Access flag
 #define PTE_OUTER_SHAREABLE (2 << 8)
@@ -78,3 +81,5 @@
 #define ARM_16K_TT_L3_OFFMASK       0x0000000000003fffull
 #define ARM_16K_TT_L3_SHIFT         14
 #define ARM_16K_TT_L3_INDEX_MASK    0x0000000001ffc000ull
+
+#endif

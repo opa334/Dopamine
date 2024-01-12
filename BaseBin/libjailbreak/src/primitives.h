@@ -1,3 +1,6 @@
+#ifndef PRIMITIVES_H
+#define PRIMITIVES_H
+
 #include <stdlib.h>
 #include <stdint.h>
 #include "primitives_external.h"
@@ -41,3 +44,5 @@ int kalloc_with_options(uint64_t *addr, uint64_t size, kalloc_options options);
 int kalloc(uint64_t *addr, uint64_t size);
 
 int kfree(uint64_t addr, uint64_t size);
+
+#endif

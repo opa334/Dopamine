@@ -1,6 +1,7 @@
 #include "kernel.h"
 #include <stdbool.h>
 #include "primitives.h"
+#include "info.h"
 #include <dispatch/dispatch.h>
 
 struct system_info gSystemInfo = { 0 };
@@ -87,4 +88,41 @@ uint64_t pmap_self(void)
 		gSelfPmap = kread_ptr(vm_map_self() + koffsetof(vm_map, pmap));
 	});
 	return gSelfPmap;
+}
+
+uint64_t ipc_entry_lookup(uint64_t space, mach_port_name_t name)
+{
+	uint64_t table = kread_ptr(space + koffsetof(ipc_space, table));
+	uint64_t actualTable = 0;
+
+	// New packed format in iOS 16
+	if (gSystemInfo.kernelStruct.ipc_space.table_is_packed) {
+		if ((table & 0x4000000000) == 0) {
+			if (table) {
+				actualTable = (table & 0xFFFFFFBFFFFFC000) | 0x4000000000;
+			}
+		}
+		else {
+			actualTable = table & 0xFFFFFFFFFFFFFFE0;
+		}
+	}
+	
+	return (actualTable + (ksizeof(ipc_space_entry) * (name >> 8)));
+}
+
+
+uint64_t task_get_mach_port_table_entry(uint64_t task, mach_port_t port)
+{
+	uint64_t itk_space = kread_ptr(task + koffsetof(task, itk_space));
+	return ipc_entry_lookup(itk_space, port);
+}
+
+uint64_t task_get_mach_port_kaddr(uint64_t task, mach_port_t port)
+{
+	return kread_ptr(task_get_mach_port_table_entry(task, port));
+}
+
+uint64_t task_get_mach_port_kobj(uint64_t task, mach_port_t port)
+{
+	return kread_ptr(task_get_mach_port_kaddr(task, port) + 0x48);
 }

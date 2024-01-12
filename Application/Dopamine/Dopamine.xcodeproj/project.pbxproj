@@ -35,6 +35,7 @@
 		8C2131A32B50CA4B008E682C /* libkfd.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C2131902B50CA4B008E682C /* libkfd.h */; };
 		8C3245552AD58309001EC3CA /* ExpandableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3245542AD58309001EC3CA /* ExpandableButton.m */; };
 		8C3245582AD5E24F001EC3CA /* GlobalAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3245572AD5E24F001EC3CA /* GlobalAppearance.m */; };
+		8C4ABEB62B52094100B43C9B /* libjailbreak.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */; };
 		8C71981A2ABF0E82003C6658 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7198192ABF0E82003C6658 /* AppDelegate.m */; };
 		8C71981D2ABF0E82003C6658 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71981C2ABF0E82003C6658 /* SceneDelegate.m */; };
 		8C7198202ABF0E82003C6658 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71981F2ABF0E82003C6658 /* RootViewController.m */; };
@@ -173,6 +174,7 @@
 				8CDD08402B4F6D8700A32B61 /* libfragmentzip.a in Frameworks */,
 				8C029F662B4E2E970071DE58 /* libcompression.tbd in Frameworks */,
 				8CDD083F2B4F6D8700A32B61 /* libcurl.a in Frameworks */,
+				8C4ABEB62B52094100B43C9B /* libjailbreak.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

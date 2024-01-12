@@ -1,4 +1,6 @@
 #include "primitives.h"
+#include "kernel.h"
+#include "info.h"
 #include "translation.h"
 #include "pte.h"
 #include <errno.h>
@@ -124,19 +126,9 @@ int physwritebuf(uint64_t physaddr, const void* input, size_t size)
 
 // Convenience Wrappers
 
-static uint64_t __attribute((naked)) __xpaci(uint64_t a)
-{
-	asm(".long 0xDAC143E0"); // XPACI X0
-	asm("ret");
-}
-
 uint64_t unsign_kptr(uint64_t a)
 {
-	// If a looks like a non-pac'd pointer just return it
-	if ((a & 0xFFFFFF0000000000) == 0xFFFFFF0000000000) {
-		return a;
-	}
-	return __xpaci(a);
+	return a & ~kconstant(pointer_mask);
 }
 
 uint64_t physread64(uint64_t pa)

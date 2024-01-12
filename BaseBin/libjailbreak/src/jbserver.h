@@ -1,3 +1,6 @@
+#ifndef JBSERVER_H
+#define JBSERVER_H
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -74,3 +77,5 @@ enum {
     JBS_ROOT_GET_SYSINFO = 3,
     JBS_ROOT_ADD_CDHASH = 4,
 };
+
+#endif

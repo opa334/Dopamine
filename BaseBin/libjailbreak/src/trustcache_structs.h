@@ -1,3 +1,6 @@
+#ifndef TRUSTCACHE_STRUCTS_H
+#define TRUSTCACHE_STRUCTS_H
+
 #include <uuid/uuid.h>
 #include <choma/CSBlob.h>
 #include <stdint.h>
@@ -34,3 +37,5 @@ typedef struct jb_trustcache
 
 #define JB_TRUSTCACHE_SIZE 0x4000
 #define JB_TRUSTCACHE_ENTRY_COUNT ((JB_TRUSTCACHE_SIZE - sizeof(jb_trustcache)) / sizeof(trustcache_entry_v1))
+
+#endif

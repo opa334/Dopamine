@@ -1,6 +1,7 @@
 #include "translation.h"
 #include "primitives.h"
 #include "kernel.h"
+#include "info.h"
 #include <errno.h>
 #include <stdio.h>
 
@@ -50,7 +51,7 @@ uint64_t vtophys_lvl(uint64_t tte_ttep, uint64_t va, uint64_t *leaf_level, uint6
 			case PMAP_TT_L1_LEVEL: {
 				offMask = ARM_16K_TT_L1_OFFMASK;
 				shift = ARM_16K_TT_L1_SHIFT;
-				indexMask = ARM_16K_TT_L1_INDEX_MASK;
+				indexMask = kconstant(ARM_TT_L1_INDEX_MASK);
 				validMask = ARM_TTE_VALID;
 				typeMask = ARM_TTE_TYPE_MASK;
 				typeBlock = ARM_TTE_TYPE_BLOCK;
@@ -131,4 +132,10 @@ uint64_t vtophys(uint64_t tte_ttep, uint64_t va)
 uint64_t kvtophys(uint64_t va)
 {
 	return vtophys(kconstant(cpuTTEP), va);
+}
+
+void libjailbreak_translation_primitives_init(void)
+{
+	gPrimitives.phystokv = phystokv;
+	gPrimitives.vtophys  = vtophys;
 }
