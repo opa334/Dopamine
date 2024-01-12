@@ -35,14 +35,22 @@ void puaf_init(struct kfd* kfd, u64 puaf_pages, u64 puaf_method)
         puaf_method_case(physpuppet)
         puaf_method_case(smith)
     }
+    
+    if(puaf_method == puaf_landa) {
+        kfd->puaf.puaf_method_ops.deallocate = landa_deallocate;
+    }
+    else {
+        kfd->puaf.puaf_method_ops.deallocate = NULL;
+    }
 
     kfd->puaf.puaf_method_ops.init(kfd);
 }
 
 void puaf_run(struct kfd* kfd)
 {
-    puaf_helper_give_ppl_pages();
-
+//#if __arm64e__
+    puaf_helper_give_ppl_pages(); // maybe unnecessary on non_ppl devices.
+//#endif
     timer_start();
     kfd->puaf.puaf_method_ops.run(kfd);
     timer_end();
