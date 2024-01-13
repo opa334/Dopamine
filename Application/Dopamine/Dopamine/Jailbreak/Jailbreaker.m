@@ -91,11 +91,11 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (!kfdHandle) {
         return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load exploit: %s", dlerror()]}];
     }
-    void (*exploit_init)(const char *flavor, struct kernel_primitives *primitives, xpc_object_t systemInfoXdict) = dlsym(kfdHandle, "exploit_init");
-    void (*explot_deinit)(struct kernel_primitives *primitives) = dlsym(kfdHandle, "exploit_deinit");
+    void (*exploit_init)(const char *flavor) = dlsym(kfdHandle, "exploit_init");
+    void (*explot_deinit)(void) = dlsym(kfdHandle, "exploit_deinit");
     
-    exploit_init("landa", &gPrimitives, _systemInfoXdict);
-    explot_deinit(&gPrimitives);
+    exploit_init("landa");
+    explot_deinit();
     
     return nil;
 }

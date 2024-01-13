@@ -11,8 +11,6 @@ typedef enum
 	KALLOC_OPTION_PROCESS, // Allocation attached to this process, freed on process exit
 } kalloc_options;
 
-extern struct kernel_primitives gPrimitives;
-
 int kreadbuf(uint64_t kaddr, void* output, size_t size);
 int kwritebuf(uint64_t kaddr, const void* input, size_t size);
 int physreadbuf(uint64_t physaddr, void* output, size_t size);

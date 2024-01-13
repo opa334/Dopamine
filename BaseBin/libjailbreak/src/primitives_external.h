@@ -14,4 +14,6 @@ struct kernel_primitives {
 	uint64_t (*phystokv)(uint64_t pa);
 };
 
+extern struct kernel_primitives gPrimitives;
+
 #endif
