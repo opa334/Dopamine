@@ -37,7 +37,7 @@
 		8C3245582AD5E24F001EC3CA /* GlobalAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3245572AD5E24F001EC3CA /* GlobalAppearance.m */; };
 		8C4ABEB62B52094100B43C9B /* libjailbreak.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */; };
 		8C4ABEB92B520E7B00B43C9B /* libjailbreak.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */; platformFilter = ios; };
-		8C4ABEBA2B520E7B00B43C9B /* libjailbreak.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */; platformFilter = ios; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		8C4ABEBE2B52274300B43C9B /* PreferenceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4ABEBD2B52274300B43C9B /* PreferenceManager.m */; };
 		8C71981A2ABF0E82003C6658 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7198192ABF0E82003C6658 /* AppDelegate.m */; };
 		8C71981D2ABF0E82003C6658 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71981C2ABF0E82003C6658 /* SceneDelegate.m */; };
 		8C7198202ABF0E82003C6658 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71981F2ABF0E82003C6658 /* RootViewController.m */; };
@@ -81,17 +81,6 @@
 				8CDD084A2B4F6DF800A32B61 /* libchoma.dylib in Embed Libraries */,
 				8CDD08492B4F6DF500A32B61 /* libjailbreak.dylib in Embed Libraries */,
 				8CDD08482B4F6DF100A32B61 /* libxpf.dylib in Embed Libraries */,
-			);
-			name = "Embed Libraries";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8C4ABEBB2B520E7B00B43C9B /* Embed Libraries */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				8C4ABEBA2B520E7B00B43C9B /* libjailbreak.dylib in Embed Libraries */,
 			);
 			name = "Embed Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -141,10 +130,13 @@
 		8C21318E2B50CA4B008E682C /* perf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = perf.h; sourceTree = "<group>"; };
 		8C21318F2B50CA4B008E682C /* info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = info.h; sourceTree = "<group>"; };
 		8C2131902B50CA4B008E682C /* libkfd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libkfd.h; sourceTree = "<group>"; };
+		8C2B1FC72B52FB56009BA166 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8C3245532AD58309001EC3CA /* ExpandableButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExpandableButton.h; sourceTree = "<group>"; };
 		8C3245542AD58309001EC3CA /* ExpandableButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExpandableButton.m; sourceTree = "<group>"; };
 		8C3245562AD5E24F001EC3CA /* GlobalAppearance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlobalAppearance.h; sourceTree = "<group>"; };
 		8C3245572AD5E24F001EC3CA /* GlobalAppearance.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GlobalAppearance.m; sourceTree = "<group>"; };
+		8C4ABEBC2B52274300B43C9B /* PreferenceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PreferenceManager.h; sourceTree = "<group>"; };
+		8C4ABEBD2B52274300B43C9B /* PreferenceManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PreferenceManager.m; sourceTree = "<group>"; };
 		8C7198152ABF0E82003C6658 /* Dopamine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dopamine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C7198182ABF0E82003C6658 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		8C7198192ABF0E82003C6658 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -217,6 +209,8 @@
 				8C029F422B4DFD5D0071DE58 /* ExploitManager.m */,
 				8C029F5E2B4E25350071DE58 /* EnvironmentManager.h */,
 				8C029F5F2B4E25350071DE58 /* EnvironmentManager.m */,
+				8C4ABEBC2B52274300B43C9B /* PreferenceManager.h */,
+				8C4ABEBD2B52274300B43C9B /* PreferenceManager.m */,
 			);
 			path = Jailbreak;
 			sourceTree = "<group>";
@@ -396,6 +390,7 @@
 				8C2131762B50CA4B008E682C /* Exploit */,
 				8CDD07A92B4F619000A32B61 /* kfd.h */,
 				8CDD07B32B4F639100A32B61 /* kfd.m */,
+				8C2B1FC72B52FB56009BA166 /* Info.plist */,
 			);
 			path = kfd;
 			sourceTree = "<group>";
@@ -459,9 +454,8 @@
 				8CDD07A22B4F619000A32B61 /* Headers */,
 				8CDD07A32B4F619000A32B61 /* Sources */,
 				8CDD07A42B4F619000A32B61 /* Frameworks */,
-				8CDD07A52B4F619000A32B61 /* Resources */,
+				8C2B1FC42B52FA81009BA166 /* Resources */,
 				8C4ABEB82B520C1600B43C9B /* ShellScript */,
-				8C4ABEBB2B520E7B00B43C9B /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -509,19 +503,19 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8C2B1FC42B52FA81009BA166 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8C7198132ABF0E82003C6658 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				8C7198282ABF0E84003C6658 /* LaunchScreen.storyboard in Resources */,
 				8C7198252ABF0E84003C6658 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8CDD07A52B4F619000A32B61 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -555,6 +549,7 @@
 			files = (
 				8C7198202ABF0E82003C6658 /* RootViewController.m in Sources */,
 				8C029F432B4DFD5D0071DE58 /* ExploitManager.m in Sources */,
+				8C4ABEBE2B52274300B43C9B /* PreferenceManager.m in Sources */,
 				8C71981A2ABF0E82003C6658 /* AppDelegate.m in Sources */,
 				8C029F632B4E2E140071DE58 /* Jailbreaker.m in Sources */,
 				8C9E46292ACA1CC700B5456A /* UIImage+Blur.m in Sources */,
@@ -797,6 +792,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/../../BaseBin/.include";
+				INFOPLIST_FILE = Dopamine/Exploits/kfd/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -836,6 +832,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/../../BaseBin/.include";
+				INFOPLIST_FILE = Dopamine/Exploits/kfd/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;

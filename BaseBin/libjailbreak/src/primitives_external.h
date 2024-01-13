@@ -9,7 +9,7 @@ struct kernel_primitives {
 	int (*kalloc_global)(uint64_t *addr, uint64_t size);
 	int (*kalloc_user)(uint64_t *addr, uint64_t size);
 	int (*kfree_global)(uint64_t addr, uint64_t size);
-	int (*kmap)(uint64_t pa, uint64_t *uaddr);
+	int (*kmap)(uint64_t pa, uint64_t size, void **uaddr);
 	uint64_t (*vtophys)(uint64_t ttep, uint64_t va);
 	uint64_t (*phystokv)(uint64_t pa);
 };

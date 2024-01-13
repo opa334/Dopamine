@@ -12,7 +12,17 @@
 
 @implementation EnvironmentManager
 
-+ (BOOL)isArm64e
++ (instancetype)sharedManager
+{
+    static EnvironmentManager *shared;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        shared = [[EnvironmentManager alloc] init];
+    });
+    return shared;
+}
+
+- (BOOL)isArm64e
 {
     cpu_subtype_t cpusubtype = 0;
     size_t len = sizeof(cpusubtype);
@@ -21,7 +31,7 @@
 
 }
 
-+ (NSString *)versionSupportString
+- (NSString *)versionSupportString
 {
     if ([self isArm64e]) {
         return @"iOS 15.0 - 16.5.1 (arm64e)";
@@ -31,14 +41,14 @@
     }
 }
 
-+ (BOOL)installedThroughTrollStore
+- (BOOL)installedThroughTrollStore
 {
     NSString* trollStoreMarkerPath = [[[NSBundle mainBundle].bundlePath stringByDeletingLastPathComponent] stringByAppendingString:@"_TrollStore"];
     return [[NSFileManager defaultManager] fileExistsAtPath:trollStoreMarkerPath];
 }
 
 
-+ (NSString *)accessibleKernelPath
+- (NSString *)accessibleKernelPath
 {
     if ([self installedThroughTrollStore]) {
         // TODO: Return kernel path in /private/preboot
@@ -51,6 +61,21 @@
         }
         return kernelcachePath;
     }
+}
+
+- (BOOL)isPACBypassRequired
+{
+    if (![self isArm64e]) return NO;
+    
+    if (@available(iOS 15.2, *)) {
+        return NO;
+    }
+    return YES;
+}
+
+- (BOOL)isPPLBypassRequired
+{
+    return [self isArm64e];
 }
 
 @end

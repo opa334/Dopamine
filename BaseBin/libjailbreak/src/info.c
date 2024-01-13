@@ -160,7 +160,7 @@ void jbinfo_initialize_hardcoded_offsets(void)
 
 void jbinfo_initialize_boot_constants(void)
 {
-	gSystemInfo.kernelConstant.virtBase = gSystemInfo.kernelConstant.slide + 0xfffffff007004000;
+	gSystemInfo.kernelConstant.base = gSystemInfo.kernelConstant.slide + 0xfffffff007004000;
 	gSystemInfo.kernelConstant.virtBase = kread64(ksymbol(gVirtBase));
 	//gSystemInfo.kernelConstant.virtSize = ...;
 	gSystemInfo.kernelConstant.physBase = kread64(ksymbol(gPhysBase));

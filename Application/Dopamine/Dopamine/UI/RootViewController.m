@@ -111,7 +111,7 @@
     _subtitleLabel = [[UILabel alloc] init];
     _subtitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _subtitleLabel.numberOfLines = 0;
-    _subtitleLabel.text = [NSString stringWithFormat:@"for %@\nby opa334, ElleKit by évelyne", [EnvironmentManager versionSupportString]];
+    _subtitleLabel.text = [NSString stringWithFormat:@"for %@\nby opa334, ElleKit by évelyne", [[EnvironmentManager sharedManager] versionSupportString]];
     _subtitleLabel.font = [_subtitleLabel.font fontWithSize:12];
     _subtitleLabel.textColor = [UIColor whiteColor];
     

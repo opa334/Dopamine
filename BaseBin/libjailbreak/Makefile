@@ -8,7 +8,7 @@ LDFLAGS = -lbsm
 sign: $(TARGET)
 	@ldid -S $<
 
-$(TARGET): $(wildcard src/*.c src/*.S)
+$(TARGET): $(wildcard src/*.c src/*.m src/*.S)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 clean:

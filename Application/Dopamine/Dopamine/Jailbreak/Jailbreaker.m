@@ -7,6 +7,7 @@
 
 #import "Jailbreaker.h"
 #import "EnvironmentManager.h"
+#import "ExploitManager.h"
 #import <sys/stat.h>
 #import "Util.h"
 #import <compression.h>
@@ -18,6 +19,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     JBErrorCodeFailedToFindKernel            = -1,
     JBErrorCodeFailedKernelPatchfinding      = -2,
     JBErrorCodeFailedLoadingExploit          = -3,
+    JBErrorCodeFailedExploitation            = -4,
 };
 
 #include <libjailbreak/primitives_external.h>
@@ -30,7 +32,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (NSError *)gatherSystemInformation
 {
-    NSString *kernelPath = [EnvironmentManager accessibleKernelPath];
+    NSString *kernelPath = [[EnvironmentManager sharedManager] accessibleKernelPath];
     if (!kernelPath) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedToFindKernel userInfo:@{NSLocalizedDescriptionKey:@"Failed to find kernelcache"}];
     printf("Kernel at %s\n", kernelPath.UTF8String);
     
@@ -85,18 +87,21 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     return nil;
 }
 
-- (NSError *)exploitKernel
+- (NSError *)doExploitation
 {
-    void *kfdHandle = dlopen([[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"Frameworks/Exploits/kfd.framework/kfd"].fileSystemRepresentation, RTLD_NOW);
-    if (!kfdHandle) {
-        return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load exploit: %s", dlerror()]}];
-    }
-    void (*exploit_init)(const char *flavor) = dlsym(kfdHandle, "exploit_init");
-    void (*explot_deinit)(void) = dlsym(kfdHandle, "exploit_deinit");
+    Exploit *kernelExploit = [ExploitManager sharedManager].preferredKernelExploit;
+    printf("Picked Kernel Exploit: %s\n", kernelExploit.description.UTF8String);
     
-    exploit_init("landa");
-    explot_deinit();
+    if ([kernelExploit load] != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load kernel exploit: %s", dlerror()]}];
+    if ([kernelExploit run] != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to exploit kernel"}];
     
+    jbinfo_initialize_boot_constants();
+    libjailbreak_translation_primitives_init();
+    libjailbreak_IOSurface_primitives_init();
+    
+    printf("We out here! (%x)\n", kread32(kconstant(base)));
+    
+    [kernelExploit cleanup];
     return nil;
 }
 
@@ -106,7 +111,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     NSError *err = nil;
     err = [self gatherSystemInformation];
     if (err) return err;
-    err = [self exploitKernel];
+    err = [self doExploitation];
     if (err) return err;
     
     return nil;

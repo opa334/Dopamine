@@ -11,10 +11,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EnvironmentManager : NSObject
 
-+ (BOOL)isArm64e;
-+ (NSString *)versionSupportString;
-+ (BOOL)installedThroughTrollStore;
-+ (NSString *)accessibleKernelPath;
++ (instancetype)sharedManager;
+
+- (BOOL)isArm64e;
+- (NSString *)versionSupportString;
+- (BOOL)installedThroughTrollStore;
+- (NSString *)accessibleKernelPath;
 
 @end
 

@@ -1,6 +1,6 @@
 #import "info.h"
-#import "virtrw.h"
-#import "offsets.h"
+#import "primitives.h"
+#import "kernel.h"
 #import <Foundation/Foundation.h>
 #import <IOSurface/IOSurfaceRef.h>
 #import <CoreGraphics/CoreGraphics.h>
@@ -95,11 +95,11 @@ static mach_port_t IOSurface_map_getSurfacePort(uint64_t magic)
 	return port;
 }
 
-void *IOSurface_map(uint64_t pa, uint64_t size)
+int IOSurface_map(uint64_t pa, uint64_t size, void **uaddr)
 {
 	mach_port_t surfaceMachPort = IOSurface_map_getSurfacePort(1337);
 
-	uint64_t surfaceSendRight = portKObject(surfaceMachPort);
+	uint64_t surfaceSendRight = task_get_mach_port_kobj(task_self(), surfaceMachPort);
 	uint64_t surface = IOSurfaceSendRight_get_surface(surfaceSendRight);
 	uint64_t desc = IOSurface_get_memoryDescriptor(surface);
 	uint64_t ranges = IOMemoryDescriptor_get_ranges(desc);
@@ -121,7 +121,8 @@ void *IOSurface_map(uint64_t pa, uint64_t size)
 	IOMemoryDescriptor_set_memRef(desc, 0);
 
 	IOSurfaceRef mappedSurfaceRef = IOSurfaceLookupFromMachPort(surfaceMachPort);
-	return IOSurfaceGetBaseAddress(mappedSurfaceRef);
+	*uaddr = IOSurfaceGetBaseAddress(mappedSurfaceRef);
+	return 0;
 }
 
 static mach_port_t IOSurface_kalloc_getSurfacePort(uint64_t size)
@@ -148,7 +149,7 @@ uint64_t IOSurface_kalloc(uint64_t size, bool leak)
 	while (true) {
 		mach_port_t surfaceMachPort = IOSurface_kalloc_getSurfacePort(size);
 
-		uint64_t surfaceSendRight = portKObject(surfaceMachPort);
+		uint64_t surfaceSendRight = task_get_mach_port_kobj(task_self(), surfaceMachPort);
 		uint64_t surface = IOSurfaceSendRight_get_surface(surfaceSendRight);
 		uint64_t va = IOSurface_get_ranges(surface);
 
@@ -187,7 +188,7 @@ int IOSurface_kalloc_user(uint64_t *addr, uint64_t size)
 
 void libjailbreak_IOSurface_primitives_init(void)
 {
-	gPrimitives->kalloc_global = IOSurface_kalloc_global;
-	gPrimitives->kalloc_user   = IOSurface_kalloc_user;
-	gPrimitives->kmap          = IOSurface_map;
+	gPrimitives.kalloc_global = IOSurface_kalloc_global;
+	gPrimitives.kalloc_user   = IOSurface_kalloc_user;
+	gPrimitives.kmap          = IOSurface_map;
 }
