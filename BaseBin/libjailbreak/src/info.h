@@ -163,7 +163,7 @@ struct system_info {
 		struct {
 			uint32_t tte;
 			uint32_t ttep;
-			uint32_t tt_entry_free;
+			uint32_t sw_asid;
 			uint32_t wx_allowed;
 			uint32_t type;
 		} pmap;
@@ -304,7 +304,7 @@ extern struct system_info gSystemInfo;
 	\
     iterator(ctx, kernelStruct.pmap.tte); \
     iterator(ctx, kernelStruct.pmap.ttep); \
-    iterator(ctx, kernelStruct.pmap.tt_entry_free); \
+    iterator(ctx, kernelStruct.pmap.sw_asid); \
     iterator(ctx, kernelStruct.pmap.wx_allowed); \
     iterator(ctx, kernelStruct.pmap.type); \
 	\

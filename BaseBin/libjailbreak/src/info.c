@@ -50,11 +50,11 @@ void jbinfo_initialize_hardcoded_offsets(void)
 	gSystemInfo.kernelStruct.vm_map.hdr = 0x10;
 
 	// pmap
-	gSystemInfo.kernelStruct.pmap.tte           = 0x0;
-	gSystemInfo.kernelStruct.pmap.ttep          = 0x8;
-	gSystemInfo.kernelStruct.pmap.tt_entry_free = 0x48;
-	gSystemInfo.kernelStruct.pmap.wx_allowed    = 0xC2 + pmapEl2Adjust;
-	gSystemInfo.kernelStruct.pmap.type          = 0xC8 + pmapEl2Adjust;
+	gSystemInfo.kernelStruct.pmap.tte        = 0x0;
+	gSystemInfo.kernelStruct.pmap.ttep       = 0x8;
+	gSystemInfo.kernelStruct.pmap.sw_asid    = 0xBE + pmapEl2Adjust;
+	gSystemInfo.kernelStruct.pmap.wx_allowed = 0xC2 + pmapEl2Adjust;
+	gSystemInfo.kernelStruct.pmap.type       = 0xC8 + pmapEl2Adjust;
 
 	// vm_map_header
 	gSystemInfo.kernelStruct.vm_map_header.links    =  0x0;
@@ -155,6 +155,11 @@ void jbinfo_initialize_hardcoded_offsets(void)
 					gSystemInfo.kernelStruct.trustcache.next = 0x0;
 					gSystemInfo.kernelStruct.trustcache.this = 0x20;
 					gSystemInfo.kernelStruct.trustcache.struct_size = 0x28;					
+
+					// pmap
+					gSystemInfo.kernelStruct.pmap.sw_asid    = 0xB6 + pmapEl2Adjust;
+					gSystemInfo.kernelStruct.pmap.wx_allowed = 0xBA + pmapEl2Adjust;
+					gSystemInfo.kernelStruct.pmap.type       = 0xC0 + pmapEl2Adjust;
 
 					if (strcmp(xnuVersion, "22.4.0") >= 0) { // iOS 16.4+
 						// proc
