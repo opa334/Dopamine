@@ -7,6 +7,12 @@
 #include <string.h>
 
 #define min(a,b) (((a)<(b))?(a):(b))
+#define BIT(b)    (1ULL << (b))
+#define ONES(x)          (BIT((x))-1)
+#define PAC_MASK kconstant(pointer_mask)
+#define SIGN(p)          ((p) & BIT(55))
+#define UNSIGN_PTR(p)    (SIGN(p) ? ((p) | PAC_MASK) : ((p) & ~PAC_MASK))
+
 struct kernel_primitives gPrimitives = { 0 };
 
 // Wrappers physical <-> virtual
@@ -149,17 +155,6 @@ int physwritebuf(uint64_t physaddr, const void* input, size_t size)
 
 // Convenience Wrappers
 
-static uint64_t __attribute((naked)) __xpaci(uint64_t a)
-{
-	asm(".long 0xDAC143E0"); // XPACI X0
-	asm("ret");
-}
-
-uint64_t unsign_kptr(uint64_t a)
-{
-	return __xpaci(a);
-}
-
 uint64_t physread64(uint64_t pa)
 {
 	uint64_t v;
@@ -169,7 +164,7 @@ uint64_t physread64(uint64_t pa)
 
 uint64_t physread_ptr(uint64_t pa)
 {
-	return unsign_kptr(physread64(pa));
+	return UNSIGN_PTR(physread64(pa));
 }
 
 uint32_t physread32(uint64_t pa)
@@ -224,7 +219,7 @@ uint64_t kread64(uint64_t va)
 
 uint64_t kread_ptr(uint64_t va)
 {
-	return unsign_kptr(kread64(va));
+	return UNSIGN_PTR(kread64(va));
 }
 
 uint32_t kread32(uint64_t va)
