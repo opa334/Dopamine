@@ -41,7 +41,10 @@ void jbinfo_initialize_hardcoded_offsets(void)
 	// ipc_space
 	gSystemInfo.kernelStruct.ipc_space.table             = 0x20;
 	gSystemInfo.kernelStruct.ipc_space.table_is_packed   = false;
-	gSystemInfo.kernelStruct.ipc_space_entry.struct_size = 0x18;
+
+	// ipc_entry
+	gSystemInfo.kernelStruct.ipc_entry.object      = 0x0;
+	gSystemInfo.kernelStruct.ipc_entry.struct_size = 0x18;
 
 	// map
 	gSystemInfo.kernelStruct.vm_map.hdr = 0x10;
@@ -91,6 +94,9 @@ void jbinfo_initialize_hardcoded_offsets(void)
 		// task
 		gSystemInfo.kernelStruct.task.task_can_transfer_memory_ownership = 0x5B0 + taskJitboxAdjust;
 
+		// ipc_port
+		gSystemInfo.kernelStruct.ipc_port.kobject = 0x58;
+
 		// vm_map
 		gSystemInfo.kernelStruct.vm_map.flags = 0x11C;
 
@@ -127,6 +133,9 @@ void jbinfo_initialize_hardcoded_offsets(void)
 
 				// vm_map
 				gSystemInfo.kernelStruct.vm_map.flags = 0x94;
+
+				// ipc_port
+				gSystemInfo.kernelStruct.ipc_port.kobject = 0x48;
 
 				if (strcmp(xnuVersion, "22.0.0") >= 0) { // iOS 16+
 					// proc

@@ -106,22 +106,21 @@ uint64_t ipc_entry_lookup(uint64_t space, mach_port_name_t name)
 		}
 	}
 	
-	return (table + (ksizeof(ipc_space_entry) * (name >> 8)));
+	return (table + (ksizeof(ipc_entry) * (name >> 8)));
 }
 
-
-uint64_t task_get_mach_port_table_entry(uint64_t task, mach_port_t port)
+uint64_t task_get_ipc_port_table_entry(uint64_t task, mach_port_t port)
 {
 	uint64_t itk_space = kread_ptr(task + koffsetof(task, itk_space));
 	return ipc_entry_lookup(itk_space, port);
 }
 
-uint64_t task_get_mach_port_kaddr(uint64_t task, mach_port_t port)
+uint64_t task_get_ipc_port_object(uint64_t task, mach_port_t port)
 {
-	return kread_ptr(task_get_mach_port_table_entry(task, port));
+	return kread_ptr(task_get_ipc_port_table_entry(task, port) + koffsetof(ipc_entry, object));
 }
 
-uint64_t task_get_mach_port_kobj(uint64_t task, mach_port_t port)
+uint64_t task_get_ipc_port_kobject(uint64_t task, mach_port_t port)
 {
-	return kread_ptr(task_get_mach_port_kaddr(task, port) + 0x48);
+	return kread_ptr(task_get_ipc_port_object(task, port) + koffsetof(ipc_port, kobject));
 }

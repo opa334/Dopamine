@@ -99,7 +99,7 @@ int IOSurface_map(uint64_t pa, uint64_t size, void **uaddr)
 {
 	mach_port_t surfaceMachPort = IOSurface_map_getSurfacePort(1337);
 
-	uint64_t surfaceSendRight = task_get_mach_port_kobj(task_self(), surfaceMachPort);
+	uint64_t surfaceSendRight = task_get_ipc_port_kobject(task_self(), surfaceMachPort);
 	uint64_t surface = IOSurfaceSendRight_get_surface(surfaceSendRight);
 	uint64_t desc = IOSurface_get_memoryDescriptor(surface);
 	uint64_t ranges = IOMemoryDescriptor_get_ranges(desc);
@@ -149,7 +149,7 @@ uint64_t IOSurface_kalloc(uint64_t size, bool leak)
 	while (true) {
 		mach_port_t surfaceMachPort = IOSurface_kalloc_getSurfacePort(size);
 
-		uint64_t surfaceSendRight = task_get_mach_port_kobj(task_self(), surfaceMachPort);
+		uint64_t surfaceSendRight = task_get_ipc_port_kobject(task_self(), surfaceMachPort);
 		uint64_t surface = IOSurfaceSendRight_get_surface(surfaceSendRight);
 		uint64_t va = IOSurface_get_ranges(surface);
 

@@ -129,8 +129,9 @@ struct system_info {
 		} ipc_space;
 
 		struct {
+			uint32_t object;
 			uint32_t struct_size;
-		} ipc_space_entry;
+		} ipc_entry;
 
 		struct {
 			uint32_t kobject;
@@ -280,7 +281,9 @@ extern struct system_info gSystemInfo;
 	\
     iterator(ctx, kernelStruct.ipc_space.table); \
     iterator(ctx, kernelStruct.ipc_space.table_is_packed); \
-    iterator(ctx, kernelStruct.ipc_space_entry.struct_size); \
+	\
+    iterator(ctx, kernelStruct.ipc_entry.object); \
+    iterator(ctx, kernelStruct.ipc_entry.struct_size); \
 	\
     iterator(ctx, kernelStruct.ipc_port.kobject); \
 	\

@@ -14,8 +14,8 @@ uint64_t task_self(void);
 uint64_t vm_map_self(void);
 uint64_t pmap_self(void);
 uint64_t ipc_entry_lookup(uint64_t space, mach_port_name_t name);
-uint64_t task_get_mach_port_table_entry(uint64_t task, mach_port_t port);
-uint64_t task_get_mach_port_kaddr(uint64_t task, mach_port_t port);
-uint64_t task_get_mach_port_kobj(uint64_t task, mach_port_t port);
+uint64_t task_get_ipc_port_table_entry(uint64_t task, mach_port_t port);
+uint64_t task_get_ipc_port_object(uint64_t task, mach_port_t port);
+uint64_t task_get_ipc_port_kobject(uint64_t task, mach_port_t port);
 
 #endif
