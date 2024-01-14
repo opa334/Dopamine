@@ -50,6 +50,8 @@
 		8C71982B2ABF0E84003C6658 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71982A2ABF0E84003C6658 /* main.m */; };
 		8C9E46292ACA1CC700B5456A /* UIImage+Blur.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9E46282ACA1CC700B5456A /* UIImage+Blur.m */; };
 		8CB2E7642AD1788F000A6B90 /* ActionMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB2E7632AD1788F000A6B90 /* ActionMenuView.m */; };
+		8CC139822B53DE6C00230143 /* NSData+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC139812B53DE6C00230143 /* NSData+Hex.m */; };
+		8CC139832B53E05300230143 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08372B4F682500A32B61 /* IOKit.framework */; };
 		8CDD07AA2B4F619000A32B61 /* kfd.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CDD07A92B4F619000A32B61 /* kfd.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CDD07AF2B4F619000A32B61 /* kfd.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD07A72B4F619000A32B61 /* kfd.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8CDD08342B4F63E100A32B61 /* kfd.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CDD07B32B4F639100A32B61 /* kfd.m */; };
@@ -169,6 +171,8 @@
 		8CB2E7622AD1788F000A6B90 /* ActionMenuView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionMenuView.h; sourceTree = "<group>"; };
 		8CB2E7632AD1788F000A6B90 /* ActionMenuView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionMenuView.m; sourceTree = "<group>"; };
 		8CB2E7652AD179F9000A6B90 /* ActionMenuDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionMenuDelegate.h; sourceTree = "<group>"; };
+		8CC139802B53DE6C00230143 /* NSData+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Hex.h"; sourceTree = "<group>"; };
+		8CC139812B53DE6C00230143 /* NSData+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Hex.m"; sourceTree = "<group>"; };
 		8CDD07A72B4F619000A32B61 /* kfd.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = kfd.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CDD07A92B4F619000A32B61 /* kfd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kfd.h; sourceTree = "<group>"; };
 		8CDD07B32B4F639100A32B61 /* kfd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = kfd.m; sourceTree = "<group>"; };
@@ -198,6 +202,7 @@
 				8C029F6B2B4E320E0071DE58 /* libz.tbd in Frameworks */,
 				8CDD08472B4F6DD800A32B61 /* libxpf.dylib in Frameworks */,
 				8CDD08462B4F6DD800A32B61 /* libchoma.dylib in Frameworks */,
+				8CC139832B53E05300230143 /* IOKit.framework in Frameworks */,
 				8C029F682B4E31D50071DE58 /* libMobileGestalt.tbd in Frameworks */,
 				8CDD08412B4F6D8700A32B61 /* libgrabkernel.a in Frameworks */,
 				8CDD08402B4F6D8700A32B61 /* libfragmentzip.a in Frameworks */,
@@ -415,6 +420,8 @@
 		8C9E46262ACA1C5800B5456A /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				8CC139802B53DE6C00230143 /* NSData+Hex.h */,
+				8CC139812B53DE6C00230143 /* NSData+Hex.m */,
 				8C9E46272ACA1C8D00B5456A /* UIImage+Blur.h */,
 				8C9E46282ACA1CC700B5456A /* UIImage+Blur.m */,
 			);
@@ -653,6 +660,7 @@
 				8C7198202ABF0E82003C6658 /* RootViewController.m in Sources */,
 				8C029F432B4DFD5D0071DE58 /* ExploitManager.m in Sources */,
 				8C4ABEBE2B52274300B43C9B /* PreferenceManager.m in Sources */,
+				8CC139822B53DE6C00230143 /* NSData+Hex.m in Sources */,
 				8C71981A2ABF0E82003C6658 /* AppDelegate.m in Sources */,
 				8C029F632B4E2E140071DE58 /* Jailbreaker.m in Sources */,
 				8C9E46292ACA1CC700B5456A /* UIImage+Blur.m in Sources */,

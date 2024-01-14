@@ -35,39 +35,45 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 {
     NSString *kernelPath = [[EnvironmentManager sharedManager] accessibleKernelPath];
     if (!kernelPath) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedToFindKernel userInfo:@{NSLocalizedDescriptionKey:@"Failed to find kernelcache"}];
-    printf("Kernel at %s\n", kernelPath.UTF8String);
+    NSLog(@"Kernel at %s", kernelPath.UTF8String);
     
-    xpf_start_with_kernel_path(kernelPath.fileSystemRepresentation);
-    
-    const char *sets[] = {
-        "translation",
-        "trustcache",
-        "physmap",
-        "struct",
-        "physrw",
-        "perfkrw",
-        "badRecovery",
-        NULL
-    };
-    
-    if (!xpf_set_is_supported("badRecovery")) {
-        sets[6] = NULL;
-    }
+    int r = xpf_start_with_kernel_path(kernelPath.fileSystemRepresentation);
+    if (r == 0) {
+        const char *sets[] = {
+            "translation",
+            "trustcache",
+            "physmap",
+            "struct",
+            "physrw",
+            "perfkrw",
+            "badRecovery",
+            NULL
+        };
+        
+        if (!xpf_set_is_supported("badRecovery")) {
+            sets[6] = NULL;
+        }
 
-    _systemInfoXdict = xpf_construct_offset_dictionary(sets);
-    if (_systemInfoXdict) {
-        printf("System Info:\n");
-        xpc_dictionary_apply(_systemInfoXdict, ^bool(const char *key, xpc_object_t value) {
-            if (xpc_get_type(value) == XPC_TYPE_UINT64) {
-                printf("0x%016llx <- %s\n", xpc_uint64_get_value(value), key);
-            }
-            return true;
-        });
+        _systemInfoXdict = xpf_construct_offset_dictionary(sets);
+        if (_systemInfoXdict) {
+            printf("System Info:\n");
+            xpc_dictionary_apply(_systemInfoXdict, ^bool(const char *key, xpc_object_t value) {
+                if (xpc_get_type(value) == XPC_TYPE_UINT64) {
+                    printf("0x%016llx <- %s\n", xpc_uint64_get_value(value), key);
+                }
+                return true;
+            });
+        }
+        if (!_systemInfoXdict) {
+            return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedKernelPatchfinding userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"XPF failed with error: (%s)", xpf_get_error()]}];
+        }
+        xpf_stop();
     }
-    if (!_systemInfoXdict) {
-        return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedKernelPatchfinding userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"XPF failed with error: (%s)", xpf_get_error()]}];
+    else {
+        NSError *error = [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedKernelPatchfinding userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"XPF start failed with error: (%s)", xpf_get_error()]}];
+        xpf_stop();
+        return error;
     }
-    xpf_stop();
     
     jbinfo_initialize_dynamic_offsets(_systemInfoXdict);
     jbinfo_initialize_hardcoded_offsets();

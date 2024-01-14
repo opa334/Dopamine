@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)sharedManager;
 
+@property (nonatomic) NSData *bootManifestHash;
+
 - (BOOL)isArm64e;
 - (NSString *)versionSupportString;
 - (BOOL)installedThroughTrollStore;

@@ -10,6 +10,9 @@
 #import <sys/sysctl.h>
 #import <libgrabkernel/libgrabkernel.h>
 
+#import <IOKit/IOKitLib.h>
+#import "NSData+Hex.h"
+
 @implementation EnvironmentManager
 
 + (instancetype)sharedManager
@@ -20,6 +23,22 @@
         shared = [[EnvironmentManager alloc] init];
     });
     return shared;
+}
+
+- (NSData *)bootManifestHash
+{
+    if (!_bootManifestHash) {
+        io_registry_entry_t registryEntry = IORegistryEntryFromPath(kIOMainPortDefault, "IODeviceTree:/chosen");
+        if (registryEntry) {
+            _bootManifestHash = (__bridge NSData *)IORegistryEntryCreateCFProperty(registryEntry, CFSTR("boot-manifest-hash"), NULL, 0);
+        }
+    }
+    return _bootManifestHash;
+}
+
+- (NSString *)activePrebootPath
+{
+    return [@"/private/preboot" stringByAppendingPathComponent:[self bootManifestHash].hexString];
 }
 
 - (BOOL)isArm64e
@@ -43,7 +62,7 @@
 
 - (BOOL)installedThroughTrollStore
 {
-    NSString* trollStoreMarkerPath = [[[NSBundle mainBundle].bundlePath stringByDeletingLastPathComponent] stringByAppendingString:@"_TrollStore"];
+    NSString* trollStoreMarkerPath = [[[NSBundle mainBundle].bundlePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"_TrollStore"];
     return [[NSFileManager defaultManager] fileExistsAtPath:trollStoreMarkerPath];
 }
 
@@ -51,8 +70,8 @@
 - (NSString *)accessibleKernelPath
 {
     if ([self installedThroughTrollStore]) {
-        // TODO: Return kernel path in /private/preboot
-        return nil;
+        NSString *kernelcachePath = [[self activePrebootPath] stringByAppendingPathComponent:@"System/Library/Caches/com.apple.kernelcaches/kernelcache"];
+        return kernelcachePath;
     }
     else {
         NSString *kernelcachePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/kernelcache"];
