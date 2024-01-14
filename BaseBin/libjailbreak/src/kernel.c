@@ -93,21 +93,20 @@ uint64_t pmap_self(void)
 uint64_t ipc_entry_lookup(uint64_t space, mach_port_name_t name)
 {
 	uint64_t table = kread_ptr(space + koffsetof(ipc_space, table));
-	uint64_t actualTable = 0;
 
 	// New packed format in iOS 16
 	if (gSystemInfo.kernelStruct.ipc_space.table_is_packed) {
 		if ((table & 0x4000000000) == 0) {
 			if (table) {
-				actualTable = (table & 0xFFFFFFBFFFFFC000) | 0x4000000000;
+				table = (table & 0xFFFFFFBFFFFFC000) | 0x4000000000;
 			}
 		}
 		else {
-			actualTable = table & 0xFFFFFFFFFFFFFFE0;
+			table = table & 0xFFFFFFFFFFFFFFE0;
 		}
 	}
 	
-	return (actualTable + (ksizeof(ipc_space_entry) * (name >> 8)));
+	return (table + (ksizeof(ipc_space_entry) * (name >> 8)));
 }
 
 
