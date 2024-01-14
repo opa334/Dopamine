@@ -1,4 +1,4 @@
-PHONY: all clean build_clean
+.PHONY: all clean build_clean
 
 all: Dopamine.ipa
 
