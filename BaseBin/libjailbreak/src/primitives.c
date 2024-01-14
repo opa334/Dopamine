@@ -11,71 +11,94 @@ struct kernel_primitives gPrimitives = { 0 };
 
 // Wrappers physical <-> virtual
 
+void enumeratePages(uint64_t start, size_t size, uint64_t pageSize, bool (^block)(uint64_t curStart, size_t curSize))
+{
+	uint64_t curStart = start;
+	size_t sizeLeft = size;
+	bool c = true;
+	while (sizeLeft > 0 && c) {
+		uint64_t pageOffset = curStart & (pageSize - 1);
+		uint64_t readSize = min(sizeLeft, pageSize - pageOffset);
+		c = block(curStart, readSize);
+		curStart += readSize;
+		sizeLeft -= readSize;
+	}
+}
+
 int _kreadbuf_phys(uint64_t kaddr, void* output, size_t size)
 {
 	memset(output, 0, size);
-	uint64_t va = kaddr;
-	uint8_t *data = output;
-	size_t sizeLeft = size;
 
-	while (sizeLeft > 0) {
-		uint64_t virtPage = va & ~P_PAGE_MASK;
-		uint64_t pageOffset = va & P_PAGE_MASK;
-		uint64_t readSize = min(sizeLeft, P_PAGE_SIZE - pageOffset);
-
-		uint64_t physPage = kvtophys(virtPage);
-		if (physPage == 0 && errno != 0) {
-			return errno;
+	__block int pr = 0;
+	enumeratePages(kaddr, size, P_PAGE_SIZE, ^bool(uint64_t curKaddr, size_t curSize){
+		uint64_t curPhys = kvtophys(curKaddr);
+		if (curPhys == 0 && errno != 0) {
+			pr = errno;
+			return false;
 		}
-
-		int pr = physreadbuf(physPage + pageOffset, &data[size - sizeLeft], readSize);
+		pr = physreadbuf(curPhys, &output[curKaddr - kaddr], curSize);
 		if (pr != 0) {
-			return pr;
+			return false;
 		}
-
-		va += readSize;
-		sizeLeft -= readSize;
-	}
-
-	return 0;
+		return true;
+	});
+	return pr;
 }
 
 int _kwritebuf_phys(uint64_t kaddr, const void* input, size_t size)
 {
-	uint64_t va = kaddr;
-	const uint8_t *data = input;
-	size_t sizeLeft = size;
-
-	while (sizeLeft > 0) {
-		uint64_t virtPage = va & ~P_PAGE_MASK;
-		uint64_t pageOffset = va & P_PAGE_MASK;
-		uint64_t writeSize = min(sizeLeft, P_PAGE_SIZE - pageOffset);
-
-		uint64_t physPage = kvtophys(virtPage);
-		if (physPage == 0 && errno != 0) {
-			return errno;
+	__block int pr = 0;
+	enumeratePages(kaddr, size, P_PAGE_SIZE, ^bool(uint64_t curKaddr, size_t curSize){
+		uint64_t curPhys = kvtophys(curKaddr);
+		if (curPhys == 0 && errno != 0) {
+			pr = errno;
+			return false;
 		}
-
-		int pr = physwritebuf(physPage + pageOffset, &data[size - sizeLeft], writeSize);
+		pr = physwritebuf(curPhys, &input[curKaddr - kaddr], curSize);
 		if (pr != 0) {
-			return pr;
+			return false;
 		}
-
-		va += writeSize;
-		sizeLeft -= writeSize;
-	}
-
-	return 0;
+		return true;
+	});
+	return pr;
 }
 
 int _physreadbuf_virt(uint64_t physaddr, void* output, size_t size)
 {
-	return 0;
+	memset(output, 0, size);
+
+	__block int pr = 0;
+	enumeratePages(physaddr, size, P_PAGE_SIZE, ^bool(uint64_t curPhys, size_t curSize){
+		uint64_t curKaddr = phystokv(curPhys);
+		if (curKaddr == 0 && errno != 0) {
+			pr = errno;
+			return false;
+		}
+		pr = kreadbuf(curKaddr, &output[curPhys - physaddr], curSize);
+		if (pr != 0) {
+			return false;
+		}
+		return true;
+	});
+	return pr;
 }
 
 int _physwritebuf_virt(uint64_t physaddr, const void* input, size_t size)
 {
-	return 0;
+	__block int pr = 0;
+	enumeratePages(physaddr, size, P_PAGE_SIZE, ^bool(uint64_t curPhys, size_t curSize){
+		uint64_t curKaddr = phystokv(curPhys);
+		if (curKaddr == 0 && errno != 0) {
+			pr = errno;
+			return false;
+		}
+		pr = kwritebuf(curKaddr, &input[curPhys - physaddr], curSize);
+		if (pr != 0) {
+			return false;
+		}
+		return true;
+	});
+	return pr;
 }
 
 // Wrappers to gPrimitives
@@ -85,7 +108,7 @@ int kreadbuf(uint64_t kaddr, void* output, size_t size)
 	if (gPrimitives.kreadbuf) {
 		return gPrimitives.kreadbuf(kaddr, output, size);
 	}
-	else if (gPrimitives.physreadbuf) {
+	else if (gPrimitives.physreadbuf && gPrimitives.vtophys) {
 		return _kreadbuf_phys(kaddr, output, size);
 	}
 	return -1;
@@ -96,7 +119,7 @@ int kwritebuf(uint64_t kaddr, const void* input, size_t size)
 	if (gPrimitives.kwritebuf) {
 		return gPrimitives.kwritebuf(kaddr, input, size);
 	}
-	else if (gPrimitives.physwritebuf) {
+	else if (gPrimitives.physwritebuf && gPrimitives.vtophys) {
 		return _kwritebuf_phys(kaddr, input, size);
 	}
 	return -1;
@@ -107,7 +130,7 @@ int physreadbuf(uint64_t physaddr, void* output, size_t size)
 	if (gPrimitives.physreadbuf) {
 		return gPrimitives.physreadbuf(physaddr, output, size);
 	}
-	else if (gPrimitives.kreadbuf) {
+	else if (gPrimitives.kreadbuf && gPrimitives.phystokv) {
 		return _physreadbuf_virt(physaddr, output, size);
 	}
 	return -1;
@@ -118,7 +141,7 @@ int physwritebuf(uint64_t physaddr, const void* input, size_t size)
 	if (gPrimitives.physwritebuf) {
 		return gPrimitives.physwritebuf(physaddr, input, size);
 	}
-	else if (gPrimitives.kwritebuf) {
+	else if (gPrimitives.kwritebuf && gPrimitives.phystokv) {
 		return _physwritebuf_virt(physaddr, input, size);
 	}
 	return -1;
@@ -126,9 +149,15 @@ int physwritebuf(uint64_t physaddr, const void* input, size_t size)
 
 // Convenience Wrappers
 
+static uint64_t __attribute((naked)) __xpaci(uint64_t a)
+{
+	asm(".long 0xDAC143E0"); // XPACI X0
+	asm("ret");
+}
+
 uint64_t unsign_kptr(uint64_t a)
 {
-	return a & ~kconstant(pointer_mask);
+	return __xpaci(a);
 }
 
 uint64_t physread64(uint64_t pa)
@@ -238,6 +267,14 @@ int kwrite16(uint64_t va, uint16_t v)
 int kwrite8(uint64_t va, uint8_t v)
 {
 	return kwritebuf(va, &v, sizeof(v));
+}
+
+int kmap(uint64_t pa, uint64_t size, void **uaddr)
+{
+	if (gPrimitives.kmap) {
+		return gPrimitives.kmap(pa, size, uaddr);
+	}
+	return -1;
 }
 
 int kalloc_with_options(uint64_t *addr, uint64_t size, kalloc_options options)

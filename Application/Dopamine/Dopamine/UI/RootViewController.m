@@ -71,10 +71,27 @@
         [self setJailbreakButtonExpanded:!self.jailbreakButtonExpanded animated:YES];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
             Jailbreaker *jailbreaker = [[Jailbreaker alloc] init];
+            
+            NSString *title;
+            NSString *message;
             NSError *error = [jailbreaker run];
             if (error) {
                 NSLog(@"FAIL: %@", error);
+                title = @"Error";
+                message = error.localizedDescription;
             }
+            else {
+                title = @"Success";
+                message = @"The device should panic with a corrupted TTE when killing the app.";
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *doneAction = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:nil];
+                [alertController addAction:doneAction];
+                
+                [self presentViewController:alertController animated:YES completion:nil];
+            });
         });
     }]];
     _jailbreakButton.translatesAutoresizingMaskIntoConstraints = NO;

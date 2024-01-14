@@ -26,6 +26,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 #include <libjailbreak/primitives.h>
 #include <libjailbreak/primitives_IOSurface.h>
 #include <libjailbreak/translation.h>
+#include <libjailbreak/kernel.h>
 #include <libjailbreak/info.h>
 
 @implementation Jailbreaker
@@ -100,6 +101,31 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     libjailbreak_IOSurface_primitives_init();
     
     printf("We out here! (%x)\n", kread32(kconstant(base)));
+    
+    if ([[EnvironmentManager sharedManager] isPACBypassRequired]) {
+        // TODO
+    }
+    
+    if ([[EnvironmentManager sharedManager] isPPLBypassRequired]) {
+        Exploit *pplBypass = [ExploitManager sharedManager].preferredPPLBypass;
+        printf("Picked PPL Bypass: %s\n", pplBypass.description.UTF8String);
+        if ([pplBypass load] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PPL bypass: %s", dlerror()]}];};
+        if ([pplBypass run] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PPL"}];}
+        
+        gPrimitives.kwritebuf = NULL; // Null this out so kwritebuf goes through physwritebuf which the PPL bypass provides
+        // Now we can do "unstable" PPL writes via kwritebuf / physwritebuf
+        // First point on the agenda is creating a more stable primitive with it
+        
+        uint64_t our_ttep = kread64(pmap_self() + koffsetof(pmap, ttep));
+        physwrite64(our_ttep + (7 * 8), 0x4141414141414141);
+        if (physread64(our_ttep + (7 * 8)) != 0x4141414141414141) {
+            [kernelExploit cleanup];
+            [pplBypass cleanup];
+            return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"PPL test write failed"}];
+        }
+        
+        [pplBypass cleanup];
+    }
     
     [kernelExploit cleanup];
     return nil;

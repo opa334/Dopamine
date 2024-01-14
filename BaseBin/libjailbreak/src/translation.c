@@ -96,6 +96,7 @@ uint64_t vtophys_lvl(uint64_t tte_ttep, uint64_t va, uint64_t *leaf_level, uint6
 			if (leaf_level) *leaf_level = curLevel;
 		}
 		else {
+			printf("WARNING: Failed translation, no function to do it.\n");
 			errno = 1043;
 			return 0;
 		}

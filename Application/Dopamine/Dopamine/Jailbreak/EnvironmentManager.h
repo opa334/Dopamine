@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)installedThroughTrollStore;
 - (NSString *)accessibleKernelPath;
 
+- (BOOL)isPACBypassRequired;
+- (BOOL)isPPLBypassRequired;
 @end
 
 NS_ASSUME_NONNULL_END
