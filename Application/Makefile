@@ -12,12 +12,14 @@ Dopamine.ipa: build/Build/Products/Debug-iphoneos/Dopamine.app
 	cp -r build/Build/Products/Debug-iphoneos/Dopamine.app Payload/Dopamine.app
 	zip -Ar Dopamine.ipa Payload
 	rm -rf Payload
+	rm -rf Dopamine.tipa
+	cp Dopamine.ipa Dopamine.tipa
 
 build/Build/Products/Debug-iphoneos/Dopamine.app: FORCE
 	xcodebuild -scheme Dopamine -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
 
 clean:
-	rm -rf build Payload Dopamine.ipa
+	rm -rf build Payload Dopamine.ipa Dopamine.tipa
 
 build_clean:
 	rm -rf Payload build
