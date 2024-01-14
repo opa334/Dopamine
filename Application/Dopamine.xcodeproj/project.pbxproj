@@ -177,9 +177,9 @@
 		8CDD08392B4F6D8200A32B61 /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = Dopamine/Dependencies/libcurl.a; sourceTree = "<group>"; };
 		8CDD083A2B4F6D8200A32B61 /* libfragmentzip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfragmentzip.a; path = Dopamine/Dependencies/libfragmentzip.a; sourceTree = "<group>"; };
 		8CDD083B2B4F6D8200A32B61 /* libgrabkernel.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgrabkernel.a; path = Dopamine/Dependencies/libgrabkernel.a; sourceTree = "<group>"; };
-		8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjailbreak.dylib; path = ../../BaseBin/.build/libjailbreak.dylib; sourceTree = "<group>"; };
-		8CDD08432B4F6DD800A32B61 /* libchoma.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libchoma.dylib; path = ../../BaseBin/.build/libchoma.dylib; sourceTree = "<group>"; };
-		8CDD08442B4F6DD800A32B61 /* libxpf.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxpf.dylib; path = ../../BaseBin/.build/libxpf.dylib; sourceTree = "<group>"; };
+		8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjailbreak.dylib; path = ../BaseBin/.build/libjailbreak.dylib; sourceTree = "<group>"; };
+		8CDD08432B4F6DD800A32B61 /* libchoma.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libchoma.dylib; path = ../BaseBin/.build/libchoma.dylib; sourceTree = "<group>"; };
+		8CDD08442B4F6DD800A32B61 /* libxpf.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxpf.dylib; path = ../BaseBin/.build/libxpf.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -823,10 +823,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/../../BaseBin/.include";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../BaseBin/.include";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/../../BaseBin/.build",
+					"$(SRCROOT)/../BaseBin/.build",
 					"$(SRCROOT)/Dopamine/Dependencies",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
@@ -884,10 +884,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/../../BaseBin/.include";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../BaseBin/.include";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/../../BaseBin/.build",
+					"$(SRCROOT)/../BaseBin/.build",
 					"$(SRCROOT)/Dopamine/Dependencies",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
