@@ -1,3 +1,4 @@
+#include "handoff.h"
 #include "primitives.h"
 #include "info.h"
 #include "kernel.h"
@@ -9,14 +10,6 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-#define PERM_KRW_URW 0x7 // R/W for kernel and user
-#define FAKE_PHYSPAGE_TO_MAP 0x13370000
-#define L1_BLOCK_SIZE 0x1000000000
-#define L1_BLOCK_MASK (L1_BLOCK_SIZE-1)
-#define L2_BLOCK_SIZE 0x2000000
-#define L2_BLOCK_PAGECOUNT (L2_BLOCK_SIZE / PAGE_SIZE)
-#define L2_BLOCK_MASK (L2_BLOCK_SIZE-1)
 
 #define atop(x) ((vm_address_t)(x) >> PAGE_SHIFT)
 
@@ -155,7 +148,7 @@ int pmap_map_in(uint64_t pmap, uint64_t uaStart, uint64_t paStart, uint64_t size
 						break;
 					}
 				}
-				uint64_t newTable = pmap_alloc_page_table(0, pt_va);
+				uint64_t newTable = pmap_alloc_page_table(pmap, pt_va);
 				physwrite64(pt, newTable | ARM_TTE_VALID | ARM_TTE_TYPE_TABLE);
 			}
 		} while (leafLevel < PMAP_TT_L3_LEVEL);
