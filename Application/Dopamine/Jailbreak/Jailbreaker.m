@@ -59,6 +59,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
         _systemInfoXdict = xpf_construct_offset_dictionary(sets);
         if (_systemInfoXdict) {
+            xpc_dictionary_set_uint64(_systemInfoXdict, "kernelConstant.staticBase", gXPF.kernelBase);
             printf("System Info:\n");
             xpc_dictionary_apply(_systemInfoXdict, ^bool(const char *key, xpc_object_t value) {
                 if (xpc_get_type(value) == XPC_TYPE_UINT64) {

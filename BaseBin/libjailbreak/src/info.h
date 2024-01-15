@@ -10,6 +10,7 @@
 struct system_info {
 	struct {
 		uint64_t slide;
+		uint64_t staticBase;
 		uint64_t base;
 		uint64_t virtBase;
 		uint64_t virtSize;
@@ -184,6 +185,7 @@ extern struct system_info gSystemInfo;
 
 #define KERNEL_CONSTANTS_ITERATE(ctx, iterator) \
 	iterator(ctx, kernelConstant.slide); \
+	iterator(ctx, kernelConstant.staticBase); \
     iterator(ctx, kernelConstant.base); \
     iterator(ctx, kernelConstant.virtBase); \
     iterator(ctx, kernelConstant.virtSize); \
