@@ -49,7 +49,7 @@ void acquire_window(uint64_t pa, void (^block)(void *ua))
 	}
 
 	gMagicPT[toUse] = pa | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY;
-	__asm("dmb sy");
+	__asm("dmb sy"); usleep(80); usleep(80);
 	block((void *)(MAGIC_PT_ADDRESS + (toUse * PAGE_SIZE)));
 
 	pthread_mutex_unlock(&gLock);

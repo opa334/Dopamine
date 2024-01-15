@@ -149,7 +149,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (err) return err;
     err = [self buildPhysRWPrimitive];
     if (err) return err;
-    NSLog(@"We out here! %x\n", kread32(kconstant(base))); usleep(10000);
+    NSLog(@"We out here! %x\n", kread32(kconstant(base)));
     err = [self cleanUpExploits];
     if (err) return err;
     
