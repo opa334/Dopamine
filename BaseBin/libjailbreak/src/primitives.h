@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include "primitives_external.h"
 
 typedef enum
@@ -10,6 +11,8 @@ typedef enum
 	KALLOC_OPTION_GLOBAL, // Global Allocation, never manually freed
 	KALLOC_OPTION_PROCESS, // Allocation attached to this process, freed on process exit
 } kalloc_options;
+
+void enumerate_pages(uint64_t start, size_t size, uint64_t pageSize, bool (^block)(uint64_t, size_t));
 
 int kreadbuf(uint64_t kaddr, void* output, size_t size);
 int kwritebuf(uint64_t kaddr, const void* input, size_t size);

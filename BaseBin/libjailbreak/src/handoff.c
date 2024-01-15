@@ -51,28 +51,28 @@ uint64_t pvh_ptd(uint64_t pvh)
 uint64_t _alloc_page_table(void)
 {
 	uint64_t pmap = pmap_self();
-	uint64_t ttep = kread_ptr(pmap + koffsetof(pmap, ttep));
-
+	uint64_t ttep = kread64(pmap + koffsetof(pmap, ttep));
 	vm_address_t free_lvl2 = 0;
 	task_vm_info_data_t data = {};
 	task_info_t info = (task_info_t)(&data);
 	mach_msg_type_number_t count = TASK_VM_INFO_COUNT;
 	task_info(mach_task_self(), TASK_VM_INFO, info, &count);
 
-	// Find an unused L3 entry inside an L2 page table of our process
+	// Find an unused L3 entry inside an L2 page table of our process, make an allocation there
 	vm_address_t start = (data.min_address & ~L2_BLOCK_MASK) + L2_BLOCK_SIZE;
 	for (vm_address_t cur = start; cur < data.max_address; cur += L2_BLOCK_SIZE) {
 		uint64_t lvl = PMAP_TT_L2_LEVEL;
 		uint64_t tte_lvl2 = 0;
 		uint64_t level3 = vtophys_lvl(ttep, cur, &lvl, &tte_lvl2);
 		if (level3 == 0 && lvl == PMAP_TT_L2_LEVEL) {
-			free_lvl2 = cur;
-			break;
+			if (vm_allocate(mach_task_self(), &cur, 0x4000, VM_FLAGS_FIXED) == KERN_SUCCESS) {
+				free_lvl2 = cur;
+				break;
+			}
 		}
 	}
 
-	// Allocate and fault in a page at the unused L3 entry, this will allocate a page table and write it there
-	if (vm_allocate(mach_task_self(), &free_lvl2, 0x4000, VM_FLAGS_FIXED) != KERN_SUCCESS) return 0;
+	// Fault in our allocated page page at the unused L3 entry, this will allocate a page table and write it there
 	*(volatile uint64_t *)free_lvl2;
 
 	// Find the newly allocated page table
@@ -84,16 +84,22 @@ uint64_t _alloc_page_table(void)
 	uint64_t pvh = pai_to_pvh(pa_index(allocatedPT));
 	uint64_t ptdp = pvh_ptd(pvh);
 	uint64_t pinfo = kread64(ptdp + 0x20); // TODO: Fake 16k devices (4 values)
-	kwrite16(pinfo, kread16(pinfo)+1);
+	uint64_t pinfo_pa = kvtophys(pinfo);
+	physwrite16(pinfo_pa, physread16(pinfo_pa)+1);
 
 	// Deallocate page (our allocated page table will stay, because we bumped it's reference count)
 	vm_deallocate(mach_task_self(), free_lvl2, 0x4000);
 
 	// Decrement reference count of our allocated page table again
-	kwrite16(pinfo, kread16(pinfo)-1);
+	physwrite16(pinfo_pa, physread16(pinfo_pa)-1);
 
 	// Remove our allocated page table from it's original location
 	physwrite64(tte_lvl2, 0);
+
+	// Clear the allocated page table of any entries (there should be one)
+	uint8_t empty[PAGE_SIZE];
+	memset(empty, 0, PAGE_SIZE);
+	physwritebuf(allocatedPT, empty, PAGE_SIZE);
 
 	return allocatedPT;
 }
@@ -105,15 +111,18 @@ uint64_t pmap_alloc_page_table(uint64_t pmap, uint64_t va)
 	}
 
 	uint64_t tt_p = _alloc_page_table();
+	if (!tt_p) return 0;
 
 	uint64_t pvh = pai_to_pvh(pa_index(tt_p));
 	uint64_t ptdp = pvh_ptd(pvh);
 
+	uint64_t ptdp_pa = kvtophys(ptdp);
+
 	// At this point the allocated page table is associated
 	// to the pmap of this process alongside the address it was allocated on
 	// We now need to replace the association with the context in which it will be used
-	kwrite64(ptdp + 0x10, pmap);
-	kwrite64(ptdp + 0x18, va);  // TODO: Fake 16k devices (4 values)
+	physwrite64(ptdp_pa + 0x10, pmap);
+	physwrite64(ptdp_pa + 0x18, va);  // TODO: Fake 16k devices (4 values)
 
 	return tt_p;
 }

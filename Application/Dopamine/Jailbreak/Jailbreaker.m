@@ -20,12 +20,14 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     JBErrorCodeFailedKernelPatchfinding      = -2,
     JBErrorCodeFailedLoadingExploit          = -3,
     JBErrorCodeFailedExploitation            = -4,
+    JBErrorCodeFailedBuildingPhysRW          = -5,
     JBErrorCodeFailedCleanup                 = -6,
 };
 
 #include <libjailbreak/primitives_external.h>
 #include <libjailbreak/primitives.h>
 #include <libjailbreak/primitives_IOSurface.h>
+#include <libjailbreak/physrw_pte.h>
 #include <libjailbreak/translation.h>
 #include <libjailbreak/kernel.h>
 #include <libjailbreak/info.h>
@@ -116,15 +118,17 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         printf("Picked PPL Bypass: %s\n", pplBypass.description.UTF8String);
         if ([pplBypass load] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PPL bypass: %s", dlerror()]}];};
         if ([pplBypass run] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PPL"}];}
-        
-        gPrimitives.kwritebuf = NULL; // Null this out so kwritebuf goes through physwritebuf which the PPL bypass provides
-        // Now we can do "unstable" PPL writes via kwritebuf / physwritebuf
+        // At this point we presume the PPL bypass gave us unrestricted phys write primitives
     }
     return nil;
 }
 
 - (NSError *)buildPhysRWPrimitive
 {
+    int r = libjailbreak_physrw_pte_init();
+    if (r != 0) {
+        return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedBuildingPhysRW userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to build phys r/w primitive: %d", r]}];
+    }
     return nil;
 }
 
@@ -135,7 +139,6 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     return nil;
 }
 
-
 - (NSError *)run
 {
     NSError *err = nil;
@@ -145,9 +148,9 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (err) return err;
     err = [self buildPhysRWPrimitive];
     if (err) return err;
+    NSLog(@"We out here! %x\n", kread32(kconstant(base))); usleep(10000);
     err = [self cleanUpExploits];
     if (err) return err;
-    
     
     
     return nil;

@@ -83,7 +83,7 @@ uint64_t vtophys_lvl(uint64_t tte_ttep, uint64_t va, uint64_t *leaf_level, uint6
 
 		uint64_t tteIndex = (va & indexMask) >> shift;
 		uint64_t tteEntry = 0;
-		if (gPrimitives.physreadbuf && physical) {
+		if (physical) {
 			uint64_t tte_pa = tte_ttep + (tteIndex * sizeof(uint64_t));
 			tteEntry = physread64(tte_pa);
 			if (leaf_tte_ttep) *leaf_tte_ttep = tte_pa;
@@ -96,7 +96,7 @@ uint64_t vtophys_lvl(uint64_t tte_ttep, uint64_t va, uint64_t *leaf_level, uint6
 			if (leaf_level) *leaf_level = curLevel;
 		}
 		else {
-			printf("WARNING: Failed translation, no function to do it.\n");
+			printf("WARNING: Failed %s translation, no function to do it.\n", physical ? "physical" : "virtual");
 			errno = 1043;
 			return 0;
 		}

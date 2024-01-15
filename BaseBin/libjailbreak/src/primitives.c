@@ -17,7 +17,7 @@ struct kernel_primitives gPrimitives = { 0 };
 
 // Wrappers physical <-> virtual
 
-void enumeratePages(uint64_t start, size_t size, uint64_t pageSize, bool (^block)(uint64_t curStart, size_t curSize))
+void enumerate_pages(uint64_t start, size_t size, uint64_t pageSize, bool (^block)(uint64_t curStart, size_t curSize))
 {
 	uint64_t curStart = start;
 	size_t sizeLeft = size;
@@ -36,7 +36,7 @@ int _kreadbuf_phys(uint64_t kaddr, void* output, size_t size)
 	memset(output, 0, size);
 
 	__block int pr = 0;
-	enumeratePages(kaddr, size, P_PAGE_SIZE, ^bool(uint64_t curKaddr, size_t curSize){
+	enumerate_pages(kaddr, size, P_PAGE_SIZE, ^bool(uint64_t curKaddr, size_t curSize){
 		uint64_t curPhys = kvtophys(curKaddr);
 		if (curPhys == 0 && errno != 0) {
 			pr = errno;
@@ -54,7 +54,7 @@ int _kreadbuf_phys(uint64_t kaddr, void* output, size_t size)
 int _kwritebuf_phys(uint64_t kaddr, const void* input, size_t size)
 {
 	__block int pr = 0;
-	enumeratePages(kaddr, size, P_PAGE_SIZE, ^bool(uint64_t curKaddr, size_t curSize){
+	enumerate_pages(kaddr, size, P_PAGE_SIZE, ^bool(uint64_t curKaddr, size_t curSize){
 		uint64_t curPhys = kvtophys(curKaddr);
 		if (curPhys == 0 && errno != 0) {
 			pr = errno;
@@ -74,7 +74,7 @@ int _physreadbuf_virt(uint64_t physaddr, void* output, size_t size)
 	memset(output, 0, size);
 
 	__block int pr = 0;
-	enumeratePages(physaddr, size, P_PAGE_SIZE, ^bool(uint64_t curPhys, size_t curSize){
+	enumerate_pages(physaddr, size, P_PAGE_SIZE, ^bool(uint64_t curPhys, size_t curSize){
 		uint64_t curKaddr = phystokv(curPhys);
 		if (curKaddr == 0 && errno != 0) {
 			pr = errno;
@@ -92,7 +92,7 @@ int _physreadbuf_virt(uint64_t physaddr, void* output, size_t size)
 int _physwritebuf_virt(uint64_t physaddr, const void* input, size_t size)
 {
 	__block int pr = 0;
-	enumeratePages(physaddr, size, P_PAGE_SIZE, ^bool(uint64_t curPhys, size_t curSize){
+	enumerate_pages(physaddr, size, P_PAGE_SIZE, ^bool(uint64_t curPhys, size_t curSize){
 		uint64_t curKaddr = phystokv(curPhys);
 		if (curKaddr == 0 && errno != 0) {
 			pr = errno;

@@ -1,5 +1,5 @@
-#import "jbclient_xpc.h"
-#import "jbserver.h"
+#include "jbclient_xpc.h"
+#include "jbserver.h"
 #include <dispatch/dispatch.h>
 
 #define OS_ALLOC_ONCE_KEY_MAX    100
@@ -31,12 +31,10 @@ xpc_object_t jbserver_xpc_send(uint64_t domain, uint64_t action, xpc_object_t xa
 	}
 
 	struct xpc_global_data* globalData = NULL;
-	if(_os_alloc_once_table[1].once == -1)
-	{
+	if (_os_alloc_once_table[1].once == -1) {
 		globalData = _os_alloc_once_table[1].ptr;
 	}
-	else
-	{
+	else {
 		globalData = _os_alloc_once(&_os_alloc_once_table[1], 472, NULL);
 		if (!globalData) _os_alloc_once_table[1].once = -1;
 	}
