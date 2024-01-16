@@ -83,7 +83,7 @@ uint64_t _alloc_page_table(void)
 	// Bump reference count of our allocated page table by one
 	uint64_t pvh = pai_to_pvh(pa_index(allocatedPT));
 	uint64_t ptdp = pvh_ptd(pvh);
-	uint64_t pinfo = kread64(ptdp + 0x20); // TODO: Fake 16k devices (4 values)
+	uint64_t pinfo = kread64(ptdp + koffsetof(pt_desc, ptd_info)); // TODO: Fake 16k devices (4 values)
 	uint64_t pinfo_pa = kvtophys(pinfo);
 	physwrite16(pinfo_pa, physread16(pinfo_pa)+1);
 
@@ -121,8 +121,12 @@ uint64_t pmap_alloc_page_table(uint64_t pmap, uint64_t va)
 	// At this point the allocated page table is associated
 	// to the pmap of this process alongside the address it was allocated on
 	// We now need to replace the association with the context in which it will be used
-	physwrite64(ptdp_pa + 0x10, pmap);
-	physwrite64(ptdp_pa + 0x18, va);  // TODO: Fake 16k devices (4 values)
+	physwrite64(ptdp_pa + koffsetof(pt_desc, pmap), pmap);
+
+	// On A14+ PT_INDEX_MAX is 4, for whatever reason
+	// However in practice, only the first slot is used...
+	// TODO: On devices where kernel page size != userland page size, populate all 4 values
+	physwrite64(ptdp_pa + koffsetof(pt_desc, va), va);
 
 	return tt_p;
 }

@@ -56,6 +56,11 @@ void jbinfo_initialize_hardcoded_offsets(void)
 	gSystemInfo.kernelStruct.pmap.wx_allowed = 0xC2 + pmapEl2Adjust;
 	gSystemInfo.kernelStruct.pmap.type       = 0xC8 + pmapEl2Adjust;
 
+	// pt_desc
+	gSystemInfo.kernelStruct.pt_desc.pmap     = 0x10;
+	gSystemInfo.kernelStruct.pt_desc.va       = 0x18;
+	gSystemInfo.kernelStruct.pt_desc.ptd_info = koffsetof(pt_desc, va) + (kconstant(PT_INDEX_MAX) * sizeof(uint64_t));
+
 	// vm_map_header
 	gSystemInfo.kernelStruct.vm_map_header.links    =  0x0;
 	gSystemInfo.kernelStruct.vm_map_header.nentries = 0x20;

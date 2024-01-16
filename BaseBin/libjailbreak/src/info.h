@@ -22,6 +22,7 @@ struct system_info {
 		uint64_t T1SZ_BOOT;
 		uint64_t ARM_TT_L1_INDEX_MASK;
 		uint64_t smdBase;
+		uint64_t PT_INDEX_MAX;
 	} kernelConstant;
 
 	struct {
@@ -171,6 +172,12 @@ struct system_info {
 		} pmap;
 
 		struct {
+			uint32_t pmap;
+			uint32_t va;
+			uint32_t ptd_info;
+		} pt_desc;
+
+		struct {
 			uint32_t next;
 		} tt_free_entry;
 
@@ -197,7 +204,8 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelConstant.pointer_mask); \
     iterator(ctx, kernelConstant.T1SZ_BOOT); \
     iterator(ctx, kernelConstant.ARM_TT_L1_INDEX_MASK); \
-    iterator(ctx, kernelConstant.smdBase);
+    iterator(ctx, kernelConstant.smdBase); \
+    iterator(ctx, kernelConstant.PT_INDEX_MAX);
 
 #define KERNEL_SYMBOLS_ITERATE(ctx, iterator) \
     iterator(ctx, kernelSymbol.perfmon_dev_open); \
@@ -313,6 +321,10 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelStruct.pmap.type); \
 	\
     iterator(ctx, kernelStruct.tt_free_entry.next); \
+	\
+    iterator(ctx, kernelStruct.pt_desc.pmap); \
+    iterator(ctx, kernelStruct.pt_desc.va); \
+    iterator(ctx, kernelStruct.pt_desc.ptd_info); \
 	\
     iterator(ctx, kernelStruct.trustcache.next); \
     iterator(ctx, kernelStruct.trustcache.this); \
