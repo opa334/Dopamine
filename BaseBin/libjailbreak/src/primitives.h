@@ -32,6 +32,7 @@ int physwrite8(uint64_t pa, uint8_t v);
 
 uint64_t kread64(uint64_t va);
 uint64_t kread_ptr(uint64_t va);
+uint64_t kread_smdptr(uint64_t va);
 uint32_t kread32(uint64_t va);
 uint16_t kread16(uint64_t va);
 uint8_t kread8(uint64_t va);

@@ -39,8 +39,8 @@ void jbinfo_initialize_hardcoded_offsets(void)
 	gSystemInfo.kernelStruct.task.threads = 0x60;
 
 	// ipc_space
-	gSystemInfo.kernelStruct.ipc_space.table             = 0x20;
-	gSystemInfo.kernelStruct.ipc_space.table_is_packed   = false;
+	gSystemInfo.kernelStruct.ipc_space.table          = 0x20;
+	gSystemInfo.kernelStruct.ipc_space.table_uses_smd = false;
 
 	// ipc_entry
 	gSystemInfo.kernelStruct.ipc_entry.object      = 0x0;
@@ -138,6 +138,8 @@ void jbinfo_initialize_hardcoded_offsets(void)
 				gSystemInfo.kernelStruct.ipc_port.kobject = 0x48;
 
 				if (strcmp(xnuVersion, "22.0.0") >= 0) { // iOS 16+
+					gSystemInfo.kernelConstant.smdBase = 3;
+
 					// proc
 					gSystemInfo.kernelStruct.proc.task   =   0x0; // Removed, task is now at (proc + sizeof(proc))
 					gSystemInfo.kernelStruct.proc.pptr   =  0x10;
@@ -147,9 +149,6 @@ void jbinfo_initialize_hardcoded_offsets(void)
 					gSystemInfo.kernelStruct.proc.fd     =  0xD8;
 					gSystemInfo.kernelStruct.proc.flag   = 0x25C;
 					gSystemInfo.kernelStruct.proc.textvp = 0x350;
-
-					// ipc_space
-					gSystemInfo.kernelStruct.ipc_space.table_is_packed = true;
 
 					// trustcache
 					gSystemInfo.kernelStruct.trustcache.next = 0x0;
@@ -161,10 +160,16 @@ void jbinfo_initialize_hardcoded_offsets(void)
 					gSystemInfo.kernelStruct.pmap.wx_allowed = 0xBA + pmapEl2Adjust;
 					gSystemInfo.kernelStruct.pmap.type       = 0xC0 + pmapEl2Adjust;
 
-					if (strcmp(xnuVersion, "22.4.0") >= 0) { // iOS 16.4+
-						// proc
-						gSystemInfo.kernelStruct.proc.flag   = 0x454;
-						gSystemInfo.kernelStruct.proc.textvp = 0x548;
+					if (strcmp(xnuVersion, "22.1.0") >= 0) { // iOS 16.1+
+						gSystemInfo.kernelStruct.ipc_space.table_uses_smd = true;
+						if (strcmp(xnuVersion, "22.3.0") >= 0) { // iOS 16.3+
+							gSystemInfo.kernelConstant.smdBase = 2;
+							if (strcmp(xnuVersion, "22.4.0") >= 0) { // iOS 16.4+
+								// proc
+								gSystemInfo.kernelStruct.proc.flag   = 0x454;
+								gSystemInfo.kernelStruct.proc.textvp = 0x548;
+							}
+						}
 					}
 				}
 			}

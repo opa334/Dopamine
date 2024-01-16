@@ -222,6 +222,28 @@ uint64_t kread_ptr(uint64_t va)
 	return UNSIGN_PTR(kread64(va));
 }
 
+// Fuck is an smd ptr??? (I know one thing that it could mean)
+uint64_t kread_smdptr(uint64_t va)
+{
+	uint64_t value = kread_ptr(va);
+
+	uint64_t bits = (kconstant(smdBase) << (62-kconstant(T1SZ_BOOT)));
+
+	uint64_t case1 = 0xFFFFFFFFFFFFC000 & ~bits;
+	uint64_t case2 = 0xFFFFFFFFFFFFFFE0 & ~bits;
+
+	if ((value & bits) == 0) {
+		if (value) {
+			value = (value & case1) | bits;
+		}
+	}
+	else {
+		value = (value & case2) | bits;
+	}
+
+	return value;
+}
+
 uint32_t kread32(uint64_t va)
 {
 	uint32_t v;

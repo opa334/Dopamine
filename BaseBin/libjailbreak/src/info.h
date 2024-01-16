@@ -21,6 +21,7 @@ struct system_info {
 		uint64_t pointer_mask;
 		uint64_t T1SZ_BOOT;
 		uint64_t ARM_TT_L1_INDEX_MASK;
+		uint64_t smdBase;
 	} kernelConstant;
 
 	struct {
@@ -126,7 +127,7 @@ struct system_info {
 
 		struct {
 			uint32_t table;
-			bool table_is_packed;
+			bool table_uses_smd;
 		} ipc_space;
 
 		struct {
@@ -195,7 +196,8 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelConstant.exceptionLevel); \
     iterator(ctx, kernelConstant.pointer_mask); \
     iterator(ctx, kernelConstant.T1SZ_BOOT); \
-    iterator(ctx, kernelConstant.ARM_TT_L1_INDEX_MASK);
+    iterator(ctx, kernelConstant.ARM_TT_L1_INDEX_MASK); \
+    iterator(ctx, kernelConstant.smdBase);
 
 #define KERNEL_SYMBOLS_ITERATE(ctx, iterator) \
     iterator(ctx, kernelSymbol.perfmon_dev_open); \
@@ -282,7 +284,7 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelStruct.thread.machine_contextData); \
 	\
     iterator(ctx, kernelStruct.ipc_space.table); \
-    iterator(ctx, kernelStruct.ipc_space.table_is_packed); \
+    iterator(ctx, kernelStruct.ipc_space.table_uses_smd); \
 	\
     iterator(ctx, kernelStruct.ipc_entry.object); \
     iterator(ctx, kernelStruct.ipc_entry.struct_size); \
