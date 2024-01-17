@@ -106,8 +106,10 @@ struct system_info {
 
 		struct {
 			uint32_t uid;
+			uint32_t ruid;
 			uint32_t svuid;
 			uint32_t groups;
+			uint32_t rgid;
 			uint32_t svgid;
 			uint32_t label;
 		} ucred;
@@ -276,8 +278,10 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelStruct.filedesc.ofiles_start); \
 	\
     iterator(ctx, kernelStruct.ucred.uid); \
+    iterator(ctx, kernelStruct.ucred.ruid); \
     iterator(ctx, kernelStruct.ucred.svuid); \
     iterator(ctx, kernelStruct.ucred.groups); \
+    iterator(ctx, kernelStruct.ucred.rgid); \
     iterator(ctx, kernelStruct.ucred.svgid); \
     iterator(ctx, kernelStruct.ucred.label); \
 	\

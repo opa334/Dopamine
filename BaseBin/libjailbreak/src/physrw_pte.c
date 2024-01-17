@@ -2,6 +2,7 @@
 #include "translation.h"
 #include "handoff.h"
 #include "kernel.h"
+#include "util.h"
 #include "pte.h"
 #include "info.h"
 #include <pthread.h>

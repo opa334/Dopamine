@@ -82,7 +82,8 @@
             }
             else {
                 title = @"Success";
-                message = @"The device should panic with a corrupted TTE when killing the app.";
+                //message = @"The device should panic with a corrupted TTE when killing the app.";
+                message = @"";
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{

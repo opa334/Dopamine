@@ -1,6 +1,7 @@
 #import "info.h"
 #import "primitives.h"
 #import "kernel.h"
+#import "util.h"
 #import <Foundation/Foundation.h>
 #import <IOSurface/IOSurfaceRef.h>
 #import <CoreGraphics/CoreGraphics.h>

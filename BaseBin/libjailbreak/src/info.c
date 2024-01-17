@@ -6,6 +6,8 @@
 #include <sys/types.h>
 #include <sys/sysctl.h>
 
+struct system_info gSystemInfo = { 0 };
+
 void jbinfo_initialize_dynamic_offsets(xpc_object_t xoffsetDict)
 {
 	SYSTEM_INFO_DESERIALIZE(xoffsetDict);
@@ -78,8 +80,10 @@ void jbinfo_initialize_hardcoded_offsets(void)
 	// ucred
 	uint32_t ucred_cr_posix = 0x18;
 	gSystemInfo.kernelStruct.ucred.uid    = ucred_cr_posix +  0x0;
+	gSystemInfo.kernelStruct.ucred.ruid   = ucred_cr_posix +  0x4;
 	gSystemInfo.kernelStruct.ucred.svuid  = ucred_cr_posix +  0x8;
 	gSystemInfo.kernelStruct.ucred.groups = ucred_cr_posix + 0x10;
+	gSystemInfo.kernelStruct.ucred.rgid   = ucred_cr_posix + 0x50;
 	gSystemInfo.kernelStruct.ucred.svgid  = ucred_cr_posix + 0x54;
 	gSystemInfo.kernelStruct.ucred.label  = 0x78;
 
@@ -146,14 +150,15 @@ void jbinfo_initialize_hardcoded_offsets(void)
 					gSystemInfo.kernelConstant.smdBase = 3;
 
 					// proc
-					gSystemInfo.kernelStruct.proc.task   =   0x0; // Removed, task is now at (proc + sizeof(proc))
-					gSystemInfo.kernelStruct.proc.pptr   =  0x10;
-					gSystemInfo.kernelStruct.proc.svuid  =  0x3C;
-					gSystemInfo.kernelStruct.proc.svgid  =  0x40;
-					gSystemInfo.kernelStruct.proc.pid    =  0x60;
-					gSystemInfo.kernelStruct.proc.fd     =  0xD8;
-					gSystemInfo.kernelStruct.proc.flag   = 0x25C;
-					gSystemInfo.kernelStruct.proc.textvp = 0x350;
+					gSystemInfo.kernelStruct.proc.task    =   0x0; // Removed, task is now at (proc + sizeof(proc))
+					gSystemInfo.kernelStruct.proc.pptr    =  0x10;
+					gSystemInfo.kernelStruct.proc.proc_ro =  0x18;
+					gSystemInfo.kernelStruct.proc.svuid   =  0x3C;
+					gSystemInfo.kernelStruct.proc.svgid   =  0x40;
+					gSystemInfo.kernelStruct.proc.pid     =  0x60;
+					gSystemInfo.kernelStruct.proc.fd      =  0xD8;
+					gSystemInfo.kernelStruct.proc.flag    = 0x25C;
+					gSystemInfo.kernelStruct.proc.textvp  = 0x350;
 
 					// trustcache
 					gSystemInfo.kernelStruct.trustcache.next = 0x0;

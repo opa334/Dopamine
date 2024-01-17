@@ -2,20 +2,8 @@
 #include <stdbool.h>
 #include "primitives.h"
 #include "info.h"
+#include "util.h"
 #include <dispatch/dispatch.h>
-
-struct system_info gSystemInfo = { 0 };
-
-void proc_iterate(void (^itBlock)(uint64_t, bool*))
-{
-	uint64_t proc = ksymbol(allproc);
-	while((proc = kread_ptr(proc + koffsetof(proc, list_next))))
-	{
-		bool stop = false;
-		itBlock(proc, &stop);
-		if(stop) return;
-	}
-}
 
 uint64_t proc_find(pid_t pidToFind)
 {
@@ -32,6 +20,7 @@ uint64_t proc_find(pid_t pidToFind)
 
 int proc_rele(uint64_t proc)
 {
+	// If proc_find doesn't increment the ref count, there is also no need to decrement it again
 	return -1;
 }
 
@@ -47,53 +36,53 @@ uint64_t proc_task(uint64_t proc)
 	}
 }
 
-uint64_t proc_self(void)
+uint64_t proc_ucred(uint64_t proc)
 {
-	static uint64_t gSelfProc = 0;
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		bool needsRelease = false;
-		gSelfProc = proc_find(getpid());
-		// decrement ref count again, we assume proc_self will exist for the whole lifetime of this process
-		proc_rele(gSelfProc);
-	});
-	return gSelfProc;
+	if (gSystemInfo.kernelStruct.proc_ro.exists) {
+		uint64_t proc_ro = kread_ptr(proc + koffsetof(proc, proc_ro));
+		return kread_ptr(proc_ro + koffsetof(proc_ro, ucred));
+	}
+	else {
+		return kread_ptr(proc + koffsetof(proc, ucred));
+	}
 }
 
-uint64_t task_self(void)
+uint32_t proc_getcsflags(uint64_t proc)
 {
-	static uint64_t gSelfTask = 0;
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		gSelfTask = proc_task(proc_self());
-	});
-	return gSelfTask;
+	if (gSystemInfo.kernelStruct.proc_ro.exists) {
+		uint64_t proc_ro = kread_ptr(proc + koffsetof(proc, proc_ro));
+		return kread32(proc_ro + koffsetof(proc_ro, csflags));
+	}
+	else {
+		return kread32(proc + koffsetof(proc, csflags));
+	}
 }
 
-uint64_t vm_map_self(void)
+void proc_csflags_update(uint64_t proc, uint32_t flags)
 {
-	static uint64_t gSelfMap = 0;
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		gSelfMap = kread_ptr(task_self() + koffsetof(task, map));
-	});
-	return gSelfMap;
+	if (gSystemInfo.kernelStruct.proc_ro.exists) {
+		uint64_t proc_ro = kread_ptr(proc + koffsetof(proc, proc_ro));
+		kwrite32(proc_ro + koffsetof(proc_ro, csflags), flags);
+	}
+	else {
+		kwrite32(proc + koffsetof(proc, csflags), flags);
+	}
 }
 
-uint64_t pmap_self(void)
+void proc_csflags_set(uint64_t proc, uint32_t flags)
 {
-	static uint64_t gSelfPmap = 0;
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		gSelfPmap = kread_ptr(vm_map_self() + koffsetof(vm_map, pmap));
-	});
-	return gSelfPmap;
+	proc_csflags_update(proc, proc_getcsflags(proc) | (uint32_t)flags);
+}
+
+void proc_csflags_clear(uint64_t proc, uint32_t flags)
+{
+	proc_csflags_update(proc, proc_getcsflags(proc) & ~(uint32_t)flags);
 }
 
 uint64_t ipc_entry_lookup(uint64_t space, mach_port_name_t name)
 {
 	uint64_t table = 0;
-	// New packed format in iOS 16
+	// New format in iOS 16.1
 	if (gSystemInfo.kernelStruct.ipc_space.table_uses_smd) {
 		table = kread_smdptr(space + koffsetof(ipc_space, table));
 	}
@@ -104,18 +93,3 @@ uint64_t ipc_entry_lookup(uint64_t space, mach_port_name_t name)
 	return (table + (ksizeof(ipc_entry) * (name >> 8)));
 }
 
-uint64_t task_get_ipc_port_table_entry(uint64_t task, mach_port_t port)
-{
-	uint64_t itk_space = kread_ptr(task + koffsetof(task, itk_space));
-	return ipc_entry_lookup(itk_space, port);
-}
-
-uint64_t task_get_ipc_port_object(uint64_t task, mach_port_t port)
-{
-	return kread_ptr(task_get_ipc_port_table_entry(task, port) + koffsetof(ipc_entry, object));
-}
-
-uint64_t task_get_ipc_port_kobject(uint64_t task, mach_port_t port)
-{
-	return kread_ptr(task_get_ipc_port_object(task, port) + koffsetof(ipc_port, kobject));
-}
