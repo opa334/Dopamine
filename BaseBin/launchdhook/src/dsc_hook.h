@@ -1,0 +1,1 @@
+void initDSCHooks(void);

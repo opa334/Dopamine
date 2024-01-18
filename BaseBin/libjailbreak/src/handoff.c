@@ -181,7 +181,7 @@ int pmap_map_in(uint64_t pmap, uint64_t uaStart, uint64_t paStart, uint64_t size
 	return 0;
 }
 
-int handoffPPLPrimitives(pid_t pid)
+int handoff_ppl_primitives(pid_t pid)
 {
 	if (!pid) return -1;
 

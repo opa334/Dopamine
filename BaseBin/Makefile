@@ -7,7 +7,7 @@
 #choma:
 #	$(MAKE) -C ChOma TARGET=ios DISABLE_SIGNING=1 DYLIB_LDFLAGS="-install_name @loader_path/libchoma.dylib" $@
 
-all: .build .include ChOma XPF opainject libjailbreak
+all: .build .include ChOma XPF opainject libjailbreak systemhook forkfix launchdhook boomerang jbctl BaseBin.tc BaseBin.tar
 
 ChOma:
 	@$(MAKE) -C ChOma TARGET=ios DISABLE_SIGNING=1 DISABLE_TESTS=1 DYLIB_LDFLAGS="-install_name @loader_path/libchoma.dylib"
@@ -30,30 +30,55 @@ libjailbreak:
 	@mkdir -p .include/libjailbreak
 	@cp libjailbreak/src/*.h .include/libjailbreak
 
+systemhook:
+	$(MAKE) -C systemhook
+	@cp systemhook/systemhook.dylib .build
+
+forkfix:
+	$(MAKE) -C forkfix
+	@cp forkfix/forkfix.dylib .build
+
+launchdhook:
+	$(MAKE) -C launchdhook
+	@cp launchdhook/launchdhook.dylib .build
+
+boomerang:
+	$(MAKE) -C boomerang
+	@cp boomerang/boomerang .build
+
+jbctl:
+	$(MAKE) -C jbctl
+	@cp jbctl/jbctl .build
+
 .build:
 	rm -rf .build
 	mkdir -p .build
-	cp -r _external/bins/* .build
+	cp -r _external/bin/* .build
 
 .include:
 	rm -rf .include
 	mkdir -p .include
 	cp -r _external/include/* .include
 
-basebin.tc:
-	touch basebin.tc
+BaseBin.tc:
+	trustcache create BaseBin.tc .build
 
-basebin.tar:
-	touch basebin.tar
+BaseBin.tar:
+	@DYLD_FALLBACK_LIBRARY_PATH="." ./tar --transform "s/^.build/basebin/" -cvf "BaseBin.tar" ".build" --owner=0 --group=0
 
 clean:
 	@$(MAKE) -C ChOma $@
 	@$(MAKE) -C XPF $@
 	@$(MAKE) -C opainject $@
 	@$(MAKE) -C libjailbreak $@
+	@$(MAKE) -C systemhook $@
+	@$(MAKE) -C forkfix $@
+	@$(MAKE) -C launchdhook $@
+	@$(MAKE) -C boomerang $@
+	@$(MAKE) -C jbctl $@
 	@rm -rf .build
 	@rm -rf .include
-	@rm -rf basebin.tar
-	@rm -rf basebin.tc
+	@rm -rf BaseBin.tar
+	@rm -rf BaseBin.tc
 
-.PHONY: clean .build .include ChOma XPF opainject libjailbreak
+.PHONY: clean .build .include ChOma XPF opainject libjailbreak systemhook forkfix launchdhook boomerang jbctl BaseBin.tc BaseBin.tar

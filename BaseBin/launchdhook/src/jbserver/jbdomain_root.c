@@ -1,28 +1,31 @@
-#include "jbserver_xpc.h"
+#include "jbserver_global.h"
+#include <libjailbreak/jbserver_boomerang.h>
+#include <libjailbreak/trustcache.h>
 
 static bool root_domain_allowed(audit_token_t clientToken)
 {
-	return true;
+	return (audit_token_to_euid(clientToken) == 0);
 }
 
 static int root_get_physrw(audit_token_t *clientToken)
 {
-	return 0;
+	return boomerang_get_physrw(clientToken);
 }
 
 static int root_get_kcall(audit_token_t *clientToken, uint64_t stackAllocation, uint64_t *arcContextOut)
 {
-	return 0;
+	return boomerang_get_kcall(clientToken, stackAllocation, arcContextOut);
 }
 
 static int root_get_sysinfo(xpc_object_t *sysInfoOut)
 {
-	return 0;
+	return boomerang_get_sysinfo(sysInfoOut);
 }
 
 static int root_add_cdhash(uint8_t *cdhashData, size_t cdhashLen)
 {
-	return 0;
+	if (cdhashLen != CS_CDHASH_LEN) return -1;
+	return jb_trustcache_add_cdhashes((cdhash_t *)cdhashData, 1);
 }
 
 struct jbserver_domain gRootDomain = {

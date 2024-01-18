@@ -1,4 +1,5 @@
-#include "jbserver_xpc.h"
+#include "jbserver_global.h"
+#include <libjailbreak/info.h>
 
 static bool systemwide_domain_allowed(audit_token_t clientToken)
 {
@@ -7,7 +8,7 @@ static bool systemwide_domain_allowed(audit_token_t clientToken)
 
 static int systemwide_get_jb_root(char **pathOut)
 {
-	*pathOut = strdup("/var/jb");
+	*pathOut = strdup(jbinfo(rootPath));
 	return 0;
 }
 
@@ -28,8 +29,17 @@ static int systemwide_trust_binary(char *binaryPath)
 	return 0;
 }
 
-static int systemwide_process_checkin(audit_token_t *processToken)
+static int systemwide_process_checkin(audit_token_t *processToken, char **rootPathOut, char **jbBootUUIDOut, char **sandboxExtensionsOut)
 {
+	systemwide_get_jb_root(rootPathOut);
+	systemwide_get_boot_uuid(jbBootUUIDOut);
+
+	// TODO: Issue sandbox extension
+
+	// TODO: Allow invalid pages
+
+	// TODO: Fix setuid
+
 	return 0;
 }
 
@@ -70,6 +80,9 @@ struct jbserver_domain gSystemwideDomain = {
 			.handler = systemwide_process_checkin,
 			.args = (jbserver_arg[]) {
 				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
+				{ .name = "root-path", .type = JBS_TYPE_STRING, .out = true },
+				{ .name = "boot-uuid", .type = JBS_TYPE_STRING, .out = true },
+				{ .name = "sandbox-extensions", .type = JBS_TYPE_STRING, .out = true },
 				{ 0 },
 			},
 		},

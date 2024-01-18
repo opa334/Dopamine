@@ -5,7 +5,7 @@
 #include <choma/CSBlob.h>
 #include <stdint.h>
 
-// TODO: Move to ChOma
+// TODO: Move to ChOma?
 #define CS_CDHASH_LEN 20
 
 typedef uint8_t cdhash_t[CS_CDHASH_LEN];

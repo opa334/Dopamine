@@ -1,23 +1,9 @@
-#include "jbserver_xpc.h"
-
-extern struct jbserver_domain gSystemwideDomain;
-extern struct jbserver_domain gPlatformDomain;
-extern struct jbserver_domain gWatchdogDomain;
-extern struct jbserver_domain gRootDomain;
-
-struct jbserver_impl gGlobalServer = {
-	.maxDomain = 1,
-	.domains = (struct jbserver_domain*[]){
-		&gSystemwideDomain,
-		&gPlatformDomain,
-		&gWatchdogDomain,
-		&gRootDomain,
-		NULL,
-	}
-};
+#include "jbserver.h"
 
 int jbserver_received_xpc_message(struct jbserver_impl *server, xpc_object_t xmsg)
 {
+	if (xpc_get_type(xmsg) != XPC_TYPE_DICTIONARY) return -1;
+
 	if (!xpc_dictionary_get_value(xmsg, "jb-domain")) return -1;
 	if (!xpc_dictionary_get_value(xmsg, "action")) return -1;
 
@@ -61,6 +47,9 @@ int jbserver_received_xpc_message(struct jbserver_impl *server, xpc_object_t xms
 					}
 					break;
 				}
+				case JBS_TYPE_ARRAY:
+				args[i] = (void *)xpc_dictionary_get_array(xmsg, argDesc->name);
+				break;
 				case JBS_TYPE_DICTIONARY:
 				args[i] = (void *)xpc_dictionary_get_dictionary(xmsg, argDesc->name);
 				break;
@@ -103,6 +92,7 @@ int jbserver_received_xpc_message(struct jbserver_impl *server, xpc_object_t xms
 					}
 					break;
 				}
+				case JBS_TYPE_ARRAY:
 				case JBS_TYPE_DICTIONARY: {
 					if (argsOut[i]) {
 						xpc_dictionary_set_value(xreply, argDesc->name, (xpc_object_t)argsOut[i]);

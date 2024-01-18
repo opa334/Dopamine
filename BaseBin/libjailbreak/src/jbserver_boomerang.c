@@ -1,0 +1,84 @@
+#include "jbserver_boomerang.h"
+#include "info.h"
+#include "handoff.h"
+#include <bsm/audit.h>
+
+// Implements JBS_DOMAIN_ROOT, but only the functionality required for boomerang
+// Exports symbols so that the logic can be reused by launchdhook
+
+static bool boomerang_domain_allowed(audit_token_t clientToken)
+{
+	// This server is both used from launchd to boomerang and boomerang back to launchd
+	// Ensure one of the participents in this communication is launchd
+	return (audit_token_to_pid(clientToken) == 1) || (getpid() == 1);
+}
+
+int boomerang_get_physrw(audit_token_t *clientToken)
+{
+	pid_t pid = audit_token_to_pid(*clientToken);
+	return handoff_ppl_primitives(pid);
+}
+
+int boomerang_get_kcall(audit_token_t *clientToken, uint64_t stackAllocation, uint64_t *arcContextOut)
+{
+	return -1;
+}
+
+int boomerang_get_sysinfo(xpc_object_t *sysInfoOut)
+{
+	xpc_object_t sysInfo = xpc_dictionary_create_empty();
+	SYSTEM_INFO_DESERIALIZE(sysInfo);
+	*sysInfoOut = sysInfo;
+	return 0;
+}
+
+struct jbserver_domain gUnusedDomain = {
+	.permissionHandler = NULL,
+	.actions = {
+		{ 0 },
+	},
+};
+
+struct jbserver_domain gBoomerangDomain = {
+	.permissionHandler = boomerang_domain_allowed,
+	.actions = {
+		// JBS_ROOT_GET_PHYSRW
+		{
+			.handler = boomerang_get_physrw,
+			.args = (jbserver_arg[]){
+				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
+				{ 0 },
+			},
+		},
+		// JBS_ROOT_GET_KCALL
+		{
+			.handler = boomerang_get_kcall,
+			.args = (jbserver_arg[]){
+				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
+				{ .name = "stack-allocation", .type = JBS_TYPE_UINT64, .out = false },
+				{ .name = "arc-context", .type = JBS_TYPE_UINT64, .out = true },
+				{ 0 },
+			},
+		},
+		// JBS_ROOT_GET_SYSINFO
+		{
+			.handler = boomerang_get_sysinfo,
+			.args = (jbserver_arg[]){
+				{ .name = "sysinfo", .type = JBS_TYPE_DICTIONARY, .out = true },
+				{ 0 },
+			},
+		},
+		{ 0 },
+	},
+};
+
+struct jbserver_impl gBoomerangServer = {
+	.maxDomain = 1,
+	.domains = (struct jbserver_domain*[]){
+		&gUnusedDomain,
+		&gUnusedDomain,
+		&gUnusedDomain,
+		&gBoomerangDomain,
+		NULL,
+	}
+};

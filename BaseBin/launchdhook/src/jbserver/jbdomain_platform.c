@@ -1,4 +1,4 @@
-#include "jbserver_xpc.h"
+#include "jbserver_global.h"
 
 static bool platform_domain_allowed(audit_token_t clientToken)
 {

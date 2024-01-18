@@ -113,15 +113,23 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     libjailbreak_translation_primitives_init();
     libjailbreak_IOSurface_primitives_init();
     
+    Exploit *pacBypass;
     if ([[EnvironmentManager sharedManager] isPACBypassRequired]) {
-        // TODO
+        pacBypass = [ExploitManager sharedManager].preferredPACBypass;
+        if (pacBypass) {
+            NSLog(@"Using PAC Bypass: %s\n", pacBypass.description.UTF8String);
+            if ([pacBypass load] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PAC bypass: %s", dlerror()]}];};
+            if ([pacBypass run] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PAC"}];}
+            // At this point we presume the PAC bypass has given us stable kcall primitives
+            gSystemInfo.jailbreakInfo.usesPACBypass = true;
+        }
     }
     
     if ([[EnvironmentManager sharedManager] isPPLBypassRequired]) {
         Exploit *pplBypass = [ExploitManager sharedManager].preferredPPLBypass;
         printf("Picked PPL Bypass: %s\n", pplBypass.description.UTF8String);
-        if ([pplBypass load] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PPL bypass: %s", dlerror()]}];};
-        if ([pplBypass run] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PPL"}];}
+        if ([pplBypass load] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PPL bypass: %s", dlerror()]}];};
+        if ([pplBypass run] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PPL"}];}
         // At this point we presume the PPL bypass gave us unrestricted phys write primitives
     }
     return nil;
@@ -176,6 +184,9 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     NSError *error = nil;
     [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/var" error:&error];
     if (error) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedUnsandbox userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to unsandbox, /var does not seem accessible (%s)", error.description.UTF8String]}];
+    setenv("HOME", "/var/root", true);
+    setenv("CFFIXED_USER_HOME", "/var/root", true);
+    setenv("TMPDIR", "/var/tmp", true);
     
     // Get CS_PLATFORM_BINARY
     proc_csflags_set(proc, CS_PLATFORM_BINARY);
@@ -204,9 +215,10 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     
     NSLog(@"UID %d", getuid());
     
-    NSError *error = nil;
-    NSArray *test = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/var" error:&error];
-    NSLog(@"test = %@, error = %@", test, error);
+    err = [[EnvironmentManager sharedManager] prepareBootstrap];
+    if (err) return err;
+    
+    NSLog(@"OOOKKK???");
     
     return nil;
 }

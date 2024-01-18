@@ -6,14 +6,19 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Bootstrapper.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EnvironmentManager : NSObject
+{
+    Bootstrapper *_bootstrapper;
+}
 
 + (instancetype)sharedManager;
 
-@property (nonatomic) NSData *bootManifestHash;
+@property (nonatomic, readonly) NSData *bootManifestHash;
+@property (nonatomic, readonly) NSString *jailbreakRootPath;
 
 - (BOOL)isArm64e;
 - (NSString *)versionSupportString;
@@ -22,6 +27,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)isPACBypassRequired;
 - (BOOL)isPPLBypassRequired;
+
+- (NSError *)prepareBootstrap;
+- (void)finalizeBootstrap;
 @end
 
 NS_ASSUME_NONNULL_END

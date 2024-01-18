@@ -3,12 +3,14 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <xpc/xpc.h>
 
 typedef enum {
     JBS_TYPE_BOOL,
 	JBS_TYPE_UINT64,
 	JBS_TYPE_STRING,
 	JBS_TYPE_DATA,
+    JBS_TYPE_ARRAY,
 	JBS_TYPE_DICTIONARY,
 	JBS_TYPE_CALLER_TOKEN,
 } jbserver_type;
@@ -77,5 +79,7 @@ enum {
     JBS_ROOT_GET_SYSINFO = 3,
     JBS_ROOT_ADD_CDHASH = 4,
 };
+
+int jbserver_received_xpc_message(struct jbserver_impl *server, xpc_object_t xmsg);
 
 #endif

@@ -4,10 +4,17 @@
 #include <xpc/xpc.h>
 #include <stdint.h>
 
+int jbclient_xpc_init_from_pipe(xpc_object_t serverPipe);
+int jbclient_xpc_init_from_port(mach_port_t serverPort);
+int jbclient_xpc_init_launchd(void);
+
+xpc_object_t jbserver_xpc_send_raw(xpc_object_t xdict);
+xpc_object_t jbserver_xpc_send(uint64_t domain, uint64_t action, xpc_object_t xargs);
+
 char *jbclient_get_root_path(void);
 char *jbclient_get_boot_uuid(void);
 int jbclient_trust_binary(const char *binaryPath);
-int jbclient_process_checkin(void);
+int jbclient_process_checkin(char **jbRootPathOut, char **jbBootUUIDOut, char **sandboxExtensionsOut);
 int jbclient_fork_fix(uint64_t childPid);
 int jbclient_platform_set_process_debugged(uint64_t pid);
 int jbclient_platform_jailbreak_update(const char *updateTar);

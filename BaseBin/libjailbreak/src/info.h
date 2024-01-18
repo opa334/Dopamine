@@ -26,6 +26,11 @@ struct system_info {
 	} kernelConstant;
 
 	struct {
+		uint64_t usesPACBypass;
+		const char *rootPath;
+	} jailbreakInfo;
+
+	struct {
 		// Functions
 		uint64_t perfmon_dev_open;
 		uint64_t vn_kqfilter;
@@ -209,6 +214,10 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelConstant.smdBase); \
     iterator(ctx, kernelConstant.PT_INDEX_MAX);
 
+#define JAILBREAK_INFO_ITERATE(ctx, iterator) \
+	iterator(ctx, jailbreakInfo.usesPACBypass); \
+	iterator(ctx, jailbreakInfo.rootPath); \
+
 #define KERNEL_SYMBOLS_ITERATE(ctx, iterator) \
     iterator(ctx, kernelSymbol.perfmon_dev_open); \
     iterator(ctx, kernelSymbol.vn_kqfilter); \
@@ -336,17 +345,49 @@ extern struct system_info gSystemInfo;
 
 #define SYSTEM_INFO_ITERATE(ctx, iterator) \
     KERNEL_CONSTANTS_ITERATE(ctx, iterator); \
+	JAILBREAK_INFO_ITERATE(ctx, iterator); \
     KERNEL_SYMBOLS_ITERATE(ctx, iterator); \
     KERNEL_GADGETS_ITERATE(ctx, iterator); \
     KERNEL_STRUCTS_ITERATE(ctx, iterator);
 
-#define SYSTEM_INFO_SERIALIZE_COMPONENT(xdict, name) xpc_dictionary_set_uint64(xdict, #name, gSystemInfo.name)
+static void _safe_xpc_dictionary_get_string(xpc_object_t xdict, const char *name, char **out)
+{
+	if (*out) free(*out);
+	const char *str = xpc_dictionary_get_string(xdict, name);
+	if (str) {
+		*out = strdup(str);
+	}
+}
+
+static void _safe_xpc_dictionary_set_string(xpc_object_t xdict, const char *name, const char *string)
+{
+	if (string) {
+		xpc_dictionary_set_string(xdict, name, string);
+	}
+}
+
+#define XPC_SET_GENERIC(xdict, name, value) _Generic((value), \
+	const char *: _safe_xpc_dictionary_set_string(xdict, name, (const char*)(uint64_t)value), \
+	uint64_t: xpc_dictionary_set_uint64(xdict, name, (uint64_t)value), \
+	uint32_t: xpc_dictionary_set_uint64(xdict, name, (uint64_t)value), \
+	bool: xpc_dictionary_set_bool(xdict, name, (bool)value) \
+)
+
+#define XPC_GET_GENERIC(xdict, name, target) _Generic((target), \
+	const char *: _safe_xpc_dictionary_get_string(xdict, name, (char **)&target), \
+	uint64_t: *((uint64_t *)&target) = xpc_dictionary_get_uint64(xdict, name), \
+	uint32_t: *((uint32_t *)&target) = (uint32_t)xpc_dictionary_get_uint64(xdict, name), \
+	bool: *((bool *)&target) = xpc_dictionary_get_bool(xdict, name) \
+)
+
+#define SYSTEM_INFO_SERIALIZE_COMPONENT(xdict, name) XPC_SET_GENERIC(xdict, #name, gSystemInfo.name)
 #define SYSTEM_INFO_SERIALIZE(xdict) SYSTEM_INFO_ITERATE(xdict, SYSTEM_INFO_SERIALIZE_COMPONENT)
 
-#define SYSTEM_INFO_DESERIALIZE_COMPONENT(xdict, name) gSystemInfo.name = xpc_dictionary_get_uint64(xdict, #name)
+#define SYSTEM_INFO_DESERIALIZE_COMPONENT(xdict, name) XPC_GET_GENERIC(xdict, #name, gSystemInfo.name)
 #define SYSTEM_INFO_DESERIALIZE(xdict) SYSTEM_INFO_ITERATE(xdict, SYSTEM_INFO_DESERIALIZE_COMPONENT)
 
 #define kconstant(name) (gSystemInfo.kernelConstant.name)
+#define jbinfo(name) (gSystemInfo.jailbreakInfo.name)
 #define ksymbol(name) (gSystemInfo.kernelConstant.slide + gSystemInfo.kernelSymbol.name)
 #define kgadget(name) (gSystemInfo.kernelConstant.slide + gSystemInfo.kernelGadget.name)
 #define koffsetof(structname, member) (gSystemInfo.kernelStruct.structname.member)

@@ -39,6 +39,8 @@
 		8C2B1FF52B534C2F009BA166 /* dmaFail.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C2B1FF12B53251E009BA166 /* dmaFail.c */; };
 		8C3245552AD58309001EC3CA /* ExpandableButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3245542AD58309001EC3CA /* ExpandableButton.m */; };
 		8C3245582AD5E24F001EC3CA /* GlobalAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3245572AD5E24F001EC3CA /* GlobalAppearance.m */; };
+		8C46D7252B588973002899DB /* libzstd in Frameworks */ = {isa = PBXBuildFile; productRef = 8C46D7242B588973002899DB /* libzstd */; };
+		8C46D7282B58B23D002899DB /* tar.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 8C46D7262B58A029002899DB /* tar.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		8C4ABEB62B52094100B43C9B /* libjailbreak.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */; };
 		8C4ABEB92B520E7B00B43C9B /* libjailbreak.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */; platformFilter = ios; };
 		8C4ABEBE2B52274300B43C9B /* PreferenceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4ABEBD2B52274300B43C9B /* PreferenceManager.m */; };
@@ -50,6 +52,8 @@
 		8C71982B2ABF0E84003C6658 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71982A2ABF0E84003C6658 /* main.m */; };
 		8C9E46292ACA1CC700B5456A /* UIImage+Blur.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9E46282ACA1CC700B5456A /* UIImage+Blur.m */; };
 		8CB2E7642AD1788F000A6B90 /* ActionMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB2E7632AD1788F000A6B90 /* ActionMenuView.m */; };
+		8CB94F042B59E17A0098BAFD /* BaseBin.tc in Resources */ = {isa = PBXBuildFile; fileRef = 8CB94F022B59E17A0098BAFD /* BaseBin.tc */; };
+		8CB94F052B59E17A0098BAFD /* BaseBin.tar in Resources */ = {isa = PBXBuildFile; fileRef = 8CB94F032B59E17A0098BAFD /* BaseBin.tar */; };
 		8CC139822B53DE6C00230143 /* NSData+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC139812B53DE6C00230143 /* NSData+Hex.m */; };
 		8CC139832B53E05300230143 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08372B4F682500A32B61 /* IOKit.framework */; };
 		8CDD07AA2B4F619000A32B61 /* kfd.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CDD07A92B4F619000A32B61 /* kfd.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -91,6 +95,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
+				8C46D7282B58B23D002899DB /* tar.dylib in Embed Libraries */,
 				8CDD084A2B4F6DF800A32B61 /* libchoma.dylib in Embed Libraries */,
 				8CDD08492B4F6DF500A32B61 /* libjailbreak.dylib in Embed Libraries */,
 				8CDD08482B4F6DF100A32B61 /* libxpf.dylib in Embed Libraries */,
@@ -153,6 +158,10 @@
 		8C3245542AD58309001EC3CA /* ExpandableButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExpandableButton.m; sourceTree = "<group>"; };
 		8C3245562AD5E24F001EC3CA /* GlobalAppearance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlobalAppearance.h; sourceTree = "<group>"; };
 		8C3245572AD5E24F001EC3CA /* GlobalAppearance.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GlobalAppearance.m; sourceTree = "<group>"; };
+		8C46D71E2B588875002899DB /* zstd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zstd.h; sourceTree = "<group>"; };
+		8C46D71F2B588875002899DB /* zstd_errors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zstd_errors.h; sourceTree = "<group>"; };
+		8C46D7202B588875002899DB /* zdict.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zdict.h; sourceTree = "<group>"; };
+		8C46D7262B58A029002899DB /* tar.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = tar.dylib; path = Dopamine/Dependencies/tar.dylib; sourceTree = "<group>"; };
 		8C4ABEBC2B52274300B43C9B /* PreferenceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PreferenceManager.h; sourceTree = "<group>"; };
 		8C4ABEBD2B52274300B43C9B /* PreferenceManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PreferenceManager.m; sourceTree = "<group>"; };
 		8C7198152ABF0E82003C6658 /* Dopamine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dopamine.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -171,6 +180,8 @@
 		8CB2E7622AD1788F000A6B90 /* ActionMenuView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionMenuView.h; sourceTree = "<group>"; };
 		8CB2E7632AD1788F000A6B90 /* ActionMenuView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionMenuView.m; sourceTree = "<group>"; };
 		8CB2E7652AD179F9000A6B90 /* ActionMenuDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionMenuDelegate.h; sourceTree = "<group>"; };
+		8CB94F022B59E17A0098BAFD /* BaseBin.tc */ = {isa = PBXFileReference; lastKnownFileType = file; name = BaseBin.tc; path = ../../../BaseBin/BaseBin.tc; sourceTree = "<group>"; };
+		8CB94F032B59E17A0098BAFD /* BaseBin.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; name = BaseBin.tar; path = ../../../BaseBin/BaseBin.tar; sourceTree = "<group>"; };
 		8CC139802B53DE6C00230143 /* NSData+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Hex.h"; sourceTree = "<group>"; };
 		8CC139812B53DE6C00230143 /* NSData+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Hex.m"; sourceTree = "<group>"; };
 		8CDD07A72B4F619000A32B61 /* kfd.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = kfd.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -204,6 +215,7 @@
 				8CDD08462B4F6DD800A32B61 /* libchoma.dylib in Frameworks */,
 				8CC139832B53E05300230143 /* IOKit.framework in Frameworks */,
 				8C029F682B4E31D50071DE58 /* libMobileGestalt.tbd in Frameworks */,
+				8C46D7252B588973002899DB /* libzstd in Frameworks */,
 				8CDD08412B4F6D8700A32B61 /* libgrabkernel.a in Frameworks */,
 				8CDD08402B4F6D8700A32B61 /* libfragmentzip.a in Frameworks */,
 				8C029F662B4E2E970071DE58 /* libcompression.tbd in Frameworks */,
@@ -252,6 +264,7 @@
 				8CDD08432B4F6DD800A32B61 /* libchoma.dylib */,
 				8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */,
 				8CDD08442B4F6DD800A32B61 /* libxpf.dylib */,
+				8C46D7262B58A029002899DB /* tar.dylib */,
 				8C029F672B4E31D50071DE58 /* libMobileGestalt.tbd */,
 				8C029F652B4E2E7D0071DE58 /* libcompression.tbd */,
 				8CDD08392B4F6D8200A32B61 /* libcurl.a */,
@@ -346,6 +359,16 @@
 			path = Dopamine/Exploits/dmaFail;
 			sourceTree = SOURCE_ROOT;
 		};
+		8C46D71D2B588857002899DB /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				8C46D7202B588875002899DB /* zdict.h */,
+				8C46D71F2B588875002899DB /* zstd_errors.h */,
+				8C46D71E2B588875002899DB /* zstd.h */,
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
 		8C71980C2ABF0E82003C6658 = {
 			isa = PBXGroup;
 			children = (
@@ -368,6 +391,8 @@
 		8C7198172ABF0E82003C6658 /* Dopamine */ = {
 			isa = PBXGroup;
 			children = (
+				8CB94F012B59E16D0098BAFD /* Resources */,
+				8C46D71D2B588857002899DB /* Headers */,
 				8C7198332ABF133D003C6658 /* App Delegates */,
 				8C7198312ABF12F4003C6658 /* UI */,
 				8C9E46262ACA1C5800B5456A /* Extensions */,
@@ -426,6 +451,15 @@
 				8C9E46282ACA1CC700B5456A /* UIImage+Blur.m */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		8CB94F012B59E16D0098BAFD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8CB94F032B59E17A0098BAFD /* BaseBin.tar */,
+				8CB94F022B59E17A0098BAFD /* BaseBin.tc */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		8CDD07A82B4F619000A32B61 /* kfd */ = {
@@ -515,6 +549,9 @@
 				8C2B1FE42B532374009BA166 /* PBXTargetDependency */,
 			);
 			name = Dopamine;
+			packageProductDependencies = (
+				8C46D7242B588973002899DB /* libzstd */,
+			);
 			productName = Dopamine;
 			productReference = 8C7198152ABF0E82003C6658 /* Dopamine.app */;
 			productType = "com.apple.product-type.application";
@@ -567,6 +604,9 @@
 				Base,
 			);
 			mainGroup = 8C71980C2ABF0E82003C6658;
+			packageReferences = (
+				8C46D71C2B5887AC002899DB /* XCRemoteSwiftPackageReference "zstd" */,
+			);
 			productRefGroup = 8C7198162ABF0E82003C6658 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -597,6 +637,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CB94F052B59E17A0098BAFD /* BaseBin.tar in Resources */,
+				8CB94F042B59E17A0098BAFD /* BaseBin.tc in Resources */,
 				8C7198282ABF0E84003C6658 /* LaunchScreen.storyboard in Resources */,
 				8C7198252ABF0E84003C6658 /* Assets.xcassets in Resources */,
 			);
@@ -925,6 +967,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Dopamine/Dependencies",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.opa334.Dopamine;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -951,6 +997,10 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Dopamine/Dependencies",
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.opa334.Dopamine;
@@ -1068,6 +1118,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8C46D71C2B5887AC002899DB /* XCRemoteSwiftPackageReference "zstd" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/facebook/zstd.git";
+			requirement = {
+				branch = dev;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8C46D7242B588973002899DB /* libzstd */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8C46D71C2B5887AC002899DB /* XCRemoteSwiftPackageReference "zstd" */;
+			productName = libzstd;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8C71980D2ABF0E82003C6658 /* Project object */;
 }

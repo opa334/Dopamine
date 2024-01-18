@@ -22,14 +22,23 @@ struct xpc_global_data {
 extern struct _os_alloc_once_s _os_alloc_once_table[];
 extern void* _os_alloc_once(struct _os_alloc_once_s *slot, size_t sz, os_function_t init);
 
-xpc_object_t jbserver_xpc_send(uint64_t domain, uint64_t action, xpc_object_t xargs)
-{
-	bool ownsXargs = false;
-	if (!xargs) {
-		xargs = xpc_dictionary_create_empty();
-		ownsXargs = true;
-	}
+xpc_object_t gJBServerPipe;
 
+int jbclient_xpc_init_from_pipe(xpc_object_t serverPipe)
+{
+	gJBServerPipe = serverPipe;
+	return 0;
+}
+
+int jbclient_xpc_init_from_port(mach_port_t serverPort)
+{
+	xpc_object_t pipe = xpc_pipe_create_from_port(serverPort, 0);
+	if (!pipe) return -1;
+	return jbclient_xpc_init_from_pipe(pipe);
+}
+
+int jbclient_xpc_init_launchd(void)
+{
 	struct xpc_global_data* globalData = NULL;
 	if (_os_alloc_once_table[1].once == -1) {
 		globalData = _os_alloc_once_table[1].ptr;
@@ -38,7 +47,7 @@ xpc_object_t jbserver_xpc_send(uint64_t domain, uint64_t action, xpc_object_t xa
 		globalData = _os_alloc_once(&_os_alloc_once_table[1], 472, NULL);
 		if (!globalData) _os_alloc_once_table[1].once = -1;
 	}
-	if (!globalData) return NULL;
+	if (!globalData) return -1;
 	if (!globalData->xpc_bootstrap_pipe) {
 		mach_port_t *initPorts;
 		mach_msg_type_number_t initPortsCount = 0;
@@ -47,20 +56,35 @@ xpc_object_t jbserver_xpc_send(uint64_t domain, uint64_t action, xpc_object_t xa
 			globalData->xpc_bootstrap_pipe = xpc_pipe_create_from_port(globalData->task_bootstrap_port, 0);
 		}
 	}
-	xpc_object_t serverPipe = globalData->xpc_bootstrap_pipe;
-	if (!serverPipe) return NULL;
+	return jbclient_xpc_init_from_pipe(globalData->xpc_bootstrap_pipe);
+}
+
+xpc_object_t jbserver_xpc_send_raw(xpc_object_t xdict)
+{
+	xpc_object_t xreply = NULL;
+	int err = xpc_pipe_routine_with_flags(gJBServerPipe, xdict, &xreply, 0);
+	if (err != 0) {
+		return NULL;
+	}
+	return xreply;
+}
+
+xpc_object_t jbserver_xpc_send(uint64_t domain, uint64_t action, xpc_object_t xargs)
+{
+	bool ownsXargs = false;
+	if (!xargs) {
+		xargs = xpc_dictionary_create_empty();
+		ownsXargs = true;
+	}
+
+	if (!gJBServerPipe) return NULL;
 
 	xpc_dictionary_set_uint64(xargs, "jb-domain", domain);
 	xpc_dictionary_set_uint64(xargs, "action", action);
 
-	xpc_object_t xreply;
-	int err = xpc_pipe_routine_with_flags(serverPipe, xargs, &xreply, 0);
+	xpc_object_t xreply = jbserver_xpc_send_raw(xargs);
 	if (ownsXargs) {
 		xpc_release(xargs);
-	}
-
-	if (err != 0) {
-		return NULL;
 	}
 
 	return xreply;
@@ -120,11 +144,14 @@ int jbclient_trust_binary(const char *binaryPath)
 	return -1;
 }
 
-int jbclient_process_checkin(void)
+int jbclient_process_checkin(char **jbRootPathOut, char **jbBootUUIDOut, char **sandboxExtensionsOut)
 {
 	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_SYSTEMWIDE, JBS_SYSTEMWIDE_PROCESS_CHECKIN, NULL);
 	if (xreply) {
 		int64_t result = xpc_dictionary_get_int64(xreply, "result");
+		if (jbRootPathOut) *jbRootPathOut = strdup(xpc_dictionary_get_string(xreply, "root-path") ?: "");
+		if (jbBootUUIDOut) *jbBootUUIDOut = strdup(xpc_dictionary_get_string(xreply, "boot-uuid") ?: "");
+		if (sandboxExtensionsOut) *sandboxExtensionsOut = strdup(xpc_dictionary_get_string(xreply, "sandbox-extensions") ?: "");
 		xpc_release(xreply);
 		return result;
 	}
