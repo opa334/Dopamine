@@ -6,7 +6,7 @@
 //
 
 #import "SceneDelegate.h"
-#import "RootViewController.h"
+#import "DONavigationController.h"
 
 @interface SceneDelegate ()
 
@@ -17,7 +17,7 @@
 
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
     UIWindow *window = [[UIWindow alloc] initWithWindowScene:(UIWindowScene *)scene];
-    window.rootViewController = [[RootViewController alloc] init];
+    window.rootViewController = [[DONavigationController alloc] init];
     [window makeKeyAndVisible];
     self.window = window;
 }

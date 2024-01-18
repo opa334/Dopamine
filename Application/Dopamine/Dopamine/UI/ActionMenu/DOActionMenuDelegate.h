@@ -1,15 +1,15 @@
 //
-//  ActionMenuDelegate.h
+//  DOActionMenuDelegate.h
 //  Dopamine
 //
-//  Created by Lars Fröder on 07.10.23.
+//  Created by tomt000 on 13/01/2024.
 //
 
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol ActionMenuDelegate <NSObject>
+@protocol DOActionMenuDelegate <NSObject>
 
 - (BOOL)actionMenuShowsChevronForAction:(UIAction *)action;
 

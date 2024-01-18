@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (UIImageSymbolConfiguration *)smallIconImageConfiguration;
 + (UIButtonConfiguration *)defaultButtonConfiguration;
 + (UIButtonConfiguration *)defaultButtonConfigurationWithImagePadding:(CGFloat)imagePadding;
++ (NSAttributedString*)mainSubtitleString:(NSString*)string;
++ (NSAttributedString*)secondarySubtitleString:(NSString*)string;
 
 @end
 

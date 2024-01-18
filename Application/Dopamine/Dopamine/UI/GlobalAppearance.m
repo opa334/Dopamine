@@ -12,7 +12,7 @@
 
 + (UIImageSymbolConfiguration *)smallIconImageConfiguration
 {
-    return [UIImageSymbolConfiguration configurationWithTextStyle:UIFontTextStyleBody];
+    return [UIImageSymbolConfiguration configurationWithPointSize: 14 weight:UIImageSymbolWeightMedium];
 }
 
 + (UIButtonConfiguration *)defaultButtonConfiguration
@@ -20,7 +20,7 @@
     UIButtonConfiguration *configuration = [UIButtonConfiguration plainButtonConfiguration];
     configuration.imagePadding = 10;
     configuration.baseForegroundColor = [UIColor whiteColor];
-    
+
     // IN DARK MODE, APPLE JUST ADDS WHITE WHEN A BUTTON IS HIGHLIGHTED WHEN IT'S SET UP VIA UIButtonConfiguration
     // UNFORTUNATELY THEY FORGOT ABOUT THE POSSIBILITY ABOUT THERE BEING A WHITE BUTTON, SO THOSE JUST DON'T SHOW ANY HIGHLIGHT COLOR
     // HACKY WORKAROUND TO FIX FIX THIS MESS; SCREW APPLE
@@ -42,6 +42,7 @@
                 textAttributesM[NSForegroundColorAttributeName] = [[UIColor whiteColor] colorWithAlphaComponent:0.75];
             }
         }
+        // textAttributesM[NSFontAttributeName] = [UIFont systemFontOfSize:16 weight:UIFontWeightMedium];
         return textAttributesM;
     };
     configuration.imageColorTransformer = ^UIColor * _Nonnull(UIColor * _Nonnull color) {
@@ -72,5 +73,25 @@
     configuration.imagePadding = imagePadding;
     return configuration;
 }
+
+#pragma mark - Attributed Strings
+
++ (NSAttributedString*)mainSubtitleString:(NSString*)string
+{
+    return [[NSAttributedString alloc] initWithString:string attributes:@{
+        NSFontAttributeName: [UIFont systemFontOfSize:14 weight:UIFontWeightMedium],
+        NSForegroundColorAttributeName: [UIColor whiteColor],
+    }];
+}
+
++ (NSAttributedString*)secondarySubtitleString:(NSString*)string
+{
+    return [[NSAttributedString alloc] initWithString:string attributes:@{
+        NSFontAttributeName: [UIFont systemFontOfSize:14 weight:UIFontWeightRegular],
+        NSForegroundColorAttributeName: [UIColor colorWithWhite:1 alpha:0.60],
+    }];
+}
+
+
 
 @end
