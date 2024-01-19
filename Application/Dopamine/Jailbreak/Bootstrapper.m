@@ -31,6 +31,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     BootstrapErrorCodeFailedToDownload          = -2,
     BootstrapErrorCodeFailedDecompressing       = -3,
     BootstrapErrorCodeFailedExtracting          = -4,
+    BootstrapErrorCodeFailedRemount             = -5,
 };
 
 #define BUFFER_SIZE 8192
@@ -236,7 +237,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 {
     struct statfs ppStfs;
     statfs("/private/preboot", &ppStfs);
-    return ppStfs.f_flags & MNT_RDONLY;
+    return !(ppStfs.f_flags & MNT_RDONLY);
 }
 
 - (int)remountPrivatePrebootWritable:(BOOL)writable
@@ -324,7 +325,10 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 {
     // Ensure /private/preboot is mounted writable (Not writable by default on iOS <=15)
     if (![self isPrivatePrebootMountedWritable]) {
-        [self remountPrivatePrebootWritable:YES];
+        int r = [self remountPrivatePrebootWritable:YES];
+        if (r != 0) {
+            completion([NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedRemount userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Remounting /private/preboot as writable failed with error: %s", strerror(errno)]}]);
+        }
     }
     
     // Remove /var/jb as it might be wrong
@@ -390,10 +394,18 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     NSString *installedPath = [jailbreakRootPath stringByAppendingPathComponent:@".installed_dopamine"];
     [self createSymlinkAtPath:@"/var/jb" toPath:jailbreakRootPath createIntermediateDirectories:YES];
     
+    NSError *error;
     if ([[NSFileManager defaultManager] fileExistsAtPath:basebinPath]) {
-        [[NSFileManager defaultManager] removeItemAtPath:basebinPath error:nil];
+        if (![[NSFileManager defaultManager] removeItemAtPath:basebinPath error:&error]) {
+            completion([NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedExtracting userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed deleting existing basebin file with error: %@", error.localizedDescription]}]);
+            return;
+        }
     }
-    [self extractTar:[[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"BaseBin.tar"] toPath:jailbreakRootPath];
+    error = [self extractTar:[[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"BaseBin.tar"] toPath:jailbreakRootPath];
+    if (error) {
+        completion(error);
+        return;
+    }
     
     void (^bootstrapFinishedCompletion)(NSError *) = ^(NSError *error){
         if (error) {
@@ -422,7 +434,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             @"Components:\n";
         [defaultSources writeToFile:[jailbreakRootPath stringByAppendingPathComponent:@"etc/apt/sources.list.d/default.sources"] atomically:NO encoding:NSUTF8StringEncoding error:nil];
         
-        /*NSString *usrBinPath = [jailbreakRootPath stringByAppendingPathComponent:@"usr/bin"];
+        NSString *usrBinPath = [jailbreakRootPath stringByAppendingPathComponent:@"usr/bin"];
         
         if (![self fileOrSymlinkExistsAtPath:[usrBinPath stringByAppendingPathComponent:@"opainject"]]) {
             [self createSymlinkAtPath:[basebinPath stringByAppendingPathComponent:@"opainject"] toPath:[usrBinPath stringByAppendingPathComponent:@"opainject"] createIntermediateDirectories:YES];
@@ -432,7 +444,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         }
         if (![self fileOrSymlinkExistsAtPath:[usrBinPath stringByAppendingPathComponent:@"libjailbreak.dylib"]]) {
             [self createSymlinkAtPath:[basebinPath stringByAppendingPathComponent:@"libjailbreak.dylib"] toPath:[usrBinPath stringByAppendingPathComponent:@"libjailbreak.dylib"] createIntermediateDirectories:YES];
-        }*/
+        }
         
         NSString *mobilePreferencesPath = [jailbreakRootPath stringByAppendingPathComponent:@"var/mobile/Library/Preferences"];
         if (![[NSFileManager defaultManager] fileExistsAtPath:mobilePreferencesPath]) {
