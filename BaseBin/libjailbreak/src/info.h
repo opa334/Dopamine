@@ -185,12 +185,11 @@ struct system_info {
 		} pt_desc;
 
 		struct {
-			uint32_t next;
-		} tt_free_entry;
+			uint32_t nextptr;
+			uint32_t prevptr;
+			uint32_t size;
+			uint32_t fileptr;
 
-		struct {
-			uint32_t next;
-			uint32_t this;
 			uint32_t struct_size;
 		} trustcache;
 	} kernelStruct;
@@ -333,14 +332,14 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelStruct.pmap.wx_allowed); \
     iterator(ctx, kernelStruct.pmap.type); \
 	\
-    iterator(ctx, kernelStruct.tt_free_entry.next); \
-	\
     iterator(ctx, kernelStruct.pt_desc.pmap); \
     iterator(ctx, kernelStruct.pt_desc.va); \
     iterator(ctx, kernelStruct.pt_desc.ptd_info); \
 	\
-    iterator(ctx, kernelStruct.trustcache.next); \
-    iterator(ctx, kernelStruct.trustcache.this); \
+    iterator(ctx, kernelStruct.trustcache.nextptr); \
+    iterator(ctx, kernelStruct.trustcache.prevptr); \
+    iterator(ctx, kernelStruct.trustcache.size); \
+    iterator(ctx, kernelStruct.trustcache.fileptr); \
     iterator(ctx, kernelStruct.trustcache.struct_size);
 
 #define SYSTEM_INFO_ITERATE(ctx, iterator) \
@@ -388,8 +387,8 @@ static void _safe_xpc_dictionary_set_string(xpc_object_t xdict, const char *name
 
 #define kconstant(name) (gSystemInfo.kernelConstant.name)
 #define jbinfo(name) (gSystemInfo.jailbreakInfo.name)
-#define ksymbol(name) (gSystemInfo.kernelConstant.slide + gSystemInfo.kernelSymbol.name)
-#define kgadget(name) (gSystemInfo.kernelConstant.slide + gSystemInfo.kernelGadget.name)
+#define ksymbol(name) (gSystemInfo.kernelSymbol.name ? (gSystemInfo.kernelConstant.slide + gSystemInfo.kernelSymbol.name) : 0)
+#define kgadget(name) (gSystemInfo.kernelGadget.name ? (gSystemInfo.kernelConstant.slide + gSystemInfo.kernelGadget.name) : 0)
 #define koffsetof(structname, member) (gSystemInfo.kernelStruct.structname.member)
 #define ksizeof(structname) (gSystemInfo.kernelStruct.structname.struct_size)
 

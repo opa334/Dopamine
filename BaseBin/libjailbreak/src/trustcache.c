@@ -48,16 +48,20 @@ void _trustcache_list_enumerate(void (^enumerateBlock)(uint64_t tcKaddr, bool *s
 		bool stop = false;
 		enumerateBlock(curTC, &stop);
 		if (stop) break;
-		curTC = kread64(curTC + koffsetof(trustcache, next));
+		curTC = kread64(curTC + koffsetof(trustcache, nextptr));
 	}
 }
 
-int trustcache_list_insert(uint64_t tcKaddr)
+int trustcache_list_insert(uint64_t tcToInsert)
 {
-	if (!tcKaddr) return -1;
-	uint64_t firstTC = _trustcache_list_get_start();
-	kwrite64(tcKaddr + koffsetof(trustcache, next), firstTC);
-	_trustcache_list_set_start(tcKaddr);
+	if (!tcToInsert) return -1;
+	uint64_t previousStartTC = _trustcache_list_get_start();
+	kwrite64(tcToInsert + koffsetof(trustcache, nextptr), previousStartTC);
+	if (koffsetof(trustcache, prevptr)) {
+		kwrite64(previousStartTC + koffsetof(trustcache, prevptr), tcToInsert);
+	}
+	_trustcache_list_set_start(tcToInsert);
+	printf("Replaced TC start: %llx -> %llx (worked??? %llx)\n", previousStartTC, tcToInsert, _trustcache_list_get_start());
 	return 0;
 }
 
@@ -65,7 +69,7 @@ int trustcache_list_remove(uint64_t tcKaddr)
 {
 	if (!tcKaddr) return -1;
 
-	uint64_t nextTc = kread64(tcKaddr + koffsetof(trustcache, next));
+	uint64_t nextTc = kread64(tcKaddr + koffsetof(trustcache, nextptr));
 
 	uint64_t curTc = _trustcache_list_get_start();
 	if (curTc == 0) {
@@ -73,6 +77,9 @@ int trustcache_list_remove(uint64_t tcKaddr)
 	}
 	else if (curTc == tcKaddr) {
 		_trustcache_list_set_start(nextTc);
+		if (nextTc && koffsetof(trustcache, prevptr)) {
+			kwrite64(nextTc + koffsetof(trustcache, prevptr), 0);
+		}
 	}
 	else {
 		uint64_t prevTc = 0;
@@ -84,8 +91,12 @@ int trustcache_list_remove(uint64_t tcKaddr)
 			prevTc = curTc;
 			curTc = kread64(curTc);
 		}
-		kwrite64(prevTc, nextTc);
+		kwrite64(prevTc + koffsetof(trustcache, nextptr), nextTc);
+		if (nextTc && koffsetof(trustcache, prevptr)) {
+			kwrite64(nextTc + koffsetof(trustcache, prevptr), prevTc);
+		}
 	}
+
 	return 0;
 }
 
@@ -104,7 +115,7 @@ void _trustcache_file_sort(trustcache_file_v1 *file)
 bool _is_jb_trustcache(uint64_t tcKaddr)
 {
 	uint64_t jbTcFile = tcKaddr + offsetof(jb_trustcache, file);
-	uint64_t file = kread64(tcKaddr + koffsetof(trustcache, this));
+	uint64_t file = kread64(tcKaddr + koffsetof(trustcache, fileptr));
 	if (file == jbTcFile) {
 		// If there is exactly one 8-byte value between the kpage start and the trustcache file,
 		// Check if that matches against the JB_MAGIC
@@ -138,7 +149,10 @@ uint64_t _jb_trustcache_grow(void)
 	jb_trustcache *jbTc = alloca(sizeof(jb_trustcache));
 	_trustcache_file_init(&jbTc->file);
 	jbTc->magic = JB_MAGIC;
-	*(uint64_t *)(jbTc->trustcache + koffsetof(trustcache, this)) = (jbTcKern + offsetof(jb_trustcache, file));
+	*(uint64_t *)(jbTc->trustcache + koffsetof(trustcache, fileptr)) = (jbTcKern + offsetof(jb_trustcache, file));
+	if (koffsetof(trustcache, size)) {
+		*(uint64_t *)(jbTc->trustcache + koffsetof(trustcache, size)) = JB_TRUSTCACHE_SIZE;
+	}
 	kwritebuf(jbTcKern, jbTc, sizeof(*jbTc));
 	trustcache_list_insert(jbTcKern);
 	return jbTcKern;
@@ -244,7 +258,7 @@ int trustcache_file_upload(trustcache_file_v1 *tc)
 	// Check if there is already a TrustCache with the same UUID
 	__block uint64_t existingTcKaddr = 0;
 	_trustcache_list_enumerate(^(uint64_t tcKaddr, bool *stop) {
-		uint64_t tcFileKaddr = kread64(tcKaddr + koffsetof(trustcache, this));
+		uint64_t tcFileKaddr = kread64(tcKaddr + koffsetof(trustcache, fileptr));
 		uuid_t tcFileUUID;
 		kreadbuf(tcFileKaddr + offsetof(trustcache_file_v1, uuid), tcFileUUID, sizeof(tcFileUUID));
 		if (memcmp(tcFileUUID, tc->uuid, sizeof(tcFileUUID)) == 0) {
@@ -260,7 +274,7 @@ int trustcache_file_upload(trustcache_file_v1 *tc)
 			return -1;
 		}
 
-		uint64_t prevTcFile = kread64(existingTcKaddr + koffsetof(trustcache, this));
+		uint64_t prevTcFile = kread64(existingTcKaddr + koffsetof(trustcache, fileptr));
 		uint32_t prevTcLength = kread32(prevTcFile + offsetof(trustcache_file_v1, length));
 		uint64_t prevTcSize = ksizeof(trustcache) + sizeof(trustcache_file_v1) + (prevTcLength * sizeof(trustcache_entry_v1));
 		if (prevTcSize == tcSize) {
@@ -287,7 +301,12 @@ int trustcache_file_upload(trustcache_file_v1 *tc)
 
 	uint64_t tcFileKaddr = tcKaddr + ksizeof(trustcache);
 	kwritebuf(tcFileKaddr, tc, tcSize - ksizeof(trustcache));
-	kwrite64(tcKaddr + koffsetof(trustcache, this), tcFileKaddr);
+
+	kwrite64(tcKaddr + koffsetof(trustcache, fileptr), tcFileKaddr);
+	if (koffsetof(trustcache, size)) {
+		kwrite64(tcKaddr + koffsetof(trustcache, size), tcSize);
+	}
+
 	trustcache_list_insert(tcKaddr);
 	return 0;
 }
@@ -347,7 +366,7 @@ int trustcache_file_build_from_path(const char *filePath, trustcache_file_v1 **t
 
 bool is_cdhash_in_trustcache(uint64_t tcKaddr, cdhash_t CDHash)
 {
-	uint64_t tcFileKaddr = kread64(tcKaddr + koffsetof(trustcache, this));
+	uint64_t tcFileKaddr = kread64(tcKaddr + koffsetof(trustcache, fileptr));
 	uint32_t length = kread32(tcFileKaddr + offsetof(trustcache_file_v1, length));
 	if (length == 0) return false;
 

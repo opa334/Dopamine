@@ -87,9 +87,6 @@ void jbinfo_initialize_hardcoded_offsets(void)
 	gSystemInfo.kernelStruct.ucred.svgid  = ucred_cr_posix + 0x54;
 	gSystemInfo.kernelStruct.ucred.label  = 0x78;
 
-	// tt_free_entry
-	gSystemInfo.kernelStruct.tt_free_entry.next = 0x0;
-
 	if (strcmp(xnuVersion, "21.0.0") >= 0) { // iOS 15+
 		// proc
 		gSystemInfo.kernelStruct.proc.svuid   =  0x3C;
@@ -110,8 +107,8 @@ void jbinfo_initialize_hardcoded_offsets(void)
 		gSystemInfo.kernelStruct.vm_map.flags = 0x11C;
 
 		// trustcache
-		gSystemInfo.kernelStruct.trustcache.next        =  0x0;
-		gSystemInfo.kernelStruct.trustcache.this        =  0x8;
+		gSystemInfo.kernelStruct.trustcache.nextptr        =  0x0;
+		gSystemInfo.kernelStruct.trustcache.fileptr        =  0x8;
 		gSystemInfo.kernelStruct.trustcache.struct_size = 0x10;
 
 		if (strcmp(xnuVersion, "21.2.0") >= 0) { // iOS 15.2+
@@ -161,9 +158,11 @@ void jbinfo_initialize_hardcoded_offsets(void)
 					gSystemInfo.kernelStruct.proc.textvp  = 0x350;
 
 					// trustcache
-					gSystemInfo.kernelStruct.trustcache.next = 0x0;
-					gSystemInfo.kernelStruct.trustcache.this = 0x20;
-					gSystemInfo.kernelStruct.trustcache.struct_size = 0x28;					
+					gSystemInfo.kernelStruct.trustcache.nextptr = 0x0;
+					gSystemInfo.kernelStruct.trustcache.prevptr = 0x8;
+					gSystemInfo.kernelStruct.trustcache.size = 0x18;
+					gSystemInfo.kernelStruct.trustcache.fileptr = 0x20;
+					gSystemInfo.kernelStruct.trustcache.struct_size = 0x28;
 
 					// pmap
 					gSystemInfo.kernelStruct.pmap.sw_asid    = 0xB6 + pmapEl2Adjust;
