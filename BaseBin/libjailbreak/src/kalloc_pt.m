@@ -1,5 +1,6 @@
 #include "kalloc_pt.h"
 #include "primitives.h"
+#include "translation.h"
 #include "util.h"
 
 #import <Foundation/Foundation.h>
