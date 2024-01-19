@@ -12,6 +12,7 @@
 #import <compression.h>
 #import <xpf/xpf.h>
 #import <dlfcn.h>
+#import <libjailbreak/handoff.h>
 #import <libjailbreak/primitives_external.h>
 #import <libjailbreak/codesign.h>
 #import <libjailbreak/primitives.h>
@@ -22,6 +23,7 @@
 #import <libjailbreak/info.h>
 #import <libjailbreak/util.h>
 #import <libjailbreak/trustcache.h>
+#import <libjailbreak/kalloc_pt.h>
 
 NSString *const JBErrorDomain = @"JBErrorDomain";
 typedef NS_ENUM(NSInteger, JBErrorCode) {
@@ -133,6 +135,12 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         if ([pplBypass load] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PPL bypass: %s", dlerror()]}];};
         if ([pplBypass run] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PPL"}];}
         // At this point we presume the PPL bypass gave us unrestricted phys write primitives
+        if (!jbinfo(usesPACBypass)) {
+            if (@available(iOS 16.0, *)) {
+                // IOSurface kallocs don't work on iOS 16+, use these instead
+                libjailbreak_init_kalloc_pt();
+            }
+        }
     }
     return nil;
 }
@@ -229,22 +237,27 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     err = [self cleanUpExploits];
     if (err) return err;
 
-    for (int i = 0; i < 200; i++) {
-        printf("We out here! Test read: %x\n", kread32(kconstant(base) + i*0x4000));
-    }
+    //for (int i = 0; i < 200; i++) {
+    //    printf("We out here! Test read: %x\n", kread32(kconstant(base) + i*0x4000));
+    //}
     
     err = [self elevatePrivileges];
     if (err) return err;
     printf("Got UID %d\n", getuid());
-
-    //err = [[EnvironmentManager sharedManager] prepareBootstrap];
-    //if (err) return err;
-    //printf("Bootstrap done\n");
     
-    //err = [self loadBasebinTrustcache];
-    //if (err) return err;
-    //int r = exec_cmd("/var/jb/basebin/jbctl", NULL);
-    //printf("jbctl returned %d\n", r);
+    //for (int i = 0; i < 200; i++) {
+    //    uint64_t alloc = pmap_alloc_page_table(0, 0);
+    //    printf("%d: allocated %llx\n", i, alloc);
+    //}
+
+    err = [[EnvironmentManager sharedManager] prepareBootstrap];
+    if (err) return err;
+    printf("Bootstrap done\n");
+    
+    err = [self loadBasebinTrustcache];
+    if (err) return err;
+    int r = exec_cmd("/var/jb/basebin/jbctl", NULL);
+    printf("jbctl returned %d\n", r);
     
     return nil;
 }
