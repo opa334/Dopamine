@@ -78,6 +78,7 @@ int physrw_pte_physreadbuf(uint64_t pa, void* output, size_t size)
 		acquire_window(curPA & ~PAGE_MASK, ^(void *ua) {
 			void *curUA = ((uint8_t*)ua) + (curPA & PAGE_MASK);
 			memcpy(&output[curPA - pa], curUA, curSize);
+			__asm("dmb sy");
 		});
 		return true;
 	});
@@ -91,6 +92,7 @@ int physrw_pte_physwritebuf(uint64_t pa, const void* input, size_t size)
 		acquire_window(curPA & ~PAGE_MASK, ^(void *ua) {
 			void *curUA = ((uint8_t*)ua) + (curPA & PAGE_MASK);
 			memcpy(curUA, &input[curPA - pa], curSize);
+			__asm("dmb sy");
 		});
 		return true;
 	});

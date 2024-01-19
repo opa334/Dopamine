@@ -56,7 +56,7 @@ int physrw_physwritebuf(uint64_t pa, const void* input, size_t size)
 	return 0;
 }
 
-int physrw_init(void)
+int libjailbreak_physrw_init(void)
 {
 	gPrimitives.physreadbuf = physrw_physreadbuf;
 	gPrimitives.physwritebuf = physrw_physwritebuf;

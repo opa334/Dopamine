@@ -135,7 +135,7 @@ uint64_t kvtophys(uint64_t va)
 	return vtophys(kconstant(cpuTTEP), va);
 }
 
-void libjailbreak_translation_primitives_init(void)
+void libjailbreak_translation_init(void)
 {
 	gPrimitives.phystokv = phystokv;
 	gPrimitives.vtophys  = vtophys;

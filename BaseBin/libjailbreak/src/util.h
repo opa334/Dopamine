@@ -25,7 +25,7 @@ uint64_t pmap_alloc_page_table(uint64_t pmap, uint64_t va);
 
 int exec_cmd(const char *binary, ...);
 
-#define JBRootPath(relativePath) ({ static char outPath[PATH_MAX]; strlcpy(outPath, jbinfo(rootPath), PATH_MAX); strlcpy(outPath, relativePath, PATH_MAX); outPath; })
+#define JBRootPath(relativePath) ({ static char outPath[PATH_MAX]; strlcat(outPath, jbinfo(rootPath), PATH_MAX); strlcat(outPath, relativePath, PATH_MAX); outPath; })
 
 #ifdef __OBJC__
 NSString *NSJBRootPath(NSString *relativePath);

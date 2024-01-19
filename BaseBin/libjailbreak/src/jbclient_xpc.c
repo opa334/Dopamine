@@ -256,9 +256,10 @@ int jbclient_root_get_kcall(uint64_t stackAllocation, uint64_t *arcContextOut)
 
 int jbclient_root_get_sysinfo(xpc_object_t *sysInfoOut)
 {
-	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_ROOT, JBS_ROOT_GET_KCALL, NULL);
+	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_ROOT, JBS_ROOT_GET_SYSINFO, NULL);
 	if (xreply) {
-		if (sysInfoOut) *sysInfoOut = xpc_dictionary_get_dictionary(xreply, "sysinfo");
+		xpc_object_t sysInfo = xpc_dictionary_get_dictionary(xreply, "sysinfo");
+		if (sysInfo && sysInfoOut) *sysInfoOut = xpc_copy(sysInfo);
 		int result = xpc_dictionary_get_int64(xreply, "result");
 		xpc_release(xreply);
 		return result;
@@ -271,6 +272,17 @@ int jbclient_root_add_cdhash(uint8_t *cdhashData, size_t cdhashLen)
 	xpc_object_t xargs = xpc_dictionary_create_empty();
 	xpc_dictionary_set_data(xargs, "cdhash", cdhashData, cdhashLen);
 	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_ROOT, JBS_ROOT_ADD_CDHASH, xargs);
+	if (xreply) {
+		int64_t result = xpc_dictionary_get_int64(xreply, "result");
+		xpc_release(xreply);
+		return result;
+	}
+	return -1;
+}
+
+int jbclient_boomerang_done(void)
+{
+	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_ROOT, JBS_BOOMERANG_DONE, NULL);
 	if (xreply) {
 		int64_t result = xpc_dictionary_get_int64(xreply, "result");
 		xpc_release(xreply);

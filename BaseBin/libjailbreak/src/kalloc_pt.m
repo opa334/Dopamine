@@ -45,7 +45,7 @@ int kfree_global_pt(uint64_t kaddr, uint64_t size)
 	return 0;
 }
 
-void libjailbreak_init_kalloc_pt(void)
+void libjailbreak_kalloc_pt_init(void)
 {
 	gPool = [NSMutableArray new];
 	gPrimitives.kalloc_global = kalloc_global_pt;

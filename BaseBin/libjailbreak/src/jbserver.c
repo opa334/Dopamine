@@ -13,6 +13,7 @@ int jbserver_received_xpc_message(struct jbserver_impl *server, xpc_object_t xms
 	for (int i = 1; i < domainIdx && domain; i++) {
 		domain = server->domains[i];
 	}
+	if (!domain) return -1;
 
 	uint64_t actionIdx = xpc_dictionary_get_uint64(xmsg, "action");
 	if (actionIdx == 0) return -1;
@@ -20,6 +21,7 @@ int jbserver_received_xpc_message(struct jbserver_impl *server, xpc_object_t xms
 	for (int i = 1; i < actionIdx && action->handler; i++) {
 		action = &domain->actions[i];
 	}
+	if (!action->handler) return -1;
 
 	audit_token_t clientToken = { 0 };
 	xpc_dictionary_get_audit_token(xmsg, &clientToken);
@@ -107,5 +109,6 @@ int jbserver_received_xpc_message(struct jbserver_impl *server, xpc_object_t xms
 	}
 	xpc_dictionary_set_int64(xreply, "result", result);
 	xpc_pipe_routine_reply(xreply);
+	xpc_release(xreply);
 	return 0;
 }

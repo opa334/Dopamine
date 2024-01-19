@@ -80,6 +80,8 @@ enum {
     JBS_ROOT_ADD_CDHASH = 4,
 };
 
+#define JBS_BOOMERANG_DONE 42
+
 int jbserver_received_xpc_message(struct jbserver_impl *server, xpc_object_t xmsg);
 
 #endif

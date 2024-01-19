@@ -32,8 +32,26 @@ NSString *generateSystemWideSandboxExtensions(void)
 
 __attribute__((constructor)) static void initializer(void)
 {
+	FILE *f = fopen("/var/mobile/launchd_new.log", "a");
+	fprintf(f, "WE OUT HERE! launchd gang!\n");
+	fflush(f);
+
 	crashreporter_start();
-	boomerang_recoverPrimitives();
+
+	fprintf(f, "crashreporter started\n");
+	fflush(f);
+
+	int r = boomerang_recoverPrimitives();
+	if (r == 0) {
+		fprintf(f, "Primitives recovered!\n");
+		fprintf(f, "Test read: 0x%x\n", kread32(kconstant(base)));
+		fflush(f);
+	}
+	else {
+		fprintf(f, "Failed to recover primitives: %d\n", r);
+		fclose(f);
+		return;
+	}
 
 	for (int i = 0; i < _dyld_image_count(); i++) {
 		if(!strcmp(_dyld_get_image_name(i), "/sbin/launchd")) {
@@ -47,13 +65,14 @@ __attribute__((constructor)) static void initializer(void)
 
 	//proc_set_debugged_pid(getpid(), false);
 
-	initXPCHooks();
+	/*initXPCHooks();
 	initDaemonHooks();
 	initSpawnHooks();
 	initIPCHooks();
-	initDSCHooks();
+	initDSCHooks();*/
 
 	// This will ensure launchdhook is always reinjected after userspace reboots
 	// As this launchd will pass environ to the next launchd...
 	setenv("DYLD_INSERT_LIBRARIES", JBRootPath("basebin/launchdhook.dylib"), 1);
+	fclose(f);
 }
