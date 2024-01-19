@@ -17,40 +17,55 @@ uint8_t *gSwAsid = 0;
 pthread_mutex_t gLock;
 uint64_t *gMagicPT = (uint64_t *)MAGIC_PT_ADDRESS;
 
+void flush_tlb(void)
+{
+	uint8_t fakeSwAsid = UINT8_MAX;
+	uint8_t origSwAsid = *gSwAsid;
+	if (origSwAsid != fakeSwAsid) {
+		*gSwAsid = fakeSwAsid;
+		__asm("dmb sy");
+		usleep(0); // Force context switch
+		*gSwAsid = origSwAsid;
+		__asm("dmb sy");
+	}
+}
+
 void acquire_window(uint64_t pa, void (^block)(void *ua))
 {
 	pthread_mutex_lock(&gLock);
 
 	int toUse = 0;
+
+	// Find existing
 	for (int i = 2; i < (PAGE_SIZE / sizeof(uint64_t)); i++) {
-		if (!gMagicPT[i]) {
+		if ((gMagicPT[i] & ARM_TTE_PA_MASK) == pa) {
 			toUse = i;
 			break;
 		}
 	}
 
+	// If not found, find empty
+	if (toUse == 0) {
+		for (int i = 2; i < (PAGE_SIZE / sizeof(uint64_t)); i++) {
+			if (!gMagicPT[i]) {
+				toUse = i;
+				break;
+			}
+		}
+	}
+
+	// If not found, clear page table
 	if (toUse == 0) {
 		// Reset all entries to 0
 		for (int i = 2; i < (PAGE_SIZE / sizeof(uint64_t)); i++) {
 			gMagicPT[i] = 0;
 		}
-
-		// Flush TLB
-		uint8_t fakeSwAsid = UINT8_MAX;
-		uint8_t origSwAsid = *gSwAsid;
-		if (origSwAsid != fakeSwAsid) {
-			*gSwAsid = fakeSwAsid;
-			__asm("dmb sy");
-			usleep(0); // Force context switch
-			*gSwAsid = origSwAsid;
-			__asm("dmb sy");
-		}
-
+		flush_tlb();
 		toUse = 2;
 	}
 
 	gMagicPT[toUse] = pa | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY;
-	__asm("dmb sy"); usleep(80); usleep(80);
+	__asm("dmb sy");
 	block((void *)(MAGIC_PT_ADDRESS + (toUse * PAGE_SIZE)));
 
 	pthread_mutex_unlock(&gLock);
@@ -119,8 +134,13 @@ int libjailbreak_physrw_pte_init(void)
 	physwrite64(magicPT, magicPT | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY);
 
 	// Map in the pmap at MAGIC_PT_ADDRESS+PAGE_SIZE
-	physwrite64(magicPT+8, vtophys(ttep, ((pmap + koffsetof(pmap, sw_asid)) & ~PAGE_MASK)) | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY);
-	gSwAsid = (uint8_t *)(MAGIC_PT_ADDRESS + PAGE_SIZE + ((pmap + koffsetof(pmap, sw_asid)) & ~PAGE_MASK));
+	uint64_t sw_asid = pmap + koffsetof(pmap, sw_asid);
+	uint64_t sw_asid_page = sw_asid & ~PAGE_MASK;
+	uint64_t sw_asid_page_pa = kvtophys(sw_asid_page);
+	uint64_t sw_asid_pageoff = sw_asid & PAGE_MASK;
+	gSwAsid = (uint8_t *)(MAGIC_PT_ADDRESS + PAGE_SIZE + sw_asid_pageoff);
+	physwrite64(magicPT+8, sw_asid_page_pa | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY);
+
 	if (pthread_mutex_init(&gLock, NULL) != 0) return -2;
 
 	gPrimitives.physreadbuf = physrw_pte_physreadbuf;
@@ -128,11 +148,7 @@ int libjailbreak_physrw_pte_init(void)
 	gPrimitives.kreadbuf = NULL;
 	gPrimitives.kwritebuf = NULL;
 
-	for (int i = 0; i < 10; i++) {
-		// Without this some random data aborts happen
-		usleep(80);
-		__asm("dmb sy");
-	}
+	flush_tlb();
 
 	return 0;
 }
