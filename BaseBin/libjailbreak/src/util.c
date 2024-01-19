@@ -1,6 +1,8 @@
+#include "util.h"
 #include "primitives.h"
 #include "info.h"
 #include "kernel.h"
+#include "translation.h"
 #include <spawn.h>
 extern char **environ;
 
@@ -72,6 +74,76 @@ uint64_t task_get_ipc_port_object(uint64_t task, mach_port_t port)
 uint64_t task_get_ipc_port_kobject(uint64_t task, mach_port_t port)
 {
 	return kread_ptr(task_get_ipc_port_object(task, port) + koffsetof(ipc_port, kobject));
+}
+
+uint64_t alloc_page_table_unassigned(void)
+{
+	uint64_t pmap = pmap_self();
+	uint64_t ttep = kread64(pmap + koffsetof(pmap, ttep));
+
+	// When we allocate the entire address range of an L2 block, we can assume ownership of the backing table
+	void *free_lvl2 = NULL;
+	if (posix_memalign(&free_lvl2, L2_BLOCK_SIZE, L2_BLOCK_SIZE) != 0) {
+		printf("WARNING: Failed to allocate L2 page table address range\n");
+		return 0;
+	}
+	// Now, fault in one page to make the kernel allocate the page table for it
+	*(volatile uint64_t *)free_lvl2;
+
+	// Find the newly allocated page table
+	uint64_t lvl = PMAP_TT_L2_LEVEL;
+	uint64_t tte_lvl2 = 0;
+	uint64_t allocatedPT = vtophys_lvl(ttep, (uint64_t)free_lvl2, &lvl, &tte_lvl2);
+
+	// Bump reference count of our allocated page table by one
+	uint64_t pvh = pai_to_pvh(pa_index(allocatedPT));
+	uint64_t ptdp = pvh_ptd(pvh);
+	uint64_t pinfo = kread64(ptdp + koffsetof(pt_desc, ptd_info)); // TODO: Fake 16k devices (4 values)
+	uint64_t pinfo_pa = kvtophys(pinfo);
+	physwrite16(pinfo_pa, physread16(pinfo_pa)+1);
+
+	// Deallocate address range (our allocated page table will stay because we bumped it's reference count)
+	free(free_lvl2);
+
+	// Decrement reference count of our allocated page table again
+	physwrite16(pinfo_pa, physread16(pinfo_pa)-1);
+
+	// Remove our allocated page table from it's original location (leak it)
+	physwrite64(tte_lvl2, 0);
+
+	// Clear the allocated page table of any entries (there should be one)
+	uint8_t empty[PAGE_SIZE];
+	memset(empty, 0, PAGE_SIZE);
+	physwritebuf(allocatedPT, empty, PAGE_SIZE);
+
+	return allocatedPT;
+}
+
+uint64_t pmap_alloc_page_table(uint64_t pmap, uint64_t va)
+{
+	if (!pmap) {
+		pmap = pmap_self();
+	}
+
+	uint64_t tt_p = alloc_page_table_unassigned();
+	if (!tt_p) return 0;
+
+	uint64_t pvh = pai_to_pvh(pa_index(tt_p));
+	uint64_t ptdp = pvh_ptd(pvh);
+
+	uint64_t ptdp_pa = kvtophys(ptdp);
+
+	// At this point the allocated page table is associated
+	// to the pmap of this process alongside the address it was allocated on
+	// We now need to replace the association with the context in which it will be used
+	physwrite64(ptdp_pa + koffsetof(pt_desc, pmap), pmap);
+
+	// On A14+ PT_INDEX_MAX is 4, for whatever reason
+	// However in practice, only the first slot is used...
+	// TODO: On devices where kernel page size != userland page size, populate all 4 values
+	physwrite64(ptdp_pa + koffsetof(pt_desc, va), va);
+
+	return tt_p;
 }
 
 int exec_cmd(const char *binary, ...)

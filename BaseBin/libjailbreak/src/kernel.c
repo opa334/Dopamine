@@ -93,3 +93,17 @@ uint64_t ipc_entry_lookup(uint64_t space, mach_port_name_t name)
 	return (table + (ksizeof(ipc_entry) * (name >> 8)));
 }
 
+uint64_t pa_index(uint64_t pa)
+{
+	return atop(pa - kread64(ksymbol(vm_first_phys)));
+}
+
+uint64_t pai_to_pvh(uint64_t pai)
+{
+	return kread64(ksymbol(pv_head_table)) + (pai * 8);
+}
+
+uint64_t pvh_ptd(uint64_t pvh)
+{
+	return ((kread64(pvh) & PVH_LIST_MASK) | PVH_HIGH_FLAGS);
+}
