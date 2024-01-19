@@ -7,6 +7,7 @@
 
 #import "Bootstrapper.h"
 #import "EnvironmentManager.h"
+#import <libjailbreak/info.h>
 #import "zstd.h"
 #import <sys/mount.h>
 #import <dlfcn.h>
@@ -390,6 +391,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     }
     
     NSString *jailbreakRootPath = [[EnvironmentManager sharedManager] jailbreakRootPath];
+    gSystemInfo.jailbreakInfo.rootPath = strdup(jailbreakRootPath.fileSystemRepresentation);
     NSString *basebinPath = [jailbreakRootPath stringByAppendingPathComponent:@"basebin"];
     NSString *installedPath = [jailbreakRootPath stringByAppendingPathComponent:@".installed_dopamine"];
     [self createSymlinkAtPath:@"/var/jb" toPath:jailbreakRootPath createIntermediateDirectories:YES];

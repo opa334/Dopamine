@@ -24,6 +24,9 @@
 #import <libjailbreak/util.h>
 #import <libjailbreak/trustcache.h>
 #import <libjailbreak/kalloc_pt.h>
+#import <libjailbreak/jbserver_boomerang.h>
+#import "spawn.h"
+int posix_spawnattr_set_registered_ports_np(posix_spawnattr_t * __restrict attr, mach_port_t portarray[], uint32_t count);
 
 NSString *const JBErrorDomain = @"JBErrorDomain";
 typedef NS_ENUM(NSInteger, JBErrorCode) {
@@ -37,6 +40,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     JBErrorCodeFailedUnsandbox               = -8,
     JBErrorCodeFailedPlatformize             = -9,
     JBErrorCodeFailedBasebinTrustcache       = -10,
+    JBErrorCodeFailedLaunchdInjection        = -11,
 };
 
 @implementation Jailbreaker
@@ -114,7 +118,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if ([kernelExploit run] != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to exploit kernel"}];
     
     jbinfo_initialize_boot_constants();
-    libjailbreak_translation_primitives_init();
+    libjailbreak_translation_init();
     libjailbreak_IOSurface_primitives_init();
     
     Exploit *pacBypass;
@@ -138,7 +142,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         if (!jbinfo(usesPACBypass)) {
             if (@available(iOS 16.0, *)) {
                 // IOSurface kallocs don't work on iOS 16+, use these instead
-                libjailbreak_init_kalloc_pt();
+                libjailbreak_kalloc_pt_init();
             }
         }
     }
@@ -225,6 +229,64 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     return nil;
 }
 
+- (NSError *)injectLaunchdHook
+{
+    mach_port_t serverPort = MACH_PORT_NULL;
+    mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &serverPort);
+    mach_port_insert_right(mach_task_self(), serverPort, serverPort, MACH_MSG_TYPE_MAKE_SEND);
+
+    // Host a boomerang server that will be used by launchdhook to get the jailbreak primitives from this app
+    dispatch_semaphore_t boomerangDone = dispatch_semaphore_create(0);
+    dispatch_source_t serverSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_MACH_RECV, (uintptr_t)serverPort, 0, dispatch_get_main_queue());
+    dispatch_source_set_event_handler(serverSource, ^{
+        xpc_object_t xdict = nil;
+        if (!xpc_pipe_receive(serverPort, &xdict)) {
+            char *desc = xpc_copy_description(xdict);
+            printf("App server received %s\n", desc);
+            usleep(10000);
+            if (jbserver_received_boomerang_xpc_message(&gBoomerangServer, xdict) == JBS_BOOMERANG_DONE) {
+                dispatch_semaphore_signal(boomerangDone);
+            }
+        }
+    });
+    dispatch_resume(serverSource);
+
+    // Stash port to server in launchd's initPorts[2]
+    // Since we don't have the neccessary entitlements, we need to do it over jbctl
+    posix_spawnattr_t attr;
+    posix_spawnattr_init(&attr);
+    posix_spawnattr_set_registered_ports_np(&attr, (mach_port_t[]){MACH_PORT_NULL, MACH_PORT_NULL, serverPort}, 3);
+    pid_t spawnedPid = 0;
+    const char *jbctlPath = JBRootPath("/basebin/jbctl");
+    int spawnError = posix_spawn(&spawnedPid, jbctlPath, NULL, &attr, (char *const *)(const char *[]){ jbctlPath, "launchd_stash_port", NULL }, NULL);
+    if (spawnError != 0) {
+        dispatch_cancel(serverSource);
+        return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLaunchdInjection userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Spawning jbctl failed with error code %d", spawnError]}];
+    }
+    posix_spawnattr_destroy(&attr);
+    int status = 0;
+    do {
+        if (waitpid(spawnedPid, &status, 0) == -1) {
+            dispatch_cancel(serverSource);
+            return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLaunchdInjection userInfo:@{NSLocalizedDescriptionKey : @"Waiting for jbctl failed"}];;
+        }
+    } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+
+    // Inject launchdhook.dylib into launchd via opainject
+    int r = exec_cmd(JBRootPath("/basebin/opainject"), "1", JBRootPath("/basebin/launchdhook.dylib"), NULL);
+    if (r != 0) {
+        dispatch_cancel(serverSource);
+        return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLaunchdInjection userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"opainject failed with error code %d", r]}];
+    }
+
+    // Wait for everything to finish
+    dispatch_semaphore_wait(boomerangDone, DISPATCH_TIME_FOREVER);
+    dispatch_cancel(serverSource);
+    mach_port_deallocate(mach_task_self(), serverPort);
+
+    return nil;
+}
+
 /*void printTrustCache_16(void)
 {
     uint64_t first = kread64(kread64(ksymbol(ppl_trust_cache_rt) + 0x20));
@@ -291,8 +353,11 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     
     err = [self loadBasebinTrustcache];
     if (err) return err;
-    int r = exec_cmd("/var/jb/basebin/jbctl", NULL);
-    printf("jbctl returned %d\n", r);
+    //int r = exec_cmd("/var/jb/basebin/jbctl", "stash", NULL);
+    //printf("jbctl returned %d\n", r);
+    
+    err = [self injectLaunchdHook];
+    if (err) return err;
     
     return nil;
 }
