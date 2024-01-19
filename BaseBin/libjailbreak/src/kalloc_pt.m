@@ -25,8 +25,11 @@ int kalloc_global_pt(uint64_t *kaddrOut, uint64_t size)
 	}
 	else {
 		uint64_t allocPA = alloc_page_table_unassigned();
-		*kaddrOut = phystokv(allocPA);
-		if (*kaddrOut) return 0;
+		uint64_t allocVA = phystokv(allocPA);
+		if (allocVA) {
+			*kaddrOut = allocVA;
+			return 0;
+		}
 		return -1;
 	}
 }
