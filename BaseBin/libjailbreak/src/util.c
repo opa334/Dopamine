@@ -148,7 +148,7 @@ uint64_t pmap_alloc_page_table(uint64_t pmap, uint64_t va)
 
 int exec_cmd(const char *binary, ...)
 {
-	int argc = 0;
+	int argc = 1;
 	va_list args;
     va_start(args, binary);
 	while (va_arg(args, const char *)) argc++;
@@ -156,7 +156,8 @@ int exec_cmd(const char *binary, ...)
 
 	va_start(args, binary);
 	const char *argv[argc+1];
-	for (int i = 0; i < argc; i++) {
+	argv[0] = binary;
+	for (int i = 1; i < argc; i++) {
 		argv[i] = va_arg(args, const char *);
 	}
 	argv[argc] = NULL;
