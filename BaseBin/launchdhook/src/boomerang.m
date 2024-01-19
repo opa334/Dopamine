@@ -15,37 +15,6 @@ extern int (*posix_spawn_orig)(pid_t *restrict, const char *restrict, const posi
 #define JB_PRIMITIVE_STORAGE_RETRIEVE_PHYSRW 1
 #define JB_PRIMITIVE_STORAGE_RETRIEVE_KCALL 2
 
-xpc_object_t pipe_send_message(xpc_object_t pipe, xpc_object_t xdict)
-{
-	/*FILE *f;
-	char *xdictDesc = xpc_copy_description(xdict);
-	f = fopen("/var/mobile/boomerang.log", "a");
-	fprintf(f, "[launchd client] Sending %s\n", xdictDesc);
-	fclose(f);
-	free(xdictDesc);*/
-
-	xpc_object_t xreply = nil;
-	int r = xpc_pipe_routine_with_flags(pipe, xdict, &xreply, 0);
-	if (r != 0) {
-		return nil;
-	}
-	if (!xreply) {
-		return nil;
-	}
-	int64_t result = xpc_dictionary_get_int64(xreply, "result");
-	if (result != 0) {
-		return nil;
-	}
-
-	/*f = fopen("/var/mobile/boomerang.log", "a");
-	char *xreplyDesc = xpc_copy_description(xreply);
-	fprintf(f, "[launchd client] Received reply %s\n", xreplyDesc);
-	fclose(f);
-	free(xreplyDesc);*/
-
-	return xreply;
-}
-
 void boomerang_stashPrimitives()
 {
 	dispatch_semaphore_t boomerangDone = dispatch_semaphore_create(0);
@@ -71,7 +40,7 @@ void boomerang_stashPrimitives()
 	posix_spawnattr_t attr = NULL;
 	posix_spawnattr_init(&attr);
 	posix_spawnattr_set_registered_ports_np(&attr, (mach_port_t[]){ MACH_PORT_NULL, MACH_PORT_NULL, serverPort }, 3);
-	int ret = posix_spawn_orig(&boomerangPid, JBRootPath("basebin/boomerang"), NULL, &attr, NULL, NULL);
+	int ret = posix_spawn_orig(&boomerangPid, JBRootPath("/basebin/boomerang"), NULL, &attr, NULL, NULL);
 	if (ret != 0) return;
 	posix_spawnattr_destroy(&attr);
 

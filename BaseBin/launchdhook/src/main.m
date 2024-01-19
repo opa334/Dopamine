@@ -73,6 +73,6 @@ __attribute__((constructor)) static void initializer(void)
 
 	// This will ensure launchdhook is always reinjected after userspace reboots
 	// As this launchd will pass environ to the next launchd...
-	setenv("DYLD_INSERT_LIBRARIES", JBRootPath("basebin/launchdhook.dylib"), 1);
+	setenv("DYLD_INSERT_LIBRARIES", JBRootPath("/basebin/launchdhook.dylib"), 1);
 	fclose(f);
 }

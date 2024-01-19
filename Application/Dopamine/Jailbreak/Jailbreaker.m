@@ -242,8 +242,6 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         xpc_object_t xdict = nil;
         if (!xpc_pipe_receive(serverPort, &xdict)) {
             char *desc = xpc_copy_description(xdict);
-            printf("App server received %s\n", desc);
-            usleep(10000);
             if (jbserver_received_boomerang_xpc_message(&gBoomerangServer, xdict) == JBS_BOOMERANG_DONE) {
                 dispatch_semaphore_signal(boomerangDone);
             }
