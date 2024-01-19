@@ -21,6 +21,7 @@
 #import <libjailbreak/kernel.h>
 #import <libjailbreak/info.h>
 #import <libjailbreak/util.h>
+#import <libjailbreak/trustcache.h>
 
 NSString *const JBErrorDomain = @"JBErrorDomain";
 typedef NS_ENUM(NSInteger, JBErrorCode) {
@@ -33,6 +34,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     JBErrorCodeFailedGetRoot                 = -7,
     JBErrorCodeFailedUnsandbox               = -8,
     JBErrorCodeFailedPlatformize             = -9,
+    JBErrorCodeFailedBasebinTrustcache       = -10,
 };
 
 @implementation Jailbreaker
@@ -197,6 +199,24 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     return nil;
 }
 
+- (NSError *)loadBasebinTrustcache
+{
+    int basebinTcFd = open([[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"BaseBin.tc"].fileSystemRepresentation, O_RDONLY);
+    if (basebinTcFd < 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedBasebinTrustcache userInfo:@{NSLocalizedDescriptionKey : @"Failed to open BaseBin trustcache"}];
+
+    struct stat s;
+    fstat(basebinTcFd, &s);
+    trustcache_file_v1 *basebinTcFile = malloc(s.st_size);
+    if (read(basebinTcFd, basebinTcFile, s.st_size) != s.st_size) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedBasebinTrustcache userInfo:@{NSLocalizedDescriptionKey : @"Failed to read BaseBin trustcache"}];
+
+    int r = trustcache_file_upload_with_uuid(basebinTcFile, BASEBIN_TRUSTCACHE_UUID);
+    if (r != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedBasebinTrustcache userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to upload BaseBin trustcache: %d", r]}];
+    
+    free(basebinTcFile);
+    close(basebinTcFd);
+    return nil;
+}
+
 - (NSError *)run
 {
     NSError *err = nil;
@@ -208,17 +228,23 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (err) return err;
     err = [self cleanUpExploits];
     if (err) return err;
+
+    for (int i = 0; i < 200; i++) {
+        printf("We out here! Test read: %x\n", kread32(kconstant(base) + i*0x4000));
+    }
     
-    NSLog(@"We out here! %x\n", kread32(kconstant(base)));
     err = [self elevatePrivileges];
     if (err) return err;
+    printf("Got UID %d\n", getuid());
+
+    //err = [[EnvironmentManager sharedManager] prepareBootstrap];
+    //if (err) return err;
+    //printf("Bootstrap done\n");
     
-    NSLog(@"UID %d", getuid());
-    
-    err = [[EnvironmentManager sharedManager] prepareBootstrap];
-    if (err) return err;
-    
-    NSLog(@"OOOKKK???");
+    //err = [self loadBasebinTrustcache];
+    //if (err) return err;
+    //int r = exec_cmd("/var/jb/basebin/jbctl", NULL);
+    //printf("jbctl returned %d\n", r);
     
     return nil;
 }
