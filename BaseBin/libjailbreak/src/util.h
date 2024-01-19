@@ -13,6 +13,7 @@ uint64_t pmap_self(void);
 uint64_t task_get_ipc_port_table_entry(uint64_t task, mach_port_t port);
 uint64_t task_get_ipc_port_object(uint64_t task, mach_port_t port);
 uint64_t task_get_ipc_port_kobject(uint64_t task, mach_port_t port);
+int exec_cmd(const char *binary, ...);
 
 #define JBRootPath(relativePath) ({ static char outPath[PATH_MAX]; strlcpy(outPath, jbinfo(rootPath), PATH_MAX); strlcpy(outPath, relativePath, PATH_MAX); outPath; })
 
