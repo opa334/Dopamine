@@ -24,4 +24,5 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 					   const posix_spawnattr_t *restrict attrp,
 					   char *const argv[restrict],
 					   char *const envp[restrict],
-					   void *pspawn_org);
+					   void *orig,
+					   int (*trust_binary)(const char *));

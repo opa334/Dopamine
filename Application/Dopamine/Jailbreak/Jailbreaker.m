@@ -285,41 +285,6 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     return nil;
 }
 
-/*void printTrustCache_16(void)
-{
-    uint64_t first = kread64(kread64(ksymbol(ppl_trust_cache_rt) + 0x20));
-    
-    uint64_t tc = first;
-    int i = 0;
-    while (tc) {
-        uint64_t next = kread64(tc + 0x0);
-        uint64_t prev = kread64(tc + 0x8);
-        uint64_t size = kread64(tc + 0x18);
-        uint64_t tcFile = kread64(tc + 0x20);
-        uint32_t version = kread32(tcFile);
-        uint32_t len = kread32(tcFile + 0x14);
-        printf("tc %llx (file: 0x%llx, next: 0x%llx, prev: 0x%llx, size: 0x%llx, version: %u, length: %u)\n", tc, tcFile, next, prev, size, version, len);
-        
-        uint32_t entryLen = 20;
-        if (version == 2) {
-            entryLen = 24;
-        }
-        
-        for (uint32_t j = 0; j < len; j++) {
-            uint8_t entryData[entryLen];
-            kreadbuf((tcFile + 0x18) + (entryLen * j), &entryData[0], entryLen);
-            printf("%d: ", j);
-            for (uint32_t k = 0; k < sizeof(cdhash_t); k++) {
-                printf("%02x", entryData[k]);
-            }
-            printf("\n");
-        }
-        
-        i++;
-        tc = next;
-    }
-}*/
-
 - (NSError *)run
 {
     NSError *err = nil;

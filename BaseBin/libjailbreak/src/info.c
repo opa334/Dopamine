@@ -130,9 +130,6 @@ void jbinfo_initialize_hardcoded_offsets(void)
 			// task
 			gSystemInfo.kernelStruct.task.task_can_transfer_memory_ownership = 0x580 + taskJitboxAdjust;
 
-			// vm_map
-			gSystemInfo.kernelStruct.vm_map.flags = 0x11C;
-
 			if (strcmp(xnuVersion, "21.4.0") >= 0) { // iOS 15.4+
 				// proc
 				gSystemInfo.kernelStruct.proc.textvp = 0x350;

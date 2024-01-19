@@ -24,7 +24,7 @@ static int systemwide_get_boot_uuid(char **uuidOut)
 	return 0;
 }
 
-static int systemwide_trust_binary(char *binaryPath)
+int systemwide_trust_binary(const char *binaryPath)
 {
 	return 0;
 }

@@ -232,7 +232,8 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 					   const posix_spawnattr_t *restrict attrp,
 					   char *const argv[restrict],
 					   char *const envp[restrict],
-					   void *orig)
+					   void *orig,
+					   int (*trust_binary)(const char *))
 {
 	int (*pspawn_orig)(pid_t *restrict, const char *restrict, const posix_spawn_file_actions_t *restrict, const posix_spawnattr_t *restrict, char *const[restrict], char *const[restrict]) = orig;
 	if (!path) {
@@ -243,7 +244,7 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 
 	if (!(binaryConfig & kBinaryConfigDontProcess)) {
 		// jailbreakd: Upload binary to trustcache if needed
-		jbclient_trust_binary(path);
+		trust_binary(path);
 	}
 
 	const char *existingLibraryInserts = envbuf_getenv((const char **)envp, "DYLD_INSERT_LIBRARIES");
@@ -254,7 +255,7 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 				systemHookAlreadyInserted = true;
 			}
 			else {
-				jbclient_trust_binary(existingLibraryInsert);
+				trust_binary(existingLibraryInsert);
 			}
 		});
 	}

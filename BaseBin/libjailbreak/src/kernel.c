@@ -3,6 +3,7 @@
 #include "primitives.h"
 #include "info.h"
 #include "util.h"
+#include "codesign.h"
 #include <dispatch/dispatch.h>
 
 uint64_t proc_find(pid_t pidToFind)
@@ -106,4 +107,43 @@ uint64_t pai_to_pvh(uint64_t pai)
 uint64_t pvh_ptd(uint64_t pvh)
 {
 	return ((kread64(pvh) & PVH_LIST_MASK) | PVH_HIGH_FLAGS);
+}
+
+void task_set_memory_ownership_transfer(uint64_t task, bool value)
+{
+	kwrite8(task, !!value);
+}
+
+int pmap_cs_allow_invalid(uint64_t pmap)
+{
+	kwrite8(pmap + koffsetof(pmap, wx_allowed), true);
+	return 0;
+}
+
+int cs_allow_invalid(uint64_t proc, bool emulateFully)
+{
+	uint64_t task = proc_task(proc);
+	uint64_t vm_map = kread_ptr(task + koffsetof(task, map));
+	uint64_t pmap = kread_ptr(vm_map + koffsetof(vm_map, pmap));
+
+	if (emulateFully) {
+		// Fugu15 Rootful
+		//proc_csflags_clear(proc, CS_EXEC_SET_ENFORCEMENT | CS_EXEC_SET_KILL | CS_EXEC_SET_HARD | CS_REQUIRE_LV | CS_ENFORCEMENT | CS_RESTRICT | CS_KILL | CS_HARD | CS_FORCED_LV);
+		//proc_csflags_set(proc, CS_DEBUGGED | CS_INVALID_ALLOWED | CS_GET_TASK_ALLOW);
+
+		// XNU
+		proc_csflags_clear(proc, CS_KILL | CS_HARD);
+		proc_csflags_set(proc, CS_DEBUGGED);
+
+		task_set_memory_ownership_transfer(task, true);
+		vm_map_flags flags = { 0 };
+		kreadbuf(vm_map + koffsetof(vm_map, flags), &flags, sizeof(flags));
+		flags.switch_protect = false;
+		flags.cs_debugged = true;
+		kwritebuf(vm_map + koffsetof(vm_map, flags), &flags, sizeof(flags));
+	}
+
+	// For pmap_cs (arm64e) devices, this is enough to get unsigned code to run
+	pmap_cs_allow_invalid(pmap);
+	return 0;
 }

@@ -8,6 +8,8 @@
 #import <sys/param.h>
 #import <sys/mount.h>
 
+extern int systemwide_trust_binary(const char *binaryPath);
+
 #define LOG_PROCESS_LAUNCHES 0
 
 void *posix_spawn_orig;
@@ -113,7 +115,7 @@ int posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
 		}
 	}
 
-	return spawn_hook_common(pid, path, file_actions, attrp, argv, envp, posix_spawn_orig_wrapper);
+	return spawn_hook_common(pid, path, file_actions, attrp, argv, envp, posix_spawn_orig_wrapper, systemwide_trust_binary);
 }
 
 void initSpawnHooks(void)
