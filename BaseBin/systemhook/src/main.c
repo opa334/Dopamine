@@ -25,12 +25,14 @@ bool dlopen_preflight(const char* path);
 			__attribute__ ((section ("__DATA,__interpose"))) = { (const void*)(unsigned long)&_replacement, (const void*)(unsigned long)&_replacee };
 
 void unsandbox(void) {
-	char extensionsCopy[strlen(JB_SandboxExtensions)];
-	strcpy(extensionsCopy, JB_SandboxExtensions);
-	char *extensionToken = strtok(extensionsCopy, "|");
-	while (extensionToken != NULL) {
-		sandbox_extension_consume(extensionToken);
-		extensionToken = strtok(NULL, "|");
+	if (JB_SandboxExtensions) {
+		char extensionsCopy[strlen(JB_SandboxExtensions)];
+		strcpy(extensionsCopy, JB_SandboxExtensions);
+		char *extensionToken = strtok(extensionsCopy, "|");
+		while (extensionToken != NULL) {
+			sandbox_extension_consume(extensionToken);
+			extensionToken = strtok(NULL, "|");
+		}
 	}
 }
 

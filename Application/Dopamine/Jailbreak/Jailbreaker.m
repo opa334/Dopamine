@@ -25,6 +25,7 @@
 #import <libjailbreak/trustcache.h>
 #import <libjailbreak/kalloc_pt.h>
 #import <libjailbreak/jbserver_boomerang.h>
+#import <libjailbreak/signatures.h>
 #import "spawn.h"
 int posix_spawnattr_set_registered_ports_np(posix_spawnattr_t * __restrict attr, mach_port_t portarray[], uint32_t count);
 
@@ -41,6 +42,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     JBErrorCodeFailedPlatformize             = -9,
     JBErrorCodeFailedBasebinTrustcache       = -10,
     JBErrorCodeFailedLaunchdInjection        = -11,
+    JBErrorCodeFailedInitFakeLib             = -12,
 };
 
 @implementation Jailbreaker
@@ -213,20 +215,14 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (NSError *)loadBasebinTrustcache
 {
-    int basebinTcFd = open([[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"BaseBin.tc"].fileSystemRepresentation, O_RDONLY);
-    if (basebinTcFd < 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedBasebinTrustcache userInfo:@{NSLocalizedDescriptionKey : @"Failed to open BaseBin trustcache"}];
-
-    struct stat s;
-    fstat(basebinTcFd, &s);
-    trustcache_file_v1 *basebinTcFile = malloc(s.st_size);
-    if (read(basebinTcFd, basebinTcFile, s.st_size) != s.st_size) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedBasebinTrustcache userInfo:@{NSLocalizedDescriptionKey : @"Failed to read BaseBin trustcache"}];
-
-    int r = trustcache_file_upload_with_uuid(basebinTcFile, BASEBIN_TRUSTCACHE_UUID);
-    if (r != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedBasebinTrustcache userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to upload BaseBin trustcache: %d", r]}];
-    
-    free(basebinTcFile);
-    close(basebinTcFd);
-    return nil;
+    trustcache_file_v1 *basebinTcFile = NULL;
+    if (trustcache_file_build_from_path([[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"BaseBin.tc"].fileSystemRepresentation, &basebinTcFile) == 0) {
+        int r = trustcache_file_upload_with_uuid(basebinTcFile, BASEBIN_TRUSTCACHE_UUID);
+        free(basebinTcFile);
+        if (r != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedBasebinTrustcache userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to upload BaseBin trustcache: %d", r]}];
+        return nil;
+    }
+    return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedBasebinTrustcache userInfo:@{NSLocalizedDescriptionKey : @"Failed to load BaseBin trustcache"}];
 }
 
 - (NSError *)injectLaunchdHook
@@ -241,7 +237,6 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     dispatch_source_set_event_handler(serverSource, ^{
         xpc_object_t xdict = nil;
         if (!xpc_pipe_receive(serverPort, &xdict)) {
-            char *desc = xpc_copy_description(xdict);
             if (jbserver_received_boomerang_xpc_message(&gBoomerangServer, xdict) == JBS_BOOMERANG_DONE) {
                 dispatch_semaphore_signal(boomerangDone);
             }
@@ -256,7 +251,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     posix_spawnattr_set_registered_ports_np(&attr, (mach_port_t[]){MACH_PORT_NULL, MACH_PORT_NULL, serverPort}, 3);
     pid_t spawnedPid = 0;
     const char *jbctlPath = JBRootPath("/basebin/jbctl");
-    int spawnError = posix_spawn(&spawnedPid, jbctlPath, NULL, &attr, (char *const *)(const char *[]){ jbctlPath, "launchd_stash_port", NULL }, NULL);
+    int spawnError = posix_spawn(&spawnedPid, jbctlPath, NULL, &attr, (char *const *)(const char *[]){ jbctlPath, "internal", "launchd_stash_port", NULL }, NULL);
     if (spawnError != 0) {
         dispatch_cancel(serverSource);
         return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLaunchdInjection userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Spawning jbctl failed with error code %d", spawnError]}];
@@ -282,6 +277,37 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     dispatch_cancel(serverSource);
     mach_port_deallocate(mach_task_self(), serverPort);
 
+    return nil;
+}
+
+- (NSError *)createFakeLib
+{
+    int r = exec_cmd(JBRootPath("/basebin/jbctl"), "internal", "fakelib_init", NULL);
+    if (r != 0) {
+        return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedInitFakeLib userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Creating fakelib failed with error: %d", r]}];
+    }
+
+    cdhash_t *cdhashes;
+    uint32_t cdhashesCount;
+    macho_collect_untrusted_cdhashes(JBRootPath("/basebin/.fakelib/dyld"), NULL, &cdhashes, &cdhashesCount);
+    if (cdhashesCount != 1) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedInitFakeLib userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Got unexpected number of cdhashes for dyld???: %d", cdhashesCount]}];
+    
+    trustcache_file_v1 *dyldTCFile = NULL;
+    r = trustcache_file_build_from_cdhashes(cdhashes, cdhashesCount, &dyldTCFile);
+    free(cdhashes);
+    if (r == 0) {
+        int r = trustcache_file_upload_with_uuid(dyldTCFile, DYLD_TRUSTCACHE_UUID);
+        if (r != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedInitFakeLib userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to upload dyld trustcache: %d", r]}];
+        free(dyldTCFile);
+    }
+    else {
+        return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedInitFakeLib userInfo:@{NSLocalizedDescriptionKey : @"Failed to build dyld trustcache"}];
+    }
+    
+    r = exec_cmd(JBRootPath("/basebin/jbctl"), "internal", "fakelib_mount", NULL);
+    if (r != 0) {
+        return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedInitFakeLib userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Mounting fakelib failed with error: %d", r]}];
+    }
     return nil;
 }
 
@@ -320,6 +346,9 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     //printf("jbctl returned %d\n", r);
     
     err = [self injectLaunchdHook];
+    if (err) return err;
+    
+    err = [self createFakeLib];
     if (err) return err;
     
     return nil;

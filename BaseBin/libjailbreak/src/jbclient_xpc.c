@@ -246,7 +246,7 @@ int jbclient_root_get_kcall(uint64_t stackAllocation, uint64_t *arcContextOut)
 	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_ROOT, JBS_ROOT_GET_KCALL, xargs);
 	xpc_release(xargs);
 	if (xreply) {
-		if (arcContextOut) *arcContextOut = xpc_dictionary_get_int64(xreply, "arc-context");
+		if (arcContextOut) *arcContextOut = xpc_dictionary_get_uint64(xreply, "arc-context");
 		int result = xpc_dictionary_get_int64(xreply, "result");
 		xpc_release(xreply);
 		return result;
@@ -272,8 +272,24 @@ int jbclient_root_add_cdhash(uint8_t *cdhashData, size_t cdhashLen)
 	xpc_object_t xargs = xpc_dictionary_create_empty();
 	xpc_dictionary_set_data(xargs, "cdhash", cdhashData, cdhashLen);
 	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_ROOT, JBS_ROOT_ADD_CDHASH, xargs);
+	xpc_release(xargs);
 	if (xreply) {
 		int64_t result = xpc_dictionary_get_int64(xreply, "result");
+		xpc_release(xreply);
+		return result;
+	}
+	return -1;
+}
+
+int jbclient_root_steal_ucred(uint64_t ucredToSteal, uint64_t *orgUcred)
+{
+	xpc_object_t xargs = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(xargs, "ucred", ucredToSteal);
+	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_ROOT, JBS_ROOT_STEAL_UCRED, xargs);
+	xpc_release(xargs);
+	if (xreply) {
+		int64_t result = xpc_dictionary_get_int64(xreply, "result");
+		if (orgUcred) *orgUcred = xpc_dictionary_get_uint64(xreply, "org-ucred");
 		xpc_release(xreply);
 		return result;
 	}

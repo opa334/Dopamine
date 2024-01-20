@@ -1,4 +1,5 @@
 #import <libjailbreak/libjailbreak.h>
+#import "internal.h"
 
 int reboot3(uint64_t flags, ...);
 #define RB2_USERREBOOT (0x2000000000000000llu)
@@ -20,6 +21,8 @@ int main(int argc, char* argv[])
 		print_usage();
 		return 1;
 	}
+
+	jbclient_xpc_init_launchd();
 
 	char *cmd = argv[1];
 	if (!strcmp(cmd, "proc_set_debugged")) {
@@ -61,46 +64,12 @@ int main(int argc, char* argv[])
 			printf("Update failed with error code %lld\n", result);
 			return result;
 		}*/
-	}
-	else if (!strcmp(cmd, "launchd_stash_port")) {
-		mach_port_t *selfInitPorts = NULL;
-		mach_msg_type_number_t selfInitPortsCount = 0;
-		if (mach_ports_lookup(mach_task_self(), &selfInitPorts, &selfInitPortsCount) != 0) {
-			printf("ERROR: Failed port lookup on self\n");
-			return -1;
-		}
-		if (selfInitPortsCount < 3) {
-			printf("ERROR: Unexpected initports count on self\n");
-			return -1;
-		}
-		if (selfInitPorts[2] == MACH_PORT_NULL) {
-			printf("ERROR: Port to stash not set\n");
-			return -1;
-		}
+	} else if (!strcmp(cmd, "internal")) {
+		if (getuid() != 0) return -1;
+		if (argc < 3) return -1;
 
-		printf("Port to stash: %u\n", selfInitPorts[2]);
-
-		mach_port_t launchdTaskPort;
-		if (task_for_pid(mach_task_self(), 1, &launchdTaskPort) != 0) {
-			printf("task_for_pid on launchd failed\n");
-			return -1;
-		}
-		mach_port_t *launchdInitPorts = NULL;
-		mach_msg_type_number_t launchdInitPortsCount = 0;
-		if (mach_ports_lookup(launchdTaskPort, &launchdInitPorts, &launchdInitPortsCount) != 0) {
-			printf("mach_ports_lookup on launchd failed\n");
-			return -1;
-		}
-		if (launchdInitPortsCount < 3) {
-			printf("ERROR: Unexpected initports count on launchd\n");
-			return -1;
-		}
-		launchdInitPorts[2] = selfInitPorts[2]; // Transfer port to launchd
-		if (mach_ports_register(launchdTaskPort, launchdInitPorts, launchdInitPortsCount) != 0) {
-			printf("ERROR: Failed stashing port into launchd\n");
-			return -1;
-		}
-		mach_port_deallocate(mach_task_self(), launchdTaskPort);
+		const char *internalCmd = argv[2];
+		return jbctl_handle_internal(internalCmd);
 	}
 
 	return 0;

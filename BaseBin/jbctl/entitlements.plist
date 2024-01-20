@@ -6,8 +6,8 @@
 	<true/>
 	<key>task_for_pid-allow</key>
 	<true/>
-    <key>com.apple.system-task-ports</key>
-    <true/>
+	<key>com.apple.system-task-ports</key>
+	<true/>
 	<key>com.apple.private.security.no-container</key>
 	<true/>
 	<key>com.apple.security.exception.mach-lookup.global-name</key>
@@ -15,6 +15,8 @@
 		<string>com.opa334.jailbreakd</string>
 	</array>
 	<key>com.apple.private.xpc.launchd.userspace-reboot</key>
+	<true/>
+	<key>com.apple.private.bindfs-allow</key>
 	<true/>
 </dict>
 </plist>
