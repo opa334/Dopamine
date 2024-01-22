@@ -44,6 +44,9 @@
 		8C4ABEB62B52094100B43C9B /* libjailbreak.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */; };
 		8C4ABEB92B520E7B00B43C9B /* libjailbreak.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */; platformFilter = ios; };
 		8C4ABEBE2B52274300B43C9B /* PreferenceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4ABEBD2B52274300B43C9B /* PreferenceManager.m */; };
+		8C512B902B5C9F8F00C6F14A /* libjbdrw.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C512B8A2B5C9DE800C6F14A /* libjbdrw.deb */; };
+		8C512B912B5C9F9100C6F14A /* sileo.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C512B8B2B5C9DE800C6F14A /* sileo.deb */; };
+		8C512B922B5C9F9400C6F14A /* zebra.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C512B8C2B5C9DE800C6F14A /* zebra.deb */; };
 		8C71981A2ABF0E82003C6658 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7198192ABF0E82003C6658 /* AppDelegate.m */; };
 		8C71981D2ABF0E82003C6658 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71981C2ABF0E82003C6658 /* SceneDelegate.m */; };
 		8C7198202ABF0E82003C6658 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71981F2ABF0E82003C6658 /* RootViewController.m */; };
@@ -164,6 +167,9 @@
 		8C46D7262B58A029002899DB /* tar.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = tar.dylib; path = Dopamine/Dependencies/tar.dylib; sourceTree = "<group>"; };
 		8C4ABEBC2B52274300B43C9B /* PreferenceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PreferenceManager.h; sourceTree = "<group>"; };
 		8C4ABEBD2B52274300B43C9B /* PreferenceManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PreferenceManager.m; sourceTree = "<group>"; };
+		8C512B8A2B5C9DE800C6F14A /* libjbdrw.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjbdrw.deb; sourceTree = "<group>"; };
+		8C512B8B2B5C9DE800C6F14A /* sileo.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = sileo.deb; sourceTree = "<group>"; };
+		8C512B8C2B5C9DE800C6F14A /* zebra.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = zebra.deb; sourceTree = "<group>"; };
 		8C7198152ABF0E82003C6658 /* Dopamine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dopamine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C7198182ABF0E82003C6658 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		8C7198192ABF0E82003C6658 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -458,6 +464,9 @@
 			children = (
 				8CB94F032B59E17A0098BAFD /* BaseBin.tar */,
 				8CB94F022B59E17A0098BAFD /* BaseBin.tc */,
+				8C512B8A2B5C9DE800C6F14A /* libjbdrw.deb */,
+				8C512B8B2B5C9DE800C6F14A /* sileo.deb */,
+				8C512B8C2B5C9DE800C6F14A /* zebra.deb */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -637,6 +646,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C512B922B5C9F9400C6F14A /* zebra.deb in Resources */,
+				8C512B912B5C9F9100C6F14A /* sileo.deb in Resources */,
+				8C512B902B5C9F8F00C6F14A /* libjbdrw.deb in Resources */,
 				8CB94F052B59E17A0098BAFD /* BaseBin.tar in Resources */,
 				8CB94F042B59E17A0098BAFD /* BaseBin.tc in Resources */,
 				8C7198282ABF0E84003C6658 /* LaunchScreen.storyboard in Resources */,
@@ -970,6 +982,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dopamine/Dependencies",
+					"$(PROJECT_DIR)/Dopamine/Resources",
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.opa334.Dopamine;
@@ -1001,6 +1014,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dopamine/Dependencies",
+					"$(PROJECT_DIR)/Dopamine/Resources",
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.opa334.Dopamine;

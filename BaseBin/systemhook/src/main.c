@@ -8,6 +8,7 @@
 #include <util.h>
 #include "sandbox.h"
 #include <libjailbreak/jbclient_xpc.h>
+#include <os/log.h>
 
 extern char **environ;
 bool gTweaksEnabled = false;
@@ -26,7 +27,7 @@ bool dlopen_preflight(const char* path);
 
 void unsandbox(void) {
 	if (JB_SandboxExtensions) {
-		char extensionsCopy[strlen(JB_SandboxExtensions)];
+		char extensionsCopy[strlen(JB_SandboxExtensions + 1)];
 		strcpy(extensionsCopy, JB_SandboxExtensions);
 		char *extensionToken = strtok(extensionsCopy, "|");
 		while (extensionToken != NULL) {
@@ -260,7 +261,7 @@ int execvp_hook(const char *name, char * const *argv)
 void* dlopen_hook(const char* path, int mode)
 {
 	if (path) {
-		jbclient_trust_binary(path);
+		jbclient_trust_library(path);
 	}
 	
 	void* callerAddress = __builtin_return_address(0);
@@ -270,7 +271,7 @@ void* dlopen_hook(const char* path, int mode)
 void* dlopen_from_hook(const char* path, int mode, void* addressInCaller)
 {
 	if (path) {
-		jbclient_trust_binary(path);
+		jbclient_trust_library(path);
 	}
 	return dlopen_from(path, mode, addressInCaller);
 }
@@ -278,7 +279,7 @@ void* dlopen_from_hook(const char* path, int mode, void* addressInCaller)
 void* dlopen_audited_hook(const char* path, int mode)
 {
 	if (path) {
-		jbclient_trust_binary(path);
+		jbclient_trust_library(path);
 	}
 	return dlopen_audited(path, mode);
 }
@@ -286,7 +287,7 @@ void* dlopen_audited_hook(const char* path, int mode)
 bool dlopen_preflight_hook(const char* path)
 {
 	if (path) {
-		jbclient_trust_binary(path);
+		jbclient_trust_library(path);
 	}
 	return dlopen_preflight(path);
 }
@@ -409,7 +410,6 @@ void applyKbdFix(void)
 
 __attribute__((constructor)) static void initializer(void)
 {
-	jbclient_xpc_init_launchd();
 	jbclient_process_checkin(&JB_RootPath, &JB_BootUUID, &JB_SandboxExtensions);
 
 	if (!strcmp(getenv("DYLD_INSERT_LIBRARIES"), HOOK_DYLIB_PATH)) {
@@ -463,7 +463,7 @@ DYLD_INTERPOSE(sandbox_init_hook, sandbox_init)
 DYLD_INTERPOSE(sandbox_init_with_parameters_hook, sandbox_init_with_parameters)
 DYLD_INTERPOSE(sandbox_init_with_extensions_hook, sandbox_init_with_extensions)
 DYLD_INTERPOSE(ptrace_hook, ptrace)
-DYLD_INTERPOSE(fork_hook, fork)
-DYLD_INTERPOSE(vfork_hook, vfork)
-DYLD_INTERPOSE(forkpty_hook, forkpty)
-DYLD_INTERPOSE(daemon_hook, daemon)
+//DYLD_INTERPOSE(fork_hook, fork)
+//DYLD_INTERPOSE(vfork_hook, vfork)
+//DYLD_INTERPOSE(forkpty_hook, forkpty)
+//DYLD_INTERPOSE(daemon_hook, daemon)

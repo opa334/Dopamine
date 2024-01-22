@@ -1,6 +1,10 @@
 #include "jbclient_xpc.h"
 #include "jbserver.h"
 #include <dispatch/dispatch.h>
+#include <sys/stat.h>
+#include <sys/mount.h>
+#include <pthread.h>
+#include <mach-o/dyld.h>
 
 #define OS_ALLOC_ONCE_KEY_MAX    100
 
@@ -22,47 +26,51 @@ struct xpc_global_data {
 extern struct _os_alloc_once_s _os_alloc_once_table[];
 extern void* _os_alloc_once(struct _os_alloc_once_s *slot, size_t sz, os_function_t init);
 
-xpc_object_t gJBServerPipe;
+mach_port_t gJBServerCustomPort = MACH_PORT_NULL;
 
-int jbclient_xpc_init_from_pipe(xpc_object_t serverPipe)
+void jbclient_xpc_set_custom_port(mach_port_t serverPort)
 {
-	gJBServerPipe = serverPipe;
-	return 0;
+	if (gJBServerCustomPort != MACH_PORT_NULL) {
+		mach_port_deallocate(mach_task_self(), gJBServerCustomPort);
+	}
+	gJBServerCustomPort = serverPort;
 }
 
-int jbclient_xpc_init_from_port(mach_port_t serverPort)
-{
-	xpc_object_t pipe = xpc_pipe_create_from_port(serverPort, 0);
-	if (!pipe) return -1;
-	return jbclient_xpc_init_from_pipe(pipe);
-}
-
-int jbclient_xpc_init_launchd(void)
-{
-	struct xpc_global_data* globalData = NULL;
-	if (_os_alloc_once_table[1].once == -1) {
-		globalData = _os_alloc_once_table[1].ptr;
-	}
-	else {
-		globalData = _os_alloc_once(&_os_alloc_once_table[1], 472, NULL);
-		if (!globalData) _os_alloc_once_table[1].once = -1;
-	}
-	if (!globalData) return -1;
-	if (!globalData->xpc_bootstrap_pipe) {
-		mach_port_t *initPorts;
-		mach_msg_type_number_t initPortsCount = 0;
-		if (mach_ports_lookup(mach_task_self(), &initPorts, &initPortsCount) == 0) {
-			globalData->task_bootstrap_port = initPorts[0];
-			globalData->xpc_bootstrap_pipe = xpc_pipe_create_from_port(globalData->task_bootstrap_port, 0);
-		}
-	}
-	return jbclient_xpc_init_from_pipe(globalData->xpc_bootstrap_pipe);
-}
-
-xpc_object_t jbserver_xpc_send_raw(xpc_object_t xdict)
+xpc_object_t jbserver_xpc_send_dict(xpc_object_t xdict)
 {
 	xpc_object_t xreply = NULL;
-	int err = xpc_pipe_routine_with_flags(gJBServerPipe, xdict, &xreply, 0);
+
+	xpc_object_t xpipe = NULL;
+	if (gJBServerCustomPort != MACH_PORT_NULL) {
+		// Communicate with custom port if set
+		xpipe = xpc_pipe_create_from_port(gJBServerCustomPort, 0);
+	}
+	else {
+		// Else, communicate with launchd
+		struct xpc_global_data* globalData = NULL;
+		if (_os_alloc_once_table[1].once == -1) {
+			globalData = _os_alloc_once_table[1].ptr;
+		}
+		else {
+			globalData = _os_alloc_once(&_os_alloc_once_table[1], 472, NULL);
+			if (!globalData) _os_alloc_once_table[1].once = -1;
+		}
+		if (!globalData) return NULL;
+		if (!globalData->xpc_bootstrap_pipe) {
+			mach_port_t *initPorts;
+			mach_msg_type_number_t initPortsCount = 0;
+			if (mach_ports_lookup(mach_task_self(), &initPorts, &initPortsCount) == 0) {
+				globalData->task_bootstrap_port = initPorts[0];
+				globalData->xpc_bootstrap_pipe = xpc_pipe_create_from_port(globalData->task_bootstrap_port, 0);
+			}
+		}
+		if (!globalData->xpc_bootstrap_pipe) return NULL;
+		xpipe = xpc_retain(globalData->xpc_bootstrap_pipe);
+	}
+
+	if (!xpipe) return NULL;
+	int err = xpc_pipe_routine_with_flags(xpipe, xdict, &xreply, 0);
+	xpc_release(xpipe);
 	if (err != 0) {
 		return NULL;
 	}
@@ -77,12 +85,10 @@ xpc_object_t jbserver_xpc_send(uint64_t domain, uint64_t action, xpc_object_t xa
 		ownsXargs = true;
 	}
 
-	if (!gJBServerPipe) return NULL;
-
 	xpc_dictionary_set_uint64(xargs, "jb-domain", domain);
 	xpc_dictionary_set_uint64(xargs, "action", action);
 
-	xpc_object_t xreply = jbserver_xpc_send_raw(xargs);
+	xpc_object_t xreply = jbserver_xpc_send_dict(xargs);
 	if (ownsXargs) {
 		xpc_release(xargs);
 	}
@@ -130,11 +136,54 @@ char *jbclient_get_boot_uuid(void)
 	return (char *)&jbBootUUID[0];
 }
 
+bool can_skip_trusting_file(const char *filePath)
+{
+	// If this file is in shared cache, we can skip trusting it
+	if (_dyld_shared_cache_contains_path(filePath)) {
+		return true;
+	}
+
+	// If the file doesn't exist, there is nothing to trust :D
+	if (access(filePath, F_OK) != 0) {
+		return true;
+	}
+
+	// if the file is on rootfs mount point, it doesn't need to be trusted as it should be in static trust cache
+	// same goes for our /usr/lib bind mount (which is guaranteed to be in dynamic trust cache)
+	struct statfs fs;
+	int sfsret = statfs(filePath, &fs);
+	if (sfsret == 0) {
+		if (!strcmp(fs.f_mntonname, "/") || !strcmp(fs.f_mntonname, "/usr/lib")) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 int jbclient_trust_binary(const char *binaryPath)
 {
+	if (can_skip_trusting_file(binaryPath)) return -1;
+
 	xpc_object_t xargs = xpc_dictionary_create_empty();
 	xpc_dictionary_set_string(xargs, "binary-path", binaryPath);
 	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_SYSTEMWIDE, JBS_SYSTEMWIDE_TRUST_BINARY, xargs);
+	xpc_release(xargs);
+	if (xreply) {
+		int64_t result = xpc_dictionary_get_int64(xreply, "result");
+		xpc_release(xreply);
+		return result;
+	}
+	return -1;
+}
+
+int jbclient_trust_library(const char *libraryPath)
+{
+	if (can_skip_trusting_file(libraryPath)) return -1;
+
+	xpc_object_t xargs = xpc_dictionary_create_empty();
+	xpc_dictionary_set_string(xargs, "library-path", libraryPath);
+	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_SYSTEMWIDE, JBS_SYSTEMWIDE_TRUST_LIBRARY, xargs);
 	xpc_release(xargs);
 	if (xreply) {
 		int64_t result = xpc_dictionary_get_int64(xreply, "result");
@@ -149,9 +198,12 @@ int jbclient_process_checkin(char **jbRootPathOut, char **jbBootUUIDOut, char **
 	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_SYSTEMWIDE, JBS_SYSTEMWIDE_PROCESS_CHECKIN, NULL);
 	if (xreply) {
 		int64_t result = xpc_dictionary_get_int64(xreply, "result");
-		if (jbRootPathOut) *jbRootPathOut = strdup(xpc_dictionary_get_string(xreply, "root-path") ?: "");
-		if (jbBootUUIDOut) *jbBootUUIDOut = strdup(xpc_dictionary_get_string(xreply, "boot-uuid") ?: "");
-		if (sandboxExtensionsOut) *sandboxExtensionsOut = strdup(xpc_dictionary_get_string(xreply, "sandbox-extensions") ?: "");
+		const char *jbRootPath = xpc_dictionary_get_string(xreply, "root-path");
+		const char *jbBootUUID = xpc_dictionary_get_string(xreply, "boot-uuid");
+		const char *sandboxExtensions = xpc_dictionary_get_string(xreply, "sandbox-extensions");
+		if (jbRootPathOut) *jbRootPathOut = jbRootPath ? strdup(jbRootPath) : NULL;
+		if (jbBootUUIDOut) *jbBootUUIDOut = jbBootUUID ? strdup(jbBootUUID) : NULL;
+		if (sandboxExtensionsOut) *sandboxExtensionsOut = sandboxExtensions ? strdup(sandboxExtensions) : NULL;
 		xpc_release(xreply);
 		return result;
 	}

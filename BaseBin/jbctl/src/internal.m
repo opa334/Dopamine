@@ -70,6 +70,9 @@ int jbctl_handle_internal(const char *command)
 		apply_dyld_patch(dyldPatchPath.fileSystemRepresentation);
 		resign_file(dyldPatchPath, YES);
 
+		// Copy systemhook to fakelib
+		carbonCopy([basebinPath stringByAppendingPathComponent:@"systemhook.dylib"], [fakelibPath stringByAppendingPathComponent:@"systemhook.dylib"]);
+
 		// Replace dyld in fakelib with patched dyld
 		NSString *fakelibDyldPath = [fakelibPath stringByAppendingPathComponent:@"dyld"];
 		[[NSFileManager defaultManager] removeItemAtPath:fakelibDyldPath error:nil];

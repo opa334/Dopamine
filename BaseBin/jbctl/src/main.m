@@ -22,8 +22,6 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	jbclient_xpc_init_launchd();
-
 	char *cmd = argv[1];
 	if (!strcmp(cmd, "proc_set_debugged")) {
 		if (argc != 3) {

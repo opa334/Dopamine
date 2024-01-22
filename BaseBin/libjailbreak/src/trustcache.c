@@ -61,7 +61,6 @@ int trustcache_list_insert(uint64_t tcToInsert)
 		kwrite64(previousStartTC + koffsetof(trustcache, prevptr), tcToInsert);
 	}
 	_trustcache_list_set_start(tcToInsert);
-	printf("Replaced TC start: %llx -> %llx (worked??? %llx)\n", previousStartTC, tcToInsert, _trustcache_list_get_start());
 	return 0;
 }
 
@@ -147,6 +146,7 @@ uint64_t _jb_trustcache_grow(void)
 	if (kalloc(&jbTcKern, 0x4000) != 0) return 0;
 
 	jb_trustcache *jbTc = alloca(sizeof(jb_trustcache));
+	memset(jbTc, 0, sizeof(jb_trustcache));
 	_trustcache_file_init(&jbTc->file);
 	jbTc->magic = JB_MAGIC;
 	*(uint64_t *)(jbTc->trustcache + koffsetof(trustcache, fileptr)) = (jbTcKern + offsetof(jb_trustcache, file));

@@ -26,6 +26,7 @@
 #import <libjailbreak/kalloc_pt.h>
 #import <libjailbreak/jbserver_boomerang.h>
 #import <libjailbreak/signatures.h>
+#import <libjailbreak/jbclient_xpc.h>
 #import "spawn.h"
 int posix_spawnattr_set_registered_ports_np(posix_spawnattr_t * __restrict attr, mach_port_t portarray[], uint32_t count);
 
@@ -308,7 +309,15 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (r != 0) {
         return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedInitFakeLib userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Mounting fakelib failed with error: %d", r]}];
     }
+    
+    // Now that fakelib is up, we want to make systemhook inject into any binary we spawn
+    setenv("DYLD_INSERT_LIBRARIES", "/usr/lib/systemhook.dylib", 1);
     return nil;
+}
+
+- (NSError *)finalizeBootstrapIfNeeded
+{
+    return [[EnvironmentManager sharedManager] finalizeBootstrap];
 }
 
 - (NSError *)run
@@ -322,28 +331,19 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (err) return err;
     err = [self cleanUpExploits];
     if (err) return err;
-
-    //for (int i = 0; i < 200; i++) {
-    //    printf("We out here! Test read: %x\n", kread32(kconstant(base) + i*0x4000));
-    //}
     
     err = [self elevatePrivileges];
     if (err) return err;
     printf("Got UID %d\n", getuid());
-    
-    //for (int i = 0; i < 200; i++) {
-    //    uint64_t alloc = pmap_alloc_page_table(0, 0);
-    //    printf("%d: allocated %llx\n", i, alloc);
-    //}
 
     err = [[EnvironmentManager sharedManager] prepareBootstrap];
     if (err) return err;
+    setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/jb/sbin:/var/jb/bin:/var/jb/usr/sbin:/var/jb/usr/bin", 1);
+    setenv("TERM", "xterm-256color", 1);
     printf("Bootstrap done\n");
     
     err = [self loadBasebinTrustcache];
     if (err) return err;
-    //int r = exec_cmd("/var/jb/basebin/jbctl", "stash", NULL);
-    //printf("jbctl returned %d\n", r);
     
     err = [self injectLaunchdHook];
     if (err) return err;
@@ -351,6 +351,19 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     err = [self createFakeLib];
     if (err) return err;
     
+    // Unsandbox iconservicesagent so that app icons can work
+    exec_cmd_trusted(JBRootPath("/usr/bin/killall"), "-9", "iconservicesagent", NULL);
+    
+    err = [self finalizeBootstrapIfNeeded];
+    if (err) return err;
+    
+    printf("Starting launch daemons...\n");
+    exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "bootstrap", "system", JBRootPath("/Library/LaunchDaemons"), NULL);
+    
+    printf("Reloading icon cache...\n");
+    exec_cmd_trusted(JBRootPath("/usr/bin/uicache"), "-a", NULL);
+    
+    printf("Done!\n");
     return nil;
 }
 

@@ -1,6 +1,7 @@
 #include <choma/FAT.h>
 #include <choma/MachO.h>
 #include <choma/Host.h>
+#include <mach-o/dyld.h>
 #include "trustcache.h"
 
 #import <Foundation/Foundation.h>
@@ -84,14 +85,14 @@ NSString *resolveLoadPath(NSString *dylibPath, NSString *loaderPath, NSString *e
 void macho_collect_untrusted_cdhashes(const char *path, const char *callerPath, cdhash_t **cdhashesOut, uint32_t *cdhashCountOut)
 {
 	if (!path) return;
+	if (access(path, R_OK) != 0) return;
 
 	__block cdhash_t *cdhashes = NULL;
 	__block uint32_t cdhashCount = 0;
 
 	bool (^cdhashesContains)(cdhash_t) = ^bool(cdhash_t cdhash) {
-		if (is_cdhash_trustcached(cdhash)) return true;
 		for (int i = 0; i < cdhashCount; i++) {
-			if (!memcmp(cdhashes[0], cdhash, sizeof(cdhash_t))) {
+			if (!memcmp(cdhashes[i], cdhash, sizeof(cdhash_t))) {
 				return true;
 			}
 		}
@@ -114,24 +115,28 @@ void macho_collect_untrusted_cdhashes(const char *path, const char *callerPath, 
 	if (macho_get_filetype(mainMachO) == MH_EXECUTE) {
 		callerPath = path;
 	}
-	
+
+	__weak __block void (^machoAddHandler_recurse)(MachO *, const char *);
 	void (^machoAddHandler)(MachO *, const char *) = ^(MachO *macho, const char *machoPath) {
 		// Calculate cdhash and add it to our array
-		bool cdhashWasKnown = false;
-		bool wasAdhocSigned = false;
+		bool cdhashWasKnown = true;
+		bool isAdhocSigned = false;
 		CS_SuperBlob *superblob = macho_read_code_signature(macho);
 		if (superblob) {
 			CS_DecodedSuperBlob *decodedSuperblob = csd_superblob_decode(superblob);
 			if (decodedSuperblob) {
 				if (csd_superblob_is_adhoc_signed(decodedSuperblob)) {
-					wasAdhocSigned = true;
+					isAdhocSigned = true;
 					cdhash_t cdhash;
 					if (csd_superblob_calculate_best_cdhash(decodedSuperblob, cdhash) == 0) {
 						if (!cdhashesContains(cdhash)) {
-							cdhashesAdd(cdhash);
-						}
-						else {
-							cdhashWasKnown = true;
+							if (!is_cdhash_trustcached(cdhash)) {
+								// If something is trustcached we do not want to add it to your array
+								// We do want to parse it's dependencies however, as one may have been updated since we added the binary to trustcache
+								// Potential optimization: If trustcached, save in some array so we don't recheck
+								cdhashesAdd(cdhash);
+							}
+							cdhashWasKnown = false;
 						}
 					}
 				}
@@ -140,8 +145,8 @@ void macho_collect_untrusted_cdhashes(const char *path, const char *callerPath, 
 			free(superblob);
 		}
 
-		if (!cdhashWasKnown) return; // If we already knew the cdhash, we can skip parsing dependencies
-		if (!wasAdhocSigned) return; // If it was not ad hoc signed, we can safely skip it aswell
+		if (cdhashWasKnown) return; // If we already knew the cdhash, we can skip parsing dependencies
+		if (!isAdhocSigned) return; // If it was not ad hoc signed, we can safely skip it aswell
 
 		// Collect rpaths...
 		NSMutableArray *rpaths = [NSMutableArray new];
@@ -152,6 +157,7 @@ void macho_collect_untrusted_cdhashes(const char *path, const char *callerPath, 
 
 		// Recurse this block on all dependencies
 		macho_enumerate_dependencies(macho, ^(const char *dylibPathC, uint32_t cmd, struct dylib* dylib, bool *stop) {
+			if (_dyld_shared_cache_contains_path(dylibPathC)) return;
 			NSString *dylibPath = [NSString stringWithUTF8String:dylibPathC];
 			NSString *loaderPath = [NSString stringWithUTF8String:machoPath];
 			NSString *executablePath = callerPath ? [NSString stringWithUTF8String:callerPath] : loaderPath;
@@ -161,14 +167,15 @@ void macho_collect_untrusted_cdhashes(const char *path, const char *callerPath, 
 				if (dependencyFAT) {
 					MachO *dependencyMacho = ljb_fat_find_preferred_slice(dependencyFAT);
 					if (dependencyMacho) {
-						machoAddHandler(dependencyMacho, dylibPath.fileSystemRepresentation);
+						machoAddHandler_recurse(dependencyMacho, dylibPath.fileSystemRepresentation);
 					}
 					fat_free(dependencyFAT);
 				}
 			}
 		});
 	};
-	
+	machoAddHandler_recurse = machoAddHandler;
+
 	machoAddHandler(mainMachO, path);
 	fat_free(mainFAT);
 

@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 	mach_port_t *registeredPorts;
 	mach_msg_type_number_t registeredPortsCount = 0;
 	if (mach_ports_lookup(mach_task_self(), &registeredPorts, &registeredPortsCount) != 0 || registeredPortsCount < 3) return -1;
-	jbclient_xpc_init_from_port(registeredPorts[2]);
+	jbclient_xpc_set_custom_port(registeredPorts[2]);
 
 	// Stash our server port inside launchd's registeredPorts[2]
 	task_t launchdTaskPort = MACH_PORT_NULL;

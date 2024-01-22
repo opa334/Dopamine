@@ -10,6 +10,7 @@
 #include <dlfcn.h>
 #include "envbuf.h"
 #include <libjailbreak/jbclient_xpc.h>
+#include <os/log.h>
 
 #define POSIX_SPAWN_PROC_TYPE_DRIVER 0x700
 int posix_spawnattr_getprocesstype_np(const posix_spawnattr_t * __restrict, int * __restrict) __API_AVAILABLE(macos(10.8), ios(6.0));
@@ -29,6 +30,7 @@ char *JB_RootPath = NULL;
 
 #define POSIX_SPAWNATTR_OFF_MEMLIMIT_ACTIVE 0x48
 #define POSIX_SPAWNATTR_OFF_MEMLIMIT_INACTIVE 0x4C
+#define POSIX_SPAWNATTR_OFF_LAUNCH_TYPE 0xA8
 
 bool stringStartsWith(const char *str, const char* prefix)
 {

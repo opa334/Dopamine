@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isPPLBypassRequired;
 
 - (NSError *)prepareBootstrap;
-- (void)finalizeBootstrap;
+- (NSError *)finalizeBootstrap;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -157,9 +157,13 @@
     return errOut;
 }
 
-- (void)finalizeBootstrap
+- (NSError *)finalizeBootstrap
 {
-    
+    if (_bootstrapper.needsFinalize) {
+        printf("Bootstrap needs finalize... Finalizing!\n");
+        return [_bootstrapper finalizeBootstrap];
+    }
+    return nil;
 }
 
 @end

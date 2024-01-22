@@ -9,13 +9,18 @@
 uint64_t proc_find(pid_t pidToFind)
 {
 	__block uint64_t foundProc = 0;
-	proc_iterate(^(uint64_t proc, bool *stop) {
-		pid_t pid = kread32(proc + koffsetof(proc, pid));
-		if (pid == pidToFind) {
-			foundProc = proc;
-			*stop = true;
-		}
-	});
+	// This sucks a bit due to us not being able to take locks
+	// If we don't find anything, just repeat 5 times
+	// Attempts to avoids conditions where we got thrown off by modifications
+	for (int i = 0; i < 5 && !foundProc; i++) {
+		proc_iterate(^(uint64_t proc, bool *stop) {
+			pid_t pid = kread32(proc + koffsetof(proc, pid));
+			if (pid == pidToFind) {
+				foundProc = proc;
+				*stop = true;
+			}
+		});
+	}
 	return foundProc;
 }
 

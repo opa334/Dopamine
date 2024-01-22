@@ -8,6 +8,7 @@
 #import "Bootstrapper.h"
 #import "EnvironmentManager.h"
 #import <libjailbreak/info.h>
+#import <libjailbreak/jbclient_xpc.h>
 #import "zstd.h"
 #import <sys/mount.h>
 #import <dlfcn.h>
@@ -33,6 +34,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     BootstrapErrorCodeFailedDecompressing       = -3,
     BootstrapErrorCodeFailedExtracting          = -4,
     BootstrapErrorCodeFailedRemount             = -5,
+    BootstrapErrorCodeFailedFinalising          = -6,
 };
 
 #define BUFFER_SIZE 8192
@@ -439,13 +441,13 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         NSString *usrBinPath = [jailbreakRootPath stringByAppendingPathComponent:@"usr/bin"];
         
         if (![self fileOrSymlinkExistsAtPath:[usrBinPath stringByAppendingPathComponent:@"opainject"]]) {
-            [self createSymlinkAtPath:[basebinPath stringByAppendingPathComponent:@"opainject"] toPath:[usrBinPath stringByAppendingPathComponent:@"opainject"] createIntermediateDirectories:YES];
+            [self createSymlinkAtPath:[usrBinPath stringByAppendingPathComponent:@"opainject"] toPath:[basebinPath stringByAppendingPathComponent:@"opainject"] createIntermediateDirectories:YES];
         }
         if (![self fileOrSymlinkExistsAtPath:[usrBinPath stringByAppendingPathComponent:@"jbctl"]]) {
-            [self createSymlinkAtPath:[basebinPath stringByAppendingPathComponent:@"jbctl"] toPath:[usrBinPath stringByAppendingPathComponent:@"jbctl"] createIntermediateDirectories:YES];
+            [self createSymlinkAtPath:[usrBinPath stringByAppendingPathComponent:@"jbctl"] toPath:[basebinPath stringByAppendingPathComponent:@"jbctl"] createIntermediateDirectories:YES];
         }
         if (![self fileOrSymlinkExistsAtPath:[usrBinPath stringByAppendingPathComponent:@"libjailbreak.dylib"]]) {
-            [self createSymlinkAtPath:[basebinPath stringByAppendingPathComponent:@"libjailbreak.dylib"] toPath:[usrBinPath stringByAppendingPathComponent:@"libjailbreak.dylib"] createIntermediateDirectories:YES];
+            [self createSymlinkAtPath:[usrBinPath stringByAppendingPathComponent:@"libjailbreak.dylib"] toPath:[basebinPath stringByAppendingPathComponent:@"libjailbreak.dylib"] createIntermediateDirectories:YES];
         }
         
         NSString *mobilePreferencesPath = [jailbreakRootPath stringByAppendingPathComponent:@"var/mobile/Library/Preferences"];
@@ -464,9 +466,11 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     
     BOOL needsBootstrap = ![[NSFileManager defaultManager] fileExistsAtPath:installedPath];
     if (needsBootstrap) {
-        // First, wipe existing content
+        // First, wipe existing content (keep basebin as we already extracted that)
         for (NSURL *subItemURL in [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[NSURL fileURLWithPath:jailbreakRootPath] includingPropertiesForKeys:nil options:0 error:nil]) {
-            [[NSFileManager defaultManager] removeItemAtURL:subItemURL error:nil];
+            if (![subItemURL.lastPathComponent isEqualToString:@"basebin"]) {
+                [[NSFileManager defaultManager] removeItemAtURL:subItemURL error:nil];
+            }
         }
         
         void (^bootstrapDownloadCompletion)(NSString *, NSError *) = ^(NSString *path, NSError *error) {
@@ -497,7 +501,32 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (BOOL)needsFinalize
 {
-    return [[NSFileManager defaultManager] fileExistsAtPath:[[[EnvironmentManager sharedManager] jailbreakRootPath] stringByAppendingPathComponent:@"prep_bootstrap.sh"]];
+    return [[NSFileManager defaultManager] fileExistsAtPath:NSJBRootPath(@"/prep_bootstrap.sh")];
+}
+
+- (NSError *)finalizeBootstrap
+{
+    int r = exec_cmd_trusted(JBRootPath("/bin/sh"), JBRootPath("/prep_bootstrap.sh"), NULL);
+    if (r != 0) {
+        return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"prep_bootstrap.sh returned %d\n", r]}];
+    }
+    
+    NSString *sileoPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"sileo.deb"];
+    NSString *zebraPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"zebra.deb"];
+    NSString *krwPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"libjbdrw.deb"];
+    
+    NSArray *toInstall = @[
+        sileoPath,
+        zebraPath,
+        krwPath,
+    ];
+    
+    for (NSString *path in toInstall) {
+        r = exec_cmd_trusted(JBRootPath("/usr/bin/dpkg"), "-i", path.fileSystemRepresentation, NULL);
+        if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install %@: %d\n", path.lastPathComponent, r]}];
+    }
+
+    return nil;
 }
 
 @end

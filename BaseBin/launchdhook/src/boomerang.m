@@ -63,7 +63,7 @@ int boomerang_recoverPrimitives(void)
 	if (mach_ports_lookup(mach_task_self(), &registeredPorts, &registeredPortsCount) != 0 || registeredPortsCount < 3) return -1;
 	mach_port_t boomerangPort = registeredPorts[2];
 	if (boomerangPort == MACH_PORT_NULL) return -2;
-	if (jbclient_xpc_init_from_port(boomerangPort) != 0) return -3;
+	jbclient_xpc_set_custom_port(boomerangPort);
 	registeredPorts[2] = MACH_PORT_NULL;
 	mach_ports_register(mach_task_self(), registeredPorts, registeredPortsCount);
 
