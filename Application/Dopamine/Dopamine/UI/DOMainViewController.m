@@ -34,9 +34,8 @@
     [self.view addSubview:stackView];
 
 
-    int statusBarHeight = [[UIApplication sharedApplication] keyWindow].safeAreaInsets.top - 8;
+    int statusBarHeight = fmax(15, [[UIApplication sharedApplication] keyWindow].safeAreaInsets.top - 25);
     BOOL isHomeButtonDevice = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && [[UIApplication sharedApplication] keyWindow].safeAreaInsets.bottom == 0;
-    
 
     [NSLayoutConstraint activateConstraints:@[
         [stackView.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor constant:statusBarHeight],//-35
@@ -69,7 +68,7 @@
     [stackView addArrangedSubview:headerView];
 
     [NSLayoutConstraint activateConstraints:@[
-        [headerView.leadingAnchor constraintEqualToAnchor:stackView.leadingAnchor constant:10],
+        [headerView.leadingAnchor constraintEqualToAnchor:stackView.leadingAnchor constant:5],
         [headerView.trailingAnchor constraintEqualToAnchor:stackView.trailingAnchor]
     ]];
     
