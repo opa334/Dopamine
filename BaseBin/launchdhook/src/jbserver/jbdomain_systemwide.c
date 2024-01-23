@@ -28,19 +28,18 @@ static int systemwide_get_boot_uuid(char **bootUUIDOut)
 	return 0;
 }
 
-static int trust_file(const char *filePath, const char *callerPath)
+static int trust_file(const char *filePath, const char *dlopenCallerPath)
 {
 	// Shared logic between client and server, implemented in client
 	// This should essentially mean these files never reach us in the first place
 	// But you know, never trust the client :D
-	extern bool can_skip_trusting_file(const char *filePath);
+	extern bool can_skip_trusting_file(const char *filePath, bool isLibrary);
 
-	if (!filePath) return -1;
-	if (can_skip_trusting_file(filePath)) return -1;
+	if (can_skip_trusting_file(filePath, (bool)dlopenCallerPath)) return -1;
 
 	cdhash_t *cdhashes = NULL;
 	uint32_t cdhashesCount = 0;
-	macho_collect_untrusted_cdhashes(filePath, callerPath, &cdhashes, &cdhashesCount);
+	macho_collect_untrusted_cdhashes(filePath, dlopenCallerPath, &cdhashes, &cdhashesCount);
 	if (cdhashesCount > 0) {
 		jb_trustcache_add_cdhashes(cdhashes, cdhashesCount);
 	}

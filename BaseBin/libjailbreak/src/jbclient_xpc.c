@@ -136,20 +136,21 @@ char *jbclient_get_boot_uuid(void)
 	return (char *)&bootUUID[0];
 }
 
-bool can_skip_trusting_file(const char *filePath)
+bool can_skip_trusting_file(const char *filePath, bool isLibrary)
 {
+	if (!filePath) return true;
+
+	// If it's a library that starts with an @, we don't know the actual location so we need to trust it
+	if (isLibrary && filePath[0] == '@') return false;
+
 	// If this file is in shared cache, we can skip trusting it
-	if (_dyld_shared_cache_contains_path(filePath)) {
-		return true;
-	}
+	if (_dyld_shared_cache_contains_path(filePath)) return true;
 
 	// If the file doesn't exist, there is nothing to trust :D
-	if (access(filePath, F_OK) != 0) {
-		return true;
-	}
+	if (access(filePath, F_OK) != 0) return true;
 
-	// if the file is on rootfs mount point, it doesn't need to be trusted as it should be in static trust cache
-	// same goes for our /usr/lib bind mount (which is guaranteed to be in dynamic trust cache)
+	// If the file is on rootfs mount point, it doesn't need to be trusted as it should be in static trust cache
+	// Same goes for our /usr/lib bind mount (which is guaranteed to be in dynamic trust cache)
 	struct statfs fs;
 	int sfsret = statfs(filePath, &fs);
 	if (sfsret == 0) {
@@ -163,7 +164,7 @@ bool can_skip_trusting_file(const char *filePath)
 
 int jbclient_trust_binary(const char *binaryPath)
 {
-	if (can_skip_trusting_file(binaryPath)) return -1;
+	if (can_skip_trusting_file(binaryPath, false)) return -1;
 
 	xpc_object_t xargs = xpc_dictionary_create_empty();
 	xpc_dictionary_set_string(xargs, "binary-path", binaryPath);
@@ -179,7 +180,7 @@ int jbclient_trust_binary(const char *binaryPath)
 
 int jbclient_trust_library(const char *libraryPath)
 {
-	if (can_skip_trusting_file(libraryPath)) return -1;
+	if (can_skip_trusting_file(libraryPath, true)) return -1;
 
 	xpc_object_t xargs = xpc_dictionary_create_empty();
 	xpc_dictionary_set_string(xargs, "library-path", libraryPath);
