@@ -223,6 +223,14 @@ kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 		if (!strcmp(processBlacklist[i], path)) return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
 	}
 
+	if (__builtin_available(iOS 16.0, *)) {
+		// The only process that can't XPC to launchd on iOS 16+ (reaason: lanuch constraint bullshit)
+		// TODO: Properly fix and reenable injection
+		if (strcmp(path, "/System/Library/Frameworks/WebKit.framework/XPCServices/com.apple.WebKit.WebContent.xpc/com.apple.WebKit.WebContent") == 0) {
+			return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
+		} 
+	}
+
 	return 0;
 }
 
