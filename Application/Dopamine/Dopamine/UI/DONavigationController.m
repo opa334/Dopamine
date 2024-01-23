@@ -35,11 +35,12 @@
 {
     self.view.backgroundColor = [UIColor blackColor];
     self.backgroundImageView = [[UIImageView alloc] init];
-    self.backgroundImageView.image = [[UIImage imageNamed:@"Background"] imageWithBlur:18.0];
+    self.backgroundImageView.image = [[[UIImage imageNamed:@"Background"] imageWithBlur:18.0] imageWithHue: M_PI * 2]; // 0 - 2PI
     self.backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.backgroundImageView.translatesAutoresizingMaskIntoConstraints = NO;
     self.backgroundImageView.userInteractionEnabled = NO;
     self.backgroundImageView.layer.zPosition = -1;
+
     [self.view addSubview:self.backgroundImageView];
     
     [NSLayoutConstraint activateConstraints:@[
