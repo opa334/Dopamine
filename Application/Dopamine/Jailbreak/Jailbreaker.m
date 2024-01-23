@@ -331,10 +331,11 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (err) return err;
     err = [self cleanUpExploits];
     if (err) return err;
-    
     err = [self elevatePrivileges];
     if (err) return err;
-    printf("Got UID %d\n", getuid());
+
+    // Now that we are unsandboxed, populate the jailbreak root path
+    [[EnvironmentManager sharedManager] determineJailbreakRootPath];
 
     err = [[EnvironmentManager sharedManager] prepareBootstrap];
     if (err) return err;

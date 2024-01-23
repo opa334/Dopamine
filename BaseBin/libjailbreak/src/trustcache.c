@@ -219,13 +219,12 @@ int jb_trustcache_add_entry(struct trustcache_entry_v1 entry)
 int jb_trustcache_add_directory(const char *directoryPath)
 {
 
-}*/
+}
 
 void jb_trustcache_rebuild(void)
 {
-	//_jb_trustcache_clear();
-	//jb_trustcache_add_directory(jbRootPath(@"").fileSystemRepresentation);
-}
+
+}*/
 
 void jb_trustcache_debug_print(FILE *f)
 {

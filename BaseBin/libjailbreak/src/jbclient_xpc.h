@@ -3,7 +3,6 @@
 
 #include <xpc/xpc.h>
 #include <stdint.h>
-#include "util.h"
 
 void jbclient_xpc_set_custom_port(mach_port_t serverPort);
 
@@ -14,7 +13,7 @@ char *jbclient_get_root_path(void);
 char *jbclient_get_boot_uuid(void);
 int jbclient_trust_binary(const char *binaryPath);
 int jbclient_trust_library(const char *libraryPath);
-int jbclient_process_checkin(char **jbRootPathOut, char **jbBootUUIDOut, char **sandboxExtensionsOut);
+int jbclient_process_checkin(char **rootPathOut, char **bootUUIDOut, char **sandboxExtensionsOut);
 int jbclient_fork_fix(uint64_t childPid);
 int jbclient_platform_set_process_debugged(uint64_t pid);
 int jbclient_platform_jailbreak_update(const char *updateTar);
@@ -26,12 +25,5 @@ int jbclient_root_get_sysinfo(xpc_object_t *sysInfoOut);
 int jbclient_root_add_cdhash(uint8_t *cdhashData, size_t cdhashLen);
 int jbclient_root_steal_ucred(uint64_t ucredToSteal, uint64_t *orgUcred);
 int jbclient_boomerang_done(void);
-
-#define exec_cmd_trusted(x, args ...) ({ \
-    jbclient_trust_binary(x); \
-    int retval; \
-    retval = exec_cmd(x, args); \
-    retval; \
-})
 
 #endif

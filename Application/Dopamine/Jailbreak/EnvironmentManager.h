@@ -18,12 +18,12 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedManager;
 
 @property (nonatomic, readonly) NSData *bootManifestHash;
-@property (nonatomic, readonly) NSString *jailbreakRootPath;
 
 - (BOOL)isArm64e;
 - (NSString *)versionSupportString;
 - (BOOL)installedThroughTrollStore;
 - (NSString *)accessibleKernelPath;
+- (void)determineJailbreakRootPath;
 
 - (BOOL)isPACBypassRequired;
 - (BOOL)isPPLBypassRequired;

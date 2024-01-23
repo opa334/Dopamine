@@ -98,42 +98,42 @@ xpc_object_t jbserver_xpc_send(uint64_t domain, uint64_t action, xpc_object_t xa
 
 char *jbclient_get_root_path(void)
 {
-	static char jbRootPath[PATH_MAX] = { 0 };
+	static char rootPath[PATH_MAX] = { 0 };
 	static dispatch_once_t dot;
 
 	dispatch_once(&dot, ^{
 		xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_SYSTEMWIDE, JBS_SYSTEMWIDE_GET_JB_ROOT, NULL);
 		if (xreply) {
-			const char *replyJBRootPath = xpc_dictionary_get_string(xreply, "root-path");
-			if (replyJBRootPath) {
-				strlcpy(&jbRootPath[0], replyJBRootPath, sizeof(jbRootPath));
+			const char *replyRootPath = xpc_dictionary_get_string(xreply, "root-path");
+			if (replyRootPath) {
+				strlcpy(&rootPath[0], replyRootPath, sizeof(rootPath));
 			}
 			xpc_release(xreply);
 		}
 	});
 
-	if (jbRootPath[0] == '\0') return NULL;
-	return (char *)&jbRootPath[0];
+	if (rootPath[0] == '\0') return NULL;
+	return (char *)&rootPath[0];
 }
 
 char *jbclient_get_boot_uuid(void)
 {
-	static char jbBootUUID[37] = { 0 };
+	static char bootUUID[37] = { 0 };
 	static dispatch_once_t dot;
 
 	dispatch_once(&dot, ^{
 		xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_SYSTEMWIDE, JBS_SYSTEMWIDE_GET_BOOT_UUID, NULL);
 		if (xreply) {
-			const char *replyJBBootUUID = xpc_dictionary_get_string(xreply, "boot-uuid");
-			if (replyJBBootUUID) {
-				strlcpy(&jbBootUUID[0], replyJBBootUUID, sizeof(jbBootUUID));
+			const char *replyBootUUID = xpc_dictionary_get_string(xreply, "boot-uuid");
+			if (replyBootUUID) {
+				strlcpy(&bootUUID[0], replyBootUUID, sizeof(bootUUID));
 			}
 			xpc_release(xreply);
 		}
 	});
 
-	if (jbBootUUID[0] == '\0') return NULL;
-	return (char *)&jbBootUUID[0];
+	if (bootUUID[0] == '\0') return NULL;
+	return (char *)&bootUUID[0];
 }
 
 bool can_skip_trusting_file(const char *filePath)
@@ -193,16 +193,16 @@ int jbclient_trust_library(const char *libraryPath)
 	return -1;
 }
 
-int jbclient_process_checkin(char **jbRootPathOut, char **jbBootUUIDOut, char **sandboxExtensionsOut)
+int jbclient_process_checkin(char **rootPathOut, char **bootUUIDOut, char **sandboxExtensionsOut)
 {
 	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_SYSTEMWIDE, JBS_SYSTEMWIDE_PROCESS_CHECKIN, NULL);
 	if (xreply) {
 		int64_t result = xpc_dictionary_get_int64(xreply, "result");
-		const char *jbRootPath = xpc_dictionary_get_string(xreply, "root-path");
-		const char *jbBootUUID = xpc_dictionary_get_string(xreply, "boot-uuid");
+		const char *rootPath = xpc_dictionary_get_string(xreply, "root-path");
+		const char *bootUUID = xpc_dictionary_get_string(xreply, "boot-uuid");
 		const char *sandboxExtensions = xpc_dictionary_get_string(xreply, "sandbox-extensions");
-		if (jbRootPathOut) *jbRootPathOut = jbRootPath ? strdup(jbRootPath) : NULL;
-		if (jbBootUUIDOut) *jbBootUUIDOut = jbBootUUID ? strdup(jbBootUUID) : NULL;
+		if (rootPathOut) *rootPathOut = rootPath ? strdup(rootPath) : NULL;
+		if (bootUUIDOut) *bootUUIDOut = bootUUID ? strdup(bootUUID) : NULL;
 		if (sandboxExtensionsOut) *sandboxExtensionsOut = sandboxExtensions ? strdup(sandboxExtensions) : NULL;
 		xpc_release(xreply);
 		return result;

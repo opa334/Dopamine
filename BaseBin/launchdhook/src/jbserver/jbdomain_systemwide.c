@@ -15,21 +15,16 @@ static bool systemwide_domain_allowed(audit_token_t clientToken)
 	return true;
 }
 
-static int systemwide_get_jb_root(char **pathOut)
+static int systemwide_get_jb_root(char **rootPathOut)
 {
-	*pathOut = strdup(jbinfo(rootPath));
+	*rootPathOut = strdup(jbinfo(rootPath));
 	return 0;
 }
 
-static int systemwide_get_boot_uuid(char **uuidOut)
+static int systemwide_get_boot_uuid(char **bootUUIDOut)
 {
 	const char *launchdUUID = getenv("LAUNCHD_UUID");
-	if (launchdUUID) {
-		*uuidOut = strdup(launchdUUID);
-	}
-	else {
-		*uuidOut = NULL;
-	}
+	*bootUUIDOut = launchdUUID ? strdup(launchdUUID) : NULL;
 	return 0;
 }
 
@@ -73,7 +68,7 @@ static int systemwide_trust_library(audit_token_t *processToken, const char *lib
 	return trust_file(libraryPath, callerPath);
 }
 
-static int systemwide_process_checkin(audit_token_t *processToken, char **rootPathOut, char **jbBootUUIDOut, char **sandboxExtensionsOut)
+static int systemwide_process_checkin(audit_token_t *processToken, char **rootPathOut, char **bootUUIDOut, char **sandboxExtensionsOut)
 {
 	// Fetch process info
 	pid_t pid = audit_token_to_pid(*processToken);
@@ -83,9 +78,9 @@ static int systemwide_process_checkin(audit_token_t *processToken, char **rootPa
 		return -1;
 	}
 
-	// Pass jbroot and boot uuid
+	// Get jbroot and boot uuid
 	systemwide_get_jb_root(rootPathOut);
-	systemwide_get_boot_uuid(jbBootUUIDOut);
+	systemwide_get_boot_uuid(bootUUIDOut);
 
 	// Generate sandbox extensions for the requesting process
 	char *readExtension = sandbox_extension_issue_file_to_process("com.apple.app-sandbox.read", JBRootPath(""), 0, *processToken);
@@ -95,10 +90,10 @@ static int systemwide_process_checkin(audit_token_t *processToken, char **rootPa
 		strcat(extensionBuf, readExtension);
 		strcat(extensionBuf, "|");
 		strcat(extensionBuf, execExtension);
-		free(readExtension);
-		free(execExtension);
 		*sandboxExtensionsOut = strdup(extensionBuf);
 	}
+	if (readExtension) free(readExtension);
+	if (execExtension) free(execExtension);
 
 	// Allow invalid pages
 	cs_allow_invalid(proc, false);
@@ -126,11 +121,71 @@ static int systemwide_process_checkin(audit_token_t *processToken, char **rootPa
 		}
 	}
 
+	proc_rele(proc);
 	return 0;
 }
 
 static int systemwide_fork_fix(audit_token_t *parentToken, uint64_t childPid)
 {
+	int retval = 3;
+	uint64_t parentPid = audit_token_to_pid(*parentToken);
+	uint64_t parentProc = proc_find(parentPid);
+	uint64_t childProc = proc_find(childPid);
+
+	if (childProc && parentProc) {
+		retval = 2;
+		// Safety check to ensure we are actually coming from fork
+		if (kread_ptr(childProc + koffsetof(proc, pptr)) == parentProc) {
+			cs_allow_invalid(childProc, false);
+
+			uint64_t childTask  = proc_task(childProc);
+			uint64_t childVmMap = kread_ptr(childTask + koffsetof(task, map));
+
+			uint64_t parentTask  = proc_task(parentProc);
+			uint64_t parentVmMap = kread_ptr(parentTask + koffsetof(task, map));
+
+			uint64_t parentHeader     = kread_ptr(parentVmMap  + koffsetof(vm_map, hdr));
+			uint64_t parentEntry      = kread_ptr(parentHeader + koffsetof(vm_map_header, links) + koffsetof(vm_map_links, next));
+
+			uint64_t childHeader     = kread_ptr(childVmMap + koffsetof(vm_map, hdr));
+			uint64_t childEntry      = kread_ptr(childHeader + koffsetof(vm_map_header, links) + koffsetof(vm_map_links, next));
+
+			uint64_t childFirstEntry = childEntry, parentFirstEntry = parentEntry;
+			do {
+				uint64_t childStart  = kread_ptr(childEntry  + koffsetof(vm_map_entry, links) + koffsetof(vm_map_links, min));
+				uint64_t childEnd    = kread_ptr(childEntry  + koffsetof(vm_map_entry, links) + koffsetof(vm_map_links, max));
+				uint64_t parentStart = kread_ptr(parentEntry + koffsetof(vm_map_entry, links) + koffsetof(vm_map_links, min));
+				uint64_t parentEnd   = kread_ptr(parentEntry + koffsetof(vm_map_entry, links) + koffsetof(vm_map_links, max));
+
+				if (parentStart < childStart) {
+					parentEntry = kread_ptr(parentEntry + koffsetof(vm_map_entry, links) + koffsetof(vm_map_links, next));
+				}
+				else if (parentStart > childStart) {
+					childEntry = kread_ptr(childEntry + koffsetof(vm_map_entry, links) + koffsetof(vm_map_links, next));
+				}
+				else {
+					uint64_t parentFlags = kread64(parentEntry + koffsetof(vm_map_entry, flags));
+					uint64_t childFlags  = kread64(childEntry  + koffsetof(vm_map_entry, flags));
+
+					uint8_t parentProt = VM_FLAGS_GET_PROT(parentFlags), parentMaxProt = VM_FLAGS_GET_MAXPROT(parentFlags);
+					uint8_t childProt =  VM_FLAGS_GET_PROT(childFlags),  childMaxProt  = VM_FLAGS_GET_MAXPROT(childFlags);
+
+					if (parentProt != childProt || parentMaxProt != childMaxProt) {
+						VM_FLAGS_SET_PROT(childFlags, parentProt);
+						VM_FLAGS_SET_MAXPROT(childFlags, parentMaxProt);
+						kwrite64(childEntry + koffsetof(vm_map_entry, flags), childFlags);
+					}
+
+					parentEntry = kread_ptr(parentEntry + koffsetof(vm_map_entry, links) + koffsetof(vm_map_links, next));
+					childEntry = kread_ptr(childEntry + koffsetof(vm_map_entry, links) + koffsetof(vm_map_links, next));
+				}
+			} while (parentEntry != 0 && childEntry != 0 && parentEntry != parentFirstEntry && childEntry != childFirstEntry);
+			retval = 0;
+		}
+	}
+	if (childProc)  proc_rele(childProc);
+	if (parentProc) proc_rele(parentProc);
+
 	return 0;
 }
 

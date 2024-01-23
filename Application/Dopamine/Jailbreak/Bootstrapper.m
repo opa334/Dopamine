@@ -8,6 +8,7 @@
 #import "Bootstrapper.h"
 #import "EnvironmentManager.h"
 #import <libjailbreak/info.h>
+#import <libjailbreak/util.h>
 #import <libjailbreak/jbclient_xpc.h>
 #import "zstd.h"
 #import <sys/mount.h>
@@ -263,9 +264,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (void)fixupPathPermissions
 {
-    NSString *jbRootPath = [[EnvironmentManager sharedManager] jailbreakRootPath];
-    
-    NSString *tmpPath = jbRootPath;
+    NSString *tmpPath = NSJBRootPath(@"/");
     while (![tmpPath isEqualToString:@"/private/preboot"]) {
         struct stat s;
         stat(tmpPath.fileSystemRepresentation, &s);
@@ -320,7 +319,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         return;
     }
     
-    [[NSData data] writeToFile:[[[EnvironmentManager sharedManager] jailbreakRootPath] stringByAppendingPathComponent:@".installed_dopamine"] atomically:YES];
+    [[NSData data] writeToFile:NSJBRootPath(@"/.installed_dopamine") atomically:YES];
     completion(nil);
 }
 
@@ -392,11 +391,9 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         }
     }
     
-    NSString *jailbreakRootPath = [[EnvironmentManager sharedManager] jailbreakRootPath];
-    gSystemInfo.jailbreakInfo.rootPath = strdup(jailbreakRootPath.fileSystemRepresentation);
-    NSString *basebinPath = [jailbreakRootPath stringByAppendingPathComponent:@"basebin"];
-    NSString *installedPath = [jailbreakRootPath stringByAppendingPathComponent:@".installed_dopamine"];
-    [self createSymlinkAtPath:@"/var/jb" toPath:jailbreakRootPath createIntermediateDirectories:YES];
+    NSString *basebinPath = NSJBRootPath(@"/basebin");
+    NSString *installedPath = NSJBRootPath(@"/.installed_dopamine");
+    [self createSymlinkAtPath:@"/var/jb" toPath:NSJBRootPath(@"/") createIntermediateDirectories:YES];
     
     NSError *error;
     if ([[NSFileManager defaultManager] fileExistsAtPath:basebinPath]) {
@@ -405,7 +402,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             return;
         }
     }
-    error = [self extractTar:[[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"BaseBin.tar"] toPath:jailbreakRootPath];
+    error = [self extractTar:[[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"BaseBin.tar"] toPath:NSJBRootPath(@"/")];
     if (error) {
         completion(error);
         return;
@@ -436,21 +433,19 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             @"URIs: https://ellekit.space/\n"
             @"Suites: ./\n"
             @"Components:\n";
-        [defaultSources writeToFile:[jailbreakRootPath stringByAppendingPathComponent:@"etc/apt/sources.list.d/default.sources"] atomically:NO encoding:NSUTF8StringEncoding error:nil];
+        [defaultSources writeToFile:NSJBRootPath(@"/etc/apt/sources.list.d/default.sources") atomically:NO encoding:NSUTF8StringEncoding error:nil];
         
-        NSString *usrBinPath = [jailbreakRootPath stringByAppendingPathComponent:@"usr/bin"];
-        
-        if (![self fileOrSymlinkExistsAtPath:[usrBinPath stringByAppendingPathComponent:@"opainject"]]) {
-            [self createSymlinkAtPath:[usrBinPath stringByAppendingPathComponent:@"opainject"] toPath:[basebinPath stringByAppendingPathComponent:@"opainject"] createIntermediateDirectories:YES];
+        if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/bin/opainject")]) {
+            [self createSymlinkAtPath:NSJBRootPath(@"/usr/bin/opainject") toPath:NSJBRootPath(@"/basebin/opainject") createIntermediateDirectories:YES];
         }
-        if (![self fileOrSymlinkExistsAtPath:[usrBinPath stringByAppendingPathComponent:@"jbctl"]]) {
-            [self createSymlinkAtPath:[usrBinPath stringByAppendingPathComponent:@"jbctl"] toPath:[basebinPath stringByAppendingPathComponent:@"jbctl"] createIntermediateDirectories:YES];
+        if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/bin/jbctl")]) {
+            [self createSymlinkAtPath:NSJBRootPath(@"/usr/bin/jbctl") toPath:NSJBRootPath(@"/basebin/jbctl") createIntermediateDirectories:YES];
         }
-        if (![self fileOrSymlinkExistsAtPath:[usrBinPath stringByAppendingPathComponent:@"libjailbreak.dylib"]]) {
-            [self createSymlinkAtPath:[usrBinPath stringByAppendingPathComponent:@"libjailbreak.dylib"] toPath:[basebinPath stringByAppendingPathComponent:@"libjailbreak.dylib"] createIntermediateDirectories:YES];
+        if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/lib/libjailbreak.dylib")]) {
+            [self createSymlinkAtPath:NSJBRootPath(@"/usr/lib/libjailbreak.dylib") toPath:NSJBRootPath(@"/basebin/libjailbreak.dylib") createIntermediateDirectories:YES];
         }
         
-        NSString *mobilePreferencesPath = [jailbreakRootPath stringByAppendingPathComponent:@"var/mobile/Library/Preferences"];
+        NSString *mobilePreferencesPath = NSJBRootPath(@"/var/mobile/Library/Preferences");
         if (![[NSFileManager defaultManager] fileExistsAtPath:mobilePreferencesPath]) {
             NSDictionary<NSFileAttributeKey, id> *attributes = @{
                 NSFilePosixPermissions : @0755,
@@ -466,8 +461,8 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     
     BOOL needsBootstrap = ![[NSFileManager defaultManager] fileExistsAtPath:installedPath];
     if (needsBootstrap) {
-        // First, wipe existing content (keep basebin as we already extracted that)
-        for (NSURL *subItemURL in [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[NSURL fileURLWithPath:jailbreakRootPath] includingPropertiesForKeys:nil options:0 error:nil]) {
+        // First, wipe any existing content that's not basebin
+        for (NSURL *subItemURL in [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[NSURL fileURLWithPath:NSJBRootPath(@"/")] includingPropertiesForKeys:nil options:0 error:nil]) {
             if (![subItemURL.lastPathComponent isEqualToString:@"basebin"]) {
                 [[NSFileManager defaultManager] removeItemAtURL:subItemURL error:nil];
             }

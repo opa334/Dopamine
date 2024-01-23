@@ -1,12 +1,21 @@
 #include "jbserver_global.h"
 
+#include <libjailbreak/codesign.h>
+#include <libjailbreak/libjailbreak.h>
+
 static bool platform_domain_allowed(audit_token_t clientToken)
 {
-	return true;
+	pid_t pid = audit_token_to_pid(clientToken);
+	uint32_t csflags = 0;
+	if (csops_audittoken(pid, CS_OPS_STATUS, &csflags, sizeof(csflags), &clientToken) != 0) return false;
+	return (csflags & CS_PLATFORM_BINARY);
 }
 
 static int platform_set_process_debugged(uint64_t pid)
 {
+	uint64_t proc = proc_find(pid);
+	if (!proc) return -1;
+	cs_allow_invalid(proc, true);
 	return 0;
 }
 

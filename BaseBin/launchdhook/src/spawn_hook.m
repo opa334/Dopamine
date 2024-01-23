@@ -13,7 +13,7 @@ extern int systemwide_trust_binary(const char *binaryPath);
 #define LOG_PROCESS_LAUNCHES 0
 
 void *posix_spawn_orig;
-bool gEarlyBootDone = false;
+extern bool gEarlyBootDone;
 
 int posix_spawn_orig_wrapper(pid_t *restrict pid, const char *restrict path,
 					   const posix_spawn_file_actions_t *restrict file_actions,

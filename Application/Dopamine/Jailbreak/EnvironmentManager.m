@@ -9,6 +9,7 @@
 
 #import <sys/sysctl.h>
 #import <libgrabkernel/libgrabkernel.h>
+#import <libjailbreak/info.h>
 
 #import <IOKit/IOKitLib.h>
 #import "NSData+Hex.h"
@@ -16,7 +17,6 @@
 @implementation EnvironmentManager
 
 @synthesize bootManifestHash = _bootManifestHash;
-@synthesize jailbreakRootPath = _jailbreakRootPath;
 
 + (instancetype)sharedManager
 {
@@ -53,9 +53,9 @@
     return [@"/private/preboot" stringByAppendingPathComponent:[self bootManifestHash].hexString];
 }
 
-- (NSString*)jailbreakRootPath
+- (void)determineJailbreakRootPath
 {
-    if (!_jailbreakRootPath) {
+    if (!gSystemInfo.jailbreakInfo.rootPath) {
         NSString *activePrebootPath = [self activePrebootPath];
         
         NSString *randomizedJailbreakPath;
@@ -80,13 +80,15 @@
             randomizedJailbreakPath = [activePrebootPath stringByAppendingPathComponent:randomJailbreakFolderName];
         }
         
-        _jailbreakRootPath = [randomizedJailbreakPath stringByAppendingPathComponent:@"procursus"];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:_jailbreakRootPath]) {
-            [[NSFileManager defaultManager] createDirectoryAtPath:_jailbreakRootPath withIntermediateDirectories:YES attributes:nil error:nil];
+        NSString *jailbreakRootPath = [randomizedJailbreakPath stringByAppendingPathComponent:@"procursus"];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:jailbreakRootPath]) {
+            [[NSFileManager defaultManager] createDirectoryAtPath:jailbreakRootPath withIntermediateDirectories:YES attributes:nil error:nil];
         }
+
+        // This attribute serves as the primary source of what the root path is
+        // Anything else in the jailbreak will get it from here
+        gSystemInfo.jailbreakInfo.rootPath = strdup(jailbreakRootPath.fileSystemRepresentation);
     }
-    
-    return _jailbreakRootPath;
 }
 
 - (BOOL)isArm64e

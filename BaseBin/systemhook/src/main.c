@@ -10,6 +10,13 @@
 #include <libjailbreak/jbclient_xpc.h>
 #include <os/log.h>
 
+#define JBRootPath(path) ({ \
+	char *outPath = alloca(PATH_MAX); \
+	strlcpy(outPath, JB_RootPath, PATH_MAX); \
+	strlcat(outPath, path, PATH_MAX); \
+	(outPath); \
+})
+
 extern char **environ;
 bool gTweaksEnabled = false;
 
@@ -342,7 +349,7 @@ void loadForkFix(void)
 			// If tweaks have been loaded into this process, we need to load forkfix to ensure forking will work
 			// Optimization: If the process cannot fork at all due to sandbox, we don't need to do anything
 			if (sandbox_check(getpid(), "process-fork", SANDBOX_CHECK_NO_REPORT, NULL) == 0) {
-				dlopen(JB_ROOT_PATH("/basebin/forkfix.dylib"), RTLD_NOW);
+				dlopen(JBRootPath("/basebin/forkfix.dylib"), RTLD_NOW);
 			}
 		});
 	}
@@ -374,7 +381,7 @@ int daemon_hook(int __nochdir, int __noclose)
 
 bool shouldEnableTweaks(void)
 {
-	if (access(JB_ROOT_PATH("/basebin/.safe_mode"), F_OK) == 0) {
+	if (access(JBRootPath("/basebin/.safe_mode"), F_OK) == 0) {
 		return false;
 	}
 
@@ -425,10 +432,10 @@ __attribute__((constructor)) static void initializer(void)
 			applyKbdFix();
 		}
 		else if (strcmp(gExecutablePath, "/usr/sbin/cfprefsd") == 0) {
-			dlopen_hook(JB_ROOT_PATH("/basebin/rootlesshooks.dylib"), RTLD_NOW);
+			dlopen_hook(JBRootPath("/basebin/rootlesshooks.dylib"), RTLD_NOW);
 		}
 		else if (strcmp(gExecutablePath, "/usr/libexec/watchdogd") == 0) {
-			dlopen_hook(JB_ROOT_PATH("/basebin/watchdoghook.dylib"), RTLD_NOW);
+			dlopen_hook(JBRootPath("/basebin/watchdoghook.dylib"), RTLD_NOW);
 		}
 	}
 
@@ -463,7 +470,7 @@ DYLD_INTERPOSE(sandbox_init_hook, sandbox_init)
 DYLD_INTERPOSE(sandbox_init_with_parameters_hook, sandbox_init_with_parameters)
 DYLD_INTERPOSE(sandbox_init_with_extensions_hook, sandbox_init_with_extensions)
 DYLD_INTERPOSE(ptrace_hook, ptrace)
-//DYLD_INTERPOSE(fork_hook, fork)
-//DYLD_INTERPOSE(vfork_hook, vfork)
-//DYLD_INTERPOSE(forkpty_hook, forkpty)
-//DYLD_INTERPOSE(daemon_hook, daemon)
+DYLD_INTERPOSE(fork_hook, fork)
+DYLD_INTERPOSE(vfork_hook, vfork)
+DYLD_INTERPOSE(forkpty_hook, forkpty)
+DYLD_INTERPOSE(daemon_hook, daemon)

@@ -8,13 +8,6 @@ extern char *JB_BootUUID;
 extern char *JB_RootPath;
 extern bool swh_is_debugged;
 
-#define JB_ROOT_PATH(path) ({ \
-	char *outPath = alloca(PATH_MAX); \
-	strlcpy(outPath, JB_RootPath, PATH_MAX); \
-	strlcat(outPath, path, PATH_MAX); \
-	(outPath); \
-})
-
 bool stringStartsWith(const char *str, const char* prefix);
 bool stringEndsWith(const char* str, const char* suffix);
 

@@ -323,6 +323,52 @@ int spawn_hook_common(pid_t *restrict pid, const char *restrict path,
 				if (memlimit_inactive != -1) {
 					*(int*)(attrStruct + POSIX_SPAWNATTR_OFF_MEMLIMIT_INACTIVE) = memlimit_inactive * JETSAM_MULTIPLIER;
 				}
+
+				// On iOS 16, disable launch constraints
+				// Not working, doesn't seem feasable
+				/*if (__builtin_available(iOS 16.0, *)) {
+					uint32_t bufsize = PATH_MAX;
+					char executablePath[PATH_MAX];
+					_NSGetExecutablePath(executablePath, &bufsize);
+					// We could do the following here
+					// posix_spawnattr_set_launch_type_np(*attrp, 0);
+					// But I don't know how to get the compiler to weak link it
+					// So we just set it by offset
+					if (getpid() == 1) {
+						FILE *f = fopen("/var/mobile/launch_type.txt", "a");
+						const char *toLog = path;
+						if (!strcmp(path, "/usr/libexec/xpcproxy") && argv) {
+							if (argv[0]) {
+								if (argv[1]) {
+									toLog = argv[1];
+								}
+							}
+						}
+						fprintf(f, "%s has launch type %u\n", toLog, *(uint8_t *)(attrStruct + POSIX_SPAWNATTR_OFF_LAUNCH_TYPE));
+						fclose(f);
+					}
+					else if (!strcmp(executablePath, "/usr/libexec/xpcproxy")) {
+						FILE *f = fopen("/tmp/launch_type_xpcproxy.txt", "a");
+						if (f) {
+							fprintf(f, "%s has launch type %u\n", path, *(uint8_t *)(attrStruct + POSIX_SPAWNATTR_OFF_LAUNCH_TYPE));
+							fclose(f);
+						}
+					}
+					else {
+						os_log(OS_LOG_DEFAULT, "systemhook %{public}s has launch type %u\n", path, *(uint8_t *)(attrStruct + POSIX_SPAWNATTR_OFF_LAUNCH_TYPE));
+					}*/
+					
+					//*(uint8_t *)(attrStruct + POSIX_SPAWNATTR_OFF_LAUNCH_TYPE) = ...
+					/*if (!strcmp(path, "/usr/libexec/xpcproxy") && argv) {
+						if (argv[0]) {
+							if (argv[1]) {
+								if (stringStartsWith(argv[1], "com.apple.WebKit.WebContent.")) {
+									*(uint8_t *)(attrStruct + POSIX_SPAWNATTR_OFF_LAUNCH_TYPE) = 0;
+								}
+							}
+						}
+					}
+				}*/
 			}
 		}
 	}

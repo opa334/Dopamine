@@ -65,7 +65,6 @@ void jbinfo_initialize_hardcoded_offsets(void)
 
 	// vm_map_header
 	gSystemInfo.kernelStruct.vm_map_header.links    =  0x0;
-	gSystemInfo.kernelStruct.vm_map_header.nentries = 0x20;
 
 	// vm_map_entry
 	gSystemInfo.kernelStruct.vm_map_entry.links = 0x0;
