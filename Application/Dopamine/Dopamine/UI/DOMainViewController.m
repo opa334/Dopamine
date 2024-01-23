@@ -34,11 +34,24 @@
     [self.view addSubview:stackView];
 
     [NSLayoutConstraint activateConstraints:@[
-        [stackView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:UI_PADDING],
-        [stackView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-UI_PADDING],
         [stackView.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor constant:25],//-35
         [stackView.heightAnchor constraintEqualToAnchor:self.view.heightAnchor multiplier:0.74]
     ]];
+
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+    {
+        [NSLayoutConstraint activateConstraints:@[
+            [stackView.widthAnchor constraintEqualToAnchor:self.view.widthAnchor multiplier:0.8],
+            [stackView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor]
+        ]];
+    }
+    else
+    {
+        [NSLayoutConstraint activateConstraints:@[
+            [stackView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:UI_PADDING],
+            [stackView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-UI_PADDING],
+        ]];
+    }
 
     //Header
     DOHeaderView *headerView = [[DOHeaderView alloc] initWithImage: [UIImage imageNamed:@"Dopamine"] subtitles: @[
