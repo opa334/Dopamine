@@ -8,6 +8,7 @@
 #import <UIKit/UIKit.h>
 #import "DOActionMenuButton.h"
 #import "DOLyricsLogView.h"
+#import "DODebugLogView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
