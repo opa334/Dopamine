@@ -33,9 +33,14 @@
 
     [self.view addSubview:stackView];
 
+
+    int statusBarHeight = [[UIApplication sharedApplication] keyWindow].safeAreaInsets.top - 8;
+    BOOL isHomeButtonDevice = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && [[UIApplication sharedApplication] keyWindow].safeAreaInsets.bottom == 0;
+    
+
     [NSLayoutConstraint activateConstraints:@[
-        [stackView.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor constant:25],//-35
-        [stackView.heightAnchor constraintEqualToAnchor:self.view.heightAnchor multiplier:0.74]
+        [stackView.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor constant:statusBarHeight],//-35
+        [stackView.heightAnchor constraintEqualToAnchor:self.view.heightAnchor multiplier:isHomeButtonDevice ? 0.78 : 0.74]
     ]];
 
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
@@ -56,9 +61,9 @@
     //Header
     DOHeaderView *headerView = [[DOHeaderView alloc] initWithImage: [UIImage imageNamed:@"Dopamine"] subtitles: @[
         [GlobalAppearance mainSubtitleString:@"iOS 15.0 - 15.4.1 | A12 - A15, M1"],
-        [GlobalAppearance mainSubtitleString:@"iOS 15.0 - 15.7.6 | A8 - A11"],
+        // [GlobalAppearance mainSubtitleString:@"iOS 15.0 - 15.7.6 | A8 - A11"],
         [GlobalAppearance secondarySubtitleString:@"by opa334, évelyne"],
-        [GlobalAppearance secondarySubtitleString:@"Based on Fugu15, kfd, golb"]
+        // [GlobalAppearance secondarySubtitleString:@"Based on Fugu15, kfd, golb"]
     ]];
     
     [stackView addArrangedSubview:headerView];

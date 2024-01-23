@@ -11,6 +11,7 @@
 #define UI_INNER_PADDING 20
 #define UI_INNER_TOP_PADDING 5
 #define UI_ACTION_HEIGHT 73
+#define UI_ACTION_HEIGHT_HOME_BTN 65
 
 @implementation DOActionMenuView
 
@@ -43,12 +44,14 @@
     self.buttonsView.axis = UILayoutConstraintAxisVertical;
     self.buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
 
+    BOOL isHomeButtonDevice = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && [[UIApplication sharedApplication] keyWindow].safeAreaInsets.bottom == 0;
+
     [self.actions enumerateObjectsUsingBlock:^(UIAction *action, NSUInteger idx, BOOL *stop) {
         DOActionMenuButton *button = [DOActionMenuButton buttonWithAction:action chevron:[self.delegate actionMenuShowsChevronForAction:action]];
         [button setBottomSeparator:idx != self.actions.count - 1];
         [self.buttonsView addArrangedSubview:button];
         [NSLayoutConstraint activateConstraints:@[
-            [button.heightAnchor constraintEqualToConstant:UI_ACTION_HEIGHT],
+            [button.heightAnchor constraintEqualToConstant:isHomeButtonDevice ? UI_ACTION_HEIGHT_HOME_BTN : UI_ACTION_HEIGHT],
             [button.widthAnchor constraintEqualToAnchor:self.buttonsView.widthAnchor]
         ]];
     }];
