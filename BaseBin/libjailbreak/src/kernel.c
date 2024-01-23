@@ -116,7 +116,7 @@ uint64_t pvh_ptd(uint64_t pvh)
 
 void task_set_memory_ownership_transfer(uint64_t task, bool value)
 {
-	kwrite8(task, !!value);
+	kwrite8(task + koffsetof(task, task_can_transfer_memory_ownership), !!value);
 }
 
 int pmap_cs_allow_invalid(uint64_t pmap)
