@@ -21,10 +21,22 @@ void jbinfo_initialize_hardcoded_offsets(void)
 
 	cpu_subtype_t cpuFamily = 0;
 	size_t cpuFamilySize = sizeof(cpuFamily);
-    sysctlbyname("hw.cpufamily", &cpuFamily, &cpuFamilySize, NULL, 0);
+	sysctlbyname("hw.cpufamily", &cpuFamily, &cpuFamilySize, NULL, 0);
+
+	bool hasJitbox = (cpuFamily == CPUFAMILY_ARM_BLIZZARD_AVALANCHE || // A15
+					  cpuFamily == CPUFAMILY_ARM_EVEREST_SAWTOOTH || // A16
+					  cpuFamily == CPUFAMILY_ARM_COLL); // A17
+
+	uint32_t taskJitboxAdjust = 0x0;
+	if (hasJitbox) {
+		taskJitboxAdjust = 0x10;
+		if (strcmp(xnuVersion, "22.0.0") >= 0) {
+			// In iOS 16, there is a new jitbox related attribute
+			taskJitboxAdjust = 0x18;
+		}
+	}
 
 	uint32_t pmapEl2Adjust = ((kconstant(exceptionLevel) == 8) ? 8 : 0);
-	uint32_t taskJitboxAdjust = ((cpuFamily == CPUFAMILY_ARM_BLIZZARD_AVALANCHE) ? 0x10 : 0x0);
 
 	// proc
 	gSystemInfo.kernelStruct.proc.list_next =  0x0;
@@ -48,7 +60,7 @@ void jbinfo_initialize_hardcoded_offsets(void)
 	gSystemInfo.kernelStruct.ipc_entry.object      = 0x0;
 	gSystemInfo.kernelStruct.ipc_entry.struct_size = 0x18;
 
-	// map
+	// vm_map
 	gSystemInfo.kernelStruct.vm_map.hdr = 0x10;
 
 	// pmap
@@ -152,6 +164,12 @@ void jbinfo_initialize_hardcoded_offsets(void)
 					gSystemInfo.kernelStruct.proc.fd      =  0xD8;
 					gSystemInfo.kernelStruct.proc.flag    = 0x25C;
 					gSystemInfo.kernelStruct.proc.textvp  = 0x350;
+
+					// task
+					gSystemInfo.kernelStruct.task.task_can_transfer_memory_ownership = 0x548 + taskJitboxAdjust;
+
+					// vm_map
+					gSystemInfo.kernelStruct.vm_map.flags = 0xB4;
 
 					// trustcache
 					gSystemInfo.kernelStruct.trustcache.nextptr = 0x0;
