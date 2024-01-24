@@ -6,11 +6,14 @@
 //
 
 #import "DONavigationController.h"
+#import <objc/runtime.h>
+#import "DOModalBackAction.h"
 
 @interface DONavigationController ()
 
 @property (nonatomic) UIImageView *backgroundImageView;
 @property (nonatomic) DOMainViewController *mainView;
+@property (nonatomic) DOModalBackAction *backAction;
 
 @end
 
@@ -41,7 +44,7 @@
     self.backgroundImageView.userInteractionEnabled = NO;
     self.backgroundImageView.layer.zPosition = -1;
 
-    [self.view addSubview:self.backgroundImageView];
+    [self.view insertSubview:self.backgroundImageView atIndex:0];
     
     [NSLayoutConstraint activateConstraints:@[
         [self.backgroundImageView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
@@ -50,13 +53,20 @@
         [self.backgroundImageView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:100],
     ]];
 
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(goBackToMainView)];
-    [self.backgroundImageView addGestureRecognizer:tap];
-}
-
-- (void)goBackToMainView
-{
-    [self popToRootViewControllerAnimated:YES];
+    self.backAction = [[DOModalBackAction alloc] initWithAction:^{
+        [self popToRootViewControllerAnimated:YES];
+    }];
+    self.backAction.translatesAutoresizingMaskIntoConstraints = NO;
+    self.backAction.hidden = YES;
+    
+    [self.view insertSubview:self.backAction atIndex:2];
+    
+    [NSLayoutConstraint activateConstraints:@[
+        [self.backAction.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [self.backAction.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+        [self.backAction.topAnchor constraintEqualToAnchor:self.view.topAnchor],
+        [self.backAction.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
+    ]];
 }
 
 - (void)setBackgroundDimmed:(BOOL)dimmed
@@ -65,6 +75,7 @@
         self.backgroundImageView.alpha = dimmed ? 0.4 : 1;
     }];
     self.backgroundImageView.userInteractionEnabled = dimmed;
+    self.backAction.hidden = !dimmed;
 }
 
 #pragma mark - Delegate
@@ -85,6 +96,7 @@
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     [self setBackgroundDimmed:![viewController isKindOfClass:[DOMainViewController class]]];
+    [self.backAction setIgnoreFrame:[self _frameForViewController:viewController]];
 }
 
 #pragma mark - Overrides
