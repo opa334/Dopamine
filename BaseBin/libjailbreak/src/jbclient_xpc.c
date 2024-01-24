@@ -164,10 +164,15 @@ bool can_skip_trusting_file(const char *filePath, bool isLibrary)
 
 int jbclient_trust_binary(const char *binaryPath)
 {
-	if (can_skip_trusting_file(binaryPath, false)) return -1;
+	if (!binaryPath) return -1;
+
+	char absolutePath[PATH_MAX];
+	if (realpath(binaryPath, absolutePath) == NULL) return -1;
+
+	if (can_skip_trusting_file(absolutePath, false)) return -1;
 
 	xpc_object_t xargs = xpc_dictionary_create_empty();
-	xpc_dictionary_set_string(xargs, "binary-path", binaryPath);
+	xpc_dictionary_set_string(xargs, "binary-path", absolutePath);
 	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_SYSTEMWIDE, JBS_SYSTEMWIDE_TRUST_BINARY, xargs);
 	xpc_release(xargs);
 	if (xreply) {
@@ -180,10 +185,21 @@ int jbclient_trust_binary(const char *binaryPath)
 
 int jbclient_trust_library(const char *libraryPath)
 {
-	if (can_skip_trusting_file(libraryPath, true)) return -1;
+	if (!libraryPath) return -1;
+
+	// If not a dynamic path (@rpath, @executable_path, @loader_path), resolve to absolute path
+	char absolutePath[PATH_MAX];
+	if (libraryPath[0] != '@') {
+		if (realpath(libraryPath, absolutePath) == NULL) return -1;
+	}
+	else {
+		strlcpy(absolutePath, libraryPath, PATH_MAX);
+	}
+
+	if (can_skip_trusting_file(absolutePath, true)) return -1;
 
 	xpc_object_t xargs = xpc_dictionary_create_empty();
-	xpc_dictionary_set_string(xargs, "library-path", libraryPath);
+	xpc_dictionary_set_string(xargs, "library-path", absolutePath);
 	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_SYSTEMWIDE, JBS_SYSTEMWIDE_TRUST_LIBRARY, xargs);
 	xpc_release(xargs);
 	if (xreply) {
