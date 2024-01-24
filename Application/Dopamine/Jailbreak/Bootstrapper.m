@@ -278,6 +278,33 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     }
 }
 
+- (void)patchBasebinDaemonPlist:(NSString *)plistPath
+{
+    NSMutableDictionary *plistDict = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
+    if (plistDict) {
+        bool madeChanges = NO;
+        NSMutableArray *programArguments = ((NSArray *)plistDict[@"ProgramArguments"]).mutableCopy;
+        for (NSString *argument in [programArguments reverseObjectEnumerator]) {
+            if ([argument containsString:@"@JBROOT@"]) {
+                programArguments[[programArguments indexOfObject:argument]] = [argument stringByReplacingOccurrencesOfString:@"@JBROOT@" withString:NSJBRootPath(@"/")];
+                madeChanges = YES;
+            }
+        }
+        if (madeChanges) {
+            plistDict[@"ProgramArguments"] = programArguments.copy;
+            [plistDict writeToFile:plistPath atomically:NO];
+        }
+    }
+}
+
+- (void)patchBasebinDaemonPlists
+{
+    NSURL *basebinDaemonsURL = [NSURL fileURLWithPath:NSJBRootPath(@"/basebin/LaunchDaemons")];
+    for (NSURL *basebinDaemonURL in [[NSFileManager defaultManager] contentsOfDirectoryAtURL:basebinDaemonsURL includingPropertiesForKeys:nil options:0 error:nil]) {
+        [self patchBasebinDaemonPlist:basebinDaemonURL.path];
+    }
+}
+
 - (NSURL *)bootstrapURL
 {
     uint64_t cfver = (((uint64_t)kCFCoreFoundationVersionNumber / 100) * 100);
@@ -407,6 +434,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         completion(error);
         return;
     }
+    [self patchBasebinDaemonPlists];
     
     void (^bootstrapFinishedCompletion)(NSError *) = ^(NSError *error){
         if (error) {

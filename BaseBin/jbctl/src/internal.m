@@ -50,11 +50,8 @@ int jbctl_handle_internal(const char *command)
 		return 0;
 	}
 	else if (!strcmp(command, "fakelib_init")) {
-		const char *rootPathC = jbclient_get_root_path();
-		if (!rootPathC) return 9;
-		NSString *rootPath = [NSString stringWithUTF8String:rootPathC];
-		NSString *basebinPath = [rootPath stringByAppendingPathComponent:@"basebin"];
-		NSString *fakelibPath = [basebinPath stringByAppendingPathComponent:@".fakelib"];
+		NSString *basebinPath = NSJBRootPath(@"/basebin");
+		NSString *fakelibPath = NSJBRootPath(@"/basebin/.fakelib");
 		printf("Initalizing fakelib...\n");
 
 		// Copy /usr/lib to /var/jb/basebin/.fakelib
@@ -63,30 +60,24 @@ int jbctl_handle_internal(const char *command)
 		carbonCopy(@"/usr/lib", fakelibPath);
 
 		// Backup and patch dyld
-		NSString *dyldBackupPath = [basebinPath stringByAppendingPathComponent:@".dyld.orig"];
-		NSString *dyldPatchPath = [basebinPath stringByAppendingPathComponent:@".dyld.patched"];
+		NSString *dyldBackupPath = NSJBRootPath(@"/basebin/.dyld.orig");
+		NSString *dyldPatchPath = NSJBRootPath(@"/basebin/.dyld.patched");
 		carbonCopy(@"/usr/lib/dyld", dyldBackupPath);
 		carbonCopy(@"/usr/lib/dyld", dyldPatchPath);
 		apply_dyld_patch(dyldPatchPath.fileSystemRepresentation);
 		resign_file(dyldPatchPath, YES);
 
 		// Copy systemhook to fakelib
-		carbonCopy([basebinPath stringByAppendingPathComponent:@"systemhook.dylib"], [fakelibPath stringByAppendingPathComponent:@"systemhook.dylib"]);
+		carbonCopy(NSJBRootPath(@"/basebin/systemhook.dylib"), NSJBRootPath(@"/basebin/.fakelib/systemhook.dylib"));
 
 		// Replace dyld in fakelib with patched dyld
 		NSString *fakelibDyldPath = [fakelibPath stringByAppendingPathComponent:@"dyld"];
 		[[NSFileManager defaultManager] removeItemAtPath:fakelibDyldPath error:nil];
-		carbonCopy(dyldPatchPath, fakelibDyldPath);
+		carbonCopy(dyldPatchPath, NSJBRootPath(@"/basebin/.fakelib/dyld"));
 		return 0;
 	}
 	else if (!strcmp(command, "fakelib_mount")) {
 		int ret = 10;
-		const char *rootPathC = jbclient_get_root_path();
-		if (!rootPathC) return 9;
-		NSString *rootPath = [NSString stringWithUTF8String:rootPathC];
-		NSString *basebinPath = [rootPath stringByAppendingPathComponent:@"basebin"];
-		NSString *fakelibPath = [basebinPath stringByAppendingPathComponent:@".fakelib"];
-
 		// Mount fakelib on top of /usr/lib
 		printf("Getting kernel ucred...\n");
 		uint64_t orgUcred = 0;
@@ -94,13 +85,18 @@ int jbctl_handle_internal(const char *command)
 			// Here we steal the kernel ucred
 			// This allows us to mount to paths that would otherwise be restricted by sandbox
 			printf("Applying mount...\n");
-			ret = mount("bindfs", "/usr/lib", MNT_RDONLY, (void *)fakelibPath.fileSystemRepresentation);
+			ret = mount("bindfs", "/usr/lib", MNT_RDONLY, (void *)JBRootPath("/basebin/.fakelib"));
 
 			// revert
 			printf("Dropping kernel ucred...\n");
 			jbclient_root_steal_ucred(orgUcred, NULL);
 		}
 		return ret;
+	}
+	else if (!strcmp(command, "startup")) {
+		const char *rootPathC = jbclient_get_root_path();
+		if (!rootPathC) return 9;
+		exec_cmd(JBRootPath("/usr/bin/uicache"), "-a", NULL);
 	}
 	return -1;
 }

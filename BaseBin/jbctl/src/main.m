@@ -22,6 +22,8 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
+	gSystemInfo.jailbreakInfo.rootPath = jbclient_get_root_path();
+
 	char *cmd = argv[1];
 	if (!strcmp(cmd, "proc_set_debugged")) {
 		if (argc != 3) {

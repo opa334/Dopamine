@@ -53,7 +53,7 @@ jbctl:
 .build:
 	rm -rf .build
 	mkdir -p .build
-	cp -r _external/bin/* .build
+	cp -r _external/basebin/* .build
 
 .include:
 	rm -rf .include
