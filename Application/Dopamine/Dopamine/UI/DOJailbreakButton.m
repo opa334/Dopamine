@@ -42,7 +42,7 @@
     [NSLayoutConstraint deactivateConstraints:constraints];
 
     float topPadding = (window.frame.size.height * (1 - 0.74));
-    topPadding += 55;
+    topPadding += 35;
 
     [NSLayoutConstraint activateConstraints:@[
         [self.leadingAnchor constraintEqualToAnchor:window.leadingAnchor],
