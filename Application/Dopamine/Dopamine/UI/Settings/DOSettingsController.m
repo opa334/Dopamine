@@ -27,6 +27,8 @@
     
     [_table setSeparatorColor:[UIColor clearColor]];
     [_table setBackgroundColor:[UIColor clearColor]];
+    
+    [UISwitch appearanceWhenContainedInInstancesOfClasses:@[[self class]]].onTintColor = [UIColor colorWithRed: 71.0/255.0 green: 169.0/255.0 blue: 135.0/255.0 alpha: 1.0];
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
