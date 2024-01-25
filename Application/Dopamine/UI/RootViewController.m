@@ -88,7 +88,11 @@
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *doneAction = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:nil];
+                UIAlertAction *doneAction = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+                    if (!error) {
+                        [jailbreaker finalize];
+                    }
+                }];
                 [alertController addAction:doneAction];
                 
                 [self presentViewController:alertController animated:YES completion:nil];

@@ -360,12 +360,15 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     
     printf("Starting launch daemons...\n");
     exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "bootstrap", "system", JBRootPath("/Library/LaunchDaemons"), NULL);
-    
-    printf("Reloading icon cache...\n");
-    exec_cmd_trusted(JBRootPath("/usr/bin/uicache"), "-a", NULL);
+    exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "bootstrap", "system", JBRootPath("/basebin/LaunchDaemons"), NULL);
     
     printf("Done!\n");
     return nil;
+}
+
+- (void)finalize
+{
+    exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "reboot", "userspace", NULL);
 }
 
 @end
