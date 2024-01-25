@@ -148,7 +148,8 @@ static mach_port_t IOSurface_kalloc_getSurfacePort(uint64_t size)
 uint64_t IOSurface_kalloc(uint64_t size, bool leak)
 {
 	while (true) {
-		mach_port_t surfaceMachPort = IOSurface_kalloc_getSurfacePort(size);
+		uint64_t allocSize = max(size, 0x10000);
+		mach_port_t surfaceMachPort = IOSurface_kalloc_getSurfacePort(allocSize);
 
 		uint64_t surfaceSendRight = task_get_ipc_port_kobject(task_self(), surfaceMachPort);
 		uint64_t surface = IOSurfaceSendRight_get_surface(surfaceSendRight);

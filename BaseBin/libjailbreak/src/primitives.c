@@ -3,10 +3,10 @@
 #include "info.h"
 #include "translation.h"
 #include "pte.h"
+#include "util.h"
 #include <errno.h>
 #include <string.h>
 
-#define min(a,b) (((a)<(b))?(a):(b))
 #define BIT(b)    (1ULL << (b))
 #define ONES(x)          (BIT((x))-1)
 #define PAC_MASK kconstant(pointer_mask)

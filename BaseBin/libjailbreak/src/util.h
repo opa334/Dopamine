@@ -4,6 +4,9 @@
 #include "info.h"
 #include "jbclient_xpc.h"
 
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+
 #define L1_BLOCK_SIZE 0x1000000000
 #define L1_BLOCK_MASK (L1_BLOCK_SIZE-1)
 #define L2_BLOCK_SIZE 0x2000000
