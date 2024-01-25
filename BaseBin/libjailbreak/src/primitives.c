@@ -286,6 +286,15 @@ int kwrite8(uint64_t va, uint8_t v)
 	return kwritebuf(va, &v, sizeof(v));
 }
 
+int kcall(uint64_t *result, uint64_t func, int argc, const uint64_t *argv)
+{
+	if (gPrimitives.kcall) {
+		*result = gPrimitives.kcall(func, argc, argv);
+		return 0;
+	}
+	return -1;
+}
+
 int kmap(uint64_t pa, uint64_t size, void **uaddr)
 {
 	if (gPrimitives.kmap) {

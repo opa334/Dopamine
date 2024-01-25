@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "idownload",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pinauten/iDownload",
+      "state" : {
+        "branch" : "master",
+        "revision" : "62920e864f06af4b0a50a0aa9b6e0a7c7bd83a6f"
+      }
+    },
+    {
+      "identity" : "swiftutils",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pinauten/SwiftUtils",
+      "state" : {
+        "branch" : "master",
+        "revision" : "1d37faabb4c58b3152394c9b6e1c1a68507646b9"
+      }
+    }
+  ],
+  "version" : 2
+}

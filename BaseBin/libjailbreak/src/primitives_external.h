@@ -6,6 +6,7 @@ struct kernel_primitives {
 	int (*kwritebuf)(uint64_t kaddr, const void* input, size_t size);
 	int (*physreadbuf)(uint64_t physaddr, void* output, size_t size);
 	int (*physwritebuf)(uint64_t physaddr, const void* input, size_t size);
+	uint64_t (*kcall)(uint64_t func, int argc, const uint64_t *argv);
 	int (*kalloc_global)(uint64_t *addr, uint64_t size);
 	int (*kalloc_user)(uint64_t *addr, uint64_t size);
 	int (*kfree_global)(uint64_t addr, uint64_t size);
