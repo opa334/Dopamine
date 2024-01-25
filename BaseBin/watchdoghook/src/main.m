@@ -34,6 +34,6 @@ kern_return_t IOConnectCallStructMethod_hook(mach_port_t connection, uint32_t se
 
 __attribute__((constructor)) static void initializer(void)
 {
-	MSHookFunction(IOServiceOpen, (void *)&IOServiceOpen_hook, (void **)&IOServiceOpen_orig);
-	MSHookFunction(IOConnectCallStructMethod, (void *)&IOConnectCallStructMethod_hook, (void **)&IOConnectCallStructMethod_orig);
+	//MSHookFunction(IOServiceOpen, (void *)&IOServiceOpen_hook, (void **)&IOServiceOpen_orig);
+	//MSHookFunction(IOConnectCallStructMethod, (void *)&IOConnectCallStructMethod_hook, (void **)&IOConnectCallStructMethod_orig);
 }
