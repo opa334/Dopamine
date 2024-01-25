@@ -36,7 +36,7 @@ void jbinfo_initialize_hardcoded_offsets(void)
 		}
 	}
 
-	uint32_t pmapEl2Adjust = ((kconstant(exceptionLevel) == 8) ? 8 : 0);
+	uint32_t pmapEl2Adjust = ((kconstant(exceptionLevel) == 2) ? 8 : 0);
 
 	// proc
 	gSystemInfo.kernelStruct.proc.list_next =  0x0;
