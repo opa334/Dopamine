@@ -17,7 +17,7 @@ struct system_info {
 		uint64_t physBase;
 		uint64_t physSize;
 		uint64_t cpuTTEP;
-		uint64_t exceptionLevel;
+		uint64_t kernel_el;
 		uint64_t pointer_mask;
 		uint64_t T1SZ_BOOT;
 		uint64_t ARM_TT_L1_INDEX_MASK;
@@ -205,7 +205,7 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelConstant.physBase); \
     iterator(ctx, kernelConstant.physSize); \
     iterator(ctx, kernelConstant.cpuTTEP); \
-    iterator(ctx, kernelConstant.exceptionLevel); \
+    iterator(ctx, kernelConstant.kernel_el); \
     iterator(ctx, kernelConstant.pointer_mask); \
     iterator(ctx, kernelConstant.T1SZ_BOOT); \
     iterator(ctx, kernelConstant.ARM_TT_L1_INDEX_MASK); \
