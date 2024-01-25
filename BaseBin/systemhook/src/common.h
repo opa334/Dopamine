@@ -3,10 +3,8 @@
 #include <xpc/xpc.h>
 
 #define HOOK_DYLIB_PATH "/usr/lib/systemhook.dylib"
-extern char *JB_SandboxExtensions;
 extern char *JB_BootUUID;
 extern char *JB_RootPath;
-extern bool swh_is_debugged;
 
 bool stringStartsWith(const char *str, const char* prefix);
 bool stringEndsWith(const char* str, const char* suffix);

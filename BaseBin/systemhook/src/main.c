@@ -32,35 +32,28 @@ bool dlopen_preflight(const char* path);
    __attribute__((used)) static struct{ const void* replacement; const void* replacee; } _interpose_##_replacee \
 			__attribute__ ((section ("__DATA,__interpose"))) = { (const void*)(unsigned long)&_replacement, (const void*)(unsigned long)&_replacee };
 
-void unsandbox(void) {
-	if (JB_SandboxExtensions) {
-		char extensionsCopy[strlen(JB_SandboxExtensions + 1)];
-		strcpy(extensionsCopy, JB_SandboxExtensions);
-		char *extensionToken = strtok(extensionsCopy, "|");
-		while (extensionToken != NULL) {
-			sandbox_extension_consume(extensionToken);
-			extensionToken = strtok(NULL, "|");
-		}
+static char gExecutablePath[PATH_MAX];
+static int loadExecutablePath(void)
+{
+	char executablePath[PATH_MAX];
+	uint32_t bufsize = PATH_MAX;
+	if (_NSGetExecutablePath(executablePath, &bufsize) == 0) {
+		if (realpath(executablePath, gExecutablePath) != NULL) return 0;
 	}
+	return -1;
 }
 
-static char *gExecutablePath = NULL;
-static void loadExecutablePath(void)
+static char *JB_SandboxExtensions = NULL;
+void applySandboxExtensions(void)
 {
-	uint32_t bufsize = 0;
-	_NSGetExecutablePath(NULL, &bufsize);
-	char *executablePath = malloc(bufsize);
-	_NSGetExecutablePath(executablePath, &bufsize);
-	if (executablePath) {
-		gExecutablePath = realpath(executablePath, NULL);
-		free(executablePath);
-	}
-}
-static void freeExecutablePath(void)
-{
-	if (gExecutablePath) {
-		free(gExecutablePath);
-		gExecutablePath = NULL;
+	if (JB_SandboxExtensions) {
+		char *JB_SandboxExtensions_dup = strdup(JB_SandboxExtensions);
+		char *extension = strtok(JB_SandboxExtensions_dup, "|");
+		while (extension != NULL) {
+			sandbox_extension_consume(extension);
+			extension = strtok(NULL, "|");
+		}
+		free(JB_SandboxExtensions_dup);
 	}
 }
 
@@ -303,7 +296,7 @@ int sandbox_init_hook(const char *profile, uint64_t flags, char **errorbuf)
 {
 	int retval = sandbox_init(profile, flags, errorbuf);
 	if (retval == 0) {
-		unsandbox();
+		applySandboxExtensions();
 	}
 	return retval;
 }
@@ -312,7 +305,7 @@ int sandbox_init_with_parameters_hook(const char *profile, uint64_t flags, const
 {
 	int retval = sandbox_init_with_parameters(profile, flags, parameters, errorbuf);
 	if (retval == 0) {
-		unsandbox();
+		applySandboxExtensions();
 	}
 	return retval;
 }
@@ -321,7 +314,7 @@ int sandbox_init_with_extensions_hook(const char *profile, uint64_t flags, const
 {
 	int retval = sandbox_init_with_extensions(profile, flags, extensions, errorbuf);
 	if (retval == 0) {
-		unsandbox();
+		applySandboxExtensions();
 	}
 	return retval;
 }
@@ -425,15 +418,15 @@ __attribute__((constructor)) static void initializer(void)
 {
 	jbclient_process_checkin(&JB_RootPath, &JB_BootUUID, &JB_SandboxExtensions);
 
+	// Apply sandbox extensions
+	applySandboxExtensions();
+
+	// Unset DYLD_INSERT_LIBRARIES, but only if systemhook itself is the only thing contained in it
 	if (!strcmp(getenv("DYLD_INSERT_LIBRARIES"), HOOK_DYLIB_PATH)) {
-		// Unset DYLD_INSERT_LIBRARIES, but only if systemhook itself is the only thing contained in it
 		unsetenv("DYLD_INSERT_LIBRARIES");
 	}
 
-	unsandbox();
-	loadExecutablePath();
-
-	if (gExecutablePath) {
+	if (loadExecutablePath() == 0) {
 		if (strcmp(gExecutablePath, "/System/Library/CoreServices/SpringBoard.app/SpringBoard") == 0) {
 			applyKbdFix();
 		}
@@ -443,20 +436,18 @@ __attribute__((constructor)) static void initializer(void)
 		else if (strcmp(gExecutablePath, "/usr/libexec/watchdogd") == 0) {
 			dlopen_hook(JBRootPath("/basebin/watchdoghook.dylib"), RTLD_NOW);
 		}
-	}
 
-	if (shouldEnableTweaks()) {
-		const char *tweakLoaderPath = "/var/jb/usr/lib/TweakLoader.dylib";
-		if(access(tweakLoaderPath, F_OK) == 0) {
-			gTweaksEnabled = true;
-			void *tweakLoaderHandle = dlopen_hook(tweakLoaderPath, RTLD_NOW);
-			if (tweakLoaderHandle != NULL) {
-				dlclose(tweakLoaderHandle);
+		if (shouldEnableTweaks()) {
+			const char *tweakLoaderPath = "/var/jb/usr/lib/TweakLoader.dylib";
+			if(access(tweakLoaderPath, F_OK) == 0) {
+				gTweaksEnabled = true;
+				void *tweakLoaderHandle = dlopen_hook(tweakLoaderPath, RTLD_NOW);
+				if (tweakLoaderHandle != NULL) {
+					dlclose(tweakLoaderHandle);
+				}
 			}
 		}
 	}
-
-	freeExecutablePath();
 }
 
 DYLD_INTERPOSE(posix_spawn_hook, posix_spawn)
