@@ -104,6 +104,7 @@ int physrw_pte_physwritebuf(uint64_t pa, const void* input, size_t size)
 
 int libjailbreak_physrw_pte_init(void)
 {
+	thread_caffeinate_start();
 	uint64_t pmap = pmap_self();
 
 	uint64_t ttep = kread64(pmap + koffsetof(pmap, ttep));
@@ -135,7 +136,10 @@ int libjailbreak_physrw_pte_init(void)
 
 	leafLevel = PMAP_TT_L2_LEVEL;
 	uint64_t magicPT = vtophys_lvl(ttep, MAGIC_PT_ADDRESS, &leafLevel, NULL);
-	if (!magicPT) return -1;
+	if (!magicPT) {
+		thread_caffeinate_stop();
+		return -1;
+	}
 	physwrite64(magicPT, magicPT | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY);
 
 	// Map in the pmap at MAGIC_PT_ADDRESS+PAGE_SIZE
@@ -146,7 +150,10 @@ int libjailbreak_physrw_pte_init(void)
 	gSwAsid = (uint8_t *)(MAGIC_PT_ADDRESS + PAGE_SIZE + sw_asid_pageoff);
 	physwrite64(magicPT+8, sw_asid_page_pa | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY);
 
-	if (pthread_mutex_init(&gLock, NULL) != 0) return -2;
+	if (pthread_mutex_init(&gLock, NULL) != 0) {
+		thread_caffeinate_stop();
+		return -2;
+	}
 
 	gPrimitives.physreadbuf = physrw_pte_physreadbuf;
 	gPrimitives.physwritebuf = physrw_pte_physwritebuf;
@@ -154,6 +161,7 @@ int libjailbreak_physrw_pte_init(void)
 	gPrimitives.kwritebuf = NULL;
 
 	flush_tlb();
+	thread_caffeinate_stop();
 
 	return 0;
 }

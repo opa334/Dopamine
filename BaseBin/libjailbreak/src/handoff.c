@@ -76,7 +76,9 @@ int handoff_ppl_primitives(pid_t pid)
 				uint64_t pmap = kread_ptr(vmMap + koffsetof(vm_map, pmap));
 				if (pmap) {
 					// Map the entire kernel physical address space into the userland process, starting at PPLRW_USER_MAPPING_OFFSET
+					thread_caffeinate_start();
 					ret = pmap_map_in(pmap, kconstant(physBase)+PPLRW_USER_MAPPING_OFFSET, kconstant(physBase), kconstant(physSize));
+					thread_caffeinate_stop();
 				}
 				else { ret = -5; }
 			}
