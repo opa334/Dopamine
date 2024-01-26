@@ -260,7 +260,7 @@ int execvp_hook(const char *name, char * const *argv)
 
 void* dlopen_hook(const char* path, int mode)
 {
-	if (path) {
+	if (path && !(mode & RTLD_NOLOAD)) {
 		jbclient_trust_library(path);
 	}
 	
@@ -270,7 +270,7 @@ void* dlopen_hook(const char* path, int mode)
 
 void* dlopen_from_hook(const char* path, int mode, void* addressInCaller)
 {
-	if (path) {
+	if (path && !(mode & RTLD_NOLOAD)) {
 		jbclient_trust_library(path);
 	}
 	return dlopen_from(path, mode, addressInCaller);
@@ -278,7 +278,7 @@ void* dlopen_from_hook(const char* path, int mode, void* addressInCaller)
 
 void* dlopen_audited_hook(const char* path, int mode)
 {
-	if (path) {
+	if (path && !(mode & RTLD_NOLOAD)) {
 		jbclient_trust_library(path);
 	}
 	return dlopen_audited(path, mode);

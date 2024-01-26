@@ -33,9 +33,9 @@ static int trust_file(const char *filePath, const char *dlopenCallerPath)
 	// Shared logic between client and server, implemented in client
 	// This should essentially mean these files never reach us in the first place
 	// But you know, never trust the client :D
-	extern bool can_skip_trusting_file(const char *filePath, bool isLibrary);
+	extern bool can_skip_trusting_file(const char *filePath, bool isLibrary, bool isClient);
 
-	if (can_skip_trusting_file(filePath, (bool)dlopenCallerPath)) return -1;
+	if (can_skip_trusting_file(filePath, (bool)dlopenCallerPath, false)) return -1;
 
 	cdhash_t *cdhashes = NULL;
 	uint32_t cdhashesCount = 0;

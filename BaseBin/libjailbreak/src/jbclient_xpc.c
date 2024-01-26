@@ -136,7 +136,7 @@ char *jbclient_get_boot_uuid(void)
 	return (char *)&bootUUID[0];
 }
 
-bool can_skip_trusting_file(const char *filePath, bool isLibrary)
+bool can_skip_trusting_file(const char *filePath, bool isLibrary, bool isClient)
 {
 	if (!filePath) return true;
 
@@ -149,17 +149,38 @@ bool can_skip_trusting_file(const char *filePath, bool isLibrary)
 	// If the file doesn't exist, there is nothing to trust :D
 	if (access(filePath, F_OK) != 0) return true;
 
-	// If the file is on rootfs mount point, it doesn't need to be trusted as it should be in static trust cache
-	// Same goes for our /usr/lib bind mount (which is guaranteed to be in dynamic trust cache)
-	struct statfs fs;
-	int sfsret = statfs(filePath, &fs);
-	if (sfsret == 0) {
-		if (!strcmp(fs.f_mntonname, "/") || !strcmp(fs.f_mntonname, "/usr/lib")) {
-			return true;
+	if (!isClient) {
+		// If the file is on rootfs mount point, it doesn't need to be trusted as it should be in static trust cache
+		// Same goes for our /usr/lib bind mount (which is guaranteed to be in dynamic trust cache)
+		// We can't do this in the client because of protobox bullshit where calling statfs crashes some processes
+		struct statfs fs;
+		int sfsret = statfs(filePath, &fs); // XXX: same protobox bullshit as below, just with statfs
+		if (sfsret == 0) {
+			if (!strcmp(fs.f_mntonname, "/") || !strcmp(fs.f_mntonname, "/usr/lib")) {
+				return true;
+			}
 		}
 	}
 
 	return false;
+}
+
+char *realafpath(const char *restrict path, char *restrict resolved_path)
+{
+	if (path[0] == '/' || path[0] == '@') {
+		// Running realpath on stuff in /var/jb or on rootfs causes some processes, on some devices, to crash
+		// If it starts with /, it's not a relative path and we can skip calling realpath on it
+		// We only care about resolving relative paths, so we can skip anything that doesn't look like one
+		// As a side effect, we also ignore loader relative paths that start with (@rpath/@executable_path/@loader_path)
+		if (!resolved_path) {
+			resolved_path = malloc(PATH_MAX);
+		}
+		strlcpy(resolved_path, path, PATH_MAX);
+		return resolved_path;
+	}
+	else {
+		return realpath(path, resolved_path);
+	}
 }
 
 int jbclient_trust_binary(const char *binaryPath)
@@ -167,9 +188,9 @@ int jbclient_trust_binary(const char *binaryPath)
 	if (!binaryPath) return -1;
 
 	char absolutePath[PATH_MAX];
-	if (realpath(binaryPath, absolutePath) == NULL) return -1;
+	if (realafpath(binaryPath, absolutePath) == NULL) return -1;
 
-	if (can_skip_trusting_file(absolutePath, false)) return -1;
+	if (can_skip_trusting_file(absolutePath, false, true)) return -1;
 
 	xpc_object_t xargs = xpc_dictionary_create_empty();
 	xpc_dictionary_set_string(xargs, "binary-path", absolutePath);
@@ -189,14 +210,9 @@ int jbclient_trust_library(const char *libraryPath)
 
 	// If not a dynamic path (@rpath, @executable_path, @loader_path), resolve to absolute path
 	char absolutePath[PATH_MAX];
-	if (libraryPath[0] != '@') {
-		if (realpath(libraryPath, absolutePath) == NULL) return -1;
-	}
-	else {
-		strlcpy(absolutePath, libraryPath, PATH_MAX);
-	}
+	if (realafpath(libraryPath, absolutePath) == NULL) return -1;
 
-	if (can_skip_trusting_file(absolutePath, true)) return -1;
+	if (can_skip_trusting_file(absolutePath, true, true)) return -1;
 
 	xpc_object_t xargs = xpc_dictionary_create_empty();
 	xpc_dictionary_set_string(xargs, "library-path", absolutePath);
