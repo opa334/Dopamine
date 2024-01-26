@@ -46,7 +46,7 @@
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    _table.frame = CGRectMake(12, 10, self.view.bounds.size.width - 24, self.view.bounds.size.height - 20);
+    _table.frame = CGRectMake(12, 5, self.view.bounds.size.width - 24, self.view.bounds.size.height - 10);
 }
 
 #pragma mark - Status Bar

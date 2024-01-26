@@ -15,7 +15,7 @@
     {
         UILabel *titleLabel = [[UILabel alloc] init];
         [titleLabel setText:[specifier propertyForKey:@"title"]];
-        [titleLabel setFont:[UIFont systemFontOfSize:18 weight:UIFontWeightMedium]];
+        [titleLabel setFont:[UIFont systemFontOfSize:17 weight:UIFontWeightMedium]];
         [titleLabel setTextColor:[UIColor whiteColor]];
         titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -34,7 +34,7 @@
         [NSLayoutConstraint activateConstraints:@[
             [border.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:20],
             [border.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-20],
-            [border.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-14],
+            [border.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-10],
             [border.heightAnchor constraintEqualToConstant:1]
         ]];
     }
@@ -43,7 +43,7 @@
 
 - (CGFloat)preferredHeightForWidth:(CGFloat)width
 {
-	return 75;
+	return 72;
 }
 
 @end
