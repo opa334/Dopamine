@@ -11,6 +11,49 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <mach/mach_time.h>
+#include <pthread.h>
+
+// code from ktrw by Brandon Azad : https://github.com/googleprojectzero/ktrw
+// A worker thread for activity_thread that just spins.
+static void* worker_thread(void *arg)
+{
+    uint64_t end = *(uint64_t *)arg;
+    for (;;) {
+        close(-1);
+        uint64_t now = mach_absolute_time();
+        if (now >= end) {
+            break;
+        }
+    }
+    return NULL;
+}
+
+// A thread to alternately spin and sleep.
+static void* activity_thread(void *arg)
+{
+    volatile bool *running = arg;
+    struct mach_timebase_info tb;
+    mach_timebase_info(&tb);
+    const unsigned milliseconds = 40;
+    const unsigned worker_count = 10;
+    while (*running) {
+        // Spin for one period on multiple threads.
+        uint64_t start = mach_absolute_time();
+        uint64_t end = start + milliseconds * 1000 * 1000 * tb.denom / tb.numer;
+        pthread_t worker[worker_count];
+        for (unsigned i = 0; i < worker_count; i++) {
+            pthread_create(&worker[i], NULL, worker_thread, &end);
+        }
+        worker_thread(&end);
+        for (unsigned i = 0; i < worker_count; i++) {
+            pthread_join(worker[i], NULL);
+        }
+        // Sleep for one period.
+        usleep(milliseconds * 1000);
+    }
+    return NULL;
+}
 
 int pmap_map_in(uint64_t pmap, uint64_t uaStart, uint64_t paStart, uint64_t size)
 {
@@ -75,8 +118,18 @@ int handoff_ppl_primitives(pid_t pid)
 			if (vmMap) {
 				uint64_t pmap = kread_ptr(vmMap + koffsetof(vm_map, pmap));
 				if (pmap) {
+                    // Start a thread with an uneven activity pattern so that we're more likely to be bumped
+                    // around CPUs, which helps the KTRR bypass work more quickly.
+                    pthread_t pthread;
+                    bool run = true;
+                    pthread_create(&pthread, NULL, activity_thread, &run);
+                    
 					// Map the entire kernel physical address space into the userland process, starting at PPLRW_USER_MAPPING_OFFSET
 					ret = pmap_map_in(pmap, kconstant(physBase)+PPLRW_USER_MAPPING_OFFSET, kconstant(physBase), kconstant(physSize));
+                    
+                    // Join the thread.
+                    run = false;
+                    pthread_join(pthread, NULL);
 				}
 				else { ret = -5; }
 			}
