@@ -10,7 +10,7 @@
 			<key>headerCellClass</key>
 			<string>DOHeaderCell</string>
 			<key>title</key>
-			<string>Credits</string>
+			<string>Made by opa334, évelyne</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -53,6 +53,81 @@
 			<string>bubble.left.and.bubble.right.fill</string>
 			<key>action</key>
 			<string>openDiscord</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>headerCellClass</key>
+			<string>DOCreditsCell</string>
+			<key>names</key>
+			<array>
+				<dict>
+					<key>name</key>
+					<string>opa334</string>
+					<key>link</key>
+					<string>https://apple.com</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>Évelyne</string>
+					<key>link</key>
+					<string>https://apple.com</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>opa334</string>
+					<key>link</key>
+					<string>https://apple.com</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>Évelyne</string>
+					<key>link</key>
+					<string>https://apple.com</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>opa334</string>
+					<key>link</key>
+					<string>https://apple.com</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>Évelyne</string>
+					<key>link</key>
+					<string>https://apple.com</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>opa334</string>
+					<key>link</key>
+					<string>https://apple.com</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>Évelyne</string>
+					<key>link</key>
+					<string>https://apple.com</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>opa334</string>
+					<key>link</key>
+					<string>https://apple.com</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>Évelyne</string>
+					<key>link</key>
+					<string>https://apple.com</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string></string>
 		</dict>
 	</array>
 	<key>title</key>
