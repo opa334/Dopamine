@@ -239,7 +239,7 @@ void thread_caffeinate_stop(void)
 {
 	if (gCaffeinateThreadRunCount == 0) return;
 	gCaffeinateThreadRunCount--;
-	if (gCaffeinateThreadRunCount) {
+	if (gCaffeinateThreadRunCount == 0) {
 		pthread_join(gCaffeinateThread, NULL);
 	}
 }
