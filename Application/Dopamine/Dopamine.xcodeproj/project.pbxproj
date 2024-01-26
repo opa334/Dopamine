@@ -7,11 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		040A86752B597C1400778869 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 040A86742B597C1400778869 /* UIKit.framework */; };
-		040A86772B597CBB00778869 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 040A86762B597CBB00778869 /* AddressBook.framework */; };
+		040683152B618BEE00049503 /* DOUIManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 040683142B618BEE00049503 /* DOUIManager.m */; };
 		040A867B2B59925C00778869 /* DOLoadingIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 040A867A2B59925C00778869 /* DOLoadingIndicator.m */; };
 		040A867E2B59C3A300778869 /* DOProgressiveBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 040A867D2B59C3A300778869 /* DOProgressiveBlurView.m */; };
 		040A86812B59CC6100778869 /* DODoubleHelixIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 040A86802B59CC6100778869 /* DODoubleHelixIndicator.m */; };
+		042479582B642BAE0082581B /* DOHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042479572B642BAE0082581B /* DOHeaderCell.m */; };
+		0424795B2B6431DA0082581B /* DOButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424795A2B6431D90082581B /* DOButtonCell.m */; };
+		0424795D2B643F6D0082581B /* Credits.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0424795C2B643F6D0082581B /* Credits.plist */; };
+		042479602B6444D80082581B /* DOPSListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424795F2B6444D80082581B /* DOPSListController.m */; };
+		042479642B644CEB0082581B /* DOCreditsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042479632B644CEB0082581B /* DOCreditsCell.m */; };
 		04419F862B46CA8000B1A686 /* DOHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04419F852B46CA8000B1A686 /* DOHeaderView.m */; };
 		04419F882B46CA8900B1A686 /* DOHeaderView.h in Sources */ = {isa = PBXBuildFile; fileRef = 04419F872B46CA8900B1A686 /* DOHeaderView.h */; };
 		04419F912B46DC3300B1A686 /* DONavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04419F902B46DC3300B1A686 /* DONavigationController.m */; };
@@ -26,6 +30,8 @@
 		044EF0D82B52076A0081F37B /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 044EF0D72B52076A0081F37B /* Preferences.framework */; };
 		044EF0E02B5214040081F37B /* DOLyricsLogView.m in Sources */ = {isa = PBXBuildFile; fileRef = 044EF0DF2B5214040081F37B /* DOLyricsLogView.m */; };
 		044EF0E52B52181A0081F37B /* DOJailbreakButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 044EF0E42B52181A0081F37B /* DOJailbreakButton.m */; };
+		046C1F262B6009EF00EABE8B /* DODebugLogView.m in Sources */ = {isa = PBXBuildFile; fileRef = 046C1F252B6009EE00EABE8B /* DODebugLogView.m */; };
+		046C1F312B616C9000EABE8B /* DOModalBackAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 046C1F302B616C9000EABE8B /* DOModalBackAction.m */; };
 		048E43E62B59DBD100A41C34 /* DOLyricsLogItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 048E43E52B59DBD100A41C34 /* DOLyricsLogItemView.m */; };
 		8C3245582AD5E24F001EC3CA /* GlobalAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3245572AD5E24F001EC3CA /* GlobalAppearance.m */; };
 		8C71981A2ABF0E82003C6658 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7198192ABF0E82003C6658 /* AppDelegate.m */; };
@@ -37,6 +43,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		040683132B618BEE00049503 /* DOUIManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOUIManager.h; sourceTree = "<group>"; };
+		040683142B618BEE00049503 /* DOUIManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOUIManager.m; sourceTree = "<group>"; };
 		040A86742B597C1400778869 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		040A86762B597CBB00778869 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		040A86792B59925C00778869 /* DOLoadingIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOLoadingIndicator.h; sourceTree = "<group>"; };
@@ -45,6 +53,15 @@
 		040A867D2B59C3A300778869 /* DOProgressiveBlurView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOProgressiveBlurView.m; sourceTree = "<group>"; };
 		040A867F2B59CC6100778869 /* DODoubleHelixIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DODoubleHelixIndicator.h; sourceTree = "<group>"; };
 		040A86802B59CC6100778869 /* DODoubleHelixIndicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DODoubleHelixIndicator.m; sourceTree = "<group>"; };
+		042479562B642BAE0082581B /* DOHeaderCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOHeaderCell.h; sourceTree = "<group>"; };
+		042479572B642BAE0082581B /* DOHeaderCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOHeaderCell.m; sourceTree = "<group>"; };
+		042479592B6431D90082581B /* DOButtonCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOButtonCell.h; sourceTree = "<group>"; };
+		0424795A2B6431D90082581B /* DOButtonCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOButtonCell.m; sourceTree = "<group>"; };
+		0424795C2B643F6D0082581B /* Credits.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Credits.plist; sourceTree = "<group>"; };
+		0424795E2B6444D80082581B /* DOPSListController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOPSListController.h; sourceTree = "<group>"; };
+		0424795F2B6444D80082581B /* DOPSListController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOPSListController.m; sourceTree = "<group>"; };
+		042479622B644CEB0082581B /* DOCreditsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOCreditsCell.h; sourceTree = "<group>"; };
+		042479632B644CEB0082581B /* DOCreditsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOCreditsCell.m; sourceTree = "<group>"; };
 		04419F852B46CA8000B1A686 /* DOHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOHeaderView.m; sourceTree = "<group>"; };
 		04419F872B46CA8900B1A686 /* DOHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOHeaderView.h; sourceTree = "<group>"; };
 		04419F8F2B46DC3300B1A686 /* DONavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DONavigationController.h; sourceTree = "<group>"; };
@@ -71,6 +88,12 @@
 		044EF0E22B5214810081F37B /* DOLogViewProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOLogViewProtocol.h; sourceTree = "<group>"; };
 		044EF0E32B52181A0081F37B /* DOJailbreakButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOJailbreakButton.h; sourceTree = "<group>"; };
 		044EF0E42B52181A0081F37B /* DOJailbreakButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOJailbreakButton.m; sourceTree = "<group>"; };
+		046C1F242B6009EE00EABE8B /* DODebugLogView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DODebugLogView.h; sourceTree = "<group>"; };
+		046C1F252B6009EE00EABE8B /* DODebugLogView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DODebugLogView.m; sourceTree = "<group>"; };
+		046C1F272B6166F900EABE8B /* libFLEX.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libFLEX.dylib; path = ../../../../Downloads/libFLEX.dylib; sourceTree = "<group>"; };
+		046C1F2B2B61674C00EABE8B /* FLEX.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = FLEX.dylib; path = ../../../../Desktop/FLEX.dylib; sourceTree = "<group>"; };
+		046C1F2F2B616C9000EABE8B /* DOModalBackAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOModalBackAction.h; sourceTree = "<group>"; };
+		046C1F302B616C9000EABE8B /* DOModalBackAction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOModalBackAction.m; sourceTree = "<group>"; };
 		048E43E42B59DBD100A41C34 /* DOLyricsLogItemView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOLyricsLogItemView.h; sourceTree = "<group>"; };
 		048E43E52B59DBD100A41C34 /* DOLyricsLogItemView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOLyricsLogItemView.m; sourceTree = "<group>"; };
 		8C3245562AD5E24F001EC3CA /* GlobalAppearance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlobalAppearance.h; sourceTree = "<group>"; };
@@ -93,9 +116,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				040A86772B597CBB00778869 /* AddressBook.framework in Frameworks */,
 				044EF0D82B52076A0081F37B /* Preferences.framework in Frameworks */,
-				040A86752B597C1400778869 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,6 +134,19 @@
 			path = Indicator;
 			sourceTree = "<group>";
 		};
+		042479552B642B990082581B /* Specifiers */ = {
+			isa = PBXGroup;
+			children = (
+				042479562B642BAE0082581B /* DOHeaderCell.h */,
+				042479572B642BAE0082581B /* DOHeaderCell.m */,
+				042479592B6431D90082581B /* DOButtonCell.h */,
+				0424795A2B6431D90082581B /* DOButtonCell.m */,
+				042479622B644CEB0082581B /* DOCreditsCell.h */,
+				042479632B644CEB0082581B /* DOCreditsCell.m */,
+			);
+			path = Specifiers;
+			sourceTree = "<group>";
+		};
 		04419F9B2B4B73A700B1A686 /* Transition */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +154,8 @@
 				04419F9C2B4B73C100B1A686 /* DOModalTransitionPush.h */,
 				04419FA22B4B7B3600B1A686 /* DOModalTransitionPop.m */,
 				04419F9D2B4B73C100B1A686 /* DOModalTransitionPush.m */,
+				046C1F2F2B616C9000EABE8B /* DOModalBackAction.h */,
+				046C1F302B616C9000EABE8B /* DOModalBackAction.m */,
 			);
 			path = Transition;
 			sourceTree = "<group>";
@@ -139,6 +175,8 @@
 		04419FB72B4B89AA00B1A686 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				046C1F2B2B61674C00EABE8B /* FLEX.dylib */,
+				046C1F272B6166F900EABE8B /* libFLEX.dylib */,
 				040A86762B597CBB00778869 /* AddressBook.framework */,
 				040A86742B597C1400778869 /* UIKit.framework */,
 				044EF0D72B52076A0081F37B /* Preferences.framework */,
@@ -149,11 +187,15 @@
 		044EF0DB2B52078A0081F37B /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				042479552B642B990082581B /* Specifiers */,
 				04419FB42B4B892200B1A686 /* DOSettingsController.h */,
 				04419FB52B4B892200B1A686 /* DOSettingsController.m */,
 				04419FA92B4B80A500B1A686 /* DOCreditsViewController.h */,
 				04419FAA2B4B80A500B1A686 /* DOCreditsViewController.m */,
+				0424795C2B643F6D0082581B /* Credits.plist */,
 				044EF0D52B5203270081F37B /* Settings.plist */,
+				0424795E2B6444D80082581B /* DOPSListController.h */,
+				0424795F2B6444D80082581B /* DOPSListController.m */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -169,6 +211,8 @@
 				040A867D2B59C3A300778869 /* DOProgressiveBlurView.m */,
 				048E43E42B59DBD100A41C34 /* DOLyricsLogItemView.h */,
 				048E43E52B59DBD100A41C34 /* DOLyricsLogItemView.m */,
+				046C1F242B6009EE00EABE8B /* DODebugLogView.h */,
+				046C1F252B6009EE00EABE8B /* DODebugLogView.m */,
 			);
 			path = Log;
 			sourceTree = "<group>";
@@ -222,6 +266,8 @@
 				8C3245572AD5E24F001EC3CA /* GlobalAppearance.m */,
 				044EF0E32B52181A0081F37B /* DOJailbreakButton.h */,
 				044EF0E42B52181A0081F37B /* DOJailbreakButton.m */,
+				040683132B618BEE00049503 /* DOUIManager.h */,
+				040683142B618BEE00049503 /* DOUIManager.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -311,6 +357,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C7198282ABF0E84003C6658 /* LaunchScreen.storyboard in Resources */,
+				0424795D2B643F6D0082581B /* Credits.plist in Resources */,
 				8C7198252ABF0E84003C6658 /* Assets.xcassets in Resources */,
 				044EF0D62B5203270081F37B /* Settings.plist in Resources */,
 			);
@@ -327,19 +374,26 @@
 				8C71981A2ABF0E82003C6658 /* AppDelegate.m in Sources */,
 				044EF0E02B5214040081F37B /* DOLyricsLogView.m in Sources */,
 				04419FAB2B4B80A500B1A686 /* DOCreditsViewController.m in Sources */,
+				0424795B2B6431DA0082581B /* DOButtonCell.m in Sources */,
 				04419F882B46CA8900B1A686 /* DOHeaderView.h in Sources */,
+				046C1F312B616C9000EABE8B /* DOModalBackAction.m in Sources */,
 				040A867B2B59925C00778869 /* DOLoadingIndicator.m in Sources */,
 				8C9E46292ACA1CC700B5456A /* UIImage+Blur.m in Sources */,
 				04419F912B46DC3300B1A686 /* DONavigationController.m in Sources */,
 				04419F862B46CA8000B1A686 /* DOHeaderView.m in Sources */,
+				042479582B642BAE0082581B /* DOHeaderCell.m in Sources */,
 				8C71982B2ABF0E84003C6658 /* main.m in Sources */,
 				048E43E62B59DBD100A41C34 /* DOLyricsLogItemView.m in Sources */,
+				040683152B618BEE00049503 /* DOUIManager.m in Sources */,
+				042479642B644CEB0082581B /* DOCreditsCell.m in Sources */,
 				04419F9E2B4B73C100B1A686 /* DOModalTransitionPush.m in Sources */,
+				046C1F262B6009EF00EABE8B /* DODebugLogView.m in Sources */,
 				04419FB62B4B892200B1A686 /* DOSettingsController.m in Sources */,
 				040A86812B59CC6100778869 /* DODoubleHelixIndicator.m in Sources */,
 				8C3245582AD5E24F001EC3CA /* GlobalAppearance.m in Sources */,
 				04419F942B46E9D800B1A686 /* DOActionMenuView.m in Sources */,
 				044EF0E52B52181A0081F37B /* DOJailbreakButton.m in Sources */,
+				042479602B6444D80082581B /* DOPSListController.m in Sources */,
 				04419FA32B4B7B3600B1A686 /* DOModalTransitionPop.m in Sources */,
 				040A867E2B59C3A300778869 /* DOProgressiveBlurView.m in Sources */,
 				04419F9A2B4B704C00B1A686 /* DOMainViewController.m in Sources */,
@@ -480,6 +534,7 @@
 		8C71982F2ABF0E84003C6658 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -514,6 +569,7 @@
 		8C7198302ABF0E84003C6658 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
