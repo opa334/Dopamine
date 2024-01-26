@@ -27,6 +27,9 @@ uint64_t task_get_ipc_port_kobject(uint64_t task, mach_port_t port);
 uint64_t alloc_page_table_unassigned(void);
 uint64_t pmap_alloc_page_table(uint64_t pmap, uint64_t va);
 
+void thread_caffeinate_start(void);
+void thread_caffeinate_stop(void);
+
 int exec_cmd(const char *binary, ...);
 #define exec_cmd_trusted(x, args ...) ({ \
     jbclient_trust_binary(x); \

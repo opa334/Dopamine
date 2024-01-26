@@ -4,6 +4,8 @@
 #include "kernel.h"
 #include "translation.h"
 #include <spawn.h>
+#include <mach/mach_time.h>
+#include <pthread.h>
 extern char **environ;
 
 void proc_iterate(void (^itBlock)(uint64_t, bool*))
@@ -78,6 +80,8 @@ uint64_t task_get_ipc_port_kobject(uint64_t task, mach_port_t port)
 
 uint64_t alloc_page_table_unassigned(void)
 {
+	thread_caffeinate_start();
+
 	uint64_t pmap = pmap_self();
 	uint64_t ttep = kread64(pmap + koffsetof(pmap, ttep));
 
@@ -115,6 +119,8 @@ uint64_t alloc_page_table_unassigned(void)
 	uint8_t empty[PAGE_SIZE];
 	memset(empty, 0, PAGE_SIZE);
 	physwritebuf(allocatedPT, empty, PAGE_SIZE);
+
+	thread_caffeinate_stop();
 
 	return allocatedPT;
 }
@@ -174,4 +180,66 @@ int exec_cmd(const char *binary, ...)
 	} while (!WIFEXITED(status) && !WIFSIGNALED(status));
 
 	return status;
+}
+
+// code from ktrw by Brandon Azad : https://github.com/googleprojectzero/ktrw
+// A worker thread for activity_thread that just spins.
+static void* worker_thread(void *arg)
+{
+	uint64_t end = *(uint64_t *)arg;
+	for (;;) {
+		close(-1);
+		uint64_t now = mach_absolute_time();
+		if (now >= end) {
+			break;
+		}
+	}
+	return NULL;
+}
+
+// A thread to alternately spin and sleep.
+static void* activity_thread(void *arg)
+{
+	volatile uint64_t *runCount = arg;
+	struct mach_timebase_info tb;
+	mach_timebase_info(&tb);
+	const unsigned milliseconds = 40;
+	const unsigned worker_count = 10;
+	while (*runCount != 0) {
+		// Spin for one period on multiple threads.
+		uint64_t start = mach_absolute_time();
+		uint64_t end = start + milliseconds * 1000 * 1000 * tb.denom / tb.numer;
+		pthread_t worker[worker_count];
+		for (unsigned i = 0; i < worker_count; i++) {
+			pthread_create(&worker[i], NULL, worker_thread, &end);
+		}
+		worker_thread(&end);
+		for (unsigned i = 0; i < worker_count; i++) {
+			pthread_join(worker[i], NULL);
+		}
+		// Sleep for one period.
+		usleep(milliseconds * 1000);
+	}
+	return NULL;
+}
+
+static uint64_t gCaffeinateThreadRunCount = 0;
+static pthread_t gCaffeinateThread = NULL;
+
+void thread_caffeinate_start(void)
+{
+	if (gCaffeinateThreadRunCount == UINT64_MAX) return;
+	gCaffeinateThreadRunCount++;
+	if (gCaffeinateThreadRunCount == 1) {
+		pthread_create(&gCaffeinateThread, NULL, activity_thread, &gCaffeinateThreadRunCount);
+	}
+}
+
+void thread_caffeinate_stop(void)
+{
+	if (gCaffeinateThreadRunCount == 0) return;
+	gCaffeinateThreadRunCount--;
+	if (gCaffeinateThreadRunCount) {
+		pthread_join(gCaffeinateThread, NULL);
+	}
 }
