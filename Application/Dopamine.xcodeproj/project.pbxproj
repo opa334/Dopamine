@@ -15,7 +15,6 @@
 		8C029F662B4E2E970071DE58 /* libcompression.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F652B4E2E7D0071DE58 /* libcompression.tbd */; };
 		8C029F682B4E31D50071DE58 /* libMobileGestalt.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F672B4E31D50071DE58 /* libMobileGestalt.tbd */; };
 		8C029F6B2B4E320E0071DE58 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F6A2B4E320E0071DE58 /* libz.tbd */; };
-		8C05B0062B63152B001A7CF3 /* badRecovery.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C05B0052B63152B001A7CF3 /* badRecovery.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C05B00F2B631532001A7CF3 /* libjailbreak.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */; platformFilter = ios; };
 		8C05B0142B6315DB001A7CF3 /* badRecovery.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C05B0132B6315DB001A7CF3 /* badRecovery.m */; };
 		8C05B0152B631738001A7CF3 /* badRecovery.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8C05B0032B63152B001A7CF3 /* badRecovery.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -148,10 +147,10 @@
 		8C029F672B4E31D50071DE58 /* libMobileGestalt.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libMobileGestalt.tbd; path = usr/lib/libMobileGestalt.tbd; sourceTree = SDKROOT; };
 		8C029F6A2B4E320E0071DE58 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		8C05B0032B63152B001A7CF3 /* badRecovery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = badRecovery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8C05B0052B63152B001A7CF3 /* badRecovery.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = badRecovery.h; sourceTree = "<group>"; };
 		8C05B0132B6315DB001A7CF3 /* badRecovery.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = badRecovery.m; sourceTree = "<group>"; };
 		8C05B0162B6319D7001A7CF3 /* badRecovery.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = badRecovery.h; sourceTree = "<group>"; };
 		8C05B0172B632925001A7CF3 /* badRecovery.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = badRecovery.s; sourceTree = "<group>"; };
+		8C1FC8422B6460FD00282536 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8C2131782B50CA4B008E682C /* krkw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = krkw.h; sourceTree = "<group>"; };
 		8C21317B2B50CA4B008E682C /* kread_sem_open.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kread_sem_open.h; sourceTree = "<group>"; };
 		8C21317C2B50CA4B008E682C /* kread_IOSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kread_IOSurface.h; sourceTree = "<group>"; };
@@ -313,14 +312,7 @@
 				8C05B0132B6315DB001A7CF3 /* badRecovery.m */,
 				8C05B0162B6319D7001A7CF3 /* badRecovery.h */,
 				8C05B0172B632925001A7CF3 /* badRecovery.s */,
-			);
-			path = badRecovery;
-			sourceTree = "<group>";
-		};
-		8C05B0042B63152B001A7CF3 /* badRecovery */ = {
-			isa = PBXGroup;
-			children = (
-				8C05B0052B63152B001A7CF3 /* badRecovery.h */,
+				8C1FC8422B6460FD00282536 /* Info.plist */,
 			);
 			path = badRecovery;
 			sourceTree = "<group>";
@@ -423,7 +415,6 @@
 			isa = PBXGroup;
 			children = (
 				8C7198172ABF0E82003C6658 /* Dopamine */,
-				8C05B0042B63152B001A7CF3 /* badRecovery */,
 				8C7198162ABF0E82003C6658 /* Products */,
 				8C029F642B4E2E7D0071DE58 /* Frameworks */,
 			);
@@ -536,7 +527,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C05B0062B63152B001A7CF3 /* badRecovery.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -897,6 +887,7 @@
 				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/Dopamine/Exploits/badRecovery/Info.plist";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -932,6 +923,7 @@
 				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/Dopamine/Exploits/badRecovery/Info.plist";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;

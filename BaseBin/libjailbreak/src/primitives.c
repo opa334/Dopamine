@@ -289,7 +289,8 @@ int kwrite8(uint64_t va, uint8_t v)
 int kcall(uint64_t *result, uint64_t func, int argc, const uint64_t *argv)
 {
 	if (gPrimitives.kcall) {
-		if(result) *result = gPrimitives.kcall(func, argc, argv);
+		uint64_t resultTmp = gPrimitives.kcall(func, argc, argv);
+		if(result) *result = resultTmp;
 		return 0;
 	}
 	return -1;

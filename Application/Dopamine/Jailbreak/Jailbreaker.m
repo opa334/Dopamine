@@ -124,18 +124,15 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     libjailbreak_translation_init();
     libjailbreak_IOSurface_primitives_init();
     
-    Exploit *pacBypass;
-    if ([[EnvironmentManager sharedManager] isPACBypassRequired]) {
-        pacBypass = [ExploitManager sharedManager].preferredPACBypass;
-        if (pacBypass) {
-            NSLog(@"Using PAC Bypass: %s\n", pacBypass.description.UTF8String);
-            if ([pacBypass load] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PAC bypass: %s", dlerror()]}];};
-            if ([pacBypass run] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PAC"}];}
-            // At this point we presume the PAC bypass has given us stable kcall primitives
-            gSystemInfo.jailbreakInfo.usesPACBypass = true;
-        }
+    Exploit *pacBypass = [ExploitManager sharedManager].preferredPACBypass;
+    if (pacBypass) {
+        NSLog(@"Picked PAC Bypass: %s\n", pacBypass.description.UTF8String);
+        if ([pacBypass load] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PAC bypass: %s", dlerror()]}];};
+        if ([pacBypass run] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PAC"}];}
+        // At this point we presume the PAC bypass has given us stable kcall primitives
+        gSystemInfo.jailbreakInfo.usesPACBypass = true;
     }
-    
+
     if ([[EnvironmentManager sharedManager] isPPLBypassRequired]) {
         Exploit *pplBypass = [ExploitManager sharedManager].preferredPPLBypass;
         printf("Picked PPL Bypass: %s\n", pplBypass.description.UTF8String);
