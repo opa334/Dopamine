@@ -6,6 +6,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "DOLogViewProtocol.h"
+#import "DODebugLogView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -16,10 +18,14 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DOUIManager : NSObject
 
 @property (nonatomic, retain) NSUserDefaults *userDefaults;
+@property (nonatomic, retain) NSObject<DOLogViewProtocol> *logView;
 
 +(id)sharedInstance;
+
 -(NSArray*)availablePackageManagers;
 -(BOOL)isDebug;
+-(void)sendLog:(NSString*)log debug:(BOOL)debug;
+-(void)completeJailbreak;
 
 @end
 

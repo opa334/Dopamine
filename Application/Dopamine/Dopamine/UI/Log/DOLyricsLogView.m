@@ -80,7 +80,6 @@
 
     [self showLog:@"Done"];
     [self.stackView.arrangedSubviews makeObjectsPerformSelector:@selector(setSuccess)];
-    [self showLog:@"Rebooting Userspace"];
 }
 
 @end

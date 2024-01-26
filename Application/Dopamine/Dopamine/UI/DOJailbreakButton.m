@@ -73,6 +73,8 @@
         self.logView = [[DODebugLogView alloc] init];
     else
         self.logView = [[DOLyricsLogView alloc] init];
+    
+    [[DOUIManager sharedInstance] setLogView:self.logView];
 
     self.logView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:self.logView];
@@ -83,8 +85,6 @@
         [self.logView.topAnchor constraintEqualToAnchor:window.topAnchor constant:topPadding],
         [self.logView.bottomAnchor constraintEqualToAnchor:window.bottomAnchor constant:0]
     ]];
-
-    [self simulateJailbreak: self.logView];
 }
 
 -(void)setupTitle
@@ -119,39 +119,6 @@
         [indicator.widthAnchor constraintEqualToConstant:30],
         [indicator.heightAnchor constraintEqualToConstant:12],
     ]];
-}
-
--(void)simulateJailbreak: (UIView<DOLogViewProtocol>*)log
-{
-    // Let's simulate a jailbreak using grand central dispatch
-    static BOOL didFinish = NO;
-
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [log didComplete];
-        didFinish = YES;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            exit(0);
-        });
-    });
-
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [NSThread sleepForTimeInterval:0.2];
-        [log showLog:@"Launching kexploitd"];
-        [NSThread sleepForTimeInterval:0.7];
-        [log showLog:@"Launching oobPCI"];
-        [NSThread sleepForTimeInterval:0.15];
-        [log showLog:@"Gaining r/w"];
-        [NSThread sleepForTimeInterval:1.5];
-        [log showLog:@"Patchfinding"];
-        NSArray *types = @[@"AMFI", @"PAC", @"KTRR", @"KPP", @"PPL", @"KPF", @"APRR", @"AMCC", @"PAN", @"PXN", @"ASLR", @"OPA"]; //Ever heard of the legendary opa bypass
-        while (true)
-        {
-            [NSThread sleepForTimeInterval:1.0 * rand() / RAND_MAX];
-            if (didFinish) break;
-            NSString *type = types[arc4random_uniform((uint32_t)types.count)];
-            [log showLog:[NSString stringWithFormat:@"Bypassing %@", type]];
-        }
-    });
 }
 
 @end

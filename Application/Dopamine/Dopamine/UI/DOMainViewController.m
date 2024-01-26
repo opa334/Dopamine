@@ -6,6 +6,7 @@
 //
 
 #import "DOMainViewController.h"
+#import "DOUIManager.h"
 
 #define UI_PADDING 30
 
@@ -34,12 +35,12 @@
     [self.view addSubview:stackView];
 
 
-    int statusBarHeight = fmax(15, [[UIApplication sharedApplication] keyWindow].safeAreaInsets.top - 10);
+    int statusBarHeight = fmax(15, [[UIApplication sharedApplication] keyWindow].safeAreaInsets.top - 20);
     BOOL isHomeButtonDevice = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && [[UIApplication sharedApplication] keyWindow].safeAreaInsets.bottom == 0;
 
     [NSLayoutConstraint activateConstraints:@[
         [stackView.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor constant:statusBarHeight],//-35
-        [stackView.heightAnchor constraintEqualToAnchor:self.view.heightAnchor multiplier:isHomeButtonDevice ? 0.78 : 0.74]
+        [stackView.heightAnchor constraintEqualToAnchor:self.view.heightAnchor multiplier:isHomeButtonDevice ? 0.78 : 0.73]
     ]];
 
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
@@ -111,6 +112,8 @@
             [headerView setTransform:CGAffineTransformMakeTranslation(0, -25)];
         } completion:nil];
 
+        [self simulateJailbreak];
+
     }]];
 
     [self.view addSubview:self.jailbreakBtn];
@@ -123,6 +126,47 @@
     ])];
 
 }
+
+
+
+-(void)simulateJailbreak
+{
+    // Let's simulate a "jailbreak" using grand central dispatch
+
+    DOUIManager *uiManager = [DOUIManager sharedInstance];
+
+    static BOOL didFinish = NO; //not thread safe lol
+    
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [uiManager completeJailbreak];
+        [uiManager sendLog:@"Rebooting Userspace" debug: NO];
+        didFinish = YES;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            exit(0);
+        });
+    });
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [NSThread sleepForTimeInterval:0.2];
+        [uiManager sendLog:@"Launching kexploitd" debug: NO];
+        [NSThread sleepForTimeInterval:0.5];
+        [uiManager sendLog:@"Launching oobPCI" debug: NO];
+        [NSThread sleepForTimeInterval:0.15];
+        [uiManager sendLog:@"Gaining r/w" debug: NO];
+        [NSThread sleepForTimeInterval:0.8];
+        [uiManager sendLog:@"Patchfinding" debug: NO];
+        NSArray *types = @[@"AMFI", @"PAC", @"KTRR", @"KPP", @"PPL", @"KPF", @"APRR", @"AMCC", @"PAN", @"PXN", @"ASLR", @"OPA"]; //Ever heard of the legendary opa bypass
+        while (true)
+        {
+            [NSThread sleepForTimeInterval:0.6 * rand() / RAND_MAX];
+            if (didFinish) break;
+            NSString *type = types[arc4random_uniform((uint32_t)types.count)];
+            [uiManager sendLog:[NSString stringWithFormat:@"Bypassing %@", type] debug: NO];
+        }
+    });
+}
+
 
 #pragma mark - Action Menu Delegate
 

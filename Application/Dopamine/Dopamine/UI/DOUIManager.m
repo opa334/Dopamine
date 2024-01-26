@@ -39,4 +39,22 @@
     return tweaks == nil ? YES : tweaks;
 }
 
+-(void)sendLog:(NSString*)log debug:(BOOL)debug {
+    if (!self.logView)
+        return;
+    
+    BOOL isDebug = self.logView.class == DODebugLogView.class;
+    if (debug && !isDebug)
+        return;
+
+    [self.logView showLog:log];
+}
+
+-(void)completeJailbreak {
+    if (!self.logView)
+        return;
+
+    [self.logView didComplete];
+}
+
 @end
