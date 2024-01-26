@@ -15,18 +15,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.view.backgroundColor = [UIColor colorWithWhite:0.3 alpha:0.6];
-    self.view.layer.cornerRadius = 16;
-    self.view.layer.masksToBounds = YES;
-    self.view.layer.cornerCurve = kCACornerCurveContinuous;
 }
 
-#pragma mark - Status Bar
-
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-    return UIStatusBarStyleLightContent;
+- (id)specifiers {
+    if(_specifiers == nil) {
+        _specifiers = [self loadSpecifiersFromPlistName:@"Credits" target:self];
+    }
+    return _specifiers;
 }
 
 @end

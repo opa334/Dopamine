@@ -10,31 +10,7 @@
 			<key>headerCellClass</key>
 			<string>DOHeaderCell</string>
 			<key>title</key>
-			<string>Settings</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<true/>
-			<key>defaults</key>
-			<string>com.opa334.Dopamine</string>
-			<key>key</key>
-			<string>tweaks</string>
-			<key>label</key>
-			<string>Enable Tweaks</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>com.opa334.Dopamine</string>
-			<key>key</key>
-			<string>debug</string>
-			<key>label</key>
-			<string>Verbose Log</string>
+			<string>Credits</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -42,13 +18,13 @@
 			<key>headerCellClass</key>
 			<string>DOButtonCell</string>
 			<key>title</key>
-			<string>Hide Jailbreak</string>
+			<string>Source Code</string>
 			<key>key</key>
-			<string>hidejb</string>
+			<string>src</string>
 			<key>image</key>
-			<string>eye.slash</string>
+			<string>filemenu.and.cursorarrow</string> <!-- puzzlepiece.extension.fill -->
 			<key>action</key>
-			<string>hideJailbreak</string>
+			<string>openSourceCode</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -56,15 +32,27 @@
 			<key>headerCellClass</key>
 			<string>DOButtonCell</string>
 			<key>title</key>
-			<string>Remove Jailbreak</string>
+			<string>License</string>
 			<key>key</key>
-			<string>removejb</string>
+			<string>license</string>
 			<key>image</key>
-			<string>trash</string>
+			<string>checkmark.seal.fill</string>
 			<key>action</key>
-			<string>removeJailbreak</string>
-			<key>footerText</key>
-			<string>"Hide jailbreak" temporarily removes jailbreak-related files until next jailbreak</string>
+			<string>openLicense</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>headerCellClass</key>
+			<string>DOButtonCell</string>
+			<key>title</key>
+			<string>Discord</string>
+			<key>key</key>
+			<string>discord</string>
+			<key>image</key>
+			<string>bubble.left.and.bubble.right.fill</string>
+			<key>action</key>
+			<string>openDiscord</string>
 		</dict>
 	</array>
 	<key>title</key>

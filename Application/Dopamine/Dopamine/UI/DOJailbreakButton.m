@@ -7,6 +7,7 @@
 
 #import "DOJailbreakButton.h"
 #import "DODoubleHelixIndicator.h"
+#import "DOUIManager.h"
 
 
 @implementation DOJailbreakButton
@@ -68,7 +69,11 @@
 {
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
 
-    self.logView = [[DOLyricsLogView alloc] init];
+    if ([[DOUIManager sharedInstance] isDebug])
+        self.logView = [[DODebugLogView alloc] init];
+    else
+        self.logView = [[DOLyricsLogView alloc] init];
+
     self.logView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:self.logView];
 
