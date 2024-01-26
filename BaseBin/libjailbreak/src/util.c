@@ -109,9 +109,6 @@ uint64_t alloc_page_table_unassigned(void)
 	// Deallocate address range (our allocated page table will stay because we bumped it's reference count)
 	free(free_lvl2);
 
-	// Decrement reference count of our allocated page table again
-	physwrite16(pinfo_pa, physread16(pinfo_pa)-1);
-
 	// Remove our allocated page table from it's original location (leak it)
 	physwrite64(tte_lvl2, 0);
 
@@ -119,6 +116,9 @@ uint64_t alloc_page_table_unassigned(void)
 	uint8_t empty[PAGE_SIZE];
 	memset(empty, 0, PAGE_SIZE);
 	physwritebuf(allocatedPT, empty, PAGE_SIZE);
+
+	// Decrement reference count of our allocated page table again
+	physwrite16(pinfo_pa, physread16(pinfo_pa)-1);
 
 	thread_caffeinate_stop();
 
