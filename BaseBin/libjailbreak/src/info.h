@@ -297,7 +297,7 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelStruct.task.itk_space); \
     iterator(ctx, kernelStruct.task.task_can_transfer_memory_ownership); \
 	\
-    iterator(ctx, kernelStruct.thread.machine_contextData); \
+    iterator(ctx, kernelStruct.thread.recover); \
     iterator(ctx, kernelStruct.thread.machine_kstackptr); \
     iterator(ctx, kernelStruct.thread.machine_CpuDatap); \
     iterator(ctx, kernelStruct.thread.machine_contextData); \

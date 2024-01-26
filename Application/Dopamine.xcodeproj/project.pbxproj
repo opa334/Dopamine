@@ -15,6 +15,11 @@
 		8C029F662B4E2E970071DE58 /* libcompression.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F652B4E2E7D0071DE58 /* libcompression.tbd */; };
 		8C029F682B4E31D50071DE58 /* libMobileGestalt.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F672B4E31D50071DE58 /* libMobileGestalt.tbd */; };
 		8C029F6B2B4E320E0071DE58 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F6A2B4E320E0071DE58 /* libz.tbd */; };
+		8C05B0062B63152B001A7CF3 /* badRecovery.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C05B0052B63152B001A7CF3 /* badRecovery.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C05B00F2B631532001A7CF3 /* libjailbreak.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */; platformFilter = ios; };
+		8C05B0142B6315DB001A7CF3 /* badRecovery.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C05B0132B6315DB001A7CF3 /* badRecovery.m */; };
+		8C05B0152B631738001A7CF3 /* badRecovery.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8C05B0032B63152B001A7CF3 /* badRecovery.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8C05B0182B632925001A7CF3 /* badRecovery.s in Sources */ = {isa = PBXBuildFile; fileRef = 8C05B0172B632925001A7CF3 /* badRecovery.s */; };
 		8C2131912B50CA4B008E682C /* krkw.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C2131782B50CA4B008E682C /* krkw.h */; };
 		8C2131922B50CA4B008E682C /* kread_sem_open.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C21317B2B50CA4B008E682C /* kread_sem_open.h */; };
 		8C2131932B50CA4B008E682C /* kread_IOSurface.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C21317C2B50CA4B008E682C /* kread_IOSurface.h */; };
@@ -75,6 +80,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		8C05B0072B63152B001A7CF3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8C71980D2ABF0E82003C6658 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8C05B0022B63152B001A7CF3;
+			remoteInfo = badRecovery;
+		};
 		8C2B1FE32B532374009BA166 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8C71980D2ABF0E82003C6658 /* Project object */;
@@ -114,6 +126,7 @@
 			files = (
 				8CDD07AF2B4F619000A32B61 /* kfd.framework in Embed Frameworks */,
 				8C2B1FF42B53492B009BA166 /* dmaFail.framework in Embed Frameworks */,
+				8C05B0152B631738001A7CF3 /* badRecovery.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -134,6 +147,11 @@
 		8C029F652B4E2E7D0071DE58 /* libcompression.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcompression.tbd; path = usr/lib/libcompression.tbd; sourceTree = SDKROOT; };
 		8C029F672B4E31D50071DE58 /* libMobileGestalt.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libMobileGestalt.tbd; path = usr/lib/libMobileGestalt.tbd; sourceTree = SDKROOT; };
 		8C029F6A2B4E320E0071DE58 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		8C05B0032B63152B001A7CF3 /* badRecovery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = badRecovery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C05B0052B63152B001A7CF3 /* badRecovery.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = badRecovery.h; sourceTree = "<group>"; };
+		8C05B0132B6315DB001A7CF3 /* badRecovery.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = badRecovery.m; sourceTree = "<group>"; };
+		8C05B0162B6319D7001A7CF3 /* badRecovery.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = badRecovery.h; sourceTree = "<group>"; };
+		8C05B0172B632925001A7CF3 /* badRecovery.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = badRecovery.s; sourceTree = "<group>"; };
 		8C2131782B50CA4B008E682C /* krkw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = krkw.h; sourceTree = "<group>"; };
 		8C21317B2B50CA4B008E682C /* kread_sem_open.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kread_sem_open.h; sourceTree = "<group>"; };
 		8C21317C2B50CA4B008E682C /* kread_IOSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kread_IOSurface.h; sourceTree = "<group>"; };
@@ -204,6 +222,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8C05B0002B63152B001A7CF3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C05B00F2B631532001A7CF3 /* libjailbreak.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8C2B1FDC2B532374009BA166 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -279,6 +305,24 @@
 				8C029F6A2B4E320E0071DE58 /* libz.tbd */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8C05AFFD2B631443001A7CF3 /* badRecovery */ = {
+			isa = PBXGroup;
+			children = (
+				8C05B0132B6315DB001A7CF3 /* badRecovery.m */,
+				8C05B0162B6319D7001A7CF3 /* badRecovery.h */,
+				8C05B0172B632925001A7CF3 /* badRecovery.s */,
+			);
+			path = badRecovery;
+			sourceTree = "<group>";
+		};
+		8C05B0042B63152B001A7CF3 /* badRecovery */ = {
+			isa = PBXGroup;
+			children = (
+				8C05B0052B63152B001A7CF3 /* badRecovery.h */,
+			);
+			path = badRecovery;
 			sourceTree = "<group>";
 		};
 		8C2131762B50CA4B008E682C /* Exploit */ = {
@@ -379,6 +423,7 @@
 			isa = PBXGroup;
 			children = (
 				8C7198172ABF0E82003C6658 /* Dopamine */,
+				8C05B0042B63152B001A7CF3 /* badRecovery */,
 				8C7198162ABF0E82003C6658 /* Products */,
 				8C029F642B4E2E7D0071DE58 /* Frameworks */,
 			);
@@ -390,6 +435,7 @@
 				8C7198152ABF0E82003C6658 /* Dopamine.app */,
 				8CDD07A72B4F619000A32B61 /* kfd.framework */,
 				8C2B1FDF2B532374009BA166 /* dmaFail.framework */,
+				8C05B0032B63152B001A7CF3 /* badRecovery.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -431,6 +477,7 @@
 		8C7198322ABF130A003C6658 /* Exploits */ = {
 			isa = PBXGroup;
 			children = (
+				8C05AFFD2B631443001A7CF3 /* badRecovery */,
 				8CDD07A82B4F619000A32B61 /* kfd */,
 				8C2B1FEE2B5324DE009BA166 /* dmaFail */,
 			);
@@ -485,6 +532,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		8C05AFFE2B63152B001A7CF3 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C05B0062B63152B001A7CF3 /* badRecovery.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8C2B1FDA2B532374009BA166 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -522,6 +577,25 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		8C05B0022B63152B001A7CF3 /* badRecovery */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8C05B00B2B63152C001A7CF3 /* Build configuration list for PBXNativeTarget "badRecovery" */;
+			buildPhases = (
+				8C05AFFE2B63152B001A7CF3 /* Headers */,
+				8C05AFFF2B63152B001A7CF3 /* Sources */,
+				8C05B0002B63152B001A7CF3 /* Frameworks */,
+				8C05B0012B63152B001A7CF3 /* Resources */,
+				8C05B0122B631589001A7CF3 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = badRecovery;
+			productName = badRecovery;
+			productReference = 8C05B0032B63152B001A7CF3 /* badRecovery.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		8C2B1FDE2B532374009BA166 /* dmaFail */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8C2B1FE72B532374009BA166 /* Build configuration list for PBXNativeTarget "dmaFail" */;
@@ -530,7 +604,7 @@
 				8C2B1FDB2B532374009BA166 /* Sources */,
 				8C2B1FDC2B532374009BA166 /* Frameworks */,
 				8C2B1FDD2B532374009BA166 /* Resources */,
-				8C2B1FED2B5323A3009BA166 /* ShellScript */,
+				8C2B1FED2B5323A3009BA166 /* Run Script */,
 			);
 			buildRules = (
 			);
@@ -556,6 +630,7 @@
 			dependencies = (
 				8CDD07AC2B4F619000A32B61 /* PBXTargetDependency */,
 				8C2B1FE42B532374009BA166 /* PBXTargetDependency */,
+				8C05B0082B63152B001A7CF3 /* PBXTargetDependency */,
 			);
 			name = Dopamine;
 			packageProductDependencies = (
@@ -593,6 +668,9 @@
 				BuildIndependentTargetsInParallel = 1;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
+					8C05B0022B63152B001A7CF3 = {
+						CreatedOnToolsVersion = 15.2;
+					};
 					8C2B1FDE2B532374009BA166 = {
 						CreatedOnToolsVersion = 15.1;
 					};
@@ -623,11 +701,19 @@
 				8C7198142ABF0E82003C6658 /* Dopamine */,
 				8CDD07A62B4F619000A32B61 /* kfd */,
 				8C2B1FDE2B532374009BA166 /* dmaFail */,
+				8C05B0022B63152B001A7CF3 /* badRecovery */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8C05B0012B63152B001A7CF3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8C2B1FC42B52FA81009BA166 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -659,7 +745,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		8C2B1FED2B5323A3009BA166 /* ShellScript */ = {
+		8C05B0122B631589001A7CF3 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -669,6 +755,25 @@
 			);
 			inputPaths = (
 			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "install_name_tool -change \"@loader_path/libjailbreak.dylib\" \"@executable_path/libjailbreak.dylib\" \"$BUILT_PRODUCTS_DIR/$EXECUTABLE_PATH\"\n";
+		};
+		8C2B1FED2B5323A3009BA166 /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -699,6 +804,15 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8C05AFFF2B63152B001A7CF3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C05B0182B632925001A7CF3 /* badRecovery.s in Sources */,
+				8C05B0142B6315DB001A7CF3 /* badRecovery.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8C2B1FDB2B532374009BA166 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -740,6 +854,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8C05B0082B63152B001A7CF3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8C05B0022B63152B001A7CF3 /* badRecovery */;
+			targetProxy = 8C05B0072B63152B001A7CF3 /* PBXContainerItemProxy */;
+		};
 		8C2B1FE42B532374009BA166 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8C2B1FDE2B532374009BA166 /* dmaFail */;
@@ -764,6 +883,76 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		8C05B00C2B63152C001A7CF3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 3Z56NQJ65R;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.opa334.badRecovery;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		8C05B00D2B63152C001A7CF3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 3Z56NQJ65R;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.opa334.badRecovery;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		8C2B1FE82B532374009BA166 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1095,6 +1284,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8C05B00B2B63152C001A7CF3 /* Build configuration list for PBXNativeTarget "badRecovery" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C05B00C2B63152C001A7CF3 /* Debug */,
+				8C05B00D2B63152C001A7CF3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8C2B1FE72B532374009BA166 /* Build configuration list for PBXNativeTarget "dmaFail" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -289,7 +289,7 @@ int kwrite8(uint64_t va, uint8_t v)
 int kcall(uint64_t *result, uint64_t func, int argc, const uint64_t *argv)
 {
 	if (gPrimitives.kcall) {
-		*result = gPrimitives.kcall(func, argc, argv);
+		if(result) *result = gPrimitives.kcall(func, argc, argv);
 		return 0;
 	}
 	return -1;
@@ -308,8 +308,8 @@ int kalloc_with_options(uint64_t *addr, uint64_t size, kalloc_options options)
 	if (options == KALLOC_OPTION_GLOBAL && gPrimitives.kalloc_global) {
 		return gPrimitives.kalloc_global(addr, size);
 	}
-	else if (options == KALLOC_OPTION_PROCESS && gPrimitives.kalloc_user) {
-		return gPrimitives.kalloc_user(addr, size);
+	else if (options == KALLOC_OPTION_LOCAL && gPrimitives.kalloc_local) {
+		return gPrimitives.kalloc_local(addr, size);
 	}
 	return -1;
 }

@@ -178,7 +178,7 @@ int IOSurface_kalloc_global(uint64_t *addr, uint64_t size)
 	return -1;
 }
 
-int IOSurface_kalloc_user(uint64_t *addr, uint64_t size)
+int IOSurface_kalloc_local(uint64_t *addr, uint64_t size)
 {
 	uint64_t alloc = IOSurface_kalloc(size, false);
 	if (alloc != 0) {
@@ -191,6 +191,6 @@ int IOSurface_kalloc_user(uint64_t *addr, uint64_t size)
 void libjailbreak_IOSurface_primitives_init(void)
 {
 	gPrimitives.kalloc_global = IOSurface_kalloc_global;
-	gPrimitives.kalloc_user   = IOSurface_kalloc_user;
+	gPrimitives.kalloc_local  = IOSurface_kalloc_local;
 	gPrimitives.kmap          = IOSurface_map;
 }

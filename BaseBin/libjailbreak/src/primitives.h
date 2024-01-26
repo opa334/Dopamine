@@ -9,7 +9,7 @@
 typedef enum
 {
 	KALLOC_OPTION_GLOBAL, // Global Allocation, never manually freed
-	KALLOC_OPTION_PROCESS, // Allocation attached to this process, freed on process exit
+	KALLOC_OPTION_LOCAL, // Allocation attached to this process, freed on process exit
 } kalloc_options;
 
 void enumerate_pages(uint64_t start, size_t size, uint64_t pageSize, bool (^block)(uint64_t, size_t));

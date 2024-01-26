@@ -7,6 +7,10 @@
 #include <mach/mach.h>
 #include "pvh.h"
 
+#define CPSR_KERN_INTR_EN  (0x401000 | ((uint32_t)kconstant(kernel_el) << 2))
+#define CPSR_KERN_INTR_DIS (0x4013c0 | ((uint32_t)kconstant(kernel_el) << 2))
+#define CPSR_USER_INTR_DIS 0x13C0
+
 #define P_SUGID 0x00000100
 #define atop(x) ((vm_address_t)(x) >> PAGE_SHIFT)
 typedef struct __attribute__((__packed__)) _vm_map_flags {
