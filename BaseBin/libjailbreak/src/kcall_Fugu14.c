@@ -232,7 +232,7 @@ void fugu14_kcall_prepare_state(Fugu14KcallThread *callThread, kRegisterState *t
 	threadState->sp = callThread->kernelStack;
 }
 
-uint64_t fugu14_kexec_on_thread_locked(Fugu14KcallThread *callThread, kRegisterState *threadState)
+uint64_t fugu14_kexec_on_thread_raw_locked(Fugu14KcallThread *callThread, kRegisterState *threadState)
 {
 	// Restore signed state first
 	kwritebuf(callThread->actContext, &callThread->signedState, sizeof(kRegisterState));
@@ -272,10 +272,19 @@ uint64_t fugu14_kexec_on_thread_locked(Fugu14KcallThread *callThread, kRegisterS
 	return retval;
 }
 
+uint64_t fugu14_kexec_on_thread_raw(Fugu14KcallThread *callThread, kRegisterState *threadState)
+{
+	pthread_mutex_lock(&callThread->lock);
+	uint64_t r = fugu14_kexec_on_thread_raw_locked(callThread, threadState);
+	pthread_mutex_unlock(&callThread->lock);
+	return r;
+}
+
 uint64_t fugu14_kexec_on_thread(Fugu14KcallThread *callThread, kRegisterState *threadState)
 {
 	pthread_mutex_lock(&callThread->lock);
-	uint64_t r = fugu14_kexec_on_thread_locked(callThread, threadState);
+	fugu14_kcall_prepare_state(callThread, threadState);
+	uint64_t r = fugu14_kexec_on_thread_raw_locked(callThread, threadState);
 	pthread_mutex_unlock(&callThread->lock);
 	return r;
 }
@@ -313,7 +322,7 @@ uint64_t fugu14_kcall_on_thread(Fugu14KcallThread *callThread, uint64_t func, ui
 		kwrite64(argKaddr, argv[8+i]);
 	}
 
-	uint64_t result = fugu14_kexec_on_thread_locked(callThread, &threadState);
+	uint64_t result = fugu14_kexec_on_thread_raw_locked(callThread, &threadState);
 	pthread_mutex_unlock(&callThread->lock);
 	return result;
 }

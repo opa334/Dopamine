@@ -166,6 +166,35 @@ int sign_kernel_thread(uint64_t proc, mach_port_t threadPort)
 	return kcall(NULL, ksymbol(ml_sign_thread_state), 6, (uint64_t[]){ threadContext, pc, cpsr, lr, x16, x17 });
 }
 
+uint64_t kpacda(uint64_t pointer, uint64_t modifier)
+{
+	if (gPrimitives.kexec && kgadget(pacda)) {
+		// |------- GADGET -------|
+		// | cmp x1, #0		      |
+		// | pacda x1, x9         |
+		// | str x9, [x8]         |
+		// | csel x9, xzr, x1, eq |
+		// | ret                  |
+		// |----------------------|
+		uint64_t output = 0;
+		uint64_t output_kernelVA = phystokv(vtophys(kread_ptr(pmap_self() + koffsetof(pmap, ttep)), (uint64_t)&output));
+		kRegisterState threadState = { 0 };
+		threadState.pc = kgadget(pacda);
+		threadState.x[1] = pointer;
+		threadState.x[9] = modifier;
+		threadState.x[8] = output_kernelVA;
+		kexec(&threadState);
+		return output;
+	}
+	return 0;
+}
+
+uint64_t kptr_sign(uint64_t kaddr, uint64_t pointer, uint16_t salt)
+{
+	uint64_t modifier = (kaddr & 0xffffffffffff) | ((uint64_t)salt << 48);
+	return kpacda(UNSIGN_PTR(pointer), modifier);
+}
+
 int exec_cmd(const char *binary, ...)
 {
 	int argc = 1;

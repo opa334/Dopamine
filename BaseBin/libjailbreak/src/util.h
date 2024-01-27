@@ -28,6 +28,8 @@ uint64_t alloc_page_table_unassigned(void);
 uint64_t pmap_alloc_page_table(uint64_t pmap, uint64_t va);
 
 int sign_kernel_thread(uint64_t proc, mach_port_t threadPort);
+uint64_t kpacda(uint64_t pointer, uint64_t modifier);
+uint64_t kptr_sign(uint64_t kaddr, uint64_t pointer, uint16_t salt);
 
 void thread_caffeinate_start(void);
 void thread_caffeinate_stop(void);

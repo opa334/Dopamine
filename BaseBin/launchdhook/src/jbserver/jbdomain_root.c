@@ -42,7 +42,7 @@ static int root_steal_ucred(audit_token_t *clientToken, uint64_t ucred, uint64_t
 		kwrite64(proc_ro + koffsetof(proc_ro, ucred), ucred);
 	}
 	else {
-		// TODO: 15.0 - 15.1.1: Data PAC
+		kwrite_ptr(proc + koffsetof(proc, ucred), ucred, 0x84E8);
 	}
 
 	return 0;

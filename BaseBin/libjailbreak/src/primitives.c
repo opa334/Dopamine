@@ -7,12 +7,6 @@
 #include <errno.h>
 #include <string.h>
 
-#define BIT(b)    (1ULL << (b))
-#define ONES(x)          (BIT((x))-1)
-#define PAC_MASK kconstant(pointer_mask)
-#define SIGN(p)          ((p) & BIT(55))
-#define UNSIGN_PTR(p)    (SIGN(p) ? ((p) | PAC_MASK) : ((p) & ~PAC_MASK))
-
 struct kernel_primitives gPrimitives = { 0 };
 
 // Wrappers physical <-> virtual
@@ -269,6 +263,13 @@ uint8_t kread8(uint64_t va)
 int kwrite64(uint64_t va, uint64_t v)
 {
 	return kwritebuf(va, &v, sizeof(v));
+}
+
+int kwrite_ptr(uint64_t kaddr, uint64_t pointer, uint16_t salt)
+{
+	if (!gPrimitives.kexec || !kgadget(pacda)) return -1;
+	kwrite64(kaddr, kptr_sign(kaddr, pointer, salt));
+	return 0;
 }
 
 int kwrite32(uint64_t va, uint32_t v)

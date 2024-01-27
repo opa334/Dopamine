@@ -6,6 +6,12 @@
 #include <stdbool.h>
 #include "primitives_external.h"
 
+#define BIT(b)    (1ULL << (b))
+#define ONES(x)          (BIT((x))-1)
+#define PAC_MASK kconstant(pointer_mask)
+#define SIGN(p)          ((p) & BIT(55))
+#define UNSIGN_PTR(p)    (SIGN(p) ? ((p) | PAC_MASK) : ((p) & ~PAC_MASK))
+
 typedef enum
 {
 	KALLOC_OPTION_GLOBAL, // Global Allocation, never manually freed
@@ -38,6 +44,7 @@ uint16_t kread16(uint64_t va);
 uint8_t kread8(uint64_t va);
 
 int kwrite64(uint64_t va, uint64_t v);
+int kwrite_ptr(uint64_t kaddr, uint64_t pointer, uint16_t salt);
 int kwrite32(uint64_t va, uint32_t v);
 int kwrite16(uint64_t va, uint16_t v);
 int kwrite8(uint64_t va, uint8_t v);
