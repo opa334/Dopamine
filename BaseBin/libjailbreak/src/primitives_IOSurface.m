@@ -1,5 +1,6 @@
 #import "info.h"
 #import "primitives.h"
+#import "translation.h"
 #import "kernel.h"
 #import "util.h"
 #import <Foundation/Foundation.h>
@@ -148,12 +149,17 @@ static mach_port_t IOSurface_kalloc_getSurfacePort(uint64_t size)
 uint64_t IOSurface_kalloc(uint64_t size, bool leak)
 {
 	while (true) {
-		uint64_t allocSize = max(size, 0x4000);
+		uint64_t allocSize = max(size, 0x10000);
 		mach_port_t surfaceMachPort = IOSurface_kalloc_getSurfacePort(allocSize);
 
 		uint64_t surfaceSendRight = task_get_ipc_port_kobject(task_self(), surfaceMachPort);
 		uint64_t surface = IOSurfaceSendRight_get_surface(surfaceSendRight);
 		uint64_t va = IOSurface_get_ranges(surface);
+
+		if (kvtophys(va + allocSize) != 0) {
+			mach_port_deallocate(mach_task_self(), surfaceMachPort);
+			continue;
+		}
 
 		if (va == 0) continue;
 
@@ -162,7 +168,7 @@ uint64_t IOSurface_kalloc(uint64_t size, bool leak)
 			IOSurface_set_rangeCount(surface, 0);
 		}
 
-		return va;
+		return va + (allocSize - size);
 	}
 
 	return 0;
