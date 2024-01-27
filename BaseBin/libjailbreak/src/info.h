@@ -48,6 +48,7 @@ struct system_info {
 		uint64_t pmap_set_nested;
 		uint64_t hw_lck_ticket_reserve_orig_allow_invalid;
 		uint64_t exception_return;
+		uint64_t mac_label_set;
 
 		// Variables
 		uint64_t perfmon_devices;
@@ -233,6 +234,7 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelSymbol.pmap_set_nested); \
     iterator(ctx, kernelSymbol.hw_lck_ticket_reserve_orig_allow_invalid); \
     iterator(ctx, kernelSymbol.exception_return); \
+	iterator(ctx, kernelSymbol.mac_label_set); \
 	\
     iterator(ctx, kernelSymbol.perfmon_devices); \
     iterator(ctx, kernelSymbol.cdevsw); \

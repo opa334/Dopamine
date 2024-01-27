@@ -68,7 +68,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         };
         
         if (!xpf_set_is_supported("badRecovery")) {
-            sets[6] = NULL;
+            sets[(sizeof(sets)/sizeof(sets[0]))-2] = NULL;
         }
 
         _systemInfoXdict = xpf_construct_offset_dictionary(sets);
@@ -194,7 +194,12 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     
     // Unsandbox
     uint64_t label = kread_ptr(ucred + koffsetof(ucred, label));
-    kwrite64(label + 0x10, -1);
+    if (gSystemInfo.kernelStruct.proc_ro.exists) {
+        kwrite64(label + 0x10, -1);
+    }
+    else {
+        kcall(NULL, ksymbol(mac_label_set), 3, (uint64_t[]){ label, 1, 0 });
+    }
     NSError *error = nil;
     [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/var" error:&error];
     if (error) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedUnsandbox userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to unsandbox, /var does not seem accessible (%s)", error.description.UTF8String]}];
