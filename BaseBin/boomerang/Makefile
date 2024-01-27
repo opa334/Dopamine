@@ -8,7 +8,7 @@ LDFLAGS = -L../.build -ljailbreak
 sign: $(TARGET)
 	@ldid -Sentitlements.plist $<
 
-$(TARGET): $(wildcard src/*.m)
+$(TARGET): $(wildcard src/*.c)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 clean:

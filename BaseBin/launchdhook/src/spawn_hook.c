@@ -1,12 +1,11 @@
-#import <spawn.h>
-#import "../systemhook/src/common.h"
-#import "boomerang.h"
-#import "crashreporter.h"
-#import "substrate.h"
-#import <mach-o/dyld.h>
-#import <Foundation/Foundation.h>
-#import <sys/param.h>
-#import <sys/mount.h>
+#include <spawn.h>
+#include "../systemhook/src/common.h"
+#include "boomerang.h"
+#include "crashreporter.h"
+#include "substrate.h"
+#include <mach-o/dyld.h>
+#include <sys/param.h>
+#include <sys/mount.h>
 
 extern int systemwide_trust_binary(const char *binaryPath);
 

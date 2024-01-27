@@ -1,13 +1,12 @@
-#import <Foundation/Foundation.h>
-#import <spawn.h>
-#import <libjailbreak/libjailbreak.h>
-#import <libjailbreak/jbserver.h>
-#import <libjailbreak/jbserver_boomerang.h>
-#import <libjailbreak/physrw.h>
-#import <libjailbreak/primitives_IOSurface.h>
-#import <libjailbreak/kalloc_pt.h>
-#import <libjailbreak/kcall_Fugu14.h>
-#import <unistd.h>
+#include <spawn.h>
+#include <libjailbreak/libjailbreak.h>
+#include <libjailbreak/jbserver.h>
+#include <libjailbreak/jbserver_boomerang.h>
+#include <libjailbreak/physrw.h>
+#include <libjailbreak/primitives_IOSurface.h>
+#include <libjailbreak/kalloc_pt.h>
+#include <libjailbreak/kcall_Fugu14.h>
+#include <unistd.h>
 
 int posix_spawnattr_set_registered_ports_np(posix_spawnattr_t *__restrict attr, mach_port_t portarray[], uint32_t count);
 
@@ -29,11 +28,12 @@ void boomerang_stashPrimitives()
 	// Small server provided to boomerang to obtain exploit primitives
 	dispatch_source_t serverSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_MACH_RECV, (uintptr_t)serverPort, 0, dispatch_get_main_queue());
 	dispatch_source_set_event_handler(serverSource, ^{
-		xpc_object_t xdict = nil;
+		xpc_object_t xdict = NULL;
 		if (!xpc_pipe_receive(serverPort, &xdict)) {
 			if (jbserver_received_boomerang_xpc_message(&gBoomerangServer, xdict) == JBS_BOOMERANG_DONE) {
 				dispatch_semaphore_signal(boomerangDone);
 			}
+			xpc_release(xdict);
 		}
 	});
 	dispatch_resume(serverSource);
@@ -89,7 +89,7 @@ int boomerang_recoverPrimitives(void)
 	libjailbreak_translation_init();
 
 	libjailbreak_IOSurface_primitives_init();
-	if (@available(iOS 16.0, *)) {
+	if (__builtin_available(iOS 16.0, *)) {
 		libjailbreak_kalloc_pt_init();
 	}
 

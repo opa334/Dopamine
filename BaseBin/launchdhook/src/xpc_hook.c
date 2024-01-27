@@ -1,12 +1,11 @@
-#import <Foundation/Foundation.h>
-#import <libjailbreak/libjailbreak.h>
-#import <mach-o/dyld.h>
-#import <xpc/xpc.h>
-#import <bsm/libbsm.h>
-#import <libproc.h>
-#import <sandbox.h>
-#import "substrate.h"
-#import <libjailbreak/jbserver.h>
+#include <libjailbreak/libjailbreak.h>
+#include <mach-o/dyld.h>
+#include <xpc/xpc.h>
+#include <bsm/libbsm.h>
+#include <libproc.h>
+#include <sandbox.h>
+#include "substrate.h"
+#include <libjailbreak/jbserver.h>
 
 /*#undef JBLogDebug
 void JBLogDebug(const char *format, ...)
@@ -31,6 +30,7 @@ int xpc_receive_mach_msg_hook(void *a1, void *a2, void *a3, void *a4, xpc_object
 		if (jbserver_received_xpc_message(&gGlobalServer, *xOut) == 0) {
 			// Returning non null here makes launchd disregard this message
 			// For jailbreak messages we have the logic to handle them
+			xpc_release(*xOut);
 			return 22;
 		}
 	}

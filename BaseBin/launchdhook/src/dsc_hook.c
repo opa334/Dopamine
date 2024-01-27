@@ -1,6 +1,7 @@
-#import <Foundation/Foundation.h>
-#import <sys/sysctl.h>
-#import "substrate.h"
+#include <sys/sysctl.h>
+#include <string.h>
+#include <unistd.h>
+#include "substrate.h"
 
 int (*sysctlbyname_orig)(const char *name, void *oldp, size_t *oldlenp, void *newp, size_t newlen);
 int sysctlbyname_hook(const char *name, void *oldp, size_t *oldlenp, void *newp, size_t newlen)

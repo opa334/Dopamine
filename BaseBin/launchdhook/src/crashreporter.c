@@ -1,13 +1,16 @@
-#import <Foundation/Foundation.h>
-#import "crashreporter.h"
-#import <dlfcn.h>
-#import <mach-o/dyld.h>
-#import <sys/sysctl.h>
-#import <mach/mach.h>
-#import <pthread/stack_np.h>
-#import <pthread/pthread.h>
-#import <mach/exception_types.h>
-#import <sys/utsname.h>
+#include "crashreporter.h"
+#include <dlfcn.h>
+#include <mach-o/dyld.h>
+#include <sys/sysctl.h>
+#include <mach/mach.h>
+#include <pthread/stack_np.h>
+#include <pthread/pthread.h>
+#include <mach/exception_types.h>
+#include <sys/utsname.h>
+#include <dispatch/dispatch.h>
+#include <stdio.h>
+#include <CoreFoundation/CoreFoundation.h>
+extern CFStringRef CFCopySystemVersionString(void);
 
 #define	INSTACK(a)	((a) >= stackbot && (a) <= stacktop)
 #if defined(__x86_64__)
@@ -136,7 +139,13 @@ void crashreporter_dump(FILE *f, int code, int subcode, arm_thread_state64_t thr
 	uint64_t pc = (uint64_t)__darwin_arm_thread_state64_get_pc(threadState);
 
 	fprintf(f, "Device Model:   %s\n", systemInfo.machine);
-	fprintf(f, "Device Version: %s\n", NSProcessInfo.processInfo.operatingSystemVersionString.UTF8String);
+
+	CFStringRef deviceVersion = CFCopySystemVersionString();
+	if (deviceVersion) {
+		fprintf(f, "Device Version: %s\n", CFStringGetCStringPtr(deviceVersion, kCFStringEncodingUTF8));
+		CFRelease(deviceVersion);
+	}
+
 #ifdef __arm64e__
 	fprintf(f, "Architecture:   arm64e\n");
 #else

@@ -1,12 +1,12 @@
-#import <Foundation/Foundation.h>
-#import <libjailbreak/handoff.h>
-#import <libjailbreak/primitives.h>
-#import <libjailbreak/libjailbreak.h>
-#import <libjailbreak/physrw.h>
-#import <libjailbreak/primitives_IOSurface.h>
-#import <libjailbreak/kalloc_pt.h>
-#import <libjailbreak/kcall_Fugu14.h>
-#import <libjailbreak/jbserver_boomerang.h>
+#include <mach/mach.h>
+#include <libjailbreak/handoff.h>
+#include <libjailbreak/primitives.h>
+#include <libjailbreak/libjailbreak.h>
+#include <libjailbreak/physrw.h>
+#include <libjailbreak/primitives_IOSurface.h>
+#include <libjailbreak/kalloc_pt.h>
+#include <libjailbreak/kcall_Fugu14.h>
+#include <libjailbreak/jbserver_boomerang.h>
 
 int main(int argc, char* argv[])
 {
@@ -22,11 +22,12 @@ int main(int argc, char* argv[])
 	// Boomerang server that launchd after the userspace reboot will use to recover the primitives
 	dispatch_source_t serverSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_MACH_RECV, (uintptr_t)serverPort, 0, dispatch_get_main_queue());
 	dispatch_source_set_event_handler(serverSource, ^{
-		xpc_object_t xdict = nil;
+		xpc_object_t xdict = NULL;
 		if (!xpc_pipe_receive(serverPort, &xdict)) {
 			if (jbserver_received_boomerang_xpc_message(&gBoomerangServer, xdict) == JBS_BOOMERANG_DONE) {
 				exit(0);
 			}
+			xpc_release(xdict);
 		}
 	});
 	dispatch_resume(serverSource);
@@ -57,7 +58,7 @@ int main(int argc, char* argv[])
 	libjailbreak_translation_init();
 
 	libjailbreak_IOSurface_primitives_init();
-	if (@available(iOS 16.0, *)) {
+	if (__builtin_available(iOS 16.0, *)) {
 		libjailbreak_kalloc_pt_init();
 	}
 

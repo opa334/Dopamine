@@ -4,8 +4,8 @@
 #import <unistd.h>
 #import "substrate.h"
 #import <mach-o/dyld.h>
-#import <Foundation/Foundation.h>
 #import <libjailbreak/libjailbreak.h>
+#import <Foundation/Foundation.h>
 
 extern xpc_object_t xpc_create_from_plist(const void *buf, size_t len);
 

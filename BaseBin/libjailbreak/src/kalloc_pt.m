@@ -13,36 +13,40 @@ NSMutableArray *gPool;
 
 int kalloc_global_pt(uint64_t *kaddrOut, uint64_t size)
 {
-	if (!kaddrOut) return -1;
-	if (size == 0) return -1;
-	if (size > PAGE_SIZE) return -1; // nope
-	
-	if (gPool.count) {
-		NSNumber *poolAllocation = gPool[0];
-		[gPool removeObjectAtIndex:0];
-		*kaddrOut = [poolAllocation unsignedLongLongValue];
-		return 0;
-	}
-	else {
-		uint64_t allocPA = alloc_page_table_unassigned();
-		uint64_t allocVA = phystokv(allocPA);
-		if (allocVA) {
-			*kaddrOut = allocVA;
+	@autoreleasepool {
+		if (!kaddrOut) return -1;
+		if (size == 0) return -1;
+		if (size > PAGE_SIZE) return -1; // nope
+		
+		if (gPool.count) {
+			NSNumber *poolAllocation = gPool[0];
+			[gPool removeObjectAtIndex:0];
+			*kaddrOut = [poolAllocation unsignedLongLongValue];
 			return 0;
 		}
-		return -1;
+		else {
+			uint64_t allocPA = alloc_page_table_unassigned();
+			uint64_t allocVA = phystokv(allocPA);
+			if (allocVA) {
+				*kaddrOut = allocVA;
+				return 0;
+			}
+			return -1;
+		}
 	}
 }
 
 int kfree_global_pt(uint64_t kaddr, uint64_t size)
 {
-	if (!kaddr) return -1;
+	@autoreleasepool {
+		if (!kaddr) return -1;
 
-	// Doesn't seem feasible to free them, what we can do is cache "freed" pages and reuse them later
-	// Keep in mind this only works on allocation made by this mechanism
-	// Also it only works because there is only one kfree in the entire jailbreak and that works with this
-	[gPool addObject:@(kaddr)];
-	return 0;
+		// Doesn't seem feasible to free them, what we can do is cache "freed" pages and reuse them later
+		// Keep in mind this only works on allocation made by this mechanism
+		// Also it only works because there is only one kfree in the entire jailbreak and that works with this
+		[gPool addObject:@(kaddr)];
+		return 0;
+	}
 }
 
 void libjailbreak_kalloc_pt_init(void)

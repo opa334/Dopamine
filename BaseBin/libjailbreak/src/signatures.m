@@ -84,101 +84,103 @@ NSString *resolveLoadPath(NSString *dylibPath, NSString *loaderPath, NSString *e
 
 void macho_collect_untrusted_cdhashes(const char *path, const char *callerPath, cdhash_t **cdhashesOut, uint32_t *cdhashCountOut)
 {
-	if (!path) return;
-	if (access(path, R_OK) != 0) return;
+	@autoreleasepool {
+		if (!path) return;
+		if (access(path, R_OK) != 0) return;
 
-	__block cdhash_t *cdhashes = NULL;
-	__block uint32_t cdhashCount = 0;
+		__block cdhash_t *cdhashes = NULL;
+		__block uint32_t cdhashCount = 0;
 
-	bool (^cdhashesContains)(cdhash_t) = ^bool(cdhash_t cdhash) {
-		for (int i = 0; i < cdhashCount; i++) {
-			if (!memcmp(cdhashes[i], cdhash, sizeof(cdhash_t))) {
-				return true;
+		bool (^cdhashesContains)(cdhash_t) = ^bool(cdhash_t cdhash) {
+			for (int i = 0; i < cdhashCount; i++) {
+				if (!memcmp(cdhashes[i], cdhash, sizeof(cdhash_t))) {
+					return true;
+				}
 			}
+			return false;
+		};
+
+		void (^cdhashesAdd)(cdhash_t) = ^(cdhash_t cdhash) {
+			cdhashCount++;
+			cdhashes = realloc(cdhashes, cdhashCount * sizeof(cdhash_t));
+			memcpy(cdhashes[cdhashCount-1], cdhash, sizeof(cdhash_t));
+		};
+
+		FAT *mainFAT = fat_init_from_path(path);
+		if (!mainFAT) return;
+		MachO *mainMachO = ljb_fat_find_preferred_slice(mainFAT);
+		if (!mainMachO) {
+			fat_free(mainFAT);
+			return;
 		}
-		return false;
-	};
+		if (macho_get_filetype(mainMachO) == MH_EXECUTE) {
+			callerPath = path;
+		}
 
-	void (^cdhashesAdd)(cdhash_t) = ^(cdhash_t cdhash) {
-		cdhashCount++;
-		cdhashes = realloc(cdhashes, cdhashCount * sizeof(cdhash_t));
-		memcpy(cdhashes[cdhashCount-1], cdhash, sizeof(cdhash_t));
-	};
-
-	FAT *mainFAT = fat_init_from_path(path);
-	if (!mainFAT) return;
-	MachO *mainMachO = ljb_fat_find_preferred_slice(mainFAT);
-	if (!mainMachO) {
-		fat_free(mainFAT);
-		return;
-	}
-	if (macho_get_filetype(mainMachO) == MH_EXECUTE) {
-		callerPath = path;
-	}
-
-	__weak __block void (^machoAddHandler_recurse)(MachO *, const char *);
-	void (^machoAddHandler)(MachO *, const char *) = ^(MachO *macho, const char *machoPath) {
-		// Calculate cdhash and add it to our array
-		bool cdhashWasKnown = true;
-		bool isAdhocSigned = false;
-		CS_SuperBlob *superblob = macho_read_code_signature(macho);
-		if (superblob) {
-			CS_DecodedSuperBlob *decodedSuperblob = csd_superblob_decode(superblob);
-			if (decodedSuperblob) {
-				if (csd_superblob_is_adhoc_signed(decodedSuperblob)) {
-					isAdhocSigned = true;
-					cdhash_t cdhash;
-					if (csd_superblob_calculate_best_cdhash(decodedSuperblob, cdhash) == 0) {
-						if (!cdhashesContains(cdhash)) {
-							if (!is_cdhash_trustcached(cdhash)) {
-								// If something is trustcached we do not want to add it to your array
-								// We do want to parse it's dependencies however, as one may have been updated since we added the binary to trustcache
-								// Potential optimization: If trustcached, save in some array so we don't recheck
-								cdhashesAdd(cdhash);
+		__weak __block void (^machoAddHandler_recurse)(MachO *, const char *);
+		void (^machoAddHandler)(MachO *, const char *) = ^(MachO *macho, const char *machoPath) {
+			// Calculate cdhash and add it to our array
+			bool cdhashWasKnown = true;
+			bool isAdhocSigned = false;
+			CS_SuperBlob *superblob = macho_read_code_signature(macho);
+			if (superblob) {
+				CS_DecodedSuperBlob *decodedSuperblob = csd_superblob_decode(superblob);
+				if (decodedSuperblob) {
+					if (csd_superblob_is_adhoc_signed(decodedSuperblob)) {
+						isAdhocSigned = true;
+						cdhash_t cdhash;
+						if (csd_superblob_calculate_best_cdhash(decodedSuperblob, cdhash) == 0) {
+							if (!cdhashesContains(cdhash)) {
+								if (!is_cdhash_trustcached(cdhash)) {
+									// If something is trustcached we do not want to add it to your array
+									// We do want to parse it's dependencies however, as one may have been updated since we added the binary to trustcache
+									// Potential optimization: If trustcached, save in some array so we don't recheck
+									cdhashesAdd(cdhash);
+								}
+								cdhashWasKnown = false;
 							}
-							cdhashWasKnown = false;
 						}
 					}
+					csd_superblob_free(decodedSuperblob);
 				}
-				csd_superblob_free(decodedSuperblob);
+				free(superblob);
 			}
-			free(superblob);
-		}
 
-		if (cdhashWasKnown) return; // If we already knew the cdhash, we can skip parsing dependencies
-		if (!isAdhocSigned) return; // If it was not ad hoc signed, we can safely skip it aswell
+			if (cdhashWasKnown) return; // If we already knew the cdhash, we can skip parsing dependencies
+			if (!isAdhocSigned) return; // If it was not ad hoc signed, we can safely skip it aswell
 
-		// Collect rpaths...
-		NSMutableArray *rpaths = [NSMutableArray new];
-		macho_enumerate_rpaths(macho, ^(const char *rpathC, bool *stop) {
-			NSString *rpath = [NSString stringWithUTF8String:rpathC];
-			[rpaths addObject:rpath];
-		});
+			// Collect rpaths...
+			NSMutableArray *rpaths = [NSMutableArray new];
+			macho_enumerate_rpaths(macho, ^(const char *rpathC, bool *stop) {
+				NSString *rpath = [NSString stringWithUTF8String:rpathC];
+				[rpaths addObject:rpath];
+			});
 
-		// Recurse this block on all dependencies
-		macho_enumerate_dependencies(macho, ^(const char *dylibPathC, uint32_t cmd, struct dylib* dylib, bool *stop) {
-			if (_dyld_shared_cache_contains_path(dylibPathC)) return;
-			NSString *dylibPath = [NSString stringWithUTF8String:dylibPathC];
-			NSString *loaderPath = [NSString stringWithUTF8String:machoPath];
-			NSString *executablePath = callerPath ? [NSString stringWithUTF8String:callerPath] : loaderPath;
-			dylibPath = resolveLoadPath(dylibPath, loaderPath, executablePath, rpaths);
-			if ([[NSFileManager defaultManager] fileExistsAtPath:dylibPath]) {
-				FAT *dependencyFAT = fat_init_from_path(dylibPath.fileSystemRepresentation);
-				if (dependencyFAT) {
-					MachO *dependencyMacho = ljb_fat_find_preferred_slice(dependencyFAT);
-					if (dependencyMacho) {
-						machoAddHandler_recurse(dependencyMacho, dylibPath.fileSystemRepresentation);
+			// Recurse this block on all dependencies
+			macho_enumerate_dependencies(macho, ^(const char *dylibPathC, uint32_t cmd, struct dylib* dylib, bool *stop) {
+				if (_dyld_shared_cache_contains_path(dylibPathC)) return;
+				NSString *dylibPath = [NSString stringWithUTF8String:dylibPathC];
+				NSString *loaderPath = [NSString stringWithUTF8String:machoPath];
+				NSString *executablePath = callerPath ? [NSString stringWithUTF8String:callerPath] : loaderPath;
+				dylibPath = resolveLoadPath(dylibPath, loaderPath, executablePath, rpaths);
+				if ([[NSFileManager defaultManager] fileExistsAtPath:dylibPath]) {
+					FAT *dependencyFAT = fat_init_from_path(dylibPath.fileSystemRepresentation);
+					if (dependencyFAT) {
+						MachO *dependencyMacho = ljb_fat_find_preferred_slice(dependencyFAT);
+						if (dependencyMacho) {
+							machoAddHandler_recurse(dependencyMacho, dylibPath.fileSystemRepresentation);
+						}
+						fat_free(dependencyFAT);
 					}
-					fat_free(dependencyFAT);
 				}
-			}
-		});
-	};
-	machoAddHandler_recurse = machoAddHandler;
+			});
+		};
+		machoAddHandler_recurse = machoAddHandler;
 
-	machoAddHandler(mainMachO, path);
-	fat_free(mainFAT);
+		machoAddHandler(mainMachO, path);
+		fat_free(mainFAT);
 
-	*cdhashesOut = cdhashes;
-	*cdhashCountOut = cdhashCount;
+		*cdhashesOut = cdhashes;
+		*cdhashCountOut = cdhashCount;
+	}
 }

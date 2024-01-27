@@ -7,7 +7,7 @@ LDFLAGS = -dynamiclib -rpath @loader_path/fallback -L../libjailbreak -L../.build
 sign: $(TARGET)
 	@ldid -S $^
 
-$(TARGET): $(wildcard src/*.m src/jbserver/*.c ../systemhook/src/common.c ../systemhook/src/envbuf.c)
+$(TARGET): $(wildcard src/*.m src/*.c src/jbserver/*.c ../systemhook/src/common.c ../systemhook/src/envbuf.c)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 clean:

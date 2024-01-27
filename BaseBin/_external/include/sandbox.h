@@ -1,4 +1,5 @@
-#import <mach/mach.h>
+#include <mach/mach.h>
+#include <stdlib.h>
 
 enum sandbox_filter_type {
 	SANDBOX_FILTER_NONE,
@@ -88,7 +89,7 @@ int sandbox_init(const char *profile, uint64_t flags, char **errorbuf);
 int sandbox_init_with_parameters(const char *profile, uint64_t flags, const char *const parameters[], char **errorbuf);
 int sandbox_init_with_extensions(const char *profile, uint64_t flags, const char *const extensions[], char **errorbuf);
 
-int sandbox_check(pid_t, const char *operation, enum sandbox_filter_type, ...);
+int sandbox_check(pid_t pid, const char *operation, enum sandbox_filter_type, ...);
 int sandbox_check_by_audit_token(audit_token_t, const char *operation, enum sandbox_filter_type, ...);
 int sandbox_check_by_uniqueid(uid_t, pid_t, const char *operation, enum sandbox_filter_type, ...);
 

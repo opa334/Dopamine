@@ -34,6 +34,7 @@
 
 #include <sys/param.h>
 #include <sys/types.h>
+#include <mach/mach.h>
 
 #define AUDIT_RECORD_MAGIC      0x828a0f1b
 #define MAX_AUDIT_RECORDS       20
@@ -371,8 +372,8 @@ au_asid_t        audit_session_join(mach_port_name_t port);
 int              audit_session_port(au_asid_t asid, mach_port_name_t *portname);
 #endif /* __APPLE_API_PRIVATE */
 
-uid_t audit_token_to_euid(audit_token_t);
-uid_t audit_token_to_pid(audit_token_t);
+uid_t audit_token_to_euid(audit_token_t at);
+uid_t audit_token_to_pid(audit_token_t at);
 #endif /* defined(_KERNEL) || defined(KERNEL) */
 
 __END_DECLS

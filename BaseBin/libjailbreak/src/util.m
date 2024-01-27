@@ -3,5 +3,7 @@
 
 NSString *NSJBRootPath(NSString *relativePath)
 {
-	return [[NSString stringWithUTF8String:jbinfo(rootPath)] stringByAppendingPathComponent:relativePath];
+	@autoreleasepool {
+		return [[NSString stringWithUTF8String:jbinfo(rootPath)] stringByAppendingPathComponent:relativePath];
+	}
 }

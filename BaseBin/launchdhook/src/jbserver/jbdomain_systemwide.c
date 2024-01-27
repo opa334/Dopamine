@@ -40,8 +40,9 @@ static int trust_file(const char *filePath, const char *dlopenCallerPath)
 	cdhash_t *cdhashes = NULL;
 	uint32_t cdhashesCount = 0;
 	macho_collect_untrusted_cdhashes(filePath, dlopenCallerPath, &cdhashes, &cdhashesCount);
-	if (cdhashesCount > 0) {
+	if (cdhashes && cdhashesCount > 0) {
 		jb_trustcache_add_cdhashes(cdhashes, cdhashesCount);
+		free(cdhashes);
 	}
 	return 0;
 }
