@@ -1,6 +1,9 @@
 #include "jbserver_boomerang.h"
 #include "info.h"
 #include "handoff.h"
+#include "kernel.h"
+#include "util.h"
+#include "primitives.h"
 #include <bsm/audit.h>
 
 // Implements JBS_DOMAIN_ROOT, but only the functionality required for boomerang
@@ -9,7 +12,7 @@
 static bool boomerang_domain_allowed(audit_token_t clientToken)
 {
 	// This server is both used from launchd to boomerang and boomerang back to launchd
-	// Ensure one of the participents in this communication is launchd
+	// Ensure one of the participants in this communication is launchd
 	return (audit_token_to_pid(clientToken) == 1) || (getpid() == 1);
 }
 
@@ -19,8 +22,15 @@ int boomerang_get_physrw(audit_token_t *clientToken)
 	return handoff_ppl_primitives(pid);
 }
 
-int boomerang_get_kcall(audit_token_t *clientToken, uint64_t stackAllocation, uint64_t *arcContextOut)
+int boomerang_sign_thread(audit_token_t *clientToken, mach_port_t threadPort)
 {
+	pid_t pid = audit_token_to_pid(*clientToken);
+	uint64_t proc = proc_find(pid);
+	if (proc) {
+		int r = sign_kernel_thread(proc, threadPort);
+		proc_rele(proc);
+		return r;
+	}
 	return -1;
 }
 
@@ -50,13 +60,12 @@ struct jbserver_domain gBoomerangDomain = {
 				{ 0 },
 			},
 		},
-		// JBS_ROOT_GET_KCALL
+		// JBS_ROOT_SIGN_THREAD
 		{
-			.handler = boomerang_get_kcall,
+			.handler = boomerang_sign_thread,
 			.args = (jbserver_arg[]){
 				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
-				{ .name = "stack-allocation", .type = JBS_TYPE_UINT64, .out = false },
-				{ .name = "arc-context", .type = JBS_TYPE_UINT64, .out = true },
+				{ .name = "thread-port", .type = JBS_TYPE_UINT64, .out = false },
 				{ 0 },
 			},
 		},

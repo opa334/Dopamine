@@ -15,9 +15,9 @@ static int root_get_physrw(audit_token_t *clientToken)
 	return boomerang_get_physrw(clientToken);
 }
 
-static int root_get_kcall(audit_token_t *clientToken, uint64_t stackAllocation, uint64_t *arcContextOut)
+static int root_sign_thread(audit_token_t *clientToken, mach_port_t threadPort)
 {
-	return boomerang_get_kcall(clientToken, stackAllocation, arcContextOut);
+	return boomerang_sign_thread(clientToken, threadPort);
 }
 
 static int root_get_sysinfo(xpc_object_t *sysInfoOut)
@@ -65,13 +65,12 @@ struct jbserver_domain gRootDomain = {
 				{ 0 },
 			},
 		},
-		// JBS_ROOT_GET_KCALL
+		// JBS_ROOT_SIGN_THREAD
 		{
-			.handler = root_get_kcall,
+			.handler = root_sign_thread,
 			.args = (jbserver_arg[]){
 				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
-				{ .name = "stack-allocation", .type = JBS_TYPE_UINT64, .out = false },
-				{ .name = "arc-context", .type = JBS_TYPE_UINT64, .out = true },
+				{ .name = "thread-port", .type = JBS_TYPE_UINT64, .out = false },
 				{ 0 },
 			},
 		},

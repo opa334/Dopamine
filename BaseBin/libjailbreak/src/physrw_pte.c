@@ -14,7 +14,7 @@
 #define MAGIC_PT_ADDRESS ((8 * L1_BLOCK_SIZE) - L2_BLOCK_SIZE)
 
 uint8_t *gSwAsid = 0;
-pthread_mutex_t gLock;
+static pthread_mutex_t gLock;
 uint64_t *gMagicPT = (uint64_t *)MAGIC_PT_ADDRESS;
 
 void flush_tlb(void)

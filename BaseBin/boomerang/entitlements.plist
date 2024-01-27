@@ -8,7 +8,11 @@
 	<true/>
 	<key>task_for_pid-allow</key>
 	<true/>
-    <key>com.apple.system-task-ports</key>
-    <true/>
+	<key>com.apple.system-task-ports</key>
+	<true/>
+	<key>com.apple.security.exception.iokit-user-client-class</key>
+	<array>
+		<string>IOSurfaceRootUserClient</string>
+	</array>
 </dict>
 </plist>

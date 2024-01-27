@@ -296,6 +296,14 @@ int kcall(uint64_t *result, uint64_t func, int argc, const uint64_t *argv)
 	return -1;
 }
 
+int kexec(kRegisterState *state)
+{
+	if (gPrimitives.kexec) {
+		gPrimitives.kexec(state);
+	}
+	return -1;
+}
+
 int kmap(uint64_t pa, uint64_t size, void **uaddr)
 {
 	if (gPrimitives.kmap) {

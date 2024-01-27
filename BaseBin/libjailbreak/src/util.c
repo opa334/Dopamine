@@ -152,6 +152,20 @@ uint64_t pmap_alloc_page_table(uint64_t pmap, uint64_t va)
 	return tt_p;
 }
 
+int sign_kernel_thread(uint64_t proc, mach_port_t threadPort)
+{
+	uint64_t threadKobj = task_get_ipc_port_kobject(proc_task(proc), threadPort);
+	uint64_t threadContext = kread_ptr(threadKobj + koffsetof(thread, machine_contextData));
+
+	uint64_t pc   = kread64(threadContext + offsetof(kRegisterState, pc));
+	uint64_t cpsr = kread64(threadContext + offsetof(kRegisterState, cpsr));
+	uint64_t lr   = kread64(threadContext + offsetof(kRegisterState, lr));
+	uint64_t x16  = kread64(threadContext + offsetof(kRegisterState, x[16]));
+	uint64_t x17  = kread64(threadContext + offsetof(kRegisterState, x[17]));
+
+	return kcall(NULL, ksymbol(ml_sign_thread_state), 6, (uint64_t[]){ threadContext, pc, cpsr, lr, x16, x17 });
+}
+
 int exec_cmd(const char *binary, ...)
 {
 	int argc = 1;

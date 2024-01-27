@@ -43,6 +43,7 @@ int kwrite16(uint64_t va, uint16_t v);
 int kwrite8(uint64_t va, uint8_t v);
 
 int kcall(uint64_t *result, uint64_t func, int argc, const uint64_t *argv);
+int kexec(kRegisterState *state);
 
 int kmap(uint64_t pa, uint64_t size, void **uaddr);
 int kalloc_with_options(uint64_t *addr, uint64_t size, kalloc_options options);

@@ -5,6 +5,7 @@
 #include "primitives_IOSurface.h"
 #include "info.h"
 #include "translation.h"
+#include "kcall_Fugu14.h"
 #include <xpc/xpc.h>
 
 int jbclient_initialize_primitives(void)
@@ -22,16 +23,9 @@ int jbclient_initialize_primitives(void)
 			if (__builtin_available(iOS 16.0, *)) {
 				libjailbreak_kalloc_pt_init();
 			}
-
-			/*if (jbinfo(usesPACBypass)) {
-				uint64_t stack = 0;
-				if (kalloc(&stack, 0x10000) == 0) {
-					uint64_t arcContext;
-					if (jbclient_root_get_kcall(stack, &arcContext) == 0) {
-						// TODO: Init kcall
-					}
-				}
-			}*/
+			if (jbinfo(usesPACBypass)) {
+				jbclient_get_fugu14_kcall();
+			}
 
 			return 0;
 		}

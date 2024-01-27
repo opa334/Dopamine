@@ -3,6 +3,9 @@
 #import <libjailbreak/primitives.h>
 #import <libjailbreak/libjailbreak.h>
 #import <libjailbreak/physrw.h>
+#import <libjailbreak/primitives_IOSurface.h>
+#import <libjailbreak/kalloc_pt.h>
+#import <libjailbreak/kcall_Fugu14.h>
 #import <libjailbreak/jbserver_boomerang.h>
 
 int main(int argc, char* argv[])
@@ -53,9 +56,14 @@ int main(int argc, char* argv[])
 	libjailbreak_physrw_init();
 	libjailbreak_translation_init();
 
+	libjailbreak_IOSurface_primitives_init();
+	if (@available(iOS 16.0, *)) {
+		libjailbreak_kalloc_pt_init();
+	}
+
 	// Retrieve kcall if available
 	if (jbinfo(usesPACBypass)) {
-		// TODO
+		jbclient_get_fugu14_kcall();
 	}
 
 	// Send done message to launchd

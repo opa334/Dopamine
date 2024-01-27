@@ -20,7 +20,7 @@ int jbclient_platform_jailbreak_update(const char *updateTar);
 int jbclient_platform_set_jailbreak_visible(bool visible);
 int jbclient_watchdog_intercept_userspace_panic(const char *panicMessage);
 int jbclient_root_get_physrw(void);
-int jbclient_root_get_kcall(uint64_t stackAllocation, uint64_t *arcContextOut);
+int jbclient_root_sign_thread(mach_port_t threadPort);
 int jbclient_root_get_sysinfo(xpc_object_t *sysInfoOut);
 int jbclient_root_add_cdhash(uint8_t *cdhashData, size_t cdhashLen);
 int jbclient_root_steal_ucred(uint64_t ucredToSteal, uint64_t *orgUcred);

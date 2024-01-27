@@ -324,14 +324,13 @@ int jbclient_root_get_physrw(void)
 	return -1;
 }
 
-int jbclient_root_get_kcall(uint64_t stackAllocation, uint64_t *arcContextOut)
+int jbclient_root_sign_thread(mach_port_t threadPort)
 {
 	xpc_object_t xargs = xpc_dictionary_create_empty();
-	xpc_dictionary_set_uint64(xargs, "stack-allocation", stackAllocation);
-	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_ROOT, JBS_ROOT_GET_KCALL, xargs);
+	xpc_dictionary_set_uint64(xargs, "thread-port", threadPort);
+	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_ROOT, JBS_ROOT_SIGN_THREAD, xargs);
 	xpc_release(xargs);
 	if (xreply) {
-		if (arcContextOut) *arcContextOut = xpc_dictionary_get_uint64(xreply, "arc-context");
 		int result = xpc_dictionary_get_int64(xreply, "result");
 		xpc_release(xreply);
 		return result;
