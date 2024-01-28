@@ -146,6 +146,12 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             }
         }
     }
+    else {
+        if (@available(iOS 16.0, *)) {
+            // IOSurface kallocs don't work on iOS 16+, use these instead
+            libjailbreak_kalloc_pt_init();
+        }
+    }
     return nil;
 }
 

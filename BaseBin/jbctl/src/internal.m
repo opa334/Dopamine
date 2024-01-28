@@ -86,7 +86,7 @@ int jbctl_handle_internal(const char *command)
 			// This allows us to mount to paths that would otherwise be restricted by sandbox
 			printf("Applying mount...\n");
 			ret = mount("bindfs", "/usr/lib", MNT_RDONLY, (void *)JBRootPath("/basebin/.fakelib"));
-
+			if (ret) printf("%d (reason: %s)\n", ret, strerror(errno));
 			// revert
 			printf("Dropping kernel ucred...\n");
 			jbclient_root_steal_ucred(orgUcred, NULL);

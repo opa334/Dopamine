@@ -4,7 +4,9 @@
 
 .global _ffsys_fork
 _ffsys_fork:
+#ifdef __arm64e__
 	pacibsp
+#endif
 	stp x29, x30, [SP, #-0x10]!
 	mov x29, sp
 	mov x16, #2
@@ -24,7 +26,11 @@ _ffsys_fork_err:
 _ffsys_fork_end:
 	mov sp, x29
 	ldp x29, x30, [SP],#0x10
+#ifdef __arm64e__
 	retab
+#else
+    ret
+#endif
 
 .global _ffsys_vm_protect
 _ffsys_vm_protect:
