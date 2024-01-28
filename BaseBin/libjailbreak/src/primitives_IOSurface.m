@@ -196,6 +196,16 @@ int IOSurface_kalloc_local(uint64_t *addr, uint64_t size)
 
 void libjailbreak_IOSurface_primitives_init(void)
 {
+	IOSurfaceRef surfaceRef = IOSurfaceCreate((__bridge CFDictionaryRef)@{
+		(__bridge NSString *)kIOSurfaceWidth : @120,
+		(__bridge NSString *)kIOSurfaceHeight : @120,
+		(__bridge NSString *)kIOSurfaceBytesPerElement : @4,
+	});
+	if (!surfaceRef) {
+		printf("Failed to initialize IOSurface primitives, add \"IOSurfaceRootUserClient\" to the \"com.apple.security.exception.iokit-user-client-class\" dictionary of the binaries entitlements to fix this.");
+	}
+	CFRelease(surfaceRef);
+
 	gPrimitives.kalloc_global = IOSurface_kalloc_global;
 	gPrimitives.kalloc_local  = IOSurface_kalloc_local;
 	gPrimitives.kmap          = IOSurface_map;

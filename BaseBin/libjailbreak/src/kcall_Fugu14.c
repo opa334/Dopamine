@@ -99,7 +99,10 @@ int fugu14_kcall_init(int (^threadSigner)(mach_port_t threadPort))
 	
 	// Create a stack
 	uint64_t stack = 0;
-	kalloc_with_options(&stack, 0x4000 * 4, KALLOC_OPTION_LOCAL); // Four pages
+	if (kalloc_with_options(&stack, 0x4000 * 4, KALLOC_OPTION_LOCAL) != 0) { // Four pages
+		puts("[-] fugu14_kcall_init: Failed to allocate stack!");
+		return -1;
+	}
 	stack += 0x8000;
 	guard (stack != 0) else {
 		puts("[-] fugu14_kcall_init: Failed to alloc kernel stack!");
