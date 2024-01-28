@@ -2,13 +2,11 @@
 
 #include <mach-o/dyld.h>
 #include <dlfcn.h>
-#include <sys/sysctl.h>
 #include <sys/stat.h>
 #include <paths.h>
 #include <util.h>
 #include "sandbox.h"
 #include <libjailbreak/jbclient_xpc.h>
-#include <os/log.h>
 
 #define JBRootPath(path) ({ \
 	char *outPath = alloca(PATH_MAX); \
@@ -55,55 +53,6 @@ void applySandboxExtensions(void)
 		}
 		free(JB_SandboxExtensions_dup);
 	}
-}
-
-void killall(const char *executablePathToKill, bool softly)
-{
-	static int maxArgumentSize = 0;
-	if (maxArgumentSize == 0) {
-		size_t size = sizeof(maxArgumentSize);
-		if (sysctl((int[]){ CTL_KERN, KERN_ARGMAX }, 2, &maxArgumentSize, &size, NULL, 0) == -1) {
-			perror("sysctl argument size");
-			maxArgumentSize = 4096; // Default
-		}
-	}
-	int mib[3] = { CTL_KERN, KERN_PROC, KERN_PROC_ALL};
-	struct kinfo_proc *info;
-	size_t length;
-	int count;
-	
-	if (sysctl(mib, 3, NULL, &length, NULL, 0) < 0)
-		return;
-	if (!(info = malloc(length)))
-		return;
-	if (sysctl(mib, 3, info, &length, NULL, 0) < 0) {
-		free(info);
-		return;
-	}
-	count = length / sizeof(struct kinfo_proc);
-	for (int i = 0; i < count; i++) {
-		pid_t pid = info[i].kp_proc.p_pid;
-		if (pid == 0) {
-			continue;
-		}
-		size_t size = maxArgumentSize;
-		char* buffer = (char *)malloc(length);
-		if (sysctl((int[]){ CTL_KERN, KERN_PROCARGS2, pid }, 3, buffer, &size, NULL, 0) == 0) {
-			char *executablePath = buffer + sizeof(int);
-			if (strcmp(executablePath, executablePathToKill) == 0) {
-				if(softly)
-				{
-					kill(pid, SIGTERM);
-				}
-				else
-				{
-					kill(pid, SIGKILL);
-				}
-			}
-		}
-		free(buffer);
-	}
-	free(info);
 }
 
 int posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
@@ -406,14 +355,6 @@ bool shouldEnableTweaks(void)
 	return true;
 }
 
-void applyKbdFix(void)
-{
-	// For whatever reason after SpringBoard has restarted, AutoFill and other stuff stops working
-	// The fix is to always also restart the kbd daemon alongside SpringBoard
-	// Seems to be something sandbox related where kbd doesn't have the right extensions until restarted
-	killall("/System/Library/TextInput/kbd", false);
-}
-
 __attribute__((constructor)) static void initializer(void)
 {
 	jbclient_process_checkin(&JB_RootPath, &JB_BootUUID, &JB_SandboxExtensions);
@@ -427,10 +368,7 @@ __attribute__((constructor)) static void initializer(void)
 	}
 
 	if (loadExecutablePath() == 0) {
-		if (strcmp(gExecutablePath, "/System/Library/CoreServices/SpringBoard.app/SpringBoard") == 0) {
-			applyKbdFix();
-		}
-		else if (strcmp(gExecutablePath, "/usr/sbin/cfprefsd") == 0) {
+		if (strcmp(gExecutablePath, "/usr/sbin/cfprefsd") == 0) {
 			dlopen_hook(JBRootPath("/basebin/rootlesshooks.dylib"), RTLD_NOW);
 		}
 		else if (strcmp(gExecutablePath, "/usr/libexec/watchdogd") == 0) {

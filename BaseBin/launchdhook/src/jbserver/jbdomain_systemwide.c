@@ -121,6 +121,23 @@ static int systemwide_process_checkin(audit_token_t *processToken, char **rootPa
 		}
 	}
 
+	// For whatever reason after SpringBoard has restarted, AutoFill and other stuff stops working
+	// The fix is to always also restart the kbd daemon alongside SpringBoard
+	// Seems to be something sandbox related where kbd doesn't have the right extensions until restarted
+	if (strcmp(procPath, "/System/Library/CoreServices/SpringBoard.app/SpringBoard") == 0) {
+		static bool springboardStartedBefore = false;
+		if (!springboardStartedBefore) {
+			// Ignore the first SpringBoard launch after userspace reboot
+			// This fix only matters when SpringBoard gets restarted during runtime
+			springboardStartedBefore = true;
+		}
+		else {
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+				killall("/System/Library/TextInput/kbd", false);
+			});
+		}
+	}
+
 	proc_rele(proc);
 	return 0;
 }
