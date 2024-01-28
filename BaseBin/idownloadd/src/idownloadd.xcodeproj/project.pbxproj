@@ -1,0 +1,358 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8C69A2262A320BBE007E401C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C69A2252A320BBE007E401C /* main.swift */; };
+		8C69A22E2A320CCC007E401C /* iDownload in Frameworks */ = {isa = PBXBuildFile; productRef = 8C69A22D2A320CCC007E401C /* iDownload */; };
+		8C69A2302A320E71007E401C /* iDownloadKRW.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C69A22F2A320E71007E401C /* iDownloadKRW.swift */; };
+		8C69A23F2A32239B007E401C /* iDownloadCmds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C69A23E2A32239B007E401C /* iDownloadCmds.swift */; };
+		8CE664652B61DF0200D7895C /* shim.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CE664642B61DF0200D7895C /* shim.c */; };
+		8CE664672B61E36200D7895C /* libjailbreak.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CE664662B61E36200D7895C /* libjailbreak.dylib */; platformFilter = ios; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8C69A2202A320BBE007E401C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		8C69A2222A320BBE007E401C /* idownloadd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = idownloadd; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C69A2252A320BBE007E401C /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		8C69A22F2A320E71007E401C /* iDownloadKRW.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iDownloadKRW.swift; sourceTree = "<group>"; };
+		8C69A23D2A321337007E401C /* idownloadd-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "idownloadd-Bridging-Header.h"; sourceTree = "<group>"; };
+		8C69A23E2A32239B007E401C /* iDownloadCmds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iDownloadCmds.swift; sourceTree = "<group>"; };
+		8CE664642B61DF0200D7895C /* shim.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = shim.c; sourceTree = "<group>"; };
+		8CE664662B61E36200D7895C /* libjailbreak.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjailbreak.dylib; path = ../../.build/libjailbreak.dylib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8C69A21F2A320BBE007E401C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CE664672B61E36200D7895C /* libjailbreak.dylib in Frameworks */,
+				8C69A22E2A320CCC007E401C /* iDownload in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8C69A2192A320BBE007E401C = {
+			isa = PBXGroup;
+			children = (
+				8C69A2242A320BBE007E401C /* idownloadd */,
+				8C69A2232A320BBE007E401C /* Products */,
+				8C69A2312A320F8A007E401C /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		8C69A2232A320BBE007E401C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8C69A2222A320BBE007E401C /* idownloadd */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8C69A2242A320BBE007E401C /* idownloadd */ = {
+			isa = PBXGroup;
+			children = (
+				8C69A2252A320BBE007E401C /* main.swift */,
+				8C69A22F2A320E71007E401C /* iDownloadKRW.swift */,
+				8C69A23E2A32239B007E401C /* iDownloadCmds.swift */,
+				8C69A23D2A321337007E401C /* idownloadd-Bridging-Header.h */,
+				8CE664642B61DF0200D7895C /* shim.c */,
+			);
+			path = idownloadd;
+			sourceTree = "<group>";
+		};
+		8C69A2312A320F8A007E401C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8CE664662B61E36200D7895C /* libjailbreak.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8C69A2212A320BBE007E401C /* idownloadd */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8C69A2292A320BBE007E401C /* Build configuration list for PBXNativeTarget "idownloadd" */;
+			buildPhases = (
+				8C69A21E2A320BBE007E401C /* Sources */,
+				8C69A21F2A320BBE007E401C /* Frameworks */,
+				8C69A2202A320BBE007E401C /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = idownloadd;
+			packageProductDependencies = (
+				8C69A22D2A320CCC007E401C /* iDownload */,
+			);
+			productName = idownloadd;
+			productReference = 8C69A2222A320BBE007E401C /* idownloadd */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8C69A21A2A320BBE007E401C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1430;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					8C69A2212A320BBE007E401C = {
+						CreatedOnToolsVersion = 14.3;
+					};
+				};
+			};
+			buildConfigurationList = 8C69A21D2A320BBE007E401C /* Build configuration list for PBXProject "idownloadd" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 8C69A2192A320BBE007E401C;
+			packageReferences = (
+				8C69A22C2A320CCC007E401C /* XCRemoteSwiftPackageReference "iDownload" */,
+			);
+			productRefGroup = 8C69A2232A320BBE007E401C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8C69A2212A320BBE007E401C /* idownloadd */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8C69A21E2A320BBE007E401C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CE664652B61DF0200D7895C /* shim.c in Sources */,
+				8C69A2302A320E71007E401C /* iDownloadKRW.swift in Sources */,
+				8C69A2262A320BBE007E401C /* main.swift in Sources */,
+				8C69A23F2A32239B007E401C /* iDownloadCmds.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		8C69A2272A320BBE007E401C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		8C69A2282A320BBE007E401C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		8C69A22A2A320BBE007E401C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../../.include";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../.build";
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_OBJC_BRIDGING_HEADER = "idownloadd/idownloadd-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		8C69A22B2A320BBE007E401C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../../.include";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../.build";
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_OBJC_BRIDGING_HEADER = "idownloadd/idownloadd-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8C69A21D2A320BBE007E401C /* Build configuration list for PBXProject "idownloadd" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C69A2272A320BBE007E401C /* Debug */,
+				8C69A2282A320BBE007E401C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8C69A2292A320BBE007E401C /* Build configuration list for PBXNativeTarget "idownloadd" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C69A22A2A320BBE007E401C /* Debug */,
+				8C69A22B2A320BBE007E401C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8C69A22C2A320CCC007E401C /* XCRemoteSwiftPackageReference "iDownload" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pinauten/iDownload";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8C69A22D2A320CCC007E401C /* iDownload */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8C69A22C2A320CCC007E401C /* XCRemoteSwiftPackageReference "iDownload" */;
+			productName = iDownload;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 8C69A21A2A320BBE007E401C /* Project object */;
+}

@@ -1,0 +1,1 @@
+void initIPCHooks(void);

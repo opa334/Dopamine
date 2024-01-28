@@ -7,6 +7,8 @@
 
 #import "DOMainViewController.h"
 #import "DOUIManager.h"
+#import "EnvironmentManager.h"
+#import "Jailbreaker.h"
 
 #define UI_PADDING 30
 
@@ -60,10 +62,8 @@
 
     //Header
     DOHeaderView *headerView = [[DOHeaderView alloc] initWithImage: [UIImage imageNamed:@"Dopamine"] subtitles: @[
-        [GlobalAppearance mainSubtitleString:@"iOS 15.0 - 15.4.1 | A12 - A15, M1"],
-        // [GlobalAppearance mainSubtitleString:@"iOS 15.0 - 15.7.6 | A8 - A11"],
+        [GlobalAppearance mainSubtitleString:[[EnvironmentManager sharedManager] versionSupportString]],
         [GlobalAppearance secondarySubtitleString:@"by opa334, évelyne"],
-        // [GlobalAppearance secondarySubtitleString:@"Based on Fugu15, kfd, golb"]
     ]];
     
     [stackView addArrangedSubview:headerView];
@@ -107,12 +107,48 @@
         [actionView hide];
         [self.jailbreakBtn showLog: self.jailbreakButtonConstraints];
 
-
         [UIView animateWithDuration:0.75 delay:0 usingSpringWithDamping:0.9 initialSpringVelocity:2.0  options: UIViewAnimationOptionCurveEaseInOut animations:^{
             [headerView setTransform:CGAffineTransformMakeTranslation(0, -25)];
         } completion:nil];
 
-        [self simulateJailbreak];
+        
+        Jailbreaker *jailbreaker = [[Jailbreaker alloc] init];
+            
+        //[self simulateJailbreak];
+        //[[DOUIManager sharedInstance] startLogCapture]; this fucks up everything ?
+        [[DOUIManager sharedInstance] sendLog:@"Jailbreaking" debug:NO];
+        
+        //dispatch async so the UI can update as this blocks the main thread
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            NSError *error = [jailbreaker run];
+            NSString *title;
+            NSString *message;
+            
+            if (error) {
+                NSLog(@"FAIL: %@", error);
+                title = @"Error";
+                message = error.localizedDescription;
+            }
+            else {
+                title = @"Success";
+                message = @"";
+                [[DOUIManager sharedInstance] completeJailbreak];
+            }
+            
+            [[DOUIManager sharedInstance] sendLog:@"Rebooting Userspace" debug: NO];
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *doneAction = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+                    if (!error) {
+                        [jailbreaker finalize];
+                    }
+                }];
+                [alertController addAction:doneAction];
+                
+                [self presentViewController:alertController animated:YES completion:nil];
+            });
+        });
 
     }]];
 
@@ -142,9 +178,6 @@
         [uiManager completeJailbreak];
         [uiManager sendLog:@"Rebooting Userspace" debug: NO];
         didFinish = YES;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            exit(0);
-        });
     });
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{

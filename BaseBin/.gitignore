@@ -1,0 +1,15 @@
+.build
+.include
+basebin.tar
+basebin.tc
+
+libjailbreak/libjailbreak.dylib
+libjailbreak/libjailbreak.dylib.dSYM
+launchdhook/launchdhook.dylib
+systemhook/systemhook.dylib
+watchdoghook/watchdoghook.dylib
+forkfix/forkfix.dylib
+
+boomerang/boomerang
+jbctl/jbctl
+idownloadd/idownloadd
