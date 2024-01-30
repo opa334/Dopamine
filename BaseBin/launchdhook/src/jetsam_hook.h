@@ -1,0 +1,1 @@
+void initJetsamHook(void);

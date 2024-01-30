@@ -11,6 +11,7 @@
 #import "daemon_hook.h"
 #import "ipc_hook.h"
 #import "dsc_hook.h"
+#import "jetsam_hook.h"
 #import "crashreporter.h"
 #import "boomerang.h"
 
@@ -58,6 +59,7 @@ __attribute__((constructor)) static void initializer(void)
 	initSpawnHooks();
 	initIPCHooks();
 	initDSCHooks();
+	initJetsamHook();
 	MSHookFunction((void *)abort, (void *)&my_abort, (void **)&org_abort);
 
 	// This will ensure launchdhook is always reinjected after userspace reboots
