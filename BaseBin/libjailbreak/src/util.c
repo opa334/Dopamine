@@ -115,9 +115,12 @@ uint64_t alloc_page_table_unassigned(void)
 	physwrite64(tte_lvl2, 0);
 
 	// Clear the allocated page table of any entries (there should be one)
-	uint8_t empty[PAGE_SIZE];
-	memset(empty, 0, PAGE_SIZE);
-	physwritebuf(allocatedPT, empty, PAGE_SIZE);
+	//uint8_t empty[PAGE_SIZE];
+	//memset(empty, 0, PAGE_SIZE);
+	//physwritebuf(allocatedPT, empty, PAGE_SIZE);
+	// XXX: Disabled because apparently having a page table that contains no entries is a panic reason
+	// We expect the caller to overwrite the entry if neccessary, only the first one should be set by us
+	// Because that will point to a valid page, it's fine
 
 	// Reference count of new page table must be 0!
 	physwrite16(pinfo_pa, 0);
@@ -187,7 +190,10 @@ int pmap_map_in(uint64_t pmap, uint64_t uaStart, uint64_t paStart, uint64_t size
 					}
 				}
 				uint64_t newTable = pmap_alloc_page_table(pmap, pt_va);
-				physwrite64(pt, newTable | ARM_TTE_VALID | ARM_TTE_TYPE_TABLE);
+				if (newTable) {
+					physwrite64(pt, newTable | ARM_TTE_VALID | ARM_TTE_TYPE_TABLE);
+				}
+				else { thread_caffeinate_stop(); return -2; }
 			}
 		} while (leafLevel < PMAP_TT_L3_LEVEL);
 	}

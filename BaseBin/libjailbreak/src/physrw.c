@@ -76,7 +76,8 @@ int physrw_handoff(pid_t pid)
 		if (!pmap) { ret = -5; break; };
 
 		// Map the entire kernel physical address space into the userland process, starting at PPLRW_USER_MAPPING_OFFSET
-		ret = pmap_map_in(pmap, kconstant(physBase)+PPLRW_USER_MAPPING_OFFSET, kconstant(physBase), kconstant(physSize));
+		int mapInRet = pmap_map_in(pmap, kconstant(physBase)+PPLRW_USER_MAPPING_OFFSET, kconstant(physBase), kconstant(physSize));
+		if (mapInRet != 0) ret = -10 + mapInRet;
 	} while (0);
 
 	proc_rele(proc);

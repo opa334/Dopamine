@@ -85,7 +85,8 @@ int boomerang_recoverPrimitives(bool firstRetrieval)
 	SYSTEM_INFO_DESERIALIZE(xSystemInfoDict);
 
 	// Retrieve physrw
-	if (jbclient_root_get_physrw(firstRetrieval) != 0) return -5;
+	int physrwRet = jbclient_root_get_physrw(firstRetrieval);
+	if (physrwRet != 0) return -20 + physrwRet;
 	if (firstRetrieval) {
 		// For performance reasons we only use physrw_pte until the first userspace reboot
 		// Handing off full physrw from the app is really slow and causes watchdog timeouts
