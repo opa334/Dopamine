@@ -76,15 +76,13 @@ static int root_steal_ucred_with_amfi_slot(audit_token_t *clientToken, uint64_t 
 		kwrite_ptr(proc + koffsetof(proc, ucred), ucred, 0x84E8);
 	}
 
-	if ((ucred == kern_ucred) || slot) {
-		if (!slot) {
-			uint64_t our_label = kread_ptr(our_ucred + koffsetof(ucred, label));
-			slot = kread64(our_label + 8);
-		}
-		uint64_t label = kread_ptr(kern_ucred + koffsetof(ucred, label));
-		*orgSlot = kread64(label + 8);
-		kwrite64(label + 8, slot);
+	if (orgSlot != NULL) {
+		uint64_t our_label = kread_ptr(our_ucred + koffsetof(ucred, label));
+		slot = kread64(our_label + 8);
 	}
+	uint64_t label = kread_ptr(kern_ucred + koffsetof(ucred, label));
+	*orgSlot = kread64(label + 8);
+	kwrite64(label + 8, slot);
 
 	return 0;
 }
