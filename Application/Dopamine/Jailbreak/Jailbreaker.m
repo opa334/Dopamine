@@ -204,7 +204,12 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         kwrite64(label + 0x10, -1);
     }
     else {
-        kcall(NULL, ksymbol(mac_label_set), 3, (uint64_t[]){ label, 1, 0 });
+        if (jbinfo(usesPACBypass)) {
+            kcall(NULL, ksymbol(mac_label_set), 3, (uint64_t[]){ label, 1, 0 });
+        }
+        else {
+            kwrite64(label + 0x10, 0);
+        }
     }
     NSError *error = nil;
     [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/var" error:&error];
