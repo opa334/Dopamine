@@ -16,6 +16,7 @@
 #import <libjailbreak/primitives.h>
 #import <libjailbreak/primitives_IOSurface.h>
 #import <libjailbreak/physrw_pte.h>
+#import <libjailbreak/physrw.h>
 #import <libjailbreak/translation.h>
 #import <libjailbreak/kernel.h>
 #import <libjailbreak/info.h>

@@ -4,6 +4,7 @@
 #include "util.h"
 #include "primitives.h"
 #include "physrw.h"
+#include "physrw_pte.h"
 #include <bsm/audit.h>
 
 // Implements JBS_DOMAIN_ROOT, but only the functionality required for boomerang
@@ -16,10 +17,15 @@ static bool boomerang_domain_allowed(audit_token_t clientToken)
 	return (audit_token_to_pid(clientToken) == 1) || (getpid() == 1);
 }
 
-int boomerang_get_physrw(audit_token_t *clientToken)
+int boomerang_get_physrw(audit_token_t *clientToken, bool singlePTE)
 {
 	pid_t pid = audit_token_to_pid(*clientToken);
-	return physrw_handoff(pid);
+	if (singlePTE) {
+		return physrw_pte_handoff(pid);
+	}
+	else {
+		return physrw_handoff(pid);
+	}
 }
 
 int boomerang_sign_thread(audit_token_t *clientToken, mach_port_t threadPort)
@@ -57,6 +63,7 @@ struct jbserver_domain gBoomerangDomain = {
 			.handler = boomerang_get_physrw,
 			.args = (jbserver_arg[]){
 				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
+				{ .name = "single-pte", .type = JBS_TYPE_BOOL, .out = false },
 				{ 0 },
 			},
 		},

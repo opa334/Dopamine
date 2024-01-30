@@ -313,9 +313,12 @@ int jbclient_watchdog_intercept_userspace_panic(const char *panicMessage)
 	return -1;
 }
 
-int jbclient_root_get_physrw(void)
+int jbclient_root_get_physrw(bool singlePTE)
 {
-	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_ROOT, JBS_ROOT_GET_PHYSRW, NULL);
+	xpc_object_t xargs = xpc_dictionary_create_empty();
+	xpc_dictionary_set_bool(xargs, "single-pte", singlePTE);
+	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_ROOT, JBS_ROOT_GET_PHYSRW, xargs);
+	xpc_release(xargs);
 	if (xreply) {
 		int64_t result = xpc_dictionary_get_int64(xreply, "result");
 		xpc_release(xreply);

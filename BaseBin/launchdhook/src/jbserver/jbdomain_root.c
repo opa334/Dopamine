@@ -10,9 +10,9 @@ static bool root_domain_allowed(audit_token_t clientToken)
 	return (audit_token_to_euid(clientToken) == 0);
 }
 
-static int root_get_physrw(audit_token_t *clientToken)
+static int root_get_physrw(audit_token_t *clientToken, bool singlePTE)
 {
-	return boomerang_get_physrw(clientToken);
+	return boomerang_get_physrw(clientToken, singlePTE);
 }
 
 static int root_sign_thread(audit_token_t *clientToken, mach_port_t threadPort)
@@ -62,6 +62,7 @@ struct jbserver_domain gRootDomain = {
 			.handler = root_get_physrw,
 			.args = (jbserver_arg[]){
 				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
+				{ .name = "single-pte", .type = JBS_TYPE_BOOL, .out = false },
 				{ 0 },
 			},
 		},

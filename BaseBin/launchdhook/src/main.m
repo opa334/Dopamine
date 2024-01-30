@@ -16,6 +16,8 @@
 
 bool gEarlyBootDone = false;
 
+void abort_with_reason(uint32_t reason_namespace, uint64_t reason_code, const char *reason_string, uint64_t reason_flags);
+
 void (*org_abort)(void);
 void my_abort(void)
 {
@@ -30,8 +32,7 @@ __attribute__((constructor)) static void initializer(void)
 {
 	crashreporter_start();
 
-	if (boomerang_recoverPrimitives() != 0) return; // TODO: userspace panic?
-
+	bool firstLoad = false;
 	if (getenv("DOPAMINE_INITIALIZED") != 0) {
 		// If Dopamine was initialized before, we assume we're coming from a userspace reboot
 	}
@@ -39,6 +40,12 @@ __attribute__((constructor)) static void initializer(void)
 		// Here we should have been injected into a live launchd on the fly
 		// In this case, we are not in early boot...
 		gEarlyBootDone = true;
+		firstLoad = true;
+	}
+
+	if (boomerang_recoverPrimitives(firstLoad) != 0) {
+		abort_with_reason(7, 1, "Dopamine: Failed to recover primitives, cannot continue.", 0);
+		return;
 	}
 
 	cs_allow_invalid(proc_self(), false);
