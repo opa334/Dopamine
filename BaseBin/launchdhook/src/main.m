@@ -43,7 +43,7 @@ __attribute__((constructor)) static void initializer(void)
 		firstLoad = true;
 	}
 
-	int err = boomerang_recoverPrimitives(firstLoad) != 0;
+	int err = boomerang_recoverPrimitives(firstLoad);
 	if (err != 0) {
 		char msg[1000];
 		snprintf(msg, 1000, "Dopamine: Failed to recover primitives (error %d), cannot continue.", err);
