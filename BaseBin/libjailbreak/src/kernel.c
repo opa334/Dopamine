@@ -119,6 +119,22 @@ void task_set_memory_ownership_transfer(uint64_t task, bool value)
 	kwrite8(task + koffsetof(task, task_can_transfer_memory_ownership), !!value);
 }
 
+void mac_label_get(uint64_t label, int slot)
+{
+	kread_ptr(label + ((slot + 1) * sizeof(uint64_t)));
+}
+
+void mac_label_set(uint64_t label, int slot, uint64_t value)
+{
+#ifdef __arm64e__
+	if (jbinfo(usesPACBypass)) {
+		kcall(NULL, ksymbol(mac_label_set), 3, (uint64_t[]){ label, slot, value });
+		return;
+	}
+#endif
+	kwrite64(label + ((slot + 1) * sizeof(uint64_t)), value);
+}
+
 #ifdef __arm64e__
 int pmap_cs_allow_invalid(uint64_t pmap)
 {
