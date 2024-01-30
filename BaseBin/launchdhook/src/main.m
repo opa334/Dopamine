@@ -5,6 +5,7 @@
 #import <libjailbreak/kernel.h>
 #import <mach-o/dyld.h>
 #import <spawn.h>
+#import <substrate.h>
 
 #import "spawn_hook.h"
 #import "xpc_hook.h"
@@ -15,6 +16,16 @@
 #import "boomerang.h"
 
 bool gEarlyBootDone = false;
+
+void (*org_abort)(void);
+void my_abort(void)
+{
+	FILE *f = fopen("/var/mobile/launchd.abort.txt", "a");
+	fprintf(f, "%s\n\n", [NSThread callStackSymbols].description.UTF8String);
+	fclose(f);
+	sleep(1);
+	org_abort();
+}
 
 __attribute__((constructor)) static void initializer(void)
 {
@@ -38,6 +49,7 @@ __attribute__((constructor)) static void initializer(void)
 	initSpawnHooks();
 	initIPCHooks();
 	initDSCHooks();
+	MSHookFunction((void *)abort, (void *)&my_abort, (void **)&org_abort);
 
 	// This will ensure launchdhook is always reinjected after userspace reboots
 	// As this launchd will pass environ to the next launchd...
