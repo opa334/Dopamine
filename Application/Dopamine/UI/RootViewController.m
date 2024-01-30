@@ -337,8 +337,11 @@
     void (^completionHandler)(BOOL) = ^(BOOL finished) {
         if (finished) {
             if (expanded) {
+                self->_jailbreakButton.enabled = NO;
                 self->_actionView.hidden = YES;
                 self->_jailbreakButton.layer.maskedCorners = (kCALayerMaxXMinYCorner | kCALayerMinXMinYCorner);
+            } else {
+                self->_jailbreakButton.enabled = YES;
             }
         }
     };
