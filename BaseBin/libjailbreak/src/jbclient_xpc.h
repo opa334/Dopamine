@@ -24,6 +24,7 @@ int jbclient_root_sign_thread(mach_port_t threadPort);
 int jbclient_root_get_sysinfo(xpc_object_t *sysInfoOut);
 int jbclient_root_add_cdhash(uint8_t *cdhashData, size_t cdhashLen);
 int jbclient_root_steal_ucred(uint64_t ucredToSteal, uint64_t *orgUcred);
+int jbclient_root_steal_ucred_with_amfi_slot(uint64_t ucredToSteal, uint64_t *orgUcred, uint64_t slotToSteal, uint64_t *orgSlot);
 int jbclient_boomerang_done(void);
 
 #endif

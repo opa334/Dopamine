@@ -54,6 +54,41 @@ static int root_add_cdhash(uint8_t *cdhashData, size_t cdhashLen)
 	return jb_trustcache_add_cdhashes((cdhash_t *)cdhashData, 1);
 }
 
+static int root_steal_ucred_with_amfi_slot(audit_token_t *clientToken, uint64_t ucred, uint64_t *orgUcred, uint64_t slot, uint64_t *orgSlot)
+{
+	uint64_t kernproc = proc_find(0);
+	uint64_t kern_ucred = proc_ucred(kernproc);
+	if (!ucred) {
+		// Passing 0 to this means kernel ucred
+		ucred = kern_ucred;
+	}
+
+	pid_t pid = audit_token_to_pid(*clientToken);
+	uint64_t proc = proc_find(pid);
+    
+	uint64_t our_ucred = proc_ucred(proc);
+	*orgUcred = our_ucred;
+	if (gSystemInfo.kernelStruct.proc_ro.exists) {
+		uint64_t proc_ro = kread_ptr(proc + koffsetof(proc, proc_ro));
+		kwrite64(proc_ro + koffsetof(proc_ro, ucred), ucred);
+	}
+	else {
+		kwrite_ptr(proc + koffsetof(proc, ucred), ucred, 0x84E8);
+	}
+
+	if ((ucred == kern_ucred) || slot) {
+		if (!slot) {
+			uint64_t our_label = kread_ptr(our_ucred + koffsetof(ucred, label));
+			slot = kread64(our_label + 8);
+		}
+		uint64_t label = kread_ptr(kern_ucred + koffsetof(ucred, label));
+		*orgSlot = kread64(label + 8);
+		kwrite64(label + 8, slot);
+	}
+
+	return 0;
+}
+
 struct jbserver_domain gRootDomain = {
 	.permissionHandler = root_domain_allowed,
 	.actions = {
@@ -97,6 +132,18 @@ struct jbserver_domain gRootDomain = {
 				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
 				{ .name = "ucred", .type = JBS_TYPE_UINT64, .out = false },
 				{ .name = "org-ucred", .type = JBS_TYPE_UINT64, .out = true },
+				{ 0 },
+			},
+		},
+		// JBS_ROOT_STEAL_UCRED_WITH_AMFI_SLOT
+		{
+			.handler = root_steal_ucred_with_amfi_slot,
+			.args = (jbserver_arg[]){
+				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
+				{ .name = "ucred", .type = JBS_TYPE_UINT64, .out = false },
+				{ .name = "org-ucred", .type = JBS_TYPE_UINT64, .out = true },
+				{ .name = "slot", .type = JBS_TYPE_UINT64, .out = false },
+				{ .name = "org-slot", .type = JBS_TYPE_UINT64, .out = true },
 				{ 0 },
 			},
 		},
