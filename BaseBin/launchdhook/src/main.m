@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
 #import <libjailbreak/libjailbreak.h>
-#import <libjailbreak/handoff.h>
 #import <libjailbreak/util.h>
 #import <libjailbreak/kernel.h>
 #import <mach-o/dyld.h>

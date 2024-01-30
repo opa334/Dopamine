@@ -85,7 +85,7 @@ int boomerang_recoverPrimitives(void)
 
 	// Retrieve physrw
 	if (jbclient_root_get_physrw() != 0) return -5;
-	libjailbreak_physrw_init();
+	libjailbreak_physrw_init(true);
 	libjailbreak_translation_init();
 
 	libjailbreak_IOSurface_primitives_init();

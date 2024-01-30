@@ -1,9 +1,9 @@
 #include "jbserver_boomerang.h"
 #include "info.h"
-#include "handoff.h"
 #include "kernel.h"
 #include "util.h"
 #include "primitives.h"
+#include "physrw.h"
 #include <bsm/audit.h>
 
 // Implements JBS_DOMAIN_ROOT, but only the functionality required for boomerang
@@ -19,7 +19,7 @@ static bool boomerang_domain_allowed(audit_token_t clientToken)
 int boomerang_get_physrw(audit_token_t *clientToken)
 {
 	pid_t pid = audit_token_to_pid(*clientToken);
-	return handoff_ppl_primitives(pid);
+	return physrw_handoff(pid);
 }
 
 int boomerang_sign_thread(audit_token_t *clientToken, mach_port_t threadPort)

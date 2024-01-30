@@ -26,6 +26,7 @@ uint64_t task_get_ipc_port_kobject(uint64_t task, mach_port_t port);
 
 uint64_t alloc_page_table_unassigned(void);
 uint64_t pmap_alloc_page_table(uint64_t pmap, uint64_t va);
+int pmap_map_in(uint64_t pmap, uint64_t uaStart, uint64_t paStart, uint64_t size);
 
 int sign_kernel_thread(uint64_t proc, mach_port_t threadPort);
 uint64_t kpacda(uint64_t pointer, uint64_t modifier);

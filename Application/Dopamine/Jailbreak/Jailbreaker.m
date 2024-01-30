@@ -12,8 +12,6 @@
 #import <compression.h>
 #import <xpf/xpf.h>
 #import <dlfcn.h>
-#import <libjailbreak/handoff.h>
-#import <libjailbreak/primitives_external.h>
 #import <libjailbreak/codesign.h>
 #import <libjailbreak/primitives.h>
 #import <libjailbreak/primitives_IOSurface.h>
@@ -139,11 +137,9 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         if ([pplBypass load] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PPL bypass: %s", dlerror()]}];};
         if ([pplBypass run] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PPL"}];}
         // At this point we presume the PPL bypass gave us unrestricted phys write primitives
-        if (!jbinfo(usesPACBypass)) {
-            if (@available(iOS 16.0, *)) {
-                // IOSurface kallocs don't work on iOS 16+, use these instead
-                libjailbreak_kalloc_pt_init();
-            }
+        if (@available(iOS 16.0, *)) {
+            // IOSurface kallocs don't work on iOS 16+, use these instead
+            libjailbreak_kalloc_pt_init();
         }
     }
     return nil;
@@ -151,7 +147,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (NSError *)buildPhysRWPrimitive
 {
-    int r = libjailbreak_physrw_pte_init();
+    int r = libjailbreak_physrw_pte_init(false);
     if (r != 0) {
         return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedBuildingPhysRW userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to build phys r/w primitive: %d", r]}];
     }

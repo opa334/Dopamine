@@ -154,6 +154,58 @@ uint64_t pmap_alloc_page_table(uint64_t pmap, uint64_t va)
 	return tt_p;
 }
 
+int pmap_map_in(uint64_t pmap, uint64_t uaStart, uint64_t paStart, uint64_t size)
+{
+	thread_caffeinate_start();
+
+	uint64_t uaEnd = uaStart + size;
+	uint64_t ttep = kread64(pmap + koffsetof(pmap, ttep));
+
+	// Sanity check: Ensure the entire area to be mapped in is not mapped to anything yet
+	for(uint64_t ua = uaStart; ua < uaEnd; ua += PAGE_SIZE) {
+		if (vtophys(ttep, ua)) { thread_caffeinate_stop(); return -1; }
+		// TODO: If all mappings match 1:1, maybe return 0 instead of -1?
+	}
+
+	// Allocate all page tables that need to be allocated
+	for(uint64_t ua = uaStart; ua < uaEnd; ua += PAGE_SIZE) {
+		uint64_t leafLevel;
+		do {
+			leafLevel = PMAP_TT_L3_LEVEL;
+			uint64_t pt = 0;
+			vtophys_lvl(ttep, ua, &leafLevel, &pt);
+			if (leafLevel != PMAP_TT_L3_LEVEL) {
+				uint64_t pt_va = 0;
+				switch (leafLevel) {
+					case PMAP_TT_L1_LEVEL: {
+						pt_va = ua & ~L1_BLOCK_MASK;
+						break;
+					}
+					case PMAP_TT_L2_LEVEL: {
+						pt_va = ua & ~L2_BLOCK_MASK;
+						break;
+					}
+				}
+				uint64_t newTable = pmap_alloc_page_table(pmap, pt_va);
+				physwrite64(pt, newTable | ARM_TTE_VALID | ARM_TTE_TYPE_TABLE);
+			}
+		} while (leafLevel < PMAP_TT_L3_LEVEL);
+	}
+
+	// Insert entries into L3 pages
+	for(uint64_t ua = uaStart; ua < uaEnd; ua += PAGE_SIZE) {
+		uint64_t pa = (ua - uaStart) + paStart;
+		uint64_t leafLevel = PMAP_TT_L3_LEVEL;
+		uint64_t pt = 0;
+
+		vtophys_lvl(ttep, ua, &leafLevel, &pt);
+		physwrite64(pt, pa | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY);
+	}
+
+	thread_caffeinate_stop();
+	return 0;
+}
+
 int sign_kernel_thread(uint64_t proc, mach_port_t threadPort)
 {
 	uint64_t threadKobj = task_get_ipc_port_kobject(proc_task(proc), threadPort);
