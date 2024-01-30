@@ -87,25 +87,39 @@ uint64_t alloc_page_table_unassigned(void)
 	uint64_t pmap = pmap_self();
 	uint64_t ttep = kread64(pmap + koffsetof(pmap, ttep));
 
-	// When we allocate the entire address range of an L2 block, we can assume ownership of the backing table
 	void *free_lvl2 = NULL;
-	if (posix_memalign(&free_lvl2, L2_BLOCK_SIZE, L2_BLOCK_SIZE) != 0) {
-		printf("WARNING: Failed to allocate L2 page table address range\n");
-		return 0;
-	}
-	// Now, fault in one page to make the kernel allocate the page table for it
-	*(volatile uint64_t *)free_lvl2;
-
-	// Find the newly allocated page table
-	uint64_t lvl = PMAP_TT_L2_LEVEL;
 	uint64_t tte_lvl2 = 0;
-	uint64_t allocatedPT = vtophys_lvl(ttep, (uint64_t)free_lvl2, &lvl, &tte_lvl2);
+	uint64_t allocatedPT = 0;
+	uint64_t pinfo_pa = 0;
+	while (true) {
+		// When we allocate the entire address range of an L2 block, we can assume ownership of the backing table
+		if (posix_memalign(&free_lvl2, L2_BLOCK_SIZE, L2_BLOCK_SIZE) != 0) {
+			printf("WARNING: Failed to allocate L2 page table address range\n");
+			return 0;
+		}
+		// Now, fault in one page to make the kernel allocate the page table for it
+		*(volatile uint64_t *)free_lvl2;
+
+		// Find the newly allocated page table
+		uint64_t lvl = PMAP_TT_L2_LEVEL;
+		allocatedPT = vtophys_lvl(ttep, (uint64_t)free_lvl2, &lvl, &tte_lvl2);
+
+		uint64_t pvh = pai_to_pvh(pa_index(allocatedPT));
+		uint64_t ptdp = pvh_ptd(pvh);
+		uint64_t pinfo = kread64(ptdp + koffsetof(pt_desc, ptd_info)); // TODO: Fake 16k devices (4 values)
+		pinfo_pa = kvtophys(pinfo);
+
+		uint16_t refCount = physread16(pinfo_pa);
+		if (refCount != 1) {
+			// Something is off, retry
+			free(free_lvl2);
+			continue;
+		}
+
+		break;
+	}
 
 	// Bump reference count of our allocated page table
-	uint64_t pvh = pai_to_pvh(pa_index(allocatedPT));
-	uint64_t ptdp = pvh_ptd(pvh);
-	uint64_t pinfo = kread64(ptdp + koffsetof(pt_desc, ptd_info)); // TODO: Fake 16k devices (4 values)
-	uint64_t pinfo_pa = kvtophys(pinfo);
 	physwrite16(pinfo_pa, 0x1337);
 
 	// Deallocate address range (our allocated page table will stay because we bumped it's reference count)
@@ -114,15 +128,14 @@ uint64_t alloc_page_table_unassigned(void)
 	// Remove our allocated page table from it's original location (leak it)
 	physwrite64(tte_lvl2, 0);
 
-	// Clear the allocated page table of any entries (there should be one)
-	//uint8_t empty[PAGE_SIZE];
-	//memset(empty, 0, PAGE_SIZE);
-	//physwritebuf(allocatedPT, empty, PAGE_SIZE);
-	// XXX: Disabled because apparently having a page table that contains no entries is a panic reason
-	// We expect the caller to overwrite the entry if neccessary, only the first one should be set by us
-	// Because that will point to a valid page, it's fine
+	// Ensure there is at least one entry in page table
+	// Attempts to prevent "pte is empty" panic
+	// Sometimes weird prefetches happen so this has to be a valid physical page to ensure those don't panic
+	// Disabled for now cause it causes super weird issues
+	//physwrite64(allocatedPT, kconstant(physBase) | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY);
 
 	// Reference count of new page table must be 0!
+	// XXX: original ref count is 1 though, why 0?
 	physwrite16(pinfo_pa, 0);
 
 	thread_caffeinate_stop();

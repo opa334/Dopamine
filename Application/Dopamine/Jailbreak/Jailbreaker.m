@@ -357,9 +357,11 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     err = [self finalizeBootstrapIfNeeded];
     if (err) return err;
     
-    printf("Starting launch daemons...\n");
-    exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "bootstrap", "system", JBRootPath("/Library/LaunchDaemons"), NULL);
-    exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "bootstrap", "system", JBRootPath("/basebin/LaunchDaemons"), NULL);
+    //printf("Starting launch daemons...\n");
+    //exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "bootstrap", "system", JBRootPath("/Library/LaunchDaemons"), NULL);
+    //exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "bootstrap", "system", JBRootPath("/basebin/LaunchDaemons"), NULL);
+    // Note: This causes the app to freeze in some instances due to launchd only having physrw_pte, we might want to only do it when neccessary
+    // It's only neccessary when we don't immediately userspace reboot
     
     printf("Done!\n");
     return nil;
