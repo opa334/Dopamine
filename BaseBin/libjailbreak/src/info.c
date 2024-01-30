@@ -50,6 +50,18 @@ void jbinfo_initialize_hardcoded_offsets(void)
 
 	uint32_t pmapEl2Adjust = ((kconstant(kernel_el) == 2) ? 8 : 0);
 
+#ifndef __arm64e__
+	uint32_t pmapA11Adjust = 0;
+	if (cpuFamily == CPUFAMILY_ARM_MONSOON_MISTRAL) {
+		if (strcmp(xnuVersion, "21.0.0") >= 0) { // iOS 15+
+			pmapA11Adjust = 1;
+			if (strcmp(xnuVersion, "22.0.0") >= 0) { // iOS 16+
+				pmapA11Adjust = 2;
+			}
+		}
+	}
+#endif
+    
 	// proc
 	gSystemInfo.kernelStruct.proc.list_next =  0x0;
 	gSystemInfo.kernelStruct.proc.list_prev =  0x8;
@@ -78,10 +90,16 @@ void jbinfo_initialize_hardcoded_offsets(void)
 	// pmap
 	gSystemInfo.kernelStruct.pmap.tte        = 0x0;
 	gSystemInfo.kernelStruct.pmap.ttep       = 0x8;
+#ifdef __arm64e__
 	gSystemInfo.kernelStruct.pmap.sw_asid    = 0xBE + pmapEl2Adjust;
 	gSystemInfo.kernelStruct.pmap.wx_allowed = 0xC2 + pmapEl2Adjust;
 	gSystemInfo.kernelStruct.pmap.type       = 0xC8 + pmapEl2Adjust;
-
+#else
+	gSystemInfo.kernelStruct.pmap.sw_asid    = 0x96;
+	gSystemInfo.kernelStruct.pmap.wx_allowed = 0;
+	gSystemInfo.kernelStruct.pmap.type       = 0x9c + pmapA11Adjust;
+#endif
+    
 	// pt_desc
 	gSystemInfo.kernelStruct.pt_desc.pmap     = 0x10;
 	gSystemInfo.kernelStruct.pt_desc.va       = 0x18;
@@ -121,8 +139,12 @@ void jbinfo_initialize_hardcoded_offsets(void)
 		gSystemInfo.kernelStruct.proc.csflags = 0x300;
 
 		// task
+#ifdef __arm64e__
 		gSystemInfo.kernelStruct.task.task_can_transfer_memory_ownership = 0x5B0 + taskJitboxAdjust;
-
+#else
+		gSystemInfo.kernelStruct.task.task_can_transfer_memory_ownership = 0x590;
+#endif
+        
 		// ipc_port
 		gSystemInfo.kernelStruct.ipc_port.kobject = 0x58;
 
@@ -151,8 +173,11 @@ void jbinfo_initialize_hardcoded_offsets(void)
 			gSystemInfo.kernelStruct.proc_ro.ucred   = 0x20;
 
 			// task
+#ifdef __arm64e__
 			gSystemInfo.kernelStruct.task.task_can_transfer_memory_ownership = 0x580 + taskJitboxAdjust;
-
+#else
+			gSystemInfo.kernelStruct.task.task_can_transfer_memory_ownership = 0x560;
+#endif
 			if (strcmp(xnuVersion, "21.4.0") >= 0) { // iOS 15.4+
 				// proc
 				gSystemInfo.kernelStruct.proc.textvp = 0x350;
@@ -178,8 +203,11 @@ void jbinfo_initialize_hardcoded_offsets(void)
 					gSystemInfo.kernelStruct.proc.textvp  = 0x350;
 
 					// task
+#ifdef __arm64e__
 					gSystemInfo.kernelStruct.task.task_can_transfer_memory_ownership = 0x548 + taskJitboxAdjust;
-
+#else
+					gSystemInfo.kernelStruct.task.task_can_transfer_memory_ownership = 0x528;
+#endif
 					// vm_map
 					gSystemInfo.kernelStruct.vm_map.flags = 0xB4;
 
@@ -191,9 +219,15 @@ void jbinfo_initialize_hardcoded_offsets(void)
 					gSystemInfo.kernelStruct.trustcache.struct_size = 0x28;
 
 					// pmap
+#ifdef __arm64e__
 					gSystemInfo.kernelStruct.pmap.sw_asid    = 0xB6 + pmapEl2Adjust;
 					gSystemInfo.kernelStruct.pmap.wx_allowed = 0xBA + pmapEl2Adjust;
 					gSystemInfo.kernelStruct.pmap.type       = 0xC0 + pmapEl2Adjust;
+#else
+					gSystemInfo.kernelStruct.pmap.sw_asid    = 0x8e;
+					gSystemInfo.kernelStruct.pmap.wx_allowed = 0;
+					gSystemInfo.kernelStruct.pmap.type       = 0x94 + pmapA11Adjust;
+#endif
 
 					if (strcmp(xnuVersion, "22.1.0") >= 0) { // iOS 16.1+
 						gSystemInfo.kernelStruct.ipc_space.table_uses_smd = true;
