@@ -202,7 +202,7 @@ void libjailbreak_IOSurface_primitives_init(void)
 		(__bridge NSString *)kIOSurfaceBytesPerElement : @4,
 	});
 	if (!surfaceRef) {
-		printf("Failed to initialize IOSurface primitives, add \"IOSurfaceRootUserClient\" to the \"com.apple.security.exception.iokit-user-client-class\" dictionary of the binaries entitlements to fix this.");
+		printf("Failed to initialize IOSurface primitives, add \"IOSurfaceRootUserClient\" to the \"com.apple.security.exception.iokit-user-client-class\" dictionary of the binaries entitlements to fix this.\n");
 		return;
 	}
 	CFRelease(surfaceRef);
