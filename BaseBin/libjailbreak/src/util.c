@@ -119,6 +119,31 @@ uint64_t alloc_page_table_unassigned(void)
 		break;
 	}
 
+	// Handle case where all entries in the level 2 table are 0 after we leak ours
+	// In that case, leak an allocation in the span of it to keep it alive
+	/*uint64_t lvl2Table = tte_lvl2 & ~PAGE_MASK;
+	uint64_t lvl2TableEntries[PAGE_SIZE / sizeof(uint64_t)];
+	physreadbuf(lvl2Table, lvl2TableEntries, PAGE_SIZE);
+	int freeIdx = -1;
+	for (int i = 0; i < (PAGE_SIZE / sizeof(uint64_t)); i++) {
+		uint64_t curPtr = lvl2Table + (sizeof(uint64_t) * i);
+		if (curPtr != tte_lvl2) {
+			if (lvl2TableEntries[i]) {
+				freeIdx = -1;
+				break;
+			}
+			else {
+				freeIdx = i;
+			}
+		}
+	}
+	if (freeIdx != -1) {
+		vm_address_t freeUserspace = ((uint64_t)free_lvl2 & ~L1_BLOCK_MASK) + (freeIdx * L2_BLOCK_SIZE);
+		if (vm_allocate(mach_task_self(), &freeUserspace, 0x4000, VM_FLAGS_FIXED) == 0) {
+			*(volatile uint8_t *)freeUserspace;
+		}
+	}*/
+
 	// Bump reference count of our allocated page table
 	physwrite16(pinfo_pa, 0x1337);
 
@@ -137,6 +162,14 @@ uint64_t alloc_page_table_unassigned(void)
 	// Reference count of new page table must be 0!
 	// XXX: original ref count is 1 though, why 0?
 	physwrite16(pinfo_pa, 0);
+
+	// After we leaked the page table, the ledger still thinks it belongs to our process
+	// We need to remove it from there aswell so that the process doesn't get jetsam killed
+	// (This ended up more complicated than I thought, so I just disabled jetsam in launchd)
+	//uint64_t ledger = kread_ptr(pmap + koffsetof(pmap, ledger));
+	//uint64_t ledger_pa = kvtophys(ledger);
+	//int page_table_ledger = physread32(ledger_pa + koffsetof(_task_ledger_indices, page_table));
+	//physwrite32(ledger_pa + koffsetof(_task_ledger_indices, page_table), page_table_ledger - 1);
 
 	thread_caffeinate_stop();
 
