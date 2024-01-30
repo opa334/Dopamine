@@ -101,12 +101,12 @@ uint64_t alloc_page_table_unassigned(void)
 	uint64_t tte_lvl2 = 0;
 	uint64_t allocatedPT = vtophys_lvl(ttep, (uint64_t)free_lvl2, &lvl, &tte_lvl2);
 
-	// Bump reference count of our allocated page table by one
+	// Bump reference count of our allocated page table
 	uint64_t pvh = pai_to_pvh(pa_index(allocatedPT));
 	uint64_t ptdp = pvh_ptd(pvh);
 	uint64_t pinfo = kread64(ptdp + koffsetof(pt_desc, ptd_info)); // TODO: Fake 16k devices (4 values)
 	uint64_t pinfo_pa = kvtophys(pinfo);
-	physwrite16(pinfo_pa, physread16(pinfo_pa)+1);
+	physwrite16(pinfo_pa, 0x1337);
 
 	// Deallocate address range (our allocated page table will stay because we bumped it's reference count)
 	free(free_lvl2);
@@ -119,8 +119,8 @@ uint64_t alloc_page_table_unassigned(void)
 	memset(empty, 0, PAGE_SIZE);
 	physwritebuf(allocatedPT, empty, PAGE_SIZE);
 
-	// Decrement reference count of our allocated page table again
-	physwrite16(pinfo_pa, physread16(pinfo_pa)-1);
+	// Reference count of new page table must be 0!
+	physwrite16(pinfo_pa, 0);
 
 	thread_caffeinate_stop();
 
