@@ -27,8 +27,8 @@ static int root_get_sysinfo(xpc_object_t *sysInfoOut)
 
 static int root_steal_ucred(audit_token_t *clientToken, uint64_t ucred, uint64_t *orgUcred)
 {
-    uint64_t kernproc = proc_find(0);
-    uint64_t kern_ucred = proc_ucred(kernproc);
+	uint64_t kernproc = proc_find(0);
+	uint64_t kern_ucred = proc_ucred(kernproc);
 	if (!ucred) {
 		// Passing 0 to this means kernel ucred
 		ucred = kern_ucred;
