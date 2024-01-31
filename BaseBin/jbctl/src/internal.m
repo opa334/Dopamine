@@ -81,24 +81,14 @@ int jbctl_handle_internal(const char *command)
 		// Mount fakelib on top of /usr/lib
 		printf("Getting kernel ucred...\n");
 		uint64_t orgUcred = 0;
-#ifdef __arm64e__
-		int r = jbclient_root_steal_ucred(0, &orgUcred);
-#else
-		uint64_t orgSlot = 0;
-		int r = jbclient_root_steal_ucred_with_amfi_slot(0, &orgUcred, 0, &orgSlot);
-#endif
-		if (r == 0) {
+		if (jbclient_root_steal_ucred(0, &orgUcred) == 0) {
 			// Here we steal the kernel ucred
 			// This allows us to mount to paths that would otherwise be restricted by sandbox
 			printf("Applying mount...\n");
 			ret = mount("bindfs", "/usr/lib", MNT_RDONLY, (void *)JBRootPath("/basebin/.fakelib"));
 			// revert
 			printf("Dropping kernel ucred...\n");
-#ifdef __arm64e__
 			jbclient_root_steal_ucred(orgUcred, NULL);
-#else
-			jbclient_root_steal_ucred_with_amfi_slot(orgUcred, NULL, orgSlot, NULL);
-#endif
 		}
 		return ret;
 	}

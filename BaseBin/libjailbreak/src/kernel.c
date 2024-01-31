@@ -119,9 +119,9 @@ void task_set_memory_ownership_transfer(uint64_t task, bool value)
 	kwrite8(task + koffsetof(task, task_can_transfer_memory_ownership), !!value);
 }
 
-void mac_label_get(uint64_t label, int slot)
+uint64_t mac_label_get(uint64_t label, int slot)
 {
-	kread_ptr(label + ((slot + 1) * sizeof(uint64_t)));
+	return kread_ptr(label + ((slot + 1) * sizeof(uint64_t)));
 }
 
 void mac_label_set(uint64_t label, int slot, uint64_t value)

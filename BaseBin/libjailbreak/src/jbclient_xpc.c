@@ -383,23 +383,6 @@ int jbclient_root_steal_ucred(uint64_t ucredToSteal, uint64_t *orgUcred)
 	return -1;
 }
 
-int jbclient_root_steal_ucred_with_amfi_slot(uint64_t ucredToSteal, uint64_t *orgUcred, uint64_t slotToSteal, uint64_t *orgSlot)
-{
-	xpc_object_t xargs = xpc_dictionary_create_empty();
-	xpc_dictionary_set_uint64(xargs, "ucred", ucredToSteal);
-	xpc_dictionary_set_uint64(xargs, "slot", slotToSteal);
-	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_ROOT, JBS_ROOT_STEAL_UCRED_WITH_AMFI_SLOT, xargs);
-	xpc_release(xargs);
-	if (xreply) {
-		int64_t result = xpc_dictionary_get_int64(xreply, "result");
-		if (orgUcred) *orgUcred = xpc_dictionary_get_uint64(xreply, "org-ucred");
-		if (orgSlot) *orgSlot = xpc_dictionary_get_uint64(xreply, "org-slot");
-		xpc_release(xreply);
-		return result;
-	}
-	return -1;
-}
-
 int jbclient_boomerang_done(void)
 {
 	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_ROOT, JBS_BOOMERANG_DONE, NULL);
