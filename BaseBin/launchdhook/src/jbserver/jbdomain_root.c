@@ -45,7 +45,7 @@ static int root_steal_ucred(audit_token_t *clientToken, uint64_t ucred, uint64_t
 	else {
 		kwrite_ptr(proc + koffsetof(proc, ucred), ucred, 0x84E8);
 	}
-    
+
 #ifndef __arm64e__
 	if (ucred == kern_ucred) {
 		// For some reason we need to borrow this from our process just for bind mount entitlement.
@@ -55,11 +55,7 @@ static int root_steal_ucred(audit_token_t *clientToken, uint64_t ucred, uint64_t
 	}
 	else {
 		// Revert it to what it should be
-		uint64_t slot = 0;
-		if (gSystemInfo.kernelStruct.proc_ro.exists) { // iOS 15.2 +
-			slot = -1;
-		}
-		mac_label_set(kread_ptr(kern_ucred + koffsetof(ucred, label)), 0, slot);
+		mac_label_set(kread_ptr(kern_ucred + koffsetof(ucred, label)), 0, -1);
 	}
 #endif
 	return 0;

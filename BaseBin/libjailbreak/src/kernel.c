@@ -121,11 +121,17 @@ void task_set_memory_ownership_transfer(uint64_t task, bool value)
 
 uint64_t mac_label_get(uint64_t label, int slot)
 {
-	return kread_ptr(label + ((slot + 1) * sizeof(uint64_t)));
+	// On 15.0 - 15.1.1, 0 is the equivalent of -1 on 15.2+
+	// So, treat 0 as -1 there
+	uint64_t value = kread_ptr(label + ((slot + 1) * sizeof(uint64_t)));
+	if (!gSystemInfo.kernelStruct.proc_ro.exists && value == 0) value = -1;
+	return value;
 }
 
 void mac_label_set(uint64_t label, int slot, uint64_t value)
 {
+	// THe inverse of the condition above, treat -1 as 0 on 15.0 - 15.1.1
+	if (!gSystemInfo.kernelStruct.proc_ro.exists && value == -1) value = 0;
 #ifdef __arm64e__
 	if (jbinfo(usesPACBypass)) {
 		kcall(NULL, ksymbol(mac_label_set), 3, (uint64_t[]){ label, slot, value });
