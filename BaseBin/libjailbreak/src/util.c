@@ -160,7 +160,8 @@ uint64_t alloc_page_table_unassigned(void)
 	//physwrite64(allocatedPT, kconstant(physBase) | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY);
 
 	// Reference count of new page table must be 0!
-	// XXX: original ref count is 1 though, why 0?
+	// original ref count is 1 because the table holds one PTE
+	// Our new PTEs are not part of the pmap layer though so refcount needs to be 0
 	physwrite16(pinfo_pa, 0);
 
 	// After we leaked the page table, the ledger still thinks it belongs to our process
