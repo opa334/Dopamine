@@ -16,7 +16,7 @@ int jbclient_trust_library(const char *libraryPath);
 int jbclient_process_checkin(char **rootPathOut, char **bootUUIDOut, char **sandboxExtensionsOut);
 int jbclient_fork_fix(uint64_t childPid);
 int jbclient_platform_set_process_debugged(uint64_t pid);
-int jbclient_platform_jailbreak_update(const char *updateTar);
+int jbclient_platform_stage_jailbreak_update(const char *updateTar);
 int jbclient_platform_set_jailbreak_visible(bool visible);
 int jbclient_watchdog_intercept_userspace_panic(const char *panicMessage);
 int jbclient_root_get_physrw(bool singlePTE);

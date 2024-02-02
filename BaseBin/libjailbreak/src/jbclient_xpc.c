@@ -271,11 +271,11 @@ int jbclient_platform_set_process_debugged(uint64_t pid)
 	return -1;
 }
 
-int jbclient_platform_jailbreak_update(const char *updateTar)
+int jbclient_platform_stage_jailbreak_update(const char *updateTar)
 {
 	xpc_object_t xargs = xpc_dictionary_create_empty();
 	xpc_dictionary_set_string(xargs, "update-tar", updateTar);
-	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_PLATFORM, JBS_PLATFORM_JAILBREAK_UPDATE, xargs);
+	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_PLATFORM, JBS_PLATFORM_STAGE_JAILBREAK_UPDATE, xargs);
 	xpc_release(xargs);
 	if (xreply) {
 		int result = xpc_dictionary_get_int64(xreply, "result");

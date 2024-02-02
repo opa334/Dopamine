@@ -58,7 +58,7 @@ void boomerang_stashPrimitives()
 	setenv("BOOMERANG_PID", pidBuf, 1);
 }
 
-int boomerang_recoverPrimitives(bool firstRetrieval)
+int boomerang_recoverPrimitives(bool firstRetrieval, bool shouldEndBoomerang)
 {
 	// Mach port to boomerang should be stored in our registeredPorts[2]
 	// Use it to recover primitives, afterwards replace it with MACH_PORT_NULL to make launchd happy
@@ -109,14 +109,17 @@ int boomerang_recoverPrimitives(bool firstRetrieval)
 		jbclient_get_fugu14_kcall();
 	}
 
-	// Send done message to boomerang
-	jbclient_boomerang_done();
+	if (shouldEndBoomerang) {
+		// Send done message to boomerang
+		jbclient_boomerang_done();
 
-	// Remove boomerang zombie proc if needed
-	if (boomerangPid != 0) {
-		int boomerangStatus;
-		waitpid(boomerangPid, &boomerangStatus, WEXITED);
-		waitpid(boomerangPid, &boomerangStatus, 0);
+		// Remove boomerang zombie proc if needed
+		if (boomerangPid != 0) {
+			int boomerangStatus;
+			waitpid(boomerangPid, &boomerangStatus, WEXITED);
+			waitpid(boomerangPid, &boomerangStatus, 0);
+		}
 	}
+	
 	return 0;
 }

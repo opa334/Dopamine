@@ -33,6 +33,7 @@ uint64_t kpacda(uint64_t pointer, uint64_t modifier);
 uint64_t kptr_sign(uint64_t kaddr, uint64_t pointer, uint16_t salt);
 
 void killall(const char *executablePathToKill, bool softly);
+int libarchive_unarchive(const char *fileToExtract, const char *extractionPath);
 
 void thread_caffeinate_start(void);
 void thread_caffeinate_stop(void);

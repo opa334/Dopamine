@@ -22,7 +22,10 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	gSystemInfo.jailbreakInfo.rootPath = jbclient_get_root_path();
+	const char *rootPath = jbclient_get_root_path();
+	if (rootPath) {
+		gSystemInfo.jailbreakInfo.rootPath = strdup(rootPath);
+	}
 
 	char *cmd = argv[1];
 	if (!strcmp(cmd, "proc_set_debugged")) {
@@ -48,13 +51,19 @@ int main(int argc, char* argv[])
 			print_usage();
 			return 2;
 		}
-		/*char *updateType = argv[2];
-		int64_t result = -1;
-		if (!strcmp(updateType, "tipa")) {
-			result = jbdUpdateFromTIPA([NSString stringWithUTF8String:argv[3]], false);
-		} else if(!strcmp(updateType, "basebin")) {
-			result = jbdUpdateFromBasebinTar([NSString stringWithUTF8String:argv[3]], false);
+		char *updateType = argv[2];
+		char *updateFile = argv[3];
+		if (access(updateFile, F_OK) != 0) {
+			printf("ERROR: File %s does not exist\n", updateFile);
+			return 3;
 		}
+
+		// TODO: Update TrollStore app, set updateFile to basebin.tar
+		//if (!strcmp(updateType, "tipa")) {
+		//
+		//}
+
+		int64_t result = jbclient_platform_stage_jailbreak_update(updateFile);
 		if (result == 0) {
 			printf("Update applied, userspace rebooting to finalize it...\n");
 			sleep(2);
@@ -63,7 +72,7 @@ int main(int argc, char* argv[])
 		else {
 			printf("Update failed with error code %lld\n", result);
 			return result;
-		}*/
+		}
 	} else if (!strcmp(cmd, "internal")) {
 		if (getuid() != 0) return -1;
 		if (argc < 3) return -1;

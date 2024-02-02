@@ -14,6 +14,7 @@
 #import "jetsam_hook.h"
 #import "crashreporter.h"
 #import "boomerang.h"
+#import "update.h"
 
 bool gEarlyBootDone = false;
 
@@ -33,6 +34,14 @@ __attribute__((constructor)) static void initializer(void)
 {
 	crashreporter_start();
 
+	// If we performed a jbupdate before the userspace reboot, these vars will be set
+	// In that case, we want to run finalizers
+	const char *jbupdatePrevVersion = getenv("JBUPDATE_PREV_VERSION");
+	const char *jbupdateNewVersion = getenv("JBUPDATE_NEW_VERSION");
+	if (jbupdatePrevVersion && jbupdateNewVersion) {
+		jbupdate_finalize_stage1(jbupdatePrevVersion, jbupdateNewVersion);
+	}
+
 	bool firstLoad = false;
 	if (getenv("DOPAMINE_INITIALIZED") != 0) {
 		// If Dopamine was initialized before, we assume we're coming from a userspace reboot
@@ -44,12 +53,18 @@ __attribute__((constructor)) static void initializer(void)
 		firstLoad = true;
 	}
 
-	int err = boomerang_recoverPrimitives(firstLoad);
+	int err = boomerang_recoverPrimitives(firstLoad, true);
 	if (err != 0) {
 		char msg[1000];
 		snprintf(msg, 1000, "Dopamine: Failed to recover primitives (error %d), cannot continue.", err);
 		abort_with_reason(7, 1, msg, 0);
 		return;
+	}
+
+	if (jbupdatePrevVersion && jbupdateNewVersion) {
+		jbupdate_finalize_stage2(jbupdatePrevVersion, jbupdateNewVersion);
+		unsetenv("JBUPDATE_PREV_VERSION");
+		unsetenv("JBUPDATE_NEW_VERSION");
 	}
 
 	cs_allow_invalid(proc_self(), false);

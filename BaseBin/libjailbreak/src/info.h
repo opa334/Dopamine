@@ -351,9 +351,9 @@ extern struct system_info gSystemInfo;
 
 static void _safe_xpc_dictionary_get_string(xpc_object_t xdict, const char *name, char **out)
 {
-	if (*out) free(*out);
 	const char *str = xpc_dictionary_get_string(xdict, name);
 	if (str) {
+		if (*out) free(*out);
 		*out = strdup(str);
 	}
 }

@@ -435,6 +435,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         return;
     }
     [self patchBasebinDaemonPlists];
+    [[NSFileManager defaultManager] removeItemAtPath:NSJBRootPath(@"/basebin/basebin.tc") error:nil];
     
     void (^bootstrapFinishedCompletion)(NSError *) = ^(NSError *error){
         if (error) {

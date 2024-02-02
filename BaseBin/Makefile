@@ -66,6 +66,7 @@ rootlesshooks:
 	rm -rf .build
 	mkdir -p .build
 	cp -r _external/basebin/* .build
+	cp _external/basebin/.version .build
 
 .include:
 	rm -rf .include
@@ -73,7 +74,8 @@ rootlesshooks:
 	cp -r _external/include/* .include
 
 BaseBin.tc:
-	trustcache create BaseBin.tc .build
+	trustcache create .build/basebin.tc .build
+	cp .build/basebin.tc BaseBin.tc
 
 BaseBin.tar:
 	@DYLD_FALLBACK_LIBRARY_PATH="." ./tar --transform "s/^.build/basebin/" -cvf "BaseBin.tar" ".build" --owner=0 --group=0
