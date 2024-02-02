@@ -58,6 +58,27 @@ int jbupdate_basebin(const char *basebinTarPath)
 		// Update systemhook in fakelib
 		[[NSFileManager defaultManager] copyItemAtPath:NSJBRootPath(@"basebin/systemhook.dylib") toPath:NSJBRootPath(@"basebin/.fakelib/systemhook.dylib") error:nil];
 
+		// Patch basebin plists
+		NSURL *basebinDaemonsURL = [NSURL fileURLWithPath:NSJBRootPath(@"/basebin/LaunchDaemons")];
+		for (NSURL *basebinDaemonURL in [[NSFileManager defaultManager] contentsOfDirectoryAtURL:basebinDaemonsURL includingPropertiesForKeys:nil options:0 error:nil]) {
+			NSString *plistPath = basebinDaemonURL.path;
+			NSMutableDictionary *plistDict = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
+			if (plistDict) {
+				bool madeChanges = NO;
+				NSMutableArray *programArguments = ((NSArray *)plistDict[@"ProgramArguments"]).mutableCopy;
+				for (NSString *argument in [programArguments reverseObjectEnumerator]) {
+					if ([argument containsString:@"@JBROOT@"]) {
+						programArguments[[programArguments indexOfObject:argument]] = [argument stringByReplacingOccurrencesOfString:@"@JBROOT@" withString:NSJBRootPath(@"/")];
+						madeChanges = YES;
+					}
+				}
+				if (madeChanges) {
+					plistDict[@"ProgramArguments"] = programArguments.copy;
+					[plistDict writeToFile:plistPath atomically:NO];
+				}
+			}
+		}
+
 		NSString *newVersion = [NSString stringWithContentsOfFile:NSJBRootPath(@"/basebin/.version") encoding:NSUTF8StringEncoding error:nil];
 		if (!newVersion) return 6;
 
