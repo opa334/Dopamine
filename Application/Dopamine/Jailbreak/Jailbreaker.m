@@ -217,7 +217,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 - (NSError *)loadBasebinTrustcache
 {
     trustcache_file_v1 *basebinTcFile = NULL;
-    if (trustcache_file_build_from_path([[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"BaseBin.tc"].fileSystemRepresentation, &basebinTcFile) == 0) {
+    if (trustcache_file_build_from_path([[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"basebin.tc"].fileSystemRepresentation, &basebinTcFile) == 0) {
         int r = trustcache_file_upload_with_uuid(basebinTcFile, BASEBIN_TRUSTCACHE_UUID);
         free(basebinTcFile);
         if (r != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedBasebinTrustcache userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to upload BaseBin trustcache: %d", r]}];

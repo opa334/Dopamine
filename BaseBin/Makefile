@@ -7,7 +7,7 @@
 #choma:
 #	$(MAKE) -C ChOma TARGET=ios DISABLE_SIGNING=1 DYLIB_LDFLAGS="-install_name @loader_path/libchoma.dylib" $@
 
-all: .build .include ChOma XPF opainject libjailbreak systemhook forkfix launchdhook boomerang jbctl idownloadd watchdoghook rootlesshooks BaseBin.tc BaseBin.tar
+all: .build .include ChOma XPF opainject libjailbreak systemhook forkfix launchdhook boomerang jbctl idownloadd watchdoghook rootlesshooks basebin.tc basebin.tar
 
 ChOma:
 	@$(MAKE) -C ChOma TARGET=ios DISABLE_SIGNING=1 DISABLE_TESTS=1 DYLIB_LDFLAGS="-install_name @loader_path/libchoma.dylib"
@@ -73,12 +73,12 @@ rootlesshooks:
 	mkdir -p .include
 	cp -r _external/include/* .include
 
-BaseBin.tc:
+basebin.tc:
 	trustcache create .build/basebin.tc .build
-	cp .build/basebin.tc BaseBin.tc
+	cp .build/basebin.tc basebin.tc
 
-BaseBin.tar:
-	@DYLD_FALLBACK_LIBRARY_PATH="." ./tar --transform "s/^.build/basebin/" -cvf "BaseBin.tar" ".build" --owner=0 --group=0
+basebin.tar:
+	@DYLD_FALLBACK_LIBRARY_PATH="." ./tar --transform "s/^.build/basebin/" -cvf "basebin.tar" ".build" --owner=0 --group=0
 
 clean:
 	@$(MAKE) -C ChOma $@
@@ -95,7 +95,7 @@ clean:
 	@$(MAKE) -C rootlesshooks $@
 	@rm -rf .build
 	@rm -rf .include
-	@rm -rf BaseBin.tar
-	@rm -rf BaseBin.tc
+	@rm -rf basebin.tar
+	@rm -rf basebin.tc
 
-.PHONY: clean .build .include ChOma XPF opainject libjailbreak systemhook forkfix launchdhook boomerang jbctl idownloadd watchdoghook rootlesshooks BaseBin.tc BaseBin.tar
+.PHONY: clean .build .include ChOma XPF opainject libjailbreak systemhook forkfix launchdhook boomerang jbctl idownloadd watchdoghook rootlesshooks basebin.tc basebin.tar

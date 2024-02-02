@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
 				printf("Unable to locate newly installed Dopamine build.\n");
 				return 6;
 			}
-			updateFile = strdup([dopamineAppProxy.bundleURL.path stringByAppendingPathComponent:@"BaseBin.tar"].fileSystemRepresentation);
+			updateFile = strdup([dopamineAppProxy.bundleURL.path stringByAppendingPathComponent:@"basebin.tar"].fileSystemRepresentation);
 			// Fall through to basebin installation
 		}
 		else if (strcmp(updateType, "basebin") != 0) {

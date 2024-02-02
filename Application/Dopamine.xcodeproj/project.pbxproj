@@ -59,8 +59,8 @@
 		8C71982B2ABF0E84003C6658 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71982A2ABF0E84003C6658 /* main.m */; };
 		8C9E46292ACA1CC700B5456A /* UIImage+Blur.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9E46282ACA1CC700B5456A /* UIImage+Blur.m */; };
 		8CB2E7642AD1788F000A6B90 /* ActionMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB2E7632AD1788F000A6B90 /* ActionMenuView.m */; };
-		8CB94F042B59E17A0098BAFD /* BaseBin.tc in Resources */ = {isa = PBXBuildFile; fileRef = 8CB94F022B59E17A0098BAFD /* BaseBin.tc */; };
-		8CB94F052B59E17A0098BAFD /* BaseBin.tar in Resources */ = {isa = PBXBuildFile; fileRef = 8CB94F032B59E17A0098BAFD /* BaseBin.tar */; };
+		8CB94F042B59E17A0098BAFD /* basebin.tc in Resources */ = {isa = PBXBuildFile; fileRef = 8CB94F022B59E17A0098BAFD /* basebin.tc */; };
+		8CB94F052B59E17A0098BAFD /* basebin.tar in Resources */ = {isa = PBXBuildFile; fileRef = 8CB94F032B59E17A0098BAFD /* basebin.tar */; };
 		8CC139822B53DE6C00230143 /* NSData+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC139812B53DE6C00230143 /* NSData+Hex.m */; };
 		8CC139832B53E05300230143 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08372B4F682500A32B61 /* IOKit.framework */; };
 		8CDD07AA2B4F619000A32B61 /* kfd.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CDD07A92B4F619000A32B61 /* kfd.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -203,8 +203,8 @@
 		8CB2E7622AD1788F000A6B90 /* ActionMenuView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionMenuView.h; sourceTree = "<group>"; };
 		8CB2E7632AD1788F000A6B90 /* ActionMenuView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionMenuView.m; sourceTree = "<group>"; };
 		8CB2E7652AD179F9000A6B90 /* ActionMenuDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionMenuDelegate.h; sourceTree = "<group>"; };
-		8CB94F022B59E17A0098BAFD /* BaseBin.tc */ = {isa = PBXFileReference; lastKnownFileType = file; name = BaseBin.tc; path = ../../../BaseBin/BaseBin.tc; sourceTree = "<group>"; };
-		8CB94F032B59E17A0098BAFD /* BaseBin.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; name = BaseBin.tar; path = ../../../BaseBin/BaseBin.tar; sourceTree = "<group>"; };
+		8CB94F022B59E17A0098BAFD /* basebin.tc */ = {isa = PBXFileReference; lastKnownFileType = file; name = basebin.tc; path = ../../../BaseBin/basebin.tc; sourceTree = "<group>"; };
+		8CB94F032B59E17A0098BAFD /* basebin.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; name = basebin.tar; path = ../../../BaseBin/basebin.tar; sourceTree = "<group>"; };
 		8CC139802B53DE6C00230143 /* NSData+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Hex.h"; sourceTree = "<group>"; };
 		8CC139812B53DE6C00230143 /* NSData+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Hex.m"; sourceTree = "<group>"; };
 		8CDD07A72B4F619000A32B61 /* kfd.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = kfd.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -500,8 +500,8 @@
 		8CB94F012B59E16D0098BAFD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				8CB94F032B59E17A0098BAFD /* BaseBin.tar */,
-				8CB94F022B59E17A0098BAFD /* BaseBin.tc */,
+				8CB94F032B59E17A0098BAFD /* basebin.tar */,
+				8CB94F022B59E17A0098BAFD /* basebin.tc */,
 				8C512B8A2B5C9DE800C6F14A /* libjbdrw.deb */,
 				8C512B8B2B5C9DE800C6F14A /* sileo.deb */,
 				8C512B8C2B5C9DE800C6F14A /* zebra.deb */,
@@ -725,8 +725,8 @@
 				8C512B922B5C9F9400C6F14A /* zebra.deb in Resources */,
 				8C512B912B5C9F9100C6F14A /* sileo.deb in Resources */,
 				8C512B902B5C9F8F00C6F14A /* libjbdrw.deb in Resources */,
-				8CB94F052B59E17A0098BAFD /* BaseBin.tar in Resources */,
-				8CB94F042B59E17A0098BAFD /* BaseBin.tc in Resources */,
+				8CB94F052B59E17A0098BAFD /* basebin.tar in Resources */,
+				8CB94F042B59E17A0098BAFD /* basebin.tc in Resources */,
 				8C7198282ABF0E84003C6658 /* LaunchScreen.storyboard in Resources */,
 				8C7198252ABF0E84003C6658 /* Assets.xcassets in Resources */,
 			);
