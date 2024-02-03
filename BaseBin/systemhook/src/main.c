@@ -405,7 +405,9 @@ DYLD_INTERPOSE(sandbox_init_hook, sandbox_init)
 DYLD_INTERPOSE(sandbox_init_with_parameters_hook, sandbox_init_with_parameters)
 DYLD_INTERPOSE(sandbox_init_with_extensions_hook, sandbox_init_with_extensions)
 DYLD_INTERPOSE(ptrace_hook, ptrace)
+#ifdef __arm64e__
 DYLD_INTERPOSE(fork_hook, fork)
 DYLD_INTERPOSE(vfork_hook, vfork)
 DYLD_INTERPOSE(forkpty_hook, forkpty)
 DYLD_INTERPOSE(daemon_hook, daemon)
+#endif

@@ -19,8 +19,9 @@ static int platform_set_process_debugged(uint64_t pid)
 	return 0;
 }
 
-static int platform_jailbreak_update(const char *updateTar)
+static int platform_stage_jailbreak_update(const char *updateTar)
 {
+	setenv("STAGED_JAILBREAK_UPDATE", updateTar, 1);
 	return 0;
 }
 
@@ -40,9 +41,9 @@ struct jbserver_domain gPlatformDomain = {
 				{ 0 },
 			},
 		},
-		// JBS_PLATFORM_JAILBREAK_UPDATE
+		// JBS_PLATFORM_STAGE_JAILBREAK_UPDATE
 		{
-			.handler = platform_jailbreak_update,
+			.handler = platform_stage_jailbreak_update,
 			.args = (jbserver_arg[]){
 				{ .name = "update-tar", .type = JBS_TYPE_STRING, .out = false },
 				{ 0 },

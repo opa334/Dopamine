@@ -429,12 +429,13 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             return;
         }
     }
-    error = [self extractTar:[[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"BaseBin.tar"] toPath:NSJBRootPath(@"/")];
+    error = [self extractTar:[[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"basebin.tar"] toPath:NSJBRootPath(@"/")];
     if (error) {
         completion(error);
         return;
     }
     [self patchBasebinDaemonPlists];
+    [[NSFileManager defaultManager] removeItemAtPath:NSJBRootPath(@"/basebin/basebin.tc") error:nil];
     
     void (^bootstrapFinishedCompletion)(NSError *) = ^(NSError *error){
         if (error) {

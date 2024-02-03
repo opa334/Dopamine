@@ -1,6 +1,5 @@
 #include "primitives.h"
 #include "translation.h"
-#include "handoff.h"
 #include "kernel.h"
 #include "util.h"
 #include "pte.h"
@@ -102,66 +101,85 @@ int physrw_pte_physwritebuf(uint64_t pa, const void* input, size_t size)
 	return r;
 }
 
-int libjailbreak_physrw_pte_init(void)
+int physrw_pte_handoff(pid_t pid)
 {
+	if (!pid) return -1;
+
+	uint64_t proc = proc_find(pid);
+	if (!proc) return -2;
+
 	thread_caffeinate_start();
-	uint64_t pmap = pmap_self();
 
-	uint64_t ttep = kread64(pmap + koffsetof(pmap, ttep));
-
-	// Allocate magic page table to our process at last possible location
-	uint64_t leafLevel;
+	int ret = 0;
 	do {
-		leafLevel = PMAP_TT_L3_LEVEL;
-		uint64_t pt = 0;
-		vtophys_lvl(ttep, MAGIC_PT_ADDRESS, &leafLevel, &pt);
-		if (leafLevel != PMAP_TT_L3_LEVEL) {
-			uint64_t pt_va = MAGIC_PT_ADDRESS;
-			switch (leafLevel) {
-				case PMAP_TT_L1_LEVEL: {
-					pt_va &= ~L1_BLOCK_MASK;
-					break;
+		uint64_t task = proc_task(proc);
+		if (!task) { ret = -3; break; };
+
+		uint64_t vmMap = kread_ptr(task + koffsetof(task, map));
+		if (!vmMap) { ret = -4; break; };
+
+		uint64_t pmap = kread_ptr(vmMap + koffsetof(vm_map, pmap));
+		if (!pmap) { ret = -5; break; };
+
+		uint64_t ttep = kread64(pmap + koffsetof(pmap, ttep));
+
+		// Allocate magic page table to our process at last possible location
+		uint64_t leafLevel;
+		do {
+			leafLevel = PMAP_TT_L3_LEVEL;
+			uint64_t pt = 0;
+			vtophys_lvl(ttep, MAGIC_PT_ADDRESS, &leafLevel, &pt);
+			if (leafLevel != PMAP_TT_L3_LEVEL) {
+				uint64_t pt_va = MAGIC_PT_ADDRESS;
+				switch (leafLevel) {
+					case PMAP_TT_L1_LEVEL: {
+						pt_va &= ~L1_BLOCK_MASK;
+						break;
+					}
+					case PMAP_TT_L2_LEVEL: {
+						pt_va &= ~L2_BLOCK_MASK;
+						break;
+					}
 				}
-				case PMAP_TT_L2_LEVEL: {
-					pt_va &= ~L2_BLOCK_MASK;
-					break;
-				}
+				uint64_t newTable = pmap_alloc_page_table(pmap, pt_va);
+				physwrite64(pt, newTable | ARM_TTE_VALID | ARM_TTE_TYPE_TABLE);
 			}
-			uint64_t newTable = pmap_alloc_page_table(pmap, pt_va);
-			physwrite64(pt, newTable | ARM_TTE_VALID | ARM_TTE_TYPE_TABLE);
-		}
-	} while (leafLevel < PMAP_TT_L3_LEVEL);
+		} while (leafLevel < PMAP_TT_L3_LEVEL);
 
-	// Map in the magic page table at MAGIC_PT_ADDRESS
+		// Map in the magic page table at MAGIC_PT_ADDRESS
 
-	leafLevel = PMAP_TT_L2_LEVEL;
-	uint64_t magicPT = vtophys_lvl(ttep, MAGIC_PT_ADDRESS, &leafLevel, NULL);
-	if (!magicPT) {
-		thread_caffeinate_stop();
-		return -1;
+		leafLevel = PMAP_TT_L2_LEVEL;
+		uint64_t magicPT = vtophys_lvl(ttep, MAGIC_PT_ADDRESS, &leafLevel, NULL);
+		if (!magicPT) { ret = -6; break; }
+		physwrite64(magicPT, magicPT | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY);
+
+		// Map in the pmap at MAGIC_PT_ADDRESS+PAGE_SIZE
+		uint64_t sw_asid = pmap + koffsetof(pmap, sw_asid);
+		uint64_t sw_asid_page = sw_asid & ~PAGE_MASK;
+		uint64_t sw_asid_page_pa = kvtophys(sw_asid_page);
+		uint64_t sw_asid_pageoff = sw_asid & PAGE_MASK;
+		gSwAsid = (uint8_t *)(MAGIC_PT_ADDRESS + PAGE_SIZE + sw_asid_pageoff);
+		physwrite64(magicPT+8, sw_asid_page_pa | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY);
+
+		if (pthread_mutex_init(&gLock, NULL) != 0) { ret = -7; break; }
+
+		flush_tlb();
+	} while (0);
+
+	thread_caffeinate_stop();
+	proc_rele(proc);
+	return ret;
+}
+
+int libjailbreak_physrw_pte_init(bool receivedHandoff)
+{
+	if (!receivedHandoff) {
+		physrw_pte_handoff(getpid());
 	}
-	physwrite64(magicPT, magicPT | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY);
-
-	// Map in the pmap at MAGIC_PT_ADDRESS+PAGE_SIZE
-	uint64_t sw_asid = pmap + koffsetof(pmap, sw_asid);
-	uint64_t sw_asid_page = sw_asid & ~PAGE_MASK;
-	uint64_t sw_asid_page_pa = kvtophys(sw_asid_page);
-	uint64_t sw_asid_pageoff = sw_asid & PAGE_MASK;
-	gSwAsid = (uint8_t *)(MAGIC_PT_ADDRESS + PAGE_SIZE + sw_asid_pageoff);
-	physwrite64(magicPT+8, sw_asid_page_pa | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY);
-
-	if (pthread_mutex_init(&gLock, NULL) != 0) {
-		thread_caffeinate_stop();
-		return -2;
-	}
-
 	gPrimitives.physreadbuf = physrw_pte_physreadbuf;
 	gPrimitives.physwritebuf = physrw_pte_physwritebuf;
 	gPrimitives.kreadbuf = NULL;
 	gPrimitives.kwritebuf = NULL;
-
-	flush_tlb();
-	thread_caffeinate_stop();
 
 	return 0;
 }

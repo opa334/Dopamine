@@ -12,11 +12,13 @@
 #include <dlfcn.h>
 #include <libkern/OSCacheControl.h>
 
+#ifdef __arm64e__
 static uint64_t __attribute((naked)) __xpaci(uint64_t a)
 {
 	asm(".long        0xDAC143E0"); // XPACI X0
 	asm("ret");
 }
+#endif
 
 uint64_t xpaci(uint64_t a)
 {
@@ -24,7 +26,11 @@ uint64_t xpaci(uint64_t a)
 	if ((a & 0xFFFFFF0000000000) == 0xFFFFFF0000000000) {
 		return a;
 	}
+#ifdef __arm64e__
 	return __xpaci(a);
+#else
+    return a;
+#endif
 }
 
 uint32_t movk(uint8_t x, uint16_t val, uint16_t lsl)

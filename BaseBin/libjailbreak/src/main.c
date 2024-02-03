@@ -16,8 +16,8 @@ int jbclient_initialize_primitives(void)
 	if (jbclient_root_get_sysinfo(&xSystemInfo) == 0) {
 		SYSTEM_INFO_DESERIALIZE(xSystemInfo);
 		xpc_release(xSystemInfo);
-		if (jbclient_root_get_physrw() == 0) {
-			libjailbreak_physrw_init();
+		if (jbclient_root_get_physrw(false) == 0) {
+			libjailbreak_physrw_init(true);
 			libjailbreak_translation_init();
 			libjailbreak_IOSurface_primitives_init();
 			if (__builtin_available(iOS 16.0, *)) {

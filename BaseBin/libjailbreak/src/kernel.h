@@ -11,6 +11,8 @@
 #define CPSR_KERN_INTR_DIS (0x4013c0 | ((uint32_t)kconstant(kernel_el) << 2))
 #define CPSR_USER_INTR_DIS 0x13C0
 
+#define PERM_KRW_URW 0x7 // R/W for kernel and user
+
 #define P_SUGID 0x00000100
 #define atop(x) ((vm_address_t)(x) >> PAGE_SHIFT)
 typedef struct __attribute__((__packed__)) _vm_map_flags {
@@ -49,6 +51,9 @@ uint64_t ipc_entry_lookup(uint64_t space, mach_port_name_t name);
 uint64_t pa_index(uint64_t pa);
 uint64_t pai_to_pvh(uint64_t pai);
 uint64_t pvh_ptd(uint64_t pvh);
+void task_set_memory_ownership_transfer(uint64_t task, bool value);
+uint64_t mac_label_get(uint64_t label, int slot);
+void mac_label_set(uint64_t label, int slot, uint64_t value);
 int pmap_cs_allow_invalid(uint64_t pmap);
 int cs_allow_invalid(uint64_t proc, bool emulateFully);
 

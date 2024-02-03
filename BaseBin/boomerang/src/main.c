@@ -1,5 +1,4 @@
 #include <mach/mach.h>
-#include <libjailbreak/handoff.h>
 #include <libjailbreak/primitives.h>
 #include <libjailbreak/libjailbreak.h>
 #include <libjailbreak/physrw.h>
@@ -53,8 +52,8 @@ int main(int argc, char* argv[])
 	SYSTEM_INFO_DESERIALIZE(xSystemInfoDict);
 
 	// Retrieve physrw
-	jbclient_root_get_physrw();
-	libjailbreak_physrw_init();
+	jbclient_root_get_physrw(false);
+	libjailbreak_physrw_init(true);
 	libjailbreak_translation_init();
 
 	libjailbreak_IOSurface_primitives_init();

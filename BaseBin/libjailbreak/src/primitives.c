@@ -267,8 +267,12 @@ int kwrite64(uint64_t va, uint64_t v)
 
 int kwrite_ptr(uint64_t kaddr, uint64_t pointer, uint16_t salt)
 {
+#ifdef __arm64e__
 	if (!gPrimitives.kexec || !kgadget(pacda)) return -1;
 	kwrite64(kaddr, kptr_sign(kaddr, pointer, salt));
+#else
+	kwrite64(kaddr, pointer);
+#endif
 	return 0;
 }
 

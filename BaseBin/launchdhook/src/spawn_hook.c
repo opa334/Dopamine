@@ -2,10 +2,12 @@
 #include "../systemhook/src/common.h"
 #include "boomerang.h"
 #include "crashreporter.h"
+#include "update.h"
 #include "substrate.h"
 #include <mach-o/dyld.h>
 #include <sys/param.h>
 #include <sys/mount.h>
+extern char **environ;
 
 extern int systemwide_trust_binary(const char *binaryPath);
 
@@ -58,6 +60,18 @@ int posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
 
 			// Fix Xcode debugging being broken after the userspace reboot
 			unmount("/Developer", MNT_FORCE);
+
+			// If there is a pending jailbreak update, apply it now
+			const char *stagedJailbreakUpdate = getenv("STAGED_JAILBREAK_UPDATE");
+			if (stagedJailbreakUpdate) {
+				int r = jbupdate_basebin(stagedJailbreakUpdate);
+				unsetenv("STAGED_JAILBREAK_UPDATE");
+
+				// Update envp to reflect our changes
+				// setenv / unsetenv can sometimes cause environ to get reallocated
+				// In that case envp may point to garbage or be empty
+				envp = environ;
+			}
 
 			// Say goodbye to this process
 			return posix_spawn_orig_wrapper(pid, path, file_actions, attrp, argv, envp);

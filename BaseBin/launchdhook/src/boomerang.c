@@ -3,6 +3,7 @@
 #include <libjailbreak/jbserver.h>
 #include <libjailbreak/jbserver_boomerang.h>
 #include <libjailbreak/physrw.h>
+#include <libjailbreak/physrw_pte.h>
 #include <libjailbreak/primitives_IOSurface.h>
 #include <libjailbreak/kalloc_pt.h>
 #include <libjailbreak/kcall_Fugu14.h>
@@ -57,7 +58,7 @@ void boomerang_stashPrimitives()
 	setenv("BOOMERANG_PID", pidBuf, 1);
 }
 
-int boomerang_recoverPrimitives(void)
+int boomerang_recoverPrimitives(bool firstRetrieval, bool shouldEndBoomerang)
 {
 	// Mach port to boomerang should be stored in our registeredPorts[2]
 	// Use it to recover primitives, afterwards replace it with MACH_PORT_NULL to make launchd happy
@@ -84,8 +85,18 @@ int boomerang_recoverPrimitives(void)
 	SYSTEM_INFO_DESERIALIZE(xSystemInfoDict);
 
 	// Retrieve physrw
-	if (jbclient_root_get_physrw() != 0) return -5;
-	libjailbreak_physrw_init();
+	int physrwRet = jbclient_root_get_physrw(firstRetrieval);
+	if (physrwRet != 0) return -20 + physrwRet;
+	if (firstRetrieval) {
+		// For performance reasons we only use physrw_pte until the first userspace reboot
+		// Handing off full physrw from the app is really slow and causes watchdog timeouts
+		// But from launchd it's generally fine, no clue why
+		libjailbreak_physrw_pte_init(true);
+	}
+	else {
+		libjailbreak_physrw_init(true);
+	}
+
 	libjailbreak_translation_init();
 
 	libjailbreak_IOSurface_primitives_init();
@@ -98,14 +109,17 @@ int boomerang_recoverPrimitives(void)
 		jbclient_get_fugu14_kcall();
 	}
 
-	// Send done message to boomerang
-	jbclient_boomerang_done();
+	if (shouldEndBoomerang) {
+		// Send done message to boomerang
+		jbclient_boomerang_done();
 
-	// Remove boomerang zombie proc if needed
-	if (boomerangPid != 0) {
-		int boomerangStatus;
-		waitpid(boomerangPid, &boomerangStatus, WEXITED);
-		waitpid(boomerangPid, &boomerangStatus, 0);
+		// Remove boomerang zombie proc if needed
+		if (boomerangPid != 0) {
+			int boomerangStatus;
+			waitpid(boomerangPid, &boomerangStatus, WEXITED);
+			waitpid(boomerangPid, &boomerangStatus, 0);
+		}
 	}
+	
 	return 0;
 }

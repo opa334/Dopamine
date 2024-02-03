@@ -12,12 +12,11 @@
 #import <compression.h>
 #import <xpf/xpf.h>
 #import <dlfcn.h>
-#import <libjailbreak/handoff.h>
-#import <libjailbreak/primitives_external.h>
 #import <libjailbreak/codesign.h>
 #import <libjailbreak/primitives.h>
 #import <libjailbreak/primitives_IOSurface.h>
 #import <libjailbreak/physrw_pte.h>
+#import <libjailbreak/physrw.h>
 #import <libjailbreak/translation.h>
 #import <libjailbreak/kernel.h>
 #import <libjailbreak/info.h>
@@ -139,11 +138,15 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         if ([pplBypass load] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PPL bypass: %s", dlerror()]}];};
         if ([pplBypass run] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PPL"}];}
         // At this point we presume the PPL bypass gave us unrestricted phys write primitives
-        if (!jbinfo(usesPACBypass)) {
-            if (@available(iOS 16.0, *)) {
-                // IOSurface kallocs don't work on iOS 16+, use these instead
-                libjailbreak_kalloc_pt_init();
-            }
+        if (@available(iOS 16.0, *)) {
+            // IOSurface kallocs don't work on iOS 16+, use these instead
+            libjailbreak_kalloc_pt_init();
+        }
+    }
+    else {
+        if (@available(iOS 16.0, *)) {
+            // IOSurface kallocs don't work on iOS 16+, use these instead
+            libjailbreak_kalloc_pt_init();
         }
     }
     return nil;
@@ -151,7 +154,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (NSError *)buildPhysRWPrimitive
 {
-    int r = libjailbreak_physrw_pte_init();
+    int r = libjailbreak_physrw_pte_init(false);
     if (r != 0) {
         return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedBuildingPhysRW userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to build phys r/w primitive: %d", r]}];
     }
@@ -194,12 +197,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     
     // Unsandbox
     uint64_t label = kread_ptr(ucred + koffsetof(ucred, label));
-    if (gSystemInfo.kernelStruct.proc_ro.exists) {
-        kwrite64(label + 0x10, -1);
-    }
-    else {
-        kcall(NULL, ksymbol(mac_label_set), 3, (uint64_t[]){ label, 1, 0 });
-    }
+    mac_label_set(label, 1, -1);
     NSError *error = nil;
     [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/var" error:&error];
     if (error) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedUnsandbox userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to unsandbox, /var does not seem accessible (%s)", error.description.UTF8String]}];
@@ -219,7 +217,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 - (NSError *)loadBasebinTrustcache
 {
     trustcache_file_v1 *basebinTcFile = NULL;
-    if (trustcache_file_build_from_path([[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"BaseBin.tc"].fileSystemRepresentation, &basebinTcFile) == 0) {
+    if (trustcache_file_build_from_path([[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"basebin.tc"].fileSystemRepresentation, &basebinTcFile) == 0) {
         int r = trustcache_file_upload_with_uuid(basebinTcFile, BASEBIN_TRUSTCACHE_UUID);
         free(basebinTcFile);
         if (r != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedBasebinTrustcache userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to upload BaseBin trustcache: %d", r]}];
@@ -360,9 +358,11 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     err = [self finalizeBootstrapIfNeeded];
     if (err) return err;
     
-    printf("Starting launch daemons...\n");
-    exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "bootstrap", "system", JBRootPath("/Library/LaunchDaemons"), NULL);
-    exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "bootstrap", "system", JBRootPath("/basebin/LaunchDaemons"), NULL);
+    //printf("Starting launch daemons...\n");
+    //exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "bootstrap", "system", JBRootPath("/Library/LaunchDaemons"), NULL);
+    //exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "bootstrap", "system", JBRootPath("/basebin/LaunchDaemons"), NULL);
+    // Note: This causes the app to freeze in some instances due to launchd only having physrw_pte, we might want to only do it when neccessary
+    // It's only neccessary when we don't immediately userspace reboot
     
     printf("Done!\n");
     return nil;

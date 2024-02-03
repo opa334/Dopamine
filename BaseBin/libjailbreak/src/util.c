@@ -8,6 +8,8 @@
 #include <pthread.h>
 #include <signal.h>
 #include <sys/sysctl.h>
+#include <archive.h>
+#include <archive_entry.h>
 extern char **environ;
 
 void proc_iterate(void (^itBlock)(uint64_t, bool*))
@@ -87,26 +89,65 @@ uint64_t alloc_page_table_unassigned(void)
 	uint64_t pmap = pmap_self();
 	uint64_t ttep = kread64(pmap + koffsetof(pmap, ttep));
 
-	// When we allocate the entire address range of an L2 block, we can assume ownership of the backing table
 	void *free_lvl2 = NULL;
-	if (posix_memalign(&free_lvl2, L2_BLOCK_SIZE, L2_BLOCK_SIZE) != 0) {
-		printf("WARNING: Failed to allocate L2 page table address range\n");
-		return 0;
-	}
-	// Now, fault in one page to make the kernel allocate the page table for it
-	*(volatile uint64_t *)free_lvl2;
-
-	// Find the newly allocated page table
-	uint64_t lvl = PMAP_TT_L2_LEVEL;
 	uint64_t tte_lvl2 = 0;
-	uint64_t allocatedPT = vtophys_lvl(ttep, (uint64_t)free_lvl2, &lvl, &tte_lvl2);
+	uint64_t allocatedPT = 0;
+	uint64_t pinfo_pa = 0;
+	while (true) {
+		// When we allocate the entire address range of an L2 block, we can assume ownership of the backing table
+		if (posix_memalign(&free_lvl2, L2_BLOCK_SIZE, L2_BLOCK_SIZE) != 0) {
+			printf("WARNING: Failed to allocate L2 page table address range\n");
+			return 0;
+		}
+		// Now, fault in one page to make the kernel allocate the page table for it
+		*(volatile uint64_t *)free_lvl2;
 
-	// Bump reference count of our allocated page table by one
-	uint64_t pvh = pai_to_pvh(pa_index(allocatedPT));
-	uint64_t ptdp = pvh_ptd(pvh);
-	uint64_t pinfo = kread64(ptdp + koffsetof(pt_desc, ptd_info)); // TODO: Fake 16k devices (4 values)
-	uint64_t pinfo_pa = kvtophys(pinfo);
-	physwrite16(pinfo_pa, physread16(pinfo_pa)+1);
+		// Find the newly allocated page table
+		uint64_t lvl = PMAP_TT_L2_LEVEL;
+		allocatedPT = vtophys_lvl(ttep, (uint64_t)free_lvl2, &lvl, &tte_lvl2);
+
+		uint64_t pvh = pai_to_pvh(pa_index(allocatedPT));
+		uint64_t ptdp = pvh_ptd(pvh);
+		uint64_t pinfo = kread64(ptdp + koffsetof(pt_desc, ptd_info)); // TODO: Fake 16k devices (4 values)
+		pinfo_pa = kvtophys(pinfo);
+
+		uint16_t refCount = physread16(pinfo_pa);
+		if (refCount != 1) {
+			// Something is off, retry
+			free(free_lvl2);
+			continue;
+		}
+
+		break;
+	}
+
+	// Handle case where all entries in the level 2 table are 0 after we leak ours
+	// In that case, leak an allocation in the span of it to keep it alive
+	/*uint64_t lvl2Table = tte_lvl2 & ~PAGE_MASK;
+	uint64_t lvl2TableEntries[PAGE_SIZE / sizeof(uint64_t)];
+	physreadbuf(lvl2Table, lvl2TableEntries, PAGE_SIZE);
+	int freeIdx = -1;
+	for (int i = 0; i < (PAGE_SIZE / sizeof(uint64_t)); i++) {
+		uint64_t curPtr = lvl2Table + (sizeof(uint64_t) * i);
+		if (curPtr != tte_lvl2) {
+			if (lvl2TableEntries[i]) {
+				freeIdx = -1;
+				break;
+			}
+			else {
+				freeIdx = i;
+			}
+		}
+	}
+	if (freeIdx != -1) {
+		vm_address_t freeUserspace = ((uint64_t)free_lvl2 & ~L1_BLOCK_MASK) + (freeIdx * L2_BLOCK_SIZE);
+		if (vm_allocate(mach_task_self(), &freeUserspace, 0x4000, VM_FLAGS_FIXED) == 0) {
+			*(volatile uint8_t *)freeUserspace;
+		}
+	}*/
+
+	// Bump reference count of our allocated page table
+	physwrite16(pinfo_pa, 0x1337);
 
 	// Deallocate address range (our allocated page table will stay because we bumped it's reference count)
 	free(free_lvl2);
@@ -114,13 +155,24 @@ uint64_t alloc_page_table_unassigned(void)
 	// Remove our allocated page table from it's original location (leak it)
 	physwrite64(tte_lvl2, 0);
 
-	// Clear the allocated page table of any entries (there should be one)
-	uint8_t empty[PAGE_SIZE];
-	memset(empty, 0, PAGE_SIZE);
-	physwritebuf(allocatedPT, empty, PAGE_SIZE);
+	// Ensure there is at least one entry in page table
+	// Attempts to prevent "pte is empty" panic
+	// Sometimes weird prefetches happen so this has to be a valid physical page to ensure those don't panic
+	// Disabled for now cause it causes super weird issues
+	//physwrite64(allocatedPT, kconstant(physBase) | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY);
 
-	// Decrement reference count of our allocated page table again
-	physwrite16(pinfo_pa, physread16(pinfo_pa)-1);
+	// Reference count of new page table must be 0!
+	// original ref count is 1 because the table holds one PTE
+	// Our new PTEs are not part of the pmap layer though so refcount needs to be 0
+	physwrite16(pinfo_pa, 0);
+
+	// After we leaked the page table, the ledger still thinks it belongs to our process
+	// We need to remove it from there aswell so that the process doesn't get jetsam killed
+	// (This ended up more complicated than I thought, so I just disabled jetsam in launchd)
+	//uint64_t ledger = kread_ptr(pmap + koffsetof(pmap, ledger));
+	//uint64_t ledger_pa = kvtophys(ledger);
+	//int page_table_ledger = physread32(ledger_pa + koffsetof(_task_ledger_indices, page_table));
+	//physwrite32(ledger_pa + koffsetof(_task_ledger_indices, page_table), page_table_ledger - 1);
 
 	thread_caffeinate_stop();
 
@@ -152,6 +204,61 @@ uint64_t pmap_alloc_page_table(uint64_t pmap, uint64_t va)
 	physwrite64(ptdp_pa + koffsetof(pt_desc, va), va);
 
 	return tt_p;
+}
+
+int pmap_map_in(uint64_t pmap, uint64_t uaStart, uint64_t paStart, uint64_t size)
+{
+	thread_caffeinate_start();
+
+	uint64_t uaEnd = uaStart + size;
+	uint64_t ttep = kread64(pmap + koffsetof(pmap, ttep));
+
+	// Sanity check: Ensure the entire area to be mapped in is not mapped to anything yet
+	for(uint64_t ua = uaStart; ua < uaEnd; ua += PAGE_SIZE) {
+		if (vtophys(ttep, ua)) { thread_caffeinate_stop(); return -1; }
+		// TODO: If all mappings match 1:1, maybe return 0 instead of -1?
+	}
+
+	// Allocate all page tables that need to be allocated
+	for(uint64_t ua = uaStart; ua < uaEnd; ua += PAGE_SIZE) {
+		uint64_t leafLevel;
+		do {
+			leafLevel = PMAP_TT_L3_LEVEL;
+			uint64_t pt = 0;
+			vtophys_lvl(ttep, ua, &leafLevel, &pt);
+			if (leafLevel != PMAP_TT_L3_LEVEL) {
+				uint64_t pt_va = 0;
+				switch (leafLevel) {
+					case PMAP_TT_L1_LEVEL: {
+						pt_va = ua & ~L1_BLOCK_MASK;
+						break;
+					}
+					case PMAP_TT_L2_LEVEL: {
+						pt_va = ua & ~L2_BLOCK_MASK;
+						break;
+					}
+				}
+				uint64_t newTable = pmap_alloc_page_table(pmap, pt_va);
+				if (newTable) {
+					physwrite64(pt, newTable | ARM_TTE_VALID | ARM_TTE_TYPE_TABLE);
+				}
+				else { thread_caffeinate_stop(); return -2; }
+			}
+		} while (leafLevel < PMAP_TT_L3_LEVEL);
+	}
+
+	// Insert entries into L3 pages
+	for(uint64_t ua = uaStart; ua < uaEnd; ua += PAGE_SIZE) {
+		uint64_t pa = (ua - uaStart) + paStart;
+		uint64_t leafLevel = PMAP_TT_L3_LEVEL;
+		uint64_t pt = 0;
+
+		vtophys_lvl(ttep, ua, &leafLevel, &pt);
+		physwrite64(pt, pa | PERM_TO_PTE(PERM_KRW_URW) | PTE_NON_GLOBAL | PTE_OUTER_SHAREABLE | PTE_LEVEL3_ENTRY);
+	}
+
+	thread_caffeinate_stop();
+	return 0;
 }
 
 int sign_kernel_thread(uint64_t proc, mach_port_t threadPort)
@@ -201,7 +308,7 @@ int exec_cmd(const char *binary, ...)
 {
 	int argc = 1;
 	va_list args;
-    va_start(args, binary);
+	va_start(args, binary);
 	while (va_arg(args, const char *)) argc++;
 	va_end(args);
 
@@ -275,6 +382,92 @@ void killall(const char *executablePathToKill, bool softly)
 	}
 	free(info);
 }
+
+static int
+copy_data(struct archive *ar, struct archive *aw)
+{
+	int r;
+	const void *buff;
+	size_t size;
+	la_int64_t offset;
+
+	for (;;) {
+		r = archive_read_data_block(ar, &buff, &size, &offset);
+		if (r == ARCHIVE_EOF)
+			return (ARCHIVE_OK);
+		if (r < ARCHIVE_OK)
+			return (r);
+		r = archive_write_data_block(aw, buff, size, offset);
+		if (r < ARCHIVE_OK) {
+			fprintf(stderr, "%s\n", archive_error_string(aw));
+			return (r);
+		}
+	}
+}
+
+int libarchive_unarchive(const char *fileToExtract, const char *extractionPath)
+{
+	struct archive *a;
+	struct archive *ext;
+	struct archive_entry *entry;
+	int flags;
+	int r;
+
+	/* Select which attributes we want to restore. */
+	flags = ARCHIVE_EXTRACT_TIME;
+	flags |= ARCHIVE_EXTRACT_PERM;
+	flags |= ARCHIVE_EXTRACT_ACL;
+	flags |= ARCHIVE_EXTRACT_FFLAGS;
+
+	a = archive_read_new();
+	archive_read_support_format_all(a);
+	archive_read_support_filter_all(a);
+	ext = archive_write_disk_new();
+	archive_write_disk_set_options(ext, flags);
+	archive_write_disk_set_standard_lookup(ext);
+	if ((r = archive_read_open_filename(a, fileToExtract, 10240)))
+			return 1;
+	for (;;) {
+			r = archive_read_next_header(a, &entry);
+			if (r == ARCHIVE_EOF)
+					break;
+			if (r < ARCHIVE_OK)
+					fprintf(stderr, "%s\n", archive_error_string(a));
+			if (r < ARCHIVE_WARN)
+					return 1;
+
+			const char *currentFile = archive_entry_pathname(entry);
+			char outputPath[PATH_MAX];
+			strlcpy(outputPath, extractionPath, PATH_MAX);
+			strlcat(outputPath, "/", PATH_MAX);
+			strlcat(outputPath, currentFile, PATH_MAX);
+
+			archive_entry_set_pathname(entry, outputPath);
+			
+			r = archive_write_header(ext, entry);
+			if (r < ARCHIVE_OK)
+					fprintf(stderr, "%s\n", archive_error_string(ext));
+			else if (archive_entry_size(entry) > 0) {
+					r = copy_data(a, ext);
+					if (r < ARCHIVE_OK)
+							fprintf(stderr, "%s\n", archive_error_string(ext));
+					if (r < ARCHIVE_WARN)
+							return 1;
+			}
+			r = archive_write_finish_entry(ext);
+			if (r < ARCHIVE_OK)
+					fprintf(stderr, "%s\n", archive_error_string(ext));
+			if (r < ARCHIVE_WARN)
+					return 1;
+	}
+	archive_read_close(a);
+	archive_read_free(a);
+	archive_write_close(ext);
+	archive_write_free(ext);
+	
+	return 0;
+}
+
 
 // code from ktrw by Brandon Azad : https://github.com/googleprojectzero/ktrw
 // A worker thread for activity_thread that just spins.

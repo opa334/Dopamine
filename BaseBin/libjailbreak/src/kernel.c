@@ -119,11 +119,35 @@ void task_set_memory_ownership_transfer(uint64_t task, bool value)
 	kwrite8(task + koffsetof(task, task_can_transfer_memory_ownership), !!value);
 }
 
+uint64_t mac_label_get(uint64_t label, int slot)
+{
+	// On 15.0 - 15.1.1, 0 is the equivalent of -1 on 15.2+
+	// So, treat 0 as -1 there
+	uint64_t value = kread_ptr(label + ((slot + 1) * sizeof(uint64_t)));
+	if (!gSystemInfo.kernelStruct.proc_ro.exists && value == 0) value = -1;
+	return value;
+}
+
+void mac_label_set(uint64_t label, int slot, uint64_t value)
+{
+	// THe inverse of the condition above, treat -1 as 0 on 15.0 - 15.1.1
+	if (!gSystemInfo.kernelStruct.proc_ro.exists && value == -1) value = 0;
+#ifdef __arm64e__
+	if (jbinfo(usesPACBypass)) {
+		kcall(NULL, ksymbol(mac_label_set), 3, (uint64_t[]){ label, slot, value });
+		return;
+	}
+#endif
+	kwrite64(label + ((slot + 1) * sizeof(uint64_t)), value);
+}
+
+#ifdef __arm64e__
 int pmap_cs_allow_invalid(uint64_t pmap)
 {
 	kwrite8(pmap + koffsetof(pmap, wx_allowed), true);
 	return 0;
 }
+#endif
 
 int cs_allow_invalid(uint64_t proc, bool emulateFully)
 {
@@ -131,7 +155,10 @@ int cs_allow_invalid(uint64_t proc, bool emulateFully)
 	uint64_t vm_map = kread_ptr(task + koffsetof(task, map));
 	uint64_t pmap = kread_ptr(vm_map + koffsetof(vm_map, pmap));
 
+    // For non-pmap_cs (arm64) devices, this should always be emulated.
+#ifdef __arm64e__
 	if (emulateFully) {
+#endif
 		// Fugu15 Rootful
 		//proc_csflags_clear(proc, CS_EXEC_SET_ENFORCEMENT | CS_EXEC_SET_KILL | CS_EXEC_SET_HARD | CS_REQUIRE_LV | CS_ENFORCEMENT | CS_RESTRICT | CS_KILL | CS_HARD | CS_FORCED_LV);
 		//proc_csflags_set(proc, CS_DEBUGGED | CS_INVALID_ALLOWED | CS_GET_TASK_ALLOW);
@@ -146,9 +173,11 @@ int cs_allow_invalid(uint64_t proc, bool emulateFully)
 		flags.switch_protect = false;
 		flags.cs_debugged = true;
 		kwritebuf(vm_map + koffsetof(vm_map, flags), &flags, sizeof(flags));
+#ifdef __arm64e__
 	}
 
 	// For pmap_cs (arm64e) devices, this is enough to get unsigned code to run
 	pmap_cs_allow_invalid(pmap);
+#endif
 	return 0;
 }

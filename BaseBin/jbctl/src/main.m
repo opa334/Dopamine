@@ -1,6 +1,9 @@
 #import <libjailbreak/libjailbreak.h>
 #import "internal.h"
 
+#import <Foundation/Foundation.h>
+#import <CoreServices/LSApplicationProxy.h>
+
 int reboot3(uint64_t flags, ...);
 #define RB2_USERREBOOT (0x2000000000000000llu)
 extern char **environ;
@@ -22,7 +25,10 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	gSystemInfo.jailbreakInfo.rootPath = jbclient_get_root_path();
+	const char *rootPath = jbclient_get_root_path();
+	if (rootPath) {
+		gSystemInfo.jailbreakInfo.rootPath = strdup(rootPath);
+	}
 
 	char *cmd = argv[1];
 	if (!strcmp(cmd, "proc_set_debugged")) {
@@ -48,22 +54,50 @@ int main(int argc, char* argv[])
 			print_usage();
 			return 2;
 		}
-		/*char *updateType = argv[2];
-		int64_t result = -1;
-		if (!strcmp(updateType, "tipa")) {
-			result = jbdUpdateFromTIPA([NSString stringWithUTF8String:argv[3]], false);
-		} else if(!strcmp(updateType, "basebin")) {
-			result = jbdUpdateFromBasebinTar([NSString stringWithUTF8String:argv[3]], false);
+		char *updateType = argv[2];
+		char *updateFile = argv[3];
+		if (access(updateFile, F_OK) != 0) {
+			printf("ERROR: File %s does not exist\n", updateFile);
+			return 3;
 		}
+
+		if (!strcmp(updateType, "tipa")) {
+			LSApplicationProxy *trollstoreAppProxy = [LSApplicationProxy applicationProxyForIdentifier:@"com.opa334.TrollStore"];
+			if (!trollstoreAppProxy || !trollstoreAppProxy.installed) {
+				printf("Unable to locate TrollStore, doesn't seem like it's installed.\n");
+				return 4;
+			}
+			NSString *trollstorehelperPath = [trollstoreAppProxy.bundleURL.path stringByAppendingPathComponent:@"trollstorehelper"];
+			int r = exec_cmd(trollstorehelperPath.fileSystemRepresentation, "install", "force", updateFile, NULL);
+			if (r != 0) {
+				printf("Failed to install tipa via TrollStore: %d\n", r);
+				return 5;
+			}
+
+			LSApplicationProxy *dopamineAppProxy = [LSApplicationProxy applicationProxyForIdentifier:@"com.opa334.Dopamine"];
+			if (!dopamineAppProxy) {
+				printf("Unable to locate newly installed Dopamine build.\n");
+				return 6;
+			}
+			updateFile = strdup([dopamineAppProxy.bundleURL.path stringByAppendingPathComponent:@"basebin.tar"].fileSystemRepresentation);
+			// Fall through to basebin installation
+		}
+		else if (strcmp(updateType, "basebin") != 0) {
+			// If type is neither tipa nor basebin, bail out
+			print_usage();
+			return 2;
+		}
+
+		int64_t result = jbclient_platform_stage_jailbreak_update(updateFile);
 		if (result == 0) {
-			printf("Update applied, userspace rebooting to finalize it...\n");
-			sleep(2);
+			printf("Staged update for installation during the next userspace reboot, userspace rebooting now...\n");
+			usleep(10000);
 			return reboot3(RB2_USERREBOOT);
 		}
 		else {
 			printf("Update failed with error code %lld\n", result);
 			return result;
-		}*/
+		}
 	} else if (!strcmp(cmd, "internal")) {
 		if (getuid() != 0) return -1;
 		if (argc < 3) return -1;

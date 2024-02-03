@@ -10,9 +10,9 @@ static bool root_domain_allowed(audit_token_t clientToken)
 	return (audit_token_to_euid(clientToken) == 0);
 }
 
-static int root_get_physrw(audit_token_t *clientToken)
+static int root_get_physrw(audit_token_t *clientToken, bool singlePTE)
 {
-	return boomerang_get_physrw(clientToken);
+	return boomerang_get_physrw(clientToken, singlePTE);
 }
 
 static int root_sign_thread(audit_token_t *clientToken, mach_port_t threadPort)
@@ -27,10 +27,11 @@ static int root_get_sysinfo(xpc_object_t *sysInfoOut)
 
 static int root_steal_ucred(audit_token_t *clientToken, uint64_t ucred, uint64_t *orgUcred)
 {
+	uint64_t kernproc = proc_find(0);
+	uint64_t kern_ucred = proc_ucred(kernproc);
 	if (!ucred) {
 		// Passing 0 to this means kernel ucred
-		uint64_t kernproc = proc_find(0);
-		ucred = proc_ucred(kernproc);
+		ucred = kern_ucred;
 	}
 
 	pid_t pid = audit_token_to_pid(*clientToken);
@@ -45,6 +46,18 @@ static int root_steal_ucred(audit_token_t *clientToken, uint64_t ucred, uint64_t
 		kwrite_ptr(proc + koffsetof(proc, ucred), ucred, 0x84E8);
 	}
 
+#ifndef __arm64e__
+	if (ucred == kern_ucred) {
+		// For some reason we need to borrow this from our process just for bind mount entitlement.
+		uint64_t our_label = kread_ptr(*orgUcred + koffsetof(ucred, label));
+		uint64_t our_slot = mac_label_get(our_label, 0);
+		mac_label_set(kread_ptr(kern_ucred + koffsetof(ucred, label)), 0, our_slot);
+	}
+	else {
+		// Revert it to what it should be
+		mac_label_set(kread_ptr(kern_ucred + koffsetof(ucred, label)), 0, -1);
+	}
+#endif
 	return 0;
 }
 
@@ -62,6 +75,7 @@ struct jbserver_domain gRootDomain = {
 			.handler = root_get_physrw,
 			.args = (jbserver_arg[]){
 				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
+				{ .name = "single-pte", .type = JBS_TYPE_BOOL, .out = false },
 				{ 0 },
 			},
 		},
