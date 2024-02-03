@@ -10,6 +10,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+#define UI_IPAD_MAX_WIDTH 600
+#define UI_MODAL_PADDING 30
+#define UI_PADDING 30
+//Action Menu
+#define UI_INNER_PADDING 20
+#define UI_INNER_TOP_PADDING 5
+#define UI_ACTION_HEIGHT 73
+#define UI_ACTION_HEIGHT_HOME_BTN 65
+
 @interface GlobalAppearance : NSObject
 
 + (UIImageSymbolConfiguration *)smallIconImageConfiguration;
@@ -17,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (UIButtonConfiguration *)defaultButtonConfigurationWithImagePadding:(CGFloat)imagePadding;
 + (NSAttributedString*)mainSubtitleString:(NSString*)string;
 + (NSAttributedString*)secondarySubtitleString:(NSString*)string;
++ (BOOL)isHomeButtonDevice;
 
 @end
 

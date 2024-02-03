@@ -9,8 +9,7 @@
 #import "DOUIManager.h"
 #import "EnvironmentManager.h"
 #import "Jailbreaker.h"
-
-#define UI_PADDING 30
+#import "GlobalAppearance.h"
 
 @interface DOMainViewController ()
 
@@ -38,17 +37,22 @@
 
 
     int statusBarHeight = fmax(15, [[UIApplication sharedApplication] keyWindow].safeAreaInsets.top - 20);
-    BOOL isHomeButtonDevice = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && [[UIApplication sharedApplication] keyWindow].safeAreaInsets.bottom == 0;
 
     [NSLayoutConstraint activateConstraints:@[
         [stackView.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor constant:statusBarHeight],//-35
-        [stackView.heightAnchor constraintEqualToAnchor:self.view.heightAnchor multiplier:isHomeButtonDevice ? 0.78 : 0.73]
+        [stackView.heightAnchor constraintEqualToAnchor:self.view.heightAnchor multiplier:[GlobalAppearance isHomeButtonDevice] ? 0.78 : 0.73]
     ]];
 
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
     {
+        NSLayoutConstraint *relativeWidthConstraint = [stackView.widthAnchor constraintEqualToAnchor:self.view.widthAnchor multiplier:0.8];
+        relativeWidthConstraint.priority = UILayoutPriorityDefaultHigh;
+        NSLayoutConstraint *maxWidthConstraint = [stackView.widthAnchor constraintLessThanOrEqualToConstant:UI_IPAD_MAX_WIDTH];
+        maxWidthConstraint.priority = UILayoutPriorityRequired;
+
         [NSLayoutConstraint activateConstraints:@[
-            [stackView.widthAnchor constraintEqualToAnchor:self.view.widthAnchor multiplier:0.8],
+            relativeWidthConstraint,
+            maxWidthConstraint,
             [stackView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor]
         ]];
     }

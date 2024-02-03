@@ -8,6 +8,7 @@
 #import "DONavigationController.h"
 #import <objc/runtime.h>
 #import "DOModalBackAction.h"
+#import "GlobalAppearance.h"
 
 @interface DONavigationController ()
 
@@ -20,8 +21,6 @@
 @interface UINavigationController (Private)
 -(CGRect)_frameForViewController:(id)arg1;
 @end
-
-#define UI_MODAL_PADDING 30
 
 @implementation DONavigationController
 
@@ -107,7 +106,7 @@
     if ([[viewController class] isEqual: [DOMainViewController class]])
         return orig;
     
-    orig.size.width -= UI_MODAL_PADDING * 2;
+    orig.size.width = fmin(orig.size.width - UI_MODAL_PADDING * 2, UI_IPAD_MAX_WIDTH);
     orig.size.height *= 0.7;
     orig.origin.x = (self.view.frame.size.width - orig.size.width) / 2;
     orig.origin.y = (self.view.frame.size.height - orig.size.height) / 2;

@@ -7,11 +7,7 @@
 
 #import "DOActionMenuView.h"
 #import "DOActionMenuButton.h"
-
-#define UI_INNER_PADDING 20
-#define UI_INNER_TOP_PADDING 5
-#define UI_ACTION_HEIGHT 73
-#define UI_ACTION_HEIGHT_HOME_BTN 65
+#import "GlobalAppearance.h"
 
 @implementation DOActionMenuView
 
@@ -44,7 +40,7 @@
     self.buttonsView.axis = UILayoutConstraintAxisVertical;
     self.buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
 
-    BOOL isHomeButtonDevice = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && [[UIApplication sharedApplication] keyWindow].safeAreaInsets.bottom == 0;
+    BOOL isHomeButtonDevice = [GlobalAppearance isHomeButtonDevice];
 
     [self.actions enumerateObjectsUsingBlock:^(UIAction *action, NSUInteger idx, BOOL *stop) {
         DOActionMenuButton *button = [DOActionMenuButton buttonWithAction:action chevron:[self.delegate actionMenuShowsChevronForAction:action]];

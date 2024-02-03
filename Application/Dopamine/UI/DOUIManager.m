@@ -31,13 +31,13 @@
 }
 
 -(BOOL)isDebug {
-    BOOL debug = [self.userDefaults boolForKey:@"debug"];
-    return debug == nil ? NO : debug;
+    NSNumber *debug = [self.userDefaults valueForKey:@"debug"];
+    return debug == nil ? NO : [debug boolValue];
 }
 
 -(BOOL)enableTweaks {
-    BOOL tweaks = [self.userDefaults boolForKey:@"tweaks"];
-    return tweaks == nil ? YES : tweaks;
+    NSNumber *tweaks = [self.userDefaults valueForKey:@"tweaks"];
+    return tweaks == nil ? YES : [tweaks boolValue];
 }
 
 -(void)sendLog:(NSString*)log debug:(BOOL)debug {

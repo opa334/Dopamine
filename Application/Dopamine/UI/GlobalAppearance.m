@@ -92,6 +92,11 @@
     }];
 }
 
++ (BOOL)isHomeButtonDevice
+{
+   return [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && [[UIApplication sharedApplication] keyWindow].safeAreaInsets.bottom == 0;
+}
+
 
 
 @end
