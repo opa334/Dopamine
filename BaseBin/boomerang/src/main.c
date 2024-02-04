@@ -24,6 +24,8 @@ int main(int argc, char* argv[])
 		xpc_object_t xdict = NULL;
 		if (!xpc_pipe_receive(serverPort, &xdict)) {
 			if (jbserver_received_boomerang_xpc_message(&gBoomerangServer, xdict) == JBS_BOOMERANG_DONE) {
+				dispatch_source_cancel(serverSource);
+				mach_port_deallocate(mach_task_self(), serverPort);
 				exit(0);
 			}
 			xpc_release(xdict);

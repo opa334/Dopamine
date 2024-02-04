@@ -13,6 +13,6 @@ build:
 
 clean:
 	xcodebuild -project $(XCODE_PROJECT) -scheme $(XCODE_SCHEME) -configuration $(CONFIGURATION) -destination generic/platform=iOS clean
-	@rm $(OUTPUT_NAME)
+	@rm -rf $(OUTPUT_NAME)
 
 default: build
