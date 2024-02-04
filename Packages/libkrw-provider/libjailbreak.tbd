@@ -1,0 +1,253 @@
+{
+  "main_library": {
+    "compatibility_versions": [
+      {
+        "version": "0"
+      }
+    ],
+    "current_versions": [
+      {
+        "version": "0"
+      }
+    ],
+    "exported_symbols": [
+      {
+        "data": {
+          "global": [
+            "_gJBServerCustomPort",
+            "_gSwAsid",
+            "_gUnusedDomain",
+            "_gUserReturnThreadContext",
+            "_gPrimitives",
+            "_gBoomerangDomain",
+            "_gSystemInfo",
+            "_gPool",
+            "_gUserReturnDidHappen",
+            "_gBoomerangServer",
+            "_gFugu14KcallThread",
+            "_gMagicPT"
+          ]
+        },
+        "text": {
+          "global": [
+            "__is_jb_trustcache",
+            "_fugu14_kcall_on_thread",
+            "_pai_to_pvh",
+            "_jbclient_platform_stage_jailbreak_update",
+            "_kread_ptr",
+            "_vtophys",
+            "__jb_trustcache_enumerate",
+            "_IOMemoryDescriptor_set_size",
+            "_sign_kernel_thread",
+            "_proc_csflags_set",
+            "_acquire_window",
+            "_jbinfo_initialize_hardcoded_offsets",
+            "_kwrite_ptr",
+            "_physrw_pte_physreadbuf",
+            "_task_get_ipc_port_kobject",
+            "_jbclient_initialize_primitives",
+            "_proc_csflags_clear",
+            "_proc_find",
+            "_fugu14_kexec",
+            "_jb_trustcache_debug_print",
+            "_IOSurface_get_ranges",
+            "_IOMemoryDescriptor_set_flags",
+            "_realafpath",
+            "_flush_tlb",
+            "_kwrite32",
+            "_proc_task",
+            "_trustcache_list_insert",
+            "_jbclient_root_sign_thread",
+            "_macho_collect_untrusted_cdhashes",
+            "_boomerang_sign_thread",
+            "__kwritebuf_phys",
+            "_fugu14_kexec_on_thread_raw_locked",
+            "_trustcache_file_upload_with_uuid",
+            "_physread16",
+            "_IOSurface_kalloc_local",
+            "__trustcache_file_sort",
+            "_jbclient_fork_fix",
+            "_jbserver_xpc_send_dict",
+            "_is_cdhash_in_trustcache",
+            "_fugu14_kcall_prepare_state",
+            "__trustcache_list_enumerate",
+            "_kexec",
+            "_resolveLoadPath",
+            "_jbserver_xpc_send",
+            "_jbinfo_initialize_boot_constants",
+            "_mac_label_get",
+            "_ljb_fat_find_preferred_slice",
+            "_IOSurface_get_rangeCount",
+            "_libjailbreak_translation_init",
+            "_jbclient_root_get_sysinfo",
+            "_IOSurfaceClient_get_surface",
+            "_is_cdhash_trustcached",
+            "_jbclient_get_fugu14_kcall",
+            "_task_set_memory_ownership_transfer",
+            "_kalloc_global_pt",
+            "_IOSurface_kalloc_global",
+            "_jbclient_get_jbroot",
+            "_physrw_handoff",
+            "_physrw_kvtouaddr",
+            "_physrw_pte_physwritebuf",
+            "_kfree",
+            "_physrw_physwritebuf",
+            "_IOSurface_set_ranges",
+            "_trustcache_file_build_from_cdhashes",
+            "_jbclient_watchdog_intercept_userspace_panic",
+            "_pvh_ptd",
+            "_physread_ptr",
+            "_kread_smdptr",
+            "_physrw_physreadbuf",
+            "_proc_self",
+            "_thread_caffeinate_start",
+            "_fugu14_kcall_init",
+            "__kreadbuf_phys",
+            "_kalloc_with_options",
+            "_kwrite8",
+            "_IOSurface_get_memoryDescriptor",
+            "_jbclient_root_add_cdhash",
+            "_jbserver_received_boomerang_xpc_message",
+            "_cs_allow_invalid",
+            "_proc_iterate",
+            "_kptr_sign",
+            "_kread32",
+            "_physwrite64",
+            "_jbinfo_get_serialized",
+            "_IOSurface_kalloc",
+            "_kmap",
+            "_IOSurfaceSendRight_get_surface",
+            "_physrw_phystouaddr",
+            "_jbclient_process_checkin",
+            "_alloc_page_table_unassigned",
+            "_proc_csflags_update",
+            "_jbinfo_initialize_dynamic_offsets",
+            "_kvtophys",
+            "__physreadbuf_virt",
+            "_vm_map_self",
+            "_IOSurfaceRootUserClient_get_surfaceClientById",
+            "_fugu14_kcall",
+            "_processRpaths",
+            "_trustcache_file_build_from_path",
+            "_NSJBRootPath",
+            "_jbserver_received_xpc_message",
+            "_IOMemorydescriptor_get_size",
+            "__jb_trustcache_grow",
+            "_kfree_global_pt",
+            "_libarchive_unarchive",
+            "_killall",
+            "_physread64",
+            "_jbclient_root_get_physrw",
+            "_physrw_pte_handoff",
+            "_boomerang_get_sysinfo",
+            "_jbclient_trust_binary",
+            "_kwrite16",
+            "_kwrite64",
+            "_libjailbreak_physrw_pte_init",
+            "_task_get_ipc_port_object",
+            "_pmap_map_in",
+            "_libjailbreak_kalloc_pt_init",
+            "_proc_getcsflags",
+            "_kread64",
+            "_jb_trustcache_add_entry",
+            "_fugu14_kexec_on_thread_raw",
+            "_IOMemoryDescriptor_get_flags",
+            "_physwrite8",
+            "_fugu14_kexec_on_thread",
+            "_jb_trustcache_add_cdhashes",
+            "__trustcache_list_set_start",
+            "_IOMemoryDescriptor_get_ranges",
+            "_libjailbreak_physrw_init",
+            "_trustcache_file_upload",
+            "_pa_index",
+            "_physwrite16",
+            "_task_get_ipc_port_table_entry",
+            "_IOSurface_map",
+            "_pmap_alloc_page_table",
+            "_jbclient_boomerang_done",
+            "_vtophys_lvl",
+            "__jb_trustcache_clear",
+            "_jbdInitPPLRW",
+            "_kcall",
+            "_kpacda",
+            "_getUserReturnThreadContext",
+            "_trustcache_list_remove",
+            "_IOMemoryDescriptor_set_wired",
+            "__trustcache_file_sort_entry_comparator_v1",
+            "_can_skip_trusting_file",
+            "_jbclient_platform_set_jailbreak_visible",
+            "_jbclient_xpc_set_custom_port",
+            "_kread16",
+            "_csd_superblob_is_adhoc_signed",
+            "_kreadbuf",
+            "_boomerang_get_physrw",
+            "_kalloc",
+            "_pac_loop",
+            "_physread8",
+            "__trustcache_list_get_start",
+            "_physread32",
+            "_proc_ucred",
+            "_phystokv",
+            "_exec_cmd",
+            "_ipc_entry_lookup",
+            "_IOSurface_set_rangeCount",
+            "_jbclient_platform_set_process_debugged",
+            "__trustcache_file_init",
+            "_IOMemoryDescriptor_set_memRef",
+            "_enumerate_pages",
+            "_physwritebuf",
+            "_libjailbreak_IOSurface_primitives_init",
+            "_proc_rele",
+            "_pmap_self",
+            "_mac_label_set",
+            "_physwrite32",
+            "_thread_caffeinate_stop",
+            "_jbclient_root_steal_ucred",
+            "__physwritebuf_virt",
+            "_kread8",
+            "_jb_trustcache_add_entries",
+            "_jbclient_get_boot_uuid",
+            "_mapKernelPage",
+            "_jbclient_trust_library",
+            "_kwritebuf",
+            "_task_self",
+            "_physreadbuf"
+          ]
+        }
+      },
+      {
+        "targets": [
+          "arm64e-ios"
+        ],
+        "text": {
+          "global": [
+            "_pmap_cs_allow_invalid"
+          ]
+        }
+      }
+    ],
+    "flags": [
+      {
+        "attributes": [
+          "not_app_extension_safe"
+        ]
+      }
+    ],
+    "install_names": [
+      {
+        "name": "@rpath/usr/lib/libjailbreak.dylib"
+      }
+    ],
+    "target_info": [
+      {
+        "min_deployment": "15",
+        "target": "arm64-ios"
+      },
+      {
+        "min_deployment": "15",
+        "target": "arm64e-ios"
+      }
+    ]
+  },
+  "tapi_tbd_version": 5
+}

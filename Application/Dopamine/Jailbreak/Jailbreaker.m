@@ -290,7 +290,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
     cdhash_t *cdhashes;
     uint32_t cdhashesCount;
-    macho_collect_untrusted_cdhashes(JBRootPath("/basebin/.fakelib/dyld"), NULL, &cdhashes, &cdhashesCount);
+    macho_collect_untrusted_cdhashes(JBRootPath("/basebin/.fakelib/dyld"), NULL, NULL, &cdhashes, &cdhashesCount);
     if (cdhashesCount != 1) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedInitFakeLib userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Got unexpected number of cdhashes for dyld???: %d", cdhashesCount]}];
     
     trustcache_file_v1 *dyldTCFile = NULL;
