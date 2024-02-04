@@ -2,7 +2,7 @@ TARGET = libkrw-plugin.dylib
 CC = clang
 
 CFLAGS = -I../../BaseBin/.include -Isrc -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path) -arch arm64 -arch arm64e -miphoneos-version-min=15.0 -fobjc-arc -O2
-LDFLAGS = -dynamiclib -rpath /var/jb -L. -ljailbreak
+LDFLAGS = -dynamiclib -rpath /var/jb -L../../BaseBin/.build -ljailbreak
 
 all: $(TARGET) sign
 
