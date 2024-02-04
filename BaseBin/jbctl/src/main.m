@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	const char *rootPath = jbclient_get_root_path();
+	const char *rootPath = jbclient_get_jbroot();
 	if (rootPath) {
 		gSystemInfo.jailbreakInfo.rootPath = strdup(rootPath);
 	}

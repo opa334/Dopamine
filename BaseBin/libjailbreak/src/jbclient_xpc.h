@@ -9,10 +9,10 @@ void jbclient_xpc_set_custom_port(mach_port_t serverPort);
 xpc_object_t jbserver_xpc_send_dict(xpc_object_t xdict);
 xpc_object_t jbserver_xpc_send(uint64_t domain, uint64_t action, xpc_object_t xargs);
 
-char *jbclient_get_root_path(void);
+char *jbclient_get_jbroot(void);
 char *jbclient_get_boot_uuid(void);
 int jbclient_trust_binary(const char *binaryPath);
-int jbclient_trust_library(const char *libraryPath);
+int jbclient_trust_library(const char *libraryPath, void *addressInCaller);
 int jbclient_process_checkin(char **rootPathOut, char **bootUUIDOut, char **sandboxExtensionsOut);
 int jbclient_fork_fix(uint64_t childPid);
 int jbclient_platform_set_process_debugged(uint64_t pid);
