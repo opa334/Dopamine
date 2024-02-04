@@ -9,8 +9,15 @@
 #include <sys/utsname.h>
 #include <dispatch/dispatch.h>
 #include <stdio.h>
+#include <fcntl.h>
 #include <CoreFoundation/CoreFoundation.h>
 extern CFStringRef CFCopySystemVersionString(void);
+
+void abort_with_reason(uint32_t reason_namespace, uint64_t reason_code, const char *reason_string, uint64_t reason_flags);
+
+#import <Foundation/Foundation.h>
+
+static NSUncaughtExceptionHandler* defaultNSExceptionHandler = NULL;
 
 #define	INSTACK(a)	((a) >= stackbot && (a) <= stacktop)
 #if defined(__x86_64__)
@@ -131,33 +138,79 @@ void crashreporter_dump_backtrace_line(FILE *f, vm_address_t addr)
 	fprintf(f, "0x%lX: %s (0x%lX + 0x%lX) (%s(0x%lX) + 0x%lX)\n", addr, sname, (vm_address_t)info.dli_saddr, addr - (vm_address_t)info.dli_saddr, fname, (vm_address_t)info.dli_fbase, addr - (vm_address_t)info.dli_fbase);
 }
 
-void crashreporter_dump(FILE *f, int code, int subcode, arm_thread_state64_t threadState, arm_exception_state64_t exceptionState, vm_address_t *bt)
+FILE *crashreporter_open_outfile(char **nameOut)
 {
-	struct utsname systemInfo;
-    uname(&systemInfo);
+	time_t t = time(NULL);
+	char timestamp[64];
+	sprintf(&timestamp[0], "%lu", t);
 
-	uint64_t pc = (uint64_t)__darwin_arm_thread_state64_get_pc(threadState);
+	char *name = malloc(100);
+	strlcpy(name, "launchd-", 100);
+	strlcat(name, timestamp, 100);
+	strlcat(name, ".ips", 100);
 
-	fprintf(f, "Device Model:   %s\n", systemInfo.machine);
+	char dumpPath[PATH_MAX];
+	strlcpy(dumpPath, "/var/mobile/Library/Logs/CrashReporter/", PATH_MAX);
+	strlcat(dumpPath, name, PATH_MAX);
 
-	CFStringRef deviceVersion = CFCopySystemVersionString();
-	if (deviceVersion) {
-		fprintf(f, "Device Version: %s\n", CFStringGetCStringPtr(deviceVersion, kCFStringEncodingUTF8));
-		CFRelease(deviceVersion);
+	if (nameOut) {
+		*nameOut = name;
+	}
+	else {
+		free(name);
 	}
 
-#ifdef __arm64e__
-	fprintf(f, "Architecture:   arm64e\n");
-#else
-	fprintf(f, "Architecture:   arm64\n");
-#endif
-	fprintf(f, "\n");
+	FILE *f = fopen(dumpPath, "w");
+	if (f) {
+		struct utsname systemInfo;
+		uname(&systemInfo);
 
+		fprintf(f, "Device Model:   %s\n", systemInfo.machine);
+
+		CFStringRef deviceVersion = CFCopySystemVersionString();
+		if (deviceVersion) {
+			fprintf(f, "Device Version: %s\n", CFStringGetCStringPtr(deviceVersion, kCFStringEncodingUTF8));
+			CFRelease(deviceVersion);
+		}
+
+	#ifdef __arm64e__
+		fprintf(f, "Architecture:   arm64e\n");
+	#else
+		fprintf(f, "Architecture:   arm64\n");
+	#endif
+		fprintf(f, "\n");
+	}
+
+	return f;
+}
+
+void crashreporter_save_outfile(FILE *f)
+{
+	fflush(f);
+	if (fcntl(fileno(f), F_FULLFSYNC) != 0) {
+		fsync(fileno(f));
+	}
+	fclose(f);
+
+	int dir = open("/var/mobile/Library/Logs/CrashReporter", O_RDONLY | O_DIRECTORY);
+	if (dir >= 0) {
+		if (fcntl(dir, F_FULLFSYNC) != 0) {
+			fsync(dir);
+		}
+		close(dir);
+	}
+}
+
+void crashreporter_dump_mach(FILE *f, int code, int subcode, arm_thread_state64_t threadState, arm_exception_state64_t exceptionState, vm_address_t *bt)
+{
 	fprintf(f, "Exception:         %s\n", crashreporter_string_for_code(code));
 	fprintf(f, "Exception Subcode: %d\n", subcode);
 	fprintf(f, "\n");
 
 	fprintf(f, "Register State:\n");
+	uint64_t pc = (uint64_t)__darwin_arm_thread_state64_get_pc(threadState);
+	uint64_t lr = (uint64_t)__darwin_arm_thread_state64_get_lr(threadState);
+
 	for(int i = 0; i <= 28; i++) {
 		if (i < 10) {
 			fprintf(f, " ");
@@ -170,20 +223,21 @@ void crashreporter_dump(FILE *f, int code, int subcode, arm_thread_state64_t thr
 			fprintf(f, ", ");
 		}
 	}
-	fprintf(f, " lr = 0x%016lX,  pc = 0x%016llX,  sp = 0x%016lX,  fp = 0x%016lX, cpsr=         0x%08X, far = 0x%016llX\n\n", __darwin_arm_thread_state64_get_lr(threadState), pc, __darwin_arm_thread_state64_get_sp(threadState), __darwin_arm_thread_state64_get_fp(threadState), threadState.__cpsr, exceptionState.__far);
+	fprintf(f, " lr = 0x%016llX,  pc = 0x%016llX,  sp = 0x%016llX,  fp = 0x%016llX, cpsr=         0x%08X, far = 0x%016llX\n\n", lr, pc, (uint64_t)__darwin_arm_thread_state64_get_sp(threadState), (uint64_t)__darwin_arm_thread_state64_get_fp(threadState), threadState.__cpsr, exceptionState.__far);
 
 	fprintf(f, "Backtrace:\n");
 	crashreporter_dump_backtrace_line(f, (vm_address_t)pc);
-	int btI = 0;
-	vm_address_t btAddr = bt[btI++];
+	crashreporter_dump_backtrace_line(f, (vm_address_t)lr);
+	int btIdx = 0;
+	vm_address_t btAddr = bt[btIdx++];
 	while (btAddr != 0) {
 		crashreporter_dump_backtrace_line(f, btAddr);
-		btAddr = bt[btI++];
+		btAddr = bt[btIdx++];
 	}
 	fprintf(f, "\n");
 }
 
-void crashreporter_catch(exception_raise_request *request, exception_raise_reply *reply)
+void crashreporter_catch_mach(exception_raise_request *request, exception_raise_reply *reply)
 {
 	pthread_t pthread = pthread_from_mach_thread_np(request->thread.name);
 
@@ -203,22 +257,83 @@ void crashreporter_catch(exception_raise_request *request, exception_raise_reply
 	unsigned c = 100;
 	pthread_backtrace(pthread, bt, c, &c, 0, (void *)__darwin_arm_thread_state64_get_fp(threadState));
 
-	time_t t = time(NULL);
-	char *timestamp = malloc(64);
-	sprintf(&timestamp[0], "%lu", t);
+	char *name = NULL;
+	FILE *f = crashreporter_open_outfile(&name);
+	if (f) {
+		crashreporter_dump_mach(f, request->code, request->subcode, threadState, exceptionState, bt);
+		crashreporter_save_outfile(f);
+	}
 
-	char *dumpPath = malloc(PATH_MAX);
-	strcpy(dumpPath, "/var/mobile/Library/Logs/CrashReporter/launchd-");
-	strcat(dumpPath, timestamp);
-	strcat(dumpPath, ".ips");
-	free(timestamp);
+	if (name) {
+		char msg[1000];
+		snprintf(msg, 1000, "Mach exception occured. A detailed report has been written to the file %s.", name);
+		abort_with_reason(7, 1, msg, 0);
+	}
+	else {
+		abort_with_reason(7, 1, "Mach exception occured. Failed to write the detailed report to a file.", 0);
+	}
+}
 
-	FILE *dumpFile = fopen(dumpPath, "w");
-	free(dumpPath);
-	if (dumpFile) {
-		crashreporter_dump(dumpFile, request->code, request->subcode, threadState, exceptionState, bt);
-		fflush(dumpFile);
-		fclose(dumpFile);
+void crashreporter_dump_objc(FILE *f, NSException *e)
+{
+	@autoreleasepool {
+		fprintf(f, "Exception:         %s\n", e.name.UTF8String);
+		fprintf(f, "Exception Reason:  %s\n", e.reason.UTF8String);
+		fprintf(f, "User Info:         %s\n", e.userInfo.description.UTF8String);
+		fprintf(f, "\n");
+
+		if (e.callStackReturnAddresses.count) {
+			fprintf(f, "Backtrace:\n");
+			for (NSNumber *btAddrNum in e.callStackReturnAddresses) {
+				crashreporter_dump_backtrace_line(f, [btAddrNum unsignedLongLongValue]);
+			}
+			fprintf(f, "\n");
+		}
+		else if (e.callStackSymbols.count) {
+			fprintf(f, "Backtrace:\n");
+			for (NSString *symbol in e.callStackSymbols) {
+				fprintf(f, "%s\n", symbol.UTF8String);
+			}
+			fprintf(f, "\n");
+		} 
+	}
+}
+
+void crashreporter_catch_objc(NSException *e)
+{
+	FILE *df = fopen("/var/mobile/launchd_crashreport.txt", "a");
+	fprintf(df, "catcher did trigger\n");
+	fclose(df);
+	sleep(1);
+
+	@autoreleasepool {
+		static BOOL hasCrashed = NO;
+		if (hasCrashed) {
+			exit(187);
+		}
+		else {
+			hasCrashed = YES;
+		}
+
+		char *name = NULL;
+		FILE *f = crashreporter_open_outfile(&name);
+		if (f) {
+			@try {
+				crashreporter_dump_objc(f, e);
+			}
+			@catch (NSException *e2) {
+				exit(187);
+			}
+			crashreporter_save_outfile(f);
+		}
+		if (name) {
+			char msg[1000];
+			snprintf(msg, 1000, "Objective-C exception occured. A detailed report has been written to the file %s.", name);
+			abort_with_reason(7, 1, msg, 0);
+		}
+		else {
+			abort_with_reason(7, 1, "Objective-C exception occured. Failed to write the detailed report to a file.", 0);
+		}
 	}
 }
 
@@ -231,7 +346,7 @@ void *crashreporter_listen(void *arg)
 		mach_msg_receive(&msg);
 
 		exception_raise_reply reply;
-		crashreporter_catch((exception_raise_request *)&msg, &reply);
+		crashreporter_catch_mach((exception_raise_request *)&msg, &reply);
 
 		reply.header.msgh_bits = MACH_MSGH_BITS(MACH_MSGH_BITS_REMOTE(msg.msgh_bits), 0);
 		reply.header.msgh_size = sizeof(exception_raise_reply);
@@ -243,21 +358,12 @@ void *crashreporter_listen(void *arg)
 	}
 }
 
-void crashreporter_start(void)
-{
-	if (gCrashReporterState == kCrashReporterStateNotActive) {
-		mach_port_allocate(mach_task_self_, MACH_PORT_RIGHT_RECEIVE, &gExceptionPort);
-		mach_port_insert_right(mach_task_self_, gExceptionPort, gExceptionPort, MACH_MSG_TYPE_MAKE_SEND);
-		task_set_exception_ports(mach_task_self_, EXC_MASK_CRASH_RELATED, gExceptionPort, EXCEPTION_DEFAULT, ARM_THREAD_STATE64);
-		pthread_create(&gExceptionThread, NULL, crashreporter_listen, "crashreporter");
-		gCrashReporterState = kCrashReporterStateActive;
-	}
-}
-
 void crashreporter_pause(void)
 {
 	if (gCrashReporterState == kCrashReporterStateActive) {
 		task_set_exception_ports(mach_task_self_, EXC_MASK_CRASH_RELATED, 0, EXCEPTION_DEFAULT, ARM_THREAD_STATE64);
+		NSSetUncaughtExceptionHandler(defaultNSExceptionHandler);
+		defaultNSExceptionHandler = nil;
 		gCrashReporterState = kCrashReporterStatePaused;
 	}
 }
@@ -266,6 +372,20 @@ void crashreporter_resume(void)
 {
 	if (gCrashReporterState == kCrashReporterStatePaused) {
 		task_set_exception_ports(mach_task_self_, EXC_MASK_CRASH_RELATED, gExceptionPort, EXCEPTION_DEFAULT, ARM_THREAD_STATE64);
+		defaultNSExceptionHandler = NSGetUncaughtExceptionHandler();
+		NSSetUncaughtExceptionHandler(crashreporter_catch_objc);
 		gCrashReporterState = kCrashReporterStateActive;
 	}
 }
+
+void crashreporter_start(void)
+{
+	if (gCrashReporterState == kCrashReporterStateNotActive) {
+		mach_port_allocate(mach_task_self_, MACH_PORT_RIGHT_RECEIVE, &gExceptionPort);
+		mach_port_insert_right(mach_task_self_, gExceptionPort, gExceptionPort, MACH_MSG_TYPE_MAKE_SEND);
+		pthread_create(&gExceptionThread, NULL, crashreporter_listen, "crashreporter");
+		gCrashReporterState = kCrashReporterStatePaused;
+		crashreporter_resume();
+	}
+}
+

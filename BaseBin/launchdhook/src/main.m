@@ -20,16 +20,6 @@ bool gEarlyBootDone = false;
 
 void abort_with_reason(uint32_t reason_namespace, uint64_t reason_code, const char *reason_string, uint64_t reason_flags);
 
-void (*org_abort)(void);
-void my_abort(void)
-{
-	FILE *f = fopen("/var/mobile/launchd.abort.txt", "a");
-	fprintf(f, "%s\n\n", [NSThread callStackSymbols].description.UTF8String);
-	fclose(f);
-	sleep(1);
-	org_abort();
-}
-
 __attribute__((constructor)) static void initializer(void)
 {
 	crashreporter_start();
@@ -75,7 +65,6 @@ __attribute__((constructor)) static void initializer(void)
 	initIPCHooks();
 	initDSCHooks();
 	initJetsamHook();
-	MSHookFunction((void *)abort, (void *)&my_abort, (void **)&org_abort);
 
 	// This will ensure launchdhook is always reinjected after userspace reboots
 	// As this launchd will pass environ to the next launchd...
