@@ -364,8 +364,11 @@ __attribute__((constructor)) static void initializer(void)
 	applySandboxExtensions();
 
 	// Unset DYLD_INSERT_LIBRARIES, but only if systemhook itself is the only thing contained in it
-	if (!strcmp(getenv("DYLD_INSERT_LIBRARIES"), HOOK_DYLIB_PATH)) {
-		unsetenv("DYLD_INSERT_LIBRARIES");
+	const char *dyldInsertLibraries = getenv("DYLD_INSERT_LIBRARIES");
+	if (dyldInsertLibraries) {
+		if (!strcmp(dyldInsertLibraries, HOOK_DYLIB_PATH)) {
+			unsetenv("DYLD_INSERT_LIBRARIES");
+		}
 	}
 
 	if (loadExecutablePath() == 0) {
