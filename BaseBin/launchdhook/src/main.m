@@ -73,7 +73,7 @@ __attribute__((constructor)) static void initializer(void)
 	// Mark Dopamine as having been initialized before
 	setenv("DOPAMINE_INITIALIZED", "1", 1);
 
-	// Set an identifier that uniquely identifies this specific userspace boot
+	// Set an identifier that uniquely identifies this userspace boot
 	// Part of rootless v2 spec
-	setenv("LAUNCH_BOOT_UUID", [NSUUID UUID].UUIDString.UTF8String, 1);
+	setenv("LAUNCHD_UUID", [NSUUID UUID].UUIDString.UTF8String, 1);
 }
