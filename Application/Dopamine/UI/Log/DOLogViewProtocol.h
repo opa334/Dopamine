@@ -1,5 +1,5 @@
 //
-//  DOActionMenuDelegate.h
+//  DOLogViewProtocol.h
 //  Dopamine
 //
 //  Created by tomt000 on 13/01/2024.
@@ -9,9 +9,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DOActionMenuDelegate <NSObject>
+@protocol DOLogViewProtocol <NSObject>
 
-- (BOOL)actionMenuShowsChevronForAction:(UIAction *)action;
+-(void)showLog:(NSString *)log;
+-(void)didComplete;
 
 @end
 

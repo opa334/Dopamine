@@ -27,4 +27,20 @@
 
 }
 
+- (instancetype)imageWithHue:(float)hue
+{
+    CIImage *ciImage = [CIImage imageWithCGImage:self.CGImage];
+    CIFilter *filter = [CIFilter filterWithName:@"CIHueAdjust"];
+    [filter setDefaults];
+    [filter setValue:ciImage forKey:kCIInputImageKey];
+    [filter setValue:@(hue) forKey:kCIInputAngleKey];
+    
+    CIImage *outputImage = [filter outputImage];
+    CIContext *context   = [CIContext contextWithOptions:nil];
+    CGImageRef cgImg     = [context createCGImage:outputImage fromRect:[ciImage extent]];
+    
+    return [UIImage imageWithCGImage:cgImg];
+}
+
+
 @end

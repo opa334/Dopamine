@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface UIImage (Blur)
 
 - (instancetype)imageWithBlur:(float)radius;
+- (instancetype)imageWithHue:(float)hue;
 
 @end
 
