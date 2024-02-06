@@ -67,7 +67,7 @@
     //Header
     DOHeaderView *headerView = [[DOHeaderView alloc] initWithImage: [UIImage imageNamed:@"Dopamine"] subtitles: @[
         [GlobalAppearance mainSubtitleString:[[EnvironmentManager sharedManager] versionSupportString]],
-        [GlobalAppearance secondarySubtitleString:@"by opa334, évelyne"],
+        [GlobalAppearance secondarySubtitleString:@"by opa334, ElleKit by évelyne"],
     ]];
     
     [stackView addArrangedSubview:headerView];
