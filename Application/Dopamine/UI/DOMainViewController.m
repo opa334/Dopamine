@@ -119,8 +119,7 @@
         Jailbreaker *jailbreaker = [[Jailbreaker alloc] init];
 
         //[self simulateJailbreak];
-        [[DOUIManager sharedInstance] startLogCapture]; // this fucks up everything ?
-        [[DOUIManager sharedInstance] sendLog:@"Jailbreaking" debug:NO];
+        [[DOUIManager sharedInstance] startLogCapture];
         
         //dispatch async so the UI can update as this blocks the main thread
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
@@ -138,8 +137,6 @@
                 message = @"";
                 [[DOUIManager sharedInstance] completeJailbreak];
             }
-            
-            [[DOUIManager sharedInstance] sendLog:@"Rebooting Userspace" debug: NO];
 
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
