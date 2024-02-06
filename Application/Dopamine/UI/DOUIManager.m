@@ -59,38 +59,43 @@
 }
 
 -(void)startLogCapture {
-    int stdout_pipe[2];
-    if (pipe(stdout_pipe) != 0) {
-        return;
-    }
-
-    dup2(stdout_pipe[1], STDOUT_FILENO);
-    close(stdout_pipe[1]);
-    int fd = stdout_pipe[0];
-
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        int stdout_pipe[2];
+        int stdout_orig[2];
+        if (pipe(stdout_pipe) != 0 || pipe(stdout_orig) != 0) {
+            return;
+        }
+
+        dup2(STDOUT_FILENO, stdout_orig[1]);
+        close(stdout_orig[0]);
+        
+        dup2(stdout_pipe[1], STDOUT_FILENO);
+        close(stdout_pipe[1]);
+        
         char buffer[1024];
         char line[1024];
         int line_index = 0;
         ssize_t bytes_read;
 
-        while ((bytes_read = read(fd, buffer, sizeof(buffer) - 1)) > 0) {
-            buffer[bytes_read] = '\0'; // Null terminate to handle as string
-            for (int i = 0; i < bytes_read; ++i) {
-                if (buffer[i] == '\n') {
-                    line[line_index] = '\0';
-                    [[DOUIManager sharedInstance] sendLog:[NSString stringWithUTF8String:line] debug:YES];
-                    line_index = 0;
-                } else {
-                    if (line_index < sizeof(line) - 1) {
-                        line[line_index++] = buffer[i];
+        while ((bytes_read = read(stdout_pipe[0], buffer, sizeof(buffer) - 1)) > 0) {
+            @autoreleasepool {
+                buffer[bytes_read] = '\0'; // Null terminate to handle as string
+                for (int i = 0; i < bytes_read; ++i) {
+                    if (buffer[i] == '\n') {
+                        line[line_index] = '\0';
+                        [[DOUIManager sharedInstance] sendLog:[NSString stringWithUTF8String:line] debug:YES];
+                        line_index = 0;
+                    } else {
+                        if (line_index < sizeof(line) - 1) {
+                            line[line_index++] = buffer[i];
+                        }
                     }
                 }
+                // Tee: Write back to the original standard output
+                write(stdout_orig[1], buffer, bytes_read);
             }
-            // Tee: Write back to the original standard output
-            write(STDOUT_FILENO, buffer, bytes_read);
         }
-        close(fd);
+        close(stdout_pipe[0]);
     });
 }
 

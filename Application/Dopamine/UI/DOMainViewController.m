@@ -117,9 +117,9 @@
 
         
         Jailbreaker *jailbreaker = [[Jailbreaker alloc] init];
-            
+
         //[self simulateJailbreak];
-        //[[DOUIManager sharedInstance] startLogCapture]; this fucks up everything ?
+        [[DOUIManager sharedInstance] startLogCapture]; // this fucks up everything ?
         [[DOUIManager sharedInstance] sendLog:@"Jailbreaking" debug:NO];
         
         //dispatch async so the UI can update as this blocks the main thread
@@ -143,6 +143,8 @@
 
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+                //UIAlertAction *viewLogAction = [UIAlertAction actionWithTitle:@"View Log" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}];
+                //[alertController addAction:viewLogAction];
                 UIAlertAction *doneAction = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
                     if (!error) {
                         [jailbreaker finalize];
