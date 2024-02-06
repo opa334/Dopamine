@@ -143,7 +143,7 @@
 		8CDD07AE2B4F619000A32B61 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = Exploits;
+			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
 				8CDD07AF2B4F619000A32B61 /* kfd.framework in Embed Frameworks */,
