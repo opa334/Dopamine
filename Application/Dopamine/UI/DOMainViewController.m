@@ -83,8 +83,10 @@
             [(UINavigationController*)(self.parentViewController) pushViewController:[[DOSettingsController alloc] init] animated:YES];
         }],
         [UIAction actionWithTitle:@"Respring" image:[UIImage systemImageNamed:@"arrow.clockwise" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"respring" handler:^(__kindof UIAction * _Nonnull action) {
+            [[EnvironmentManager sharedManager] respring];
         }],
         [UIAction actionWithTitle:@"Reboot Userspace" image:[UIImage systemImageNamed:@"arrow.clockwise.circle" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"reboot-userspace" handler:^(__kindof UIAction * _Nonnull action) {
+            [[EnvironmentManager sharedManager] rebootUserspace];
         }],
         [UIAction actionWithTitle:@"Credits" image:[UIImage systemImageNamed:@"info.circle" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"credits" handler:^(__kindof UIAction * _Nonnull action) {
             [(UINavigationController*)(self.parentViewController) pushViewController:[[DOCreditsViewController alloc] init] animated:YES];
@@ -107,7 +109,9 @@
     ]];
     
     //Jailbreak Button
-    self.jailbreakBtn = [[DOJailbreakButton alloc] initWithAction: [UIAction actionWithTitle:@"Jailbreak" image:[UIImage systemImageNamed:@"lock.open" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"jailbreak" handler:^(__kindof UIAction * _Nonnull action) {
+    BOOL isJailbroken = [[EnvironmentManager sharedManager] isJailbroken];
+    NSString *jailbreakButtonTitle = isJailbroken ? @"Jailbroken" : @"Jailbreak";
+    self.jailbreakBtn = [[DOJailbreakButton alloc] initWithAction: [UIAction actionWithTitle:jailbreakButtonTitle image:[UIImage systemImageNamed:@"lock.open" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"jailbreak" handler:^(__kindof UIAction * _Nonnull action) {
         [actionView hide];
         [self.jailbreakBtn showLog: self.jailbreakButtonConstraints];
 
@@ -152,8 +156,8 @@
                 [self presentViewController:alertController animated:YES completion:nil];
             });
         });
-
     }]];
+    self.jailbreakBtn.enabled = !isJailbroken;
 
     [self.view addSubview:self.jailbreakBtn];
 
