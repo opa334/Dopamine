@@ -10,6 +10,7 @@
 #import "EnvironmentManager.h"
 #import "Jailbreaker.h"
 #import "GlobalAppearance.h"
+#import "DOUpdateViewController.h"
 
 @interface DOMainViewController ()
 
@@ -86,7 +87,8 @@
             [[EnvironmentManager sharedManager] respring];
         }],
         [UIAction actionWithTitle:@"Reboot Userspace" image:[UIImage systemImageNamed:@"arrow.clockwise.circle" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"reboot-userspace" handler:^(__kindof UIAction * _Nonnull action) {
-            [[EnvironmentManager sharedManager] rebootUserspace];
+            // [[EnvironmentManager sharedManager] rebootUserspace];
+            [(UINavigationController*)(self.parentViewController) pushViewController:[[DOUpdateViewController alloc] init] animated:YES];
         }],
         [UIAction actionWithTitle:@"Credits" image:[UIImage systemImageNamed:@"info.circle" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"credits" handler:^(__kindof UIAction * _Nonnull action) {
             [(UINavigationController*)(self.parentViewController) pushViewController:[[DOCreditsViewController alloc] init] animated:YES];

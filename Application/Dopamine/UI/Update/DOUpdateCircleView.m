@@ -11,6 +11,7 @@
 
 @property (nonatomic, strong) CAShapeLayer *circleLayer;
 @property (nonatomic, strong) CAShapeLayer *progressLayer;
+@property (nonatomic, strong) UILabel *label;
 
 @end
 
@@ -40,10 +41,26 @@
 
     [self.layer addSublayer:self.circleLayer];
     [self.layer addSublayer:self.progressLayer];
+    
+    self.label = [[UILabel alloc] initWithFrame:self.bounds];
+    self.label.textAlignment = NSTextAlignmentCenter;
+    self.label.textColor = [UIColor whiteColor];
+    self.label.font = [UIFont systemFontOfSize:29 weight:UIFontWeightMedium];
+    self.label.translatesAutoresizingMaskIntoConstraints = NO;
+
+    [self addSubview:self.label];
+
+    [NSLayoutConstraint activateConstraints:@[
+        [self.label.centerXAnchor constraintEqualToAnchor:self.centerXAnchor],
+        [self.label.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
+        [self.label.widthAnchor constraintEqualToAnchor:self.widthAnchor],
+        [self.label.heightAnchor constraintEqualToAnchor:self.heightAnchor]
+    ]];
 }
 
 - (void)setProgress:(float)progress {
     _progress = progress;
+    self.label.text = [NSString stringWithFormat:@"%d%%", (int)(progress * 100)];
     [self updateCirclePaths];
     [self setNeedsDisplay];
 }
