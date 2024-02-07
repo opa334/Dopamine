@@ -51,42 +51,71 @@ bool csd_superblob_is_adhoc_signed(CS_DecodedSuperBlob *superblob)
 	return true;
 }
 
-NSString *processRpaths(NSString *path, NSString *symbol, NSArray *rpaths)
+NSString *resolveDependencyPath(NSString *dylibPath, NSString *sourceImagePath, NSString *sourceExecutablePath)
 {
-	if (!rpaths) return path;
+	@autoreleasepool {
+		if (!dylibPath) return nil;
+		NSString *loaderPath = [sourceImagePath stringByDeletingLastPathComponent];
+		NSString *executablePath = [sourceExecutablePath stringByDeletingLastPathComponent];
 
-	if ([path containsString:symbol]) {
-		for (NSString *rpath in rpaths) {
-			NSString *testPath = [path stringByReplacingOccurrencesOfString:symbol withString:rpath];
-			if ([[NSFileManager defaultManager] fileExistsAtPath:testPath]) {
-				return testPath;
+		NSString *resolvedPath = nil;
+
+		NSString *(^resolveLoaderExecutablePaths)(NSString *) = ^NSString *(NSString *candidatePath) {
+			if (!candidatePath) return nil;
+			if ([[NSFileManager defaultManager] fileExistsAtPath:candidatePath]) return candidatePath;
+			if ([candidatePath hasPrefix:@"@loader_path"]) {
+				NSString *loaderCandidatePath = [candidatePath stringByReplacingOccurrencesOfString:@"@loader_path" withString:loaderPath];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:loaderCandidatePath]) return loaderCandidatePath;
 			}
+			if ([candidatePath hasPrefix:@"@executable_path"]) {
+				NSString *executableCandidatePath = [candidatePath stringByReplacingOccurrencesOfString:@"@executable_path" withString:executablePath];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:executableCandidatePath]) return executableCandidatePath;
+			}
+			return nil;
+		};
+
+		if ([dylibPath hasPrefix:@"@rpath"]) {
+			NSString *(^resolveRpaths)(NSString *) = ^NSString *(NSString *binaryPath) {
+				if (!binaryPath) return nil;
+				__block NSString *rpathResolvedPath = nil;
+				FAT *fat = fat_init_from_path(binaryPath.fileSystemRepresentation);
+				if (fat) {
+					MachO *macho = ljb_fat_find_preferred_slice(fat);
+					if (macho) {
+						macho_enumerate_rpaths(macho, ^(const char *rpathC, bool *stop) {
+							if (!rpathC) return;
+							NSString *rpath = [NSString stringWithUTF8String:rpathC];
+							rpathResolvedPath = resolveLoaderExecutablePaths([dylibPath stringByReplacingOccurrencesOfString:@"@rpath" withString:rpath]);
+							if (rpathResolvedPath) {
+								*stop = true;
+							}
+						});
+					}
+					fat_free(fat);
+				}
+				return rpathResolvedPath;
+			};
+
+			resolvedPath = resolveRpaths(sourceImagePath);
+			if (resolvedPath) return resolvedPath;
+
+			// TODO: Check if this is even neccessary
+			resolvedPath = resolveRpaths(sourceExecutablePath);
+			if (resolvedPath) return resolvedPath;
 		}
+		else {
+			resolvedPath = resolveLoaderExecutablePaths(dylibPath);
+			if (resolvedPath) return resolvedPath;
+		}
+		
+		return nil;
 	}
-	return path;
 }
 
-NSString *resolveLoadPath(NSString *dylibPath, NSString *loaderPath, NSString *executablePath, NSArray *rpaths)
-{
-	if (!dylibPath || !loaderPath) return nil;
-
-	NSString *processedPath = dylibPath;
-
-	// XXX: The order of these seems off?
-	processedPath = processRpaths(processedPath, @"@rpath", rpaths);
-	processedPath = processRpaths(processedPath, @"@executable_path", rpaths);
-	processedPath = processRpaths(processedPath, @"@loader_path", rpaths);
-	processedPath = [processedPath stringByReplacingOccurrencesOfString:@"@executable_path" withString:[executablePath stringByDeletingLastPathComponent]];
-	processedPath = [processedPath stringByReplacingOccurrencesOfString:@"@loader_path" withString:[loaderPath stringByDeletingLastPathComponent]];
-
-	return processedPath;
-}
-
-void macho_collect_untrusted_cdhashes(const char *path, const char *callerPath, cdhash_t **cdhashesOut, uint32_t *cdhashCountOut)
+void macho_collect_untrusted_cdhashes(const char *path, const char *callerImagePath, const char *callerExecutablePath, cdhash_t **cdhashesOut, uint32_t *cdhashCountOut)
 {
 	@autoreleasepool {
 		if (!path) return;
-		if (access(path, R_OK) != 0) return;
 
 		__block cdhash_t *cdhashes = NULL;
 		__block uint32_t cdhashCount = 0;
@@ -106,19 +135,35 @@ void macho_collect_untrusted_cdhashes(const char *path, const char *callerPath, 
 			memcpy(cdhashes[cdhashCount-1], cdhash, sizeof(cdhash_t));
 		};
 
-		FAT *mainFAT = fat_init_from_path(path);
-		if (!mainFAT) return;
-		MachO *mainMachO = ljb_fat_find_preferred_slice(mainFAT);
-		if (!mainMachO) {
-			fat_free(mainFAT);
-			return;
+		if (!callerExecutablePath) {
+			FAT *mainFAT = fat_init_from_path(path);
+			if (mainFAT) {
+				MachO *mainMachO = ljb_fat_find_preferred_slice(mainFAT);
+				if (mainMachO) {
+					if (macho_get_filetype(mainMachO) == MH_EXECUTE) {
+						callerExecutablePath = path;
+					}
+				}
+				fat_free(mainFAT);
+			}
 		}
-		if (macho_get_filetype(mainMachO) == MH_EXECUTE) {
-			callerPath = path;
+		if (!callerImagePath) {
+			if (!access(path, F_OK)) {
+				callerImagePath = path;
+			}
 		}
 
-		__weak __block void (^machoAddHandler_recurse)(MachO *, const char *);
-		void (^machoAddHandler)(MachO *, const char *) = ^(MachO *macho, const char *machoPath) {
+		__weak __block void (^binaryTrustHandler_recurse)(NSString *, NSString *, NSString *);
+		void (^binaryTrustHandler)(NSString *, NSString *, NSString *) = ^(NSString *binaryPath, NSString *sourceImagePath, NSString *sourceExecutablePath) {
+			NSString *resolvedBinaryPath = resolveDependencyPath(binaryPath, sourceImagePath, sourceExecutablePath);
+			FAT *fat = fat_init_from_path(resolvedBinaryPath.fileSystemRepresentation);
+			if (!fat) return;
+			MachO *macho = ljb_fat_find_preferred_slice(fat);
+			if (!macho) {
+				fat_free(fat);
+				return;
+			}
+
 			// Calculate cdhash and add it to our array
 			bool cdhashWasKnown = true;
 			bool isAdhocSigned = false;
@@ -146,39 +191,24 @@ void macho_collect_untrusted_cdhashes(const char *path, const char *callerPath, 
 				free(superblob);
 			}
 
-			if (cdhashWasKnown) return; // If we already knew the cdhash, we can skip parsing dependencies
-			if (!isAdhocSigned) return; // If it was not ad hoc signed, we can safely skip it aswell
-
-			// Collect rpaths...
-			NSMutableArray *rpaths = [NSMutableArray new];
-			macho_enumerate_rpaths(macho, ^(const char *rpathC, bool *stop) {
-				NSString *rpath = [NSString stringWithUTF8String:rpathC];
-				[rpaths addObject:rpath];
-			});
+			if (cdhashWasKnown || // If we already knew the cdhash, we can skip parsing dependencies
+				!isAdhocSigned) { // If it was not ad hoc signed, we can safely skip it aswell
+				fat_free(fat);
+				return;
+			}
 
 			// Recurse this block on all dependencies
 			macho_enumerate_dependencies(macho, ^(const char *dylibPathC, uint32_t cmd, struct dylib* dylib, bool *stop) {
+				if (!dylibPathC) return;
 				if (_dyld_shared_cache_contains_path(dylibPathC)) return;
-				NSString *dylibPath = [NSString stringWithUTF8String:dylibPathC];
-				NSString *loaderPath = [NSString stringWithUTF8String:machoPath];
-				NSString *executablePath = callerPath ? [NSString stringWithUTF8String:callerPath] : loaderPath;
-				dylibPath = resolveLoadPath(dylibPath, loaderPath, executablePath, rpaths);
-				if ([[NSFileManager defaultManager] fileExistsAtPath:dylibPath]) {
-					FAT *dependencyFAT = fat_init_from_path(dylibPath.fileSystemRepresentation);
-					if (dependencyFAT) {
-						MachO *dependencyMacho = ljb_fat_find_preferred_slice(dependencyFAT);
-						if (dependencyMacho) {
-							machoAddHandler_recurse(dependencyMacho, dylibPath.fileSystemRepresentation);
-						}
-						fat_free(dependencyFAT);
-					}
-				}
+				binaryTrustHandler_recurse([NSString stringWithUTF8String:dylibPathC], resolvedBinaryPath, sourceExecutablePath);
 			});
-		};
-		machoAddHandler_recurse = machoAddHandler;
 
-		machoAddHandler(mainMachO, path);
-		fat_free(mainFAT);
+			fat_free(fat);
+		};
+		binaryTrustHandler_recurse = binaryTrustHandler;
+
+		binaryTrustHandler([NSString stringWithUTF8String:path], callerImagePath ? [NSString stringWithUTF8String:callerImagePath] : nil, callerExecutablePath ? [NSString stringWithUTF8String:callerExecutablePath] : nil);
 
 		*cdhashesOut = cdhashes;
 		*cdhashCountOut = cdhashCount;

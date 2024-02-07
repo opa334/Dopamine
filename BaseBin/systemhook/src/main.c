@@ -209,34 +209,35 @@ int execvp_hook(const char *name, char * const *argv)
 
 void* dlopen_hook(const char* path, int mode)
 {
+	void* addressInCaller = __builtin_return_address(0);
 	if (path && !(mode & RTLD_NOLOAD)) {
-		jbclient_trust_library(path);
+		jbclient_trust_library(path, addressInCaller);
 	}
-	
-	void* callerAddress = __builtin_return_address(0);
-    return dlopen_from(path, mode, callerAddress);
+    return dlopen_from(path, mode, addressInCaller);
 }
 
 void* dlopen_from_hook(const char* path, int mode, void* addressInCaller)
 {
 	if (path && !(mode & RTLD_NOLOAD)) {
-		jbclient_trust_library(path);
+		jbclient_trust_library(path, addressInCaller);
 	}
 	return dlopen_from(path, mode, addressInCaller);
 }
 
 void* dlopen_audited_hook(const char* path, int mode)
 {
+	void* addressInCaller = __builtin_return_address(0);
 	if (path && !(mode & RTLD_NOLOAD)) {
-		jbclient_trust_library(path);
+		jbclient_trust_library(path, addressInCaller);
 	}
 	return dlopen_audited(path, mode);
 }
 
 bool dlopen_preflight_hook(const char* path)
 {
+	void* addressInCaller = __builtin_return_address(0);
 	if (path) {
-		jbclient_trust_library(path);
+		jbclient_trust_library(path, addressInCaller);
 	}
 	return dlopen_preflight(path);
 }
@@ -363,8 +364,11 @@ __attribute__((constructor)) static void initializer(void)
 	applySandboxExtensions();
 
 	// Unset DYLD_INSERT_LIBRARIES, but only if systemhook itself is the only thing contained in it
-	if (!strcmp(getenv("DYLD_INSERT_LIBRARIES"), HOOK_DYLIB_PATH)) {
-		unsetenv("DYLD_INSERT_LIBRARIES");
+	const char *dyldInsertLibraries = getenv("DYLD_INSERT_LIBRARIES");
+	if (dyldInsertLibraries) {
+		if (!strcmp(dyldInsertLibraries, HOOK_DYLIB_PATH)) {
+			unsetenv("DYLD_INSERT_LIBRARIES");
+		}
 	}
 
 	if (loadExecutablePath() == 0) {

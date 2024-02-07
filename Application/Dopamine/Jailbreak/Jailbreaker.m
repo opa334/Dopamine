@@ -8,6 +8,7 @@
 #import "Jailbreaker.h"
 #import "EnvironmentManager.h"
 #import "ExploitManager.h"
+#import "DOUIManager.h"
 #import <sys/stat.h>
 #import <compression.h>
 #import <xpf/xpf.h>
@@ -114,8 +115,9 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 - (NSError *)doExploitation
 {
     Exploit *kernelExploit = [ExploitManager sharedManager].preferredKernelExploit;
-    printf("Picked Kernel Exploit: %s\n", kernelExploit.description.UTF8String);
     
+    [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:@"Exploiting Kernel (%@)", kernelExploit.name] debug:NO];
+
     if ([kernelExploit load] != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load kernel exploit: %s", dlerror()]}];
     if ([kernelExploit run] != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to exploit kernel"}];
     
@@ -125,7 +127,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     
     Exploit *pacBypass = [ExploitManager sharedManager].preferredPACBypass;
     if (pacBypass) {
-        NSLog(@"Picked PAC Bypass: %s\n", pacBypass.description.UTF8String);
+        [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:@"Bypassing PAC (%@)", pacBypass.name] debug:NO];
         if ([pacBypass load] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PAC bypass: %s", dlerror()]}];};
         if ([pacBypass run] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PAC"}];}
         // At this point we presume the PAC bypass has given us stable kcall primitives
@@ -134,7 +136,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
     if ([[EnvironmentManager sharedManager] isPPLBypassRequired]) {
         Exploit *pplBypass = [ExploitManager sharedManager].preferredPPLBypass;
-        printf("Picked PPL Bypass: %s\n", pplBypass.description.UTF8String);
+        [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:@"Bypassing PPL (%@)", pplBypass.name] debug:NO];
         if ([pplBypass load] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PPL bypass: %s", dlerror()]}];};
         if ([pplBypass run] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PPL"}];}
         // At this point we presume the PPL bypass gave us unrestricted phys write primitives
@@ -290,7 +292,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
     cdhash_t *cdhashes;
     uint32_t cdhashesCount;
-    macho_collect_untrusted_cdhashes(JBRootPath("/basebin/.fakelib/dyld"), NULL, &cdhashes, &cdhashesCount);
+    macho_collect_untrusted_cdhashes(JBRootPath("/basebin/.fakelib/dyld"), NULL, NULL, &cdhashes, &cdhashesCount);
     if (cdhashesCount != 1) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedInitFakeLib userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Got unexpected number of cdhashes for dyld???: %d", cdhashesCount]}];
     
     trustcache_file_v1 *dyldTCFile = NULL;
@@ -322,39 +324,48 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (NSError *)run
 {
+    [[DOUIManager sharedInstance] sendLog:@"Patchfinding" debug:NO];
     NSError *err = nil;
     err = [self gatherSystemInformation];
     if (err) return err;
     err = [self doExploitation];
     if (err) return err;
+    [[DOUIManager sharedInstance] sendLog:@"Building Phys R/W Primitive" debug:NO];
     err = [self buildPhysRWPrimitive];
     if (err) return err;
+    [[DOUIManager sharedInstance] sendLog:@"Cleaning Up Exploits" debug:NO];
     err = [self cleanUpExploits];
     if (err) return err;
+    [[DOUIManager sharedInstance] sendLog:@"Elevating Privileges" debug:NO];
     err = [self elevatePrivileges];
     if (err) return err;
 
     // Now that we are unsandboxed, populate the jailbreak root path
     [[EnvironmentManager sharedManager] determineJailbreakRootPath];
-
+    
+    [[DOUIManager sharedInstance] sendLog:@"Preparing Bootstrap" debug:NO];
     err = [[EnvironmentManager sharedManager] prepareBootstrap];
     if (err) return err;
     setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/jb/sbin:/var/jb/bin:/var/jb/usr/sbin:/var/jb/usr/bin", 1);
     setenv("TERM", "xterm-256color", 1);
     printf("Bootstrap done\n");
     
+    [[DOUIManager sharedInstance] sendLog:@"Loading BaseBin TrustCache" debug:NO];
     err = [self loadBasebinTrustcache];
     if (err) return err;
     
+    [[DOUIManager sharedInstance] sendLog:@"Initializing Jailbreak Environment" debug:NO];
     err = [self injectLaunchdHook];
     if (err) return err;
     
+    [[DOUIManager sharedInstance] sendLog:@"Applying Bind Mount" debug:NO];
     err = [self createFakeLib];
     if (err) return err;
     
     // Unsandbox iconservicesagent so that app icons can work
     exec_cmd_trusted(JBRootPath("/usr/bin/killall"), "-9", "iconservicesagent", NULL);
     
+    [[DOUIManager sharedInstance] sendLog:@"Finalizing Bootstrap" debug:NO];
     err = [self finalizeBootstrapIfNeeded];
     if (err) return err;
     
@@ -370,6 +381,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (void)finalize
 {
+    [[DOUIManager sharedInstance] sendLog:@"Rebooting Userspace" debug:NO];
     exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "reboot", "userspace", NULL);
 }
 

@@ -10,6 +10,8 @@
 #import <sys/sysctl.h>
 #import <libgrabkernel/libgrabkernel.h>
 #import <libjailbreak/info.h>
+#import <libjailbreak/codesign.h>
+#import <libjailbreak/util.h>
 
 #import <IOKit/IOKitLib.h>
 #import "NSData+Hex.h"
@@ -33,6 +35,10 @@
     self = [super init];
     if (self) {
         _bootstrapper = [[Bootstrapper alloc] init];
+        if ([self isJailbroken]) {
+            const char *jbRoot = jbclient_get_jbroot();
+            gSystemInfo.jailbreakInfo.rootPath = jbRoot ? strdup(jbRoot) : NULL;
+        }
     }
     return self;
 }
@@ -116,6 +122,42 @@
     return [[NSFileManager defaultManager] fileExistsAtPath:trollStoreMarkerPath];
 }
 
+- (BOOL)isJailbroken
+{
+    static BOOL jailbroken = NO;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        uint32_t csFlags = 0;
+        csops(getpid(), CS_OPS_STATUS, &csFlags, sizeof(csFlags));
+        jailbroken = csFlags & CS_PLATFORM_BINARY;
+    });
+    return jailbroken;
+}
+
+- (void)runAsRoot:(void (^)(void))rootBlock
+{
+    uint32_t orgUid = getuid();
+    uint32_t orgGid = getgid();
+    if (setuid(0) == 0 && setgid(0) == 0) {
+        rootBlock();
+        setuid(orgUid);
+        setgid(orgGid);
+    }
+}
+
+- (void)respring
+{
+    [self runAsRoot:^{
+        exec_cmd(JBRootPath("/usr/bin/sbreload"), NULL);
+    }];
+}
+
+- (void)rebootUserspace
+{
+    [self runAsRoot:^{
+        exec_cmd(JBRootPath("/basebin/jbctl"), "reboot_userspace", NULL);
+    }];
+}
 
 - (NSString *)accessibleKernelPath
 {
@@ -161,11 +203,7 @@
 
 - (NSError *)finalizeBootstrap
 {
-    if (_bootstrapper.needsFinalize) {
-        printf("Bootstrap needs finalize... Finalizing!\n");
-        return [_bootstrapper finalizeBootstrap];
-    }
-    return nil;
+    return [_bootstrapper finalizeBootstrap];
 }
 
 @end

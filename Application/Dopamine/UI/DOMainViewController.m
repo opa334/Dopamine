@@ -67,7 +67,7 @@
     //Header
     DOHeaderView *headerView = [[DOHeaderView alloc] initWithImage: [UIImage imageNamed:@"Dopamine"] subtitles: @[
         [GlobalAppearance mainSubtitleString:[[EnvironmentManager sharedManager] versionSupportString]],
-        [GlobalAppearance secondarySubtitleString:@"by opa334, évelyne"],
+        [GlobalAppearance secondarySubtitleString:@"by opa334, ElleKit by évelyne"],
     ]];
     
     [stackView addArrangedSubview:headerView];
@@ -83,8 +83,10 @@
             [(UINavigationController*)(self.parentViewController) pushViewController:[[DOSettingsController alloc] init] animated:YES];
         }],
         [UIAction actionWithTitle:@"Respring" image:[UIImage systemImageNamed:@"arrow.clockwise" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"respring" handler:^(__kindof UIAction * _Nonnull action) {
+            [[EnvironmentManager sharedManager] respring];
         }],
         [UIAction actionWithTitle:@"Reboot Userspace" image:[UIImage systemImageNamed:@"arrow.clockwise.circle" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"reboot-userspace" handler:^(__kindof UIAction * _Nonnull action) {
+            [[EnvironmentManager sharedManager] rebootUserspace];
         }],
         [UIAction actionWithTitle:@"Credits" image:[UIImage systemImageNamed:@"info.circle" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"credits" handler:^(__kindof UIAction * _Nonnull action) {
             [(UINavigationController*)(self.parentViewController) pushViewController:[[DOCreditsViewController alloc] init] animated:YES];
@@ -107,7 +109,9 @@
     ]];
     
     //Jailbreak Button
-    self.jailbreakBtn = [[DOJailbreakButton alloc] initWithAction: [UIAction actionWithTitle:@"Jailbreak" image:[UIImage systemImageNamed:@"lock.open" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"jailbreak" handler:^(__kindof UIAction * _Nonnull action) {
+    BOOL isJailbroken = [[EnvironmentManager sharedManager] isJailbroken];
+    NSString *jailbreakButtonTitle = isJailbroken ? @"Jailbroken" : @"Jailbreak";
+    self.jailbreakBtn = [[DOJailbreakButton alloc] initWithAction: [UIAction actionWithTitle:jailbreakButtonTitle image:[UIImage systemImageNamed:@"lock.open" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"jailbreak" handler:^(__kindof UIAction * _Nonnull action) {
         [actionView hide];
         [self.jailbreakBtn showLog: self.jailbreakButtonConstraints];
 
@@ -117,10 +121,9 @@
 
         
         Jailbreaker *jailbreaker = [[Jailbreaker alloc] init];
-            
+
         //[self simulateJailbreak];
-        //[[DOUIManager sharedInstance] startLogCapture]; this fucks up everything ?
-        [[DOUIManager sharedInstance] sendLog:@"Jailbreaking" debug:NO];
+        [[DOUIManager sharedInstance] startLogCapture];
         
         //dispatch async so the UI can update as this blocks the main thread
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
@@ -138,11 +141,11 @@
                 message = @"";
                 [[DOUIManager sharedInstance] completeJailbreak];
             }
-            
-            [[DOUIManager sharedInstance] sendLog:@"Rebooting Userspace" debug: NO];
 
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+                //UIAlertAction *viewLogAction = [UIAlertAction actionWithTitle:@"View Log" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}];
+                //[alertController addAction:viewLogAction];
                 UIAlertAction *doneAction = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
                     if (!error) {
                         [jailbreaker finalize];
@@ -153,8 +156,8 @@
                 [self presentViewController:alertController animated:YES completion:nil];
             });
         });
-
     }]];
+    self.jailbreakBtn.enabled = !isJailbroken;
 
     [self.view addSubview:self.jailbreakBtn];
 

@@ -121,4 +121,19 @@
     ]];
 }
 
+- (void)setEnabled:(BOOL)enabled
+{
+    self.button.userInteractionEnabled = enabled;
+    if (enabled) {
+        self.backgroundColor = [UIColor colorWithWhite:0.25 alpha:0.45];
+    } else {
+        self.backgroundColor = [UIColor colorWithWhite:0.25 alpha:0.25];
+    }
+}
+
+- (BOOL)isEnabled
+{
+    return self.button.userInteractionEnabled;
+}
+
 @end

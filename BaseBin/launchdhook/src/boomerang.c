@@ -51,6 +51,7 @@ void boomerang_stashPrimitives()
 	// Wait for boomerang to retrieve the primitives from launchd (handled in server above)
 	dispatch_semaphore_wait(boomerangDone, DISPATCH_TIME_FOREVER);
 	dispatch_source_cancel(serverSource);
+	mach_port_deallocate(mach_task_self(), serverPort);
 
 	// Stash boomerang pid in environment to later be able to call waitpid on it
 	char pidBuf[10];

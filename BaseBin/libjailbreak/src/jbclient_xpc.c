@@ -5,6 +5,7 @@
 #include <sys/mount.h>
 #include <pthread.h>
 #include <mach-o/dyld.h>
+#include <dlfcn.h>
 
 #define OS_ALLOC_ONCE_KEY_MAX    100
 
@@ -96,13 +97,13 @@ xpc_object_t jbserver_xpc_send(uint64_t domain, uint64_t action, xpc_object_t xa
 	return xreply;
 }
 
-char *jbclient_get_root_path(void)
+char *jbclient_get_jbroot(void)
 {
 	static char rootPath[PATH_MAX] = { 0 };
 	static dispatch_once_t dot;
 
 	dispatch_once(&dot, ^{
-		xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_SYSTEMWIDE, JBS_SYSTEMWIDE_GET_JB_ROOT, NULL);
+		xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_SYSTEMWIDE, JBS_SYSTEMWIDE_GET_JBROOT, NULL);
 		if (xreply) {
 			const char *replyRootPath = xpc_dictionary_get_string(xreply, "root-path");
 			if (replyRootPath) {
@@ -204,18 +205,22 @@ int jbclient_trust_binary(const char *binaryPath)
 	return -1;
 }
 
-int jbclient_trust_library(const char *libraryPath)
+int jbclient_trust_library(const char *libraryPath, void *addressInCaller)
 {
 	if (!libraryPath) return -1;
 
 	// If not a dynamic path (@rpath, @executable_path, @loader_path), resolve to absolute path
-	char absolutePath[PATH_MAX];
-	if (realafpath(libraryPath, absolutePath) == NULL) return -1;
+	char absoluteLibraryPath[PATH_MAX];
+	if (realafpath(libraryPath, absoluteLibraryPath) == NULL) return -1;
 
-	if (can_skip_trusting_file(absolutePath, true, true)) return -1;
+	if (can_skip_trusting_file(absoluteLibraryPath, true, true)) return -1;
 
+	Dl_info callerInfo = { 0 };
+	if (addressInCaller) dladdr(addressInCaller, &callerInfo);
+	
 	xpc_object_t xargs = xpc_dictionary_create_empty();
-	xpc_dictionary_set_string(xargs, "library-path", absolutePath);
+	xpc_dictionary_set_string(xargs, "library-path", absoluteLibraryPath);
+	if (callerInfo.dli_fname) xpc_dictionary_set_string(xargs, "caller-library-path", callerInfo.dli_fname);
 	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_SYSTEMWIDE, JBS_SYSTEMWIDE_TRUST_LIBRARY, xargs);
 	xpc_release(xargs);
 	if (xreply) {

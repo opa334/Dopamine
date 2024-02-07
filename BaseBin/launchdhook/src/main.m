@@ -20,16 +20,6 @@ bool gEarlyBootDone = false;
 
 void abort_with_reason(uint32_t reason_namespace, uint64_t reason_code, const char *reason_string, uint64_t reason_flags);
 
-void (*org_abort)(void);
-void my_abort(void)
-{
-	FILE *f = fopen("/var/mobile/launchd.abort.txt", "a");
-	fprintf(f, "%s\n\n", [NSThread callStackSymbols].description.UTF8String);
-	fclose(f);
-	sleep(1);
-	org_abort();
-}
-
 __attribute__((constructor)) static void initializer(void)
 {
 	crashreporter_start();
@@ -75,7 +65,6 @@ __attribute__((constructor)) static void initializer(void)
 	initIPCHooks();
 	initDSCHooks();
 	initJetsamHook();
-	MSHookFunction((void *)abort, (void *)&my_abort, (void **)&org_abort);
 
 	// This will ensure launchdhook is always reinjected after userspace reboots
 	// As this launchd will pass environ to the next launchd...
@@ -84,7 +73,7 @@ __attribute__((constructor)) static void initializer(void)
 	// Mark Dopamine as having been initialized before
 	setenv("DOPAMINE_INITIALIZED", "1", 1);
 
-	// Set an identifier that uniquely identifies this specific userspace boot
+	// Set an identifier that uniquely identifies this userspace boot
 	// Part of rootless v2 spec
-	setenv("LAUNCH_BOOT_UUID", [NSUUID UUID].UUIDString.UTF8String, 1);
+	setenv("LAUNCHD_UUID", [NSUUID UUID].UUIDString.UTF8String, 1);
 }

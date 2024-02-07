@@ -45,7 +45,7 @@ extern struct jbserver_impl gGlobalServer;
 // Reachable from all processes
 #define JBS_DOMAIN_SYSTEMWIDE 1
 enum {
-    JBS_SYSTEMWIDE_GET_JB_ROOT = 1,
+    JBS_SYSTEMWIDE_GET_JBROOT = 1,
     JBS_SYSTEMWIDE_GET_BOOT_UUID,
     JBS_SYSTEMWIDE_TRUST_BINARY,
     JBS_SYSTEMWIDE_TRUST_LIBRARY,

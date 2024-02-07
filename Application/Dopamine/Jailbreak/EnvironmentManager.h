@@ -25,6 +25,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)accessibleKernelPath;
 - (void)determineJailbreakRootPath;
 
+- (BOOL)isJailbroken;
+- (void)runAsRoot:(void (^)(void))rootBlock;
+- (void)respring;
+- (void)rebootUserspace;
+
 - (BOOL)isPACBypassRequired;
 - (BOOL)isPPLBypassRequired;
 

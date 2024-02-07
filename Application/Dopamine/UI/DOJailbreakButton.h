@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property DOActionMenuButton *button;
 @property UIView<DOLogViewProtocol> *logView;
+@property (nonatomic, getter=isEnabled) BOOL enabled;
 
 - (instancetype)initWithAction:(UIAction *)actions;
 - (void)showLog:(NSArray<NSLayoutConstraint *> *)constraints;

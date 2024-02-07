@@ -72,7 +72,6 @@
 		8C4ABEB62B52094100B43C9B /* libjailbreak.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */; };
 		8C4ABEB92B520E7B00B43C9B /* libjailbreak.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */; platformFilter = ios; };
 		8C4ABEBE2B52274300B43C9B /* PreferenceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4ABEBD2B52274300B43C9B /* PreferenceManager.m */; };
-		8C512B902B5C9F8F00C6F14A /* libjbdrw.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C512B8A2B5C9DE800C6F14A /* libjbdrw.deb */; };
 		8C512B912B5C9F9100C6F14A /* sileo.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C512B8B2B5C9DE800C6F14A /* sileo.deb */; };
 		8C512B922B5C9F9400C6F14A /* zebra.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C512B8C2B5C9DE800C6F14A /* zebra.deb */; };
 		8C71981A2ABF0E82003C6658 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7198192ABF0E82003C6658 /* AppDelegate.m */; };
@@ -81,11 +80,12 @@
 		8C7198282ABF0E84003C6658 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C7198262ABF0E84003C6658 /* LaunchScreen.storyboard */; };
 		8C71982B2ABF0E84003C6658 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71982A2ABF0E84003C6658 /* main.m */; };
 		8C9E46292ACA1CC700B5456A /* UIImage+Blur.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9E46282ACA1CC700B5456A /* UIImage+Blur.m */; };
-		8CB2E7642AD1788F000A6B90 /* ActionMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB2E7632AD1788F000A6B90 /* ActionMenuView.m */; };
 		8CB94F042B59E17A0098BAFD /* basebin.tc in Resources */ = {isa = PBXBuildFile; fileRef = 8CB94F022B59E17A0098BAFD /* basebin.tc */; };
 		8CB94F052B59E17A0098BAFD /* basebin.tar in Resources */ = {isa = PBXBuildFile; fileRef = 8CB94F032B59E17A0098BAFD /* basebin.tar */; };
 		8CC139822B53DE6C00230143 /* NSData+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC139812B53DE6C00230143 /* NSData+Hex.m */; };
 		8CC139832B53E05300230143 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08372B4F682500A32B61 /* IOKit.framework */; };
+		8CCD8A872B6F16CC004B72B0 /* libkrw-plugin.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD8A852B6F1662004B72B0 /* libkrw-plugin.deb */; };
+		8CCD8A882B6F16D0004B72B0 /* libroot.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD8A832B6F165A004B72B0 /* libroot.deb */; };
 		8CDD07AA2B4F619000A32B61 /* kfd.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CDD07A92B4F619000A32B61 /* kfd.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CDD07AF2B4F619000A32B61 /* kfd.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD07A72B4F619000A32B61 /* kfd.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8CDD08342B4F63E100A32B61 /* kfd.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CDD07B32B4F639100A32B61 /* kfd.m */; };
@@ -143,7 +143,7 @@
 		8CDD07AE2B4F619000A32B61 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = Exploits;
+			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
 				8CDD07AF2B4F619000A32B61 /* kfd.framework in Embed Frameworks */,
@@ -255,7 +255,6 @@
 		8C46D7262B58A029002899DB /* tar.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = tar.dylib; path = Dopamine/Dependencies/tar.dylib; sourceTree = "<group>"; };
 		8C4ABEBC2B52274300B43C9B /* PreferenceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PreferenceManager.h; sourceTree = "<group>"; };
 		8C4ABEBD2B52274300B43C9B /* PreferenceManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PreferenceManager.m; sourceTree = "<group>"; };
-		8C512B8A2B5C9DE800C6F14A /* libjbdrw.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjbdrw.deb; sourceTree = "<group>"; };
 		8C512B8B2B5C9DE800C6F14A /* sileo.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = sileo.deb; sourceTree = "<group>"; };
 		8C512B8C2B5C9DE800C6F14A /* zebra.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = zebra.deb; sourceTree = "<group>"; };
 		8C7198152ABF0E82003C6658 /* Dopamine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dopamine.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -269,13 +268,12 @@
 		8C71982A2ABF0E84003C6658 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8C9E46272ACA1C8D00B5456A /* UIImage+Blur.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+Blur.h"; sourceTree = "<group>"; };
 		8C9E46282ACA1CC700B5456A /* UIImage+Blur.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Blur.m"; sourceTree = "<group>"; };
-		8CB2E7622AD1788F000A6B90 /* ActionMenuView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionMenuView.h; sourceTree = "<group>"; };
-		8CB2E7632AD1788F000A6B90 /* ActionMenuView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionMenuView.m; sourceTree = "<group>"; };
-		8CB2E7652AD179F9000A6B90 /* ActionMenuDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionMenuDelegate.h; sourceTree = "<group>"; };
 		8CB94F022B59E17A0098BAFD /* basebin.tc */ = {isa = PBXFileReference; lastKnownFileType = file; name = basebin.tc; path = ../../../BaseBin/basebin.tc; sourceTree = "<group>"; };
 		8CB94F032B59E17A0098BAFD /* basebin.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; name = basebin.tar; path = ../../../BaseBin/basebin.tar; sourceTree = "<group>"; };
 		8CC139802B53DE6C00230143 /* NSData+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Hex.h"; sourceTree = "<group>"; };
 		8CC139812B53DE6C00230143 /* NSData+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Hex.m"; sourceTree = "<group>"; };
+		8CCD8A832B6F165A004B72B0 /* libroot.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libroot.deb; path = ../../../Packages/libroot/libroot.deb; sourceTree = "<group>"; };
+		8CCD8A852B6F1662004B72B0 /* libkrw-plugin.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libkrw-plugin.deb"; path = "../../../Packages/libkrw-provider/libkrw-plugin.deb"; sourceTree = "<group>"; };
 		8CDD07A72B4F619000A32B61 /* kfd.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = kfd.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CDD07A92B4F619000A32B61 /* kfd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kfd.h; sourceTree = "<group>"; };
 		8CDD07B32B4F639100A32B61 /* kfd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = kfd.m; sourceTree = "<group>"; };
@@ -617,8 +615,8 @@
 				8C9E46262ACA1C5800B5456A /* Extensions */,
 				8C029F402B4DFCFE0071DE58 /* Jailbreak */,
 				8C7198322ABF130A003C6658 /* Exploits */,
-				8C7198242ABF0E84003C6658 /* Assets.xcassets */,
 				042479672B66916B0082581B /* UI */,
+				8C7198242ABF0E84003C6658 /* Assets.xcassets */,
 				8C7198262ABF0E84003C6658 /* LaunchScreen.storyboard */,
 				8C7198292ABF0E84003C6658 /* Info.plist */,
 				8C71982A2ABF0E84003C6658 /* main.m */,
@@ -663,9 +661,10 @@
 			children = (
 				8CB94F032B59E17A0098BAFD /* basebin.tar */,
 				8CB94F022B59E17A0098BAFD /* basebin.tc */,
-				8C512B8A2B5C9DE800C6F14A /* libjbdrw.deb */,
 				8C512B8B2B5C9DE800C6F14A /* sileo.deb */,
 				8C512B8C2B5C9DE800C6F14A /* zebra.deb */,
+				8CCD8A852B6F1662004B72B0 /* libkrw-plugin.deb */,
+				8CCD8A832B6F165A004B72B0 /* libroot.deb */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -883,11 +882,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C512B922B5C9F9400C6F14A /* zebra.deb in Resources */,
 				042479A42B66916B0082581B /* Credits.plist in Resources */,
 				042479A12B66916B0082581B /* Settings.plist in Resources */,
 				8C512B912B5C9F9100C6F14A /* sileo.deb in Resources */,
-				8C512B902B5C9F8F00C6F14A /* libjbdrw.deb in Resources */,
+				8C512B922B5C9F9400C6F14A /* zebra.deb in Resources */,
+				8CCD8A872B6F16CC004B72B0 /* libkrw-plugin.deb in Resources */,
+				8CCD8A882B6F16D0004B72B0 /* libroot.deb in Resources */,
 				8CB94F052B59E17A0098BAFD /* basebin.tar in Resources */,
 				8CB94F042B59E17A0098BAFD /* basebin.tc in Resources */,
 				8C7198282ABF0E84003C6658 /* LaunchScreen.storyboard in Resources */,

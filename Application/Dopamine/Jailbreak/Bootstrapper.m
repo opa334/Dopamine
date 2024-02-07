@@ -15,6 +15,9 @@
 #import <dlfcn.h>
 #import <sys/stat.h>
 
+#define LIBKRW_DOPAMINE_BUNDLED_VERSION @"2.0.0"
+#define LIBROOT_DOPAMINE_BUNDLED_VERSION @"1.0.0"
+
 struct hfs_mount_args {
     char    *fspec;
     uid_t    hfs_uid;        /* uid that owns hfs files (standard HFS only) */
@@ -523,31 +526,70 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     }
 }
 
-- (BOOL)needsFinalize
+- (int)installPackage:(NSString *)packagePath
 {
-    return [[NSFileManager defaultManager] fileExistsAtPath:NSJBRootPath(@"/prep_bootstrap.sh")];
+    return exec_cmd_trusted(JBRootPath("/usr/bin/dpkg"), "-i", packagePath.fileSystemRepresentation, NULL);
+}
+
+- (int)uninstallPackageWithIdentifier:(NSString *)identifier
+{
+    return exec_cmd_trusted(JBRootPath("/usr/bin/dpkg"), "-r", identifier.UTF8String, NULL);
+}
+
+- (NSString *)installedVersionForPackageWithIdentifier:(NSString *)identifier
+{
+    NSString *dpkgStatus = [NSString stringWithContentsOfFile:NSJBRootPath(@"/var/lib/dpkg/status") encoding:NSUTF8StringEncoding error:nil];
+    NSString *packageStartLine = [NSString stringWithFormat:@"Package: %@", identifier];
+    
+    NSArray *packageInfos = [dpkgStatus componentsSeparatedByString:@"\n\n"];
+    for (NSString *packageInfo in packageInfos) {
+        if ([packageInfo hasPrefix:packageStartLine]) {
+            __block NSString *version = nil;
+            [packageInfo enumerateLinesUsingBlock:^(NSString * _Nonnull line, BOOL * _Nonnull stop) {
+                if ([line hasPrefix:@"Version: "]) {
+                    version = [line substringFromIndex:9];
+                }
+            }];
+            return version;
+        }
+    }
+    return nil;
 }
 
 - (NSError *)finalizeBootstrap
 {
-    int r = exec_cmd_trusted(JBRootPath("/bin/sh"), JBRootPath("/prep_bootstrap.sh"), NULL);
-    if (r != 0) {
-        return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"prep_bootstrap.sh returned %d\n", r]}];
+    // Initial setup on first jailbreak
+    if ([[NSFileManager defaultManager] fileExistsAtPath:NSJBRootPath(@"/prep_bootstrap.sh")]) {
+        int r = exec_cmd_trusted(JBRootPath("/bin/sh"), JBRootPath("/prep_bootstrap.sh"), NULL);
+        if (r != 0) {
+            return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"prep_bootstrap.sh returned %d\n", r]}];
+        }
+        
+        NSString *sileoPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"sileo.deb"];
+        NSString *zebraPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"zebra.deb"];
+        
+        if (true) { // TODO: pref (sileo)
+            int r = [self installPackage:sileoPath];
+            if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install Sileo: %d\n", r]}];
+        }
+        if (true) { // TODO: pref (zebra)
+            int r = [self installPackage:zebraPath];
+            if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install Zebra: %d\n", r]}];
+        }
     }
     
-    NSString *sileoPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"sileo.deb"];
-    NSString *zebraPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"zebra.deb"];
-    NSString *krwPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"libjbdrw.deb"];
+    NSString *librootInstalledVersion = [self installedVersionForPackageWithIdentifier:@"libroot-dopamine"];
+    if (!librootInstalledVersion || ![librootInstalledVersion isEqualToString:LIBROOT_DOPAMINE_BUNDLED_VERSION]) {
+        NSString *librootPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"libroot.deb"];
+        int r = [self installPackage:librootPath];
+        if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install libroot: %d\n", r]}];
+    }
     
-    NSArray *toInstall = @[
-        sileoPath,
-        zebraPath,
-        krwPath,
-    ];
-    
-    for (NSString *path in toInstall) {
-        r = exec_cmd_trusted(JBRootPath("/usr/bin/dpkg"), "-i", path.fileSystemRepresentation, NULL);
-        if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install %@: %d\n", path.lastPathComponent, r]}];
+    NSString *libkrwDopamineInstalledVersion = [self installedVersionForPackageWithIdentifier:@"libkrw0-dopamine"];
+    if (!libkrwDopamineInstalledVersion || ![libkrwDopamineInstalledVersion isEqualToString:LIBKRW_DOPAMINE_BUNDLED_VERSION]) {
+        NSString *libkrwPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"libkrw-plugin.deb"];
+        int r = [self installPackage:libkrwPath];
+        if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install the libkrw plugin: %d\n", r]}];
     }
 
     return nil;

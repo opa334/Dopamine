@@ -1,9 +1,11 @@
 all:
 	@$(MAKE) -C BaseBin
+	@$(MAKE) -C Packages
 	@$(MAKE) -C Application
 
 clean:
 	@$(MAKE) -C BaseBin clean
+	@$(MAKE) -C Packages clean
 	@$(MAKE) -C Application clean
 
 update: all

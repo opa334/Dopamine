@@ -93,8 +93,6 @@ int jbctl_handle_internal(const char *command)
 		return ret;
 	}
 	else if (!strcmp(command, "startup")) {
-		const char *rootPathC = jbclient_get_root_path();
-		if (!rootPathC) return 9;
 		exec_cmd(JBRootPath("/usr/bin/uicache"), "-a", NULL);
 	}
 	return -1;

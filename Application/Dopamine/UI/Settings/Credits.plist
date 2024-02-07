@@ -10,7 +10,7 @@
 			<key>headerCellClass</key>
 			<string>DOHeaderCell</string>
 			<key>title</key>
-			<string>Made by opa334, évelyne</string>
+			<string>Made by opa334, ElleKit by évelyne</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -22,7 +22,7 @@
 			<key>key</key>
 			<string>src</string>
 			<key>image</key>
-			<string>filemenu.and.cursorarrow</string> <!-- puzzlepiece.extension.fill -->
+			<string>filemenu.and.cursorarrow</string>
 			<key>action</key>
 			<string>openSourceCode</string>
 		</dict>

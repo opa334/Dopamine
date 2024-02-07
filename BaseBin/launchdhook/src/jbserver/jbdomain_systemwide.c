@@ -9,13 +9,16 @@
 #include <libjailbreak/kernel.h>
 #include <libjailbreak/util.h>
 #include <libjailbreak/primitives.h>
+#include <libjailbreak/codesign.h>
+
+extern bool stringEndsWith(const char* str, const char* suffix);
 
 static bool systemwide_domain_allowed(audit_token_t clientToken)
 {
 	return true;
 }
 
-static int systemwide_get_jb_root(char **rootPathOut)
+static int systemwide_get_jbroot(char **rootPathOut)
 {
 	*rootPathOut = strdup(jbinfo(rootPath));
 	return 0;
@@ -28,18 +31,18 @@ static int systemwide_get_boot_uuid(char **bootUUIDOut)
 	return 0;
 }
 
-static int trust_file(const char *filePath, const char *dlopenCallerPath)
+static int trust_file(const char *filePath, const char *dlopenCallerImagePath, const char *dlopenCallerExecutablePath)
 {
 	// Shared logic between client and server, implemented in client
 	// This should essentially mean these files never reach us in the first place
 	// But you know, never trust the client :D
 	extern bool can_skip_trusting_file(const char *filePath, bool isLibrary, bool isClient);
 
-	if (can_skip_trusting_file(filePath, (bool)dlopenCallerPath, false)) return -1;
+	if (can_skip_trusting_file(filePath, (bool)dlopenCallerExecutablePath, false)) return -1;
 
 	cdhash_t *cdhashes = NULL;
 	uint32_t cdhashesCount = 0;
-	macho_collect_untrusted_cdhashes(filePath, dlopenCallerPath, &cdhashes, &cdhashesCount);
+	macho_collect_untrusted_cdhashes(filePath, dlopenCallerImagePath, dlopenCallerExecutablePath, &cdhashes, &cdhashesCount);
 	if (cdhashes && cdhashesCount > 0) {
 		jb_trustcache_add_cdhashes(cdhashes, cdhashesCount);
 		free(cdhashes);
@@ -50,10 +53,10 @@ static int trust_file(const char *filePath, const char *dlopenCallerPath)
 // Not static because launchd will directly call this from it's posix_spawn hook
 int systemwide_trust_binary(const char *binaryPath)
 {
-	return trust_file(binaryPath, NULL);
+	return trust_file(binaryPath, NULL, NULL);
 }
 
-static int systemwide_trust_library(audit_token_t *processToken, const char *libraryPath)
+static int systemwide_trust_library(audit_token_t *processToken, const char *libraryPath, const char *callerLibraryPath)
 {
 	// Fetch process info
 	pid_t pid = audit_token_to_pid(*processToken);
@@ -65,7 +68,8 @@ static int systemwide_trust_library(audit_token_t *processToken, const char *lib
 	// When trusting a library that's dlopened at runtime, we need to pass the caller path
 	// This is to support dlopen("@executable_path/whatever", RTLD_NOW) and stuff like that
 	// (Yes that is a thing >.<)
-	return trust_file(libraryPath, callerPath);
+	// Also we need to pass the path of the image that called dlopen due to @loader_path, sigh...
+	return trust_file(libraryPath, callerLibraryPath, callerPath);
 }
 
 static int systemwide_process_checkin(audit_token_t *processToken, char **rootPathOut, char **bootUUIDOut, char **sandboxExtensionsOut)
@@ -79,7 +83,7 @@ static int systemwide_process_checkin(audit_token_t *processToken, char **rootPa
 	}
 
 	// Get jbroot and boot uuid
-	systemwide_get_jb_root(rootPathOut);
+	systemwide_get_jbroot(rootPathOut);
 	systemwide_get_boot_uuid(bootUUIDOut);
 
 	// Generate sandbox extensions for the requesting process
@@ -136,6 +140,23 @@ static int systemwide_process_checkin(audit_token_t *processToken, char **rootPa
 				killall("/System/Library/TextInput/kbd", false);
 			});
 		}
+	}
+	// For the Dopamine app itself we want to give it a saved uid/gid of 0, unsandbox it and give it CS_PLATFORM_BINARY
+	// This is so that the buttons inside it can work when jailbroken, even if the app was not installed by TrollStore
+	else if (stringEndsWith(procPath, "/Dopamine.app/Dopamine")) {
+		// svuid = 0, svgid = 0
+		uint64_t ucred = proc_ucred(proc);
+		kwrite32(proc + koffsetof(proc, svuid), 0);
+		kwrite32(ucred + koffsetof(ucred, svuid), 0);
+		kwrite32(proc + koffsetof(proc, svgid), 0);
+		kwrite32(ucred + koffsetof(ucred, svgid), 0);
+
+		// unsandbox
+		uint64_t label = kread_ptr(ucred + koffsetof(ucred, label));
+    	mac_label_set(label, 1, -1);
+
+		// platformize
+		proc_csflags_set(proc, CS_PLATFORM_BINARY);
 	}
 
 	proc_rele(proc);
@@ -209,9 +230,9 @@ static int systemwide_fork_fix(audit_token_t *parentToken, uint64_t childPid)
 struct jbserver_domain gSystemwideDomain = {
 	.permissionHandler = systemwide_domain_allowed,
 	.actions = {
-		// JBS_SYSTEMWIDE_GET_JB_ROOT
+		// JBS_SYSTEMWIDE_GET_JBROOT
 		{
-			.handler = systemwide_get_jb_root,
+			.handler = systemwide_get_jbroot,
 			.args = (jbserver_arg[]){
 				{ .name = "root-path", .type = JBS_TYPE_STRING, .out = true },
 				{ 0 },
@@ -239,6 +260,7 @@ struct jbserver_domain gSystemwideDomain = {
 			.args = (jbserver_arg[]){
 				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
 				{ .name = "library-path", .type = JBS_TYPE_STRING, .out = false },
+				{ .name = "caller-library-path", .type = JBS_TYPE_STRING, .out = false },
 				{ 0 },
 			},
 		},
