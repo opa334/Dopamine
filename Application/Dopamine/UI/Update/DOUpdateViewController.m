@@ -10,6 +10,7 @@
 #import "DOActionMenuButton.h"
 #import "GlobalAppearance.h"
 #import "DODownloadViewController.h"
+#import "DOUIManager.h"
 
 @interface DOUpdateViewController ()
 
@@ -111,7 +112,7 @@
 
 - (void)updateChangelog
 {
-    NSArray *releases = [self getLatestReleases];
+    NSArray *releases = [[DOUIManager sharedInstance] getLatestReleases];
     NSMutableParagraphStyle * paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.alignment = NSTextAlignmentCenter;
     NSMutableAttributedString *changelogText = [[NSMutableAttributedString alloc] initWithString:@""];
@@ -138,13 +139,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         self.changelog.attributedText = changelogText;
     });
-}
-
-- (NSArray *)getLatestReleases {
-    NSURL *url = [NSURL URLWithString:@"https://api.github.com/repos/opa334/Dopamine/releases"];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    NSArray *jsonArray = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-    return jsonArray;
 }
 
 #pragma mark - Status Bar

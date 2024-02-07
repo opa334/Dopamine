@@ -26,6 +26,28 @@
     return self;
 }
 
+- (BOOL) isUpdateAvailable {
+    NSArray *releases = [self getLatestReleases];
+    if (releases.count == 0)
+        return NO;
+    
+    NSString *latestVersion = releases[0][@"tag_name"];
+    NSString *currentVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    return ![latestVersion isEqualToString:currentVersion];
+}
+
+- (NSArray *)getLatestReleases {
+    static dispatch_once_t onceToken;
+    static NSArray *releases;
+    dispatch_once(&onceToken, ^{
+        NSURL *url = [NSURL URLWithString:@"https://api.github.com/repos/opa334/Dopamine/releases"];
+        NSData *data = [NSData dataWithContentsOfURL:url];
+        releases = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+    });
+    return releases;
+}
+
+
 -(NSArray*)availablePackageManagers {
     return @[kSileoPackageManager, kZebraPackageManager];
 }

@@ -27,6 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)sendLog:(NSString*)log debug:(BOOL)debug;
 -(void)completeJailbreak;
 -(void)startLogCapture;
+-(BOOL)isUpdateAvailable;
+-(NSArray *)getLatestReleases;
 
 @end
 
