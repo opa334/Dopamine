@@ -14,6 +14,7 @@
 #import <libjailbreak/util.h>
 
 #import <IOKit/IOKitLib.h>
+#import "DOUIManager.h"
 #import "NSData+Hex.h"
 
 @implementation EnvironmentManager
@@ -116,10 +117,15 @@
     }
 }
 
-- (BOOL)installedThroughTrollStore
+- (BOOL)isInstalledThroughTrollStore
 {
-    NSString* trollStoreMarkerPath = [[[NSBundle mainBundle].bundlePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"_TrollStore"];
-    return [[NSFileManager defaultManager] fileExistsAtPath:trollStoreMarkerPath];
+    static BOOL trollstoreInstallation = NO;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSString* trollStoreMarkerPath = [[[NSBundle mainBundle].bundlePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"_TrollStore"];
+        trollstoreInstallation = [[NSFileManager defaultManager] fileExistsAtPath:trollStoreMarkerPath];
+    });
+    return trollstoreInstallation;
 }
 
 - (BOOL)isJailbroken
@@ -136,7 +142,7 @@
 
 - (void)runUnsandboxed:(void (^)(void))unsandboxBlock
 {
-    if ([self installedThroughTrollStore]) {
+    if ([self isInstalledThroughTrollStore]) {
         unsandboxBlock();
     }
     else {
@@ -200,11 +206,12 @@
 
 - (NSString *)accessibleKernelPath
 {
-    if ([self installedThroughTrollStore]) {
+    if ([self isInstalledThroughTrollStore]) {
         NSString *kernelcachePath = [[self activePrebootPath] stringByAppendingPathComponent:@"System/Library/Caches/com.apple.kernelcaches/kernelcache"];
         return kernelcachePath;
     }
     else {
+        [[DOUIManager sharedInstance] sendLog:@"Downloading Kernel" debug:NO];
         NSString *kernelcachePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/kernelcache"];
         if (![[NSFileManager defaultManager] fileExistsAtPath:kernelcachePath]) {
             if (grabkernel((char *)kernelcachePath.fileSystemRepresentation, 0) != 0) return nil;
