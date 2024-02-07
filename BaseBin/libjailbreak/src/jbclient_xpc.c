@@ -388,6 +388,22 @@ int jbclient_root_steal_ucred(uint64_t ucredToSteal, uint64_t *orgUcred)
 	return -1;
 }
 
+int jbclient_root_set_mac_label(uint64_t slot, uint64_t label, uint64_t *orgLabel)
+{
+	xpc_object_t xargs = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(xargs, "slot", slot);
+	xpc_dictionary_set_uint64(xargs, "label", label);
+	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_ROOT, JBS_ROOT_SET_MAC_LABEL, xargs);
+	xpc_release(xargs);
+	if (xreply) {
+		int64_t result = xpc_dictionary_get_int64(xreply, "result");
+		if (orgLabel) *orgLabel = xpc_dictionary_get_uint64(xreply, "org-label");
+		xpc_release(xreply);
+		return result;
+	}
+	return -1;
+}
+
 int jbclient_boomerang_done(void)
 {
 	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_ROOT, JBS_BOOMERANG_DONE, NULL);

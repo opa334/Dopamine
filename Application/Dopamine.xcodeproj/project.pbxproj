@@ -182,7 +182,6 @@
 		042479822B66916B0082581B /* DOHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOHeaderView.h; sourceTree = "<group>"; };
 		042479832B66916B0082581B /* GlobalAppearance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalAppearance.h; sourceTree = "<group>"; };
 		042479842B66916B0082581B /* DOMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOMainViewController.h; sourceTree = "<group>"; };
-		042479852B66916B0082581B /* ActionMenuDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionMenuDelegate.h; sourceTree = "<group>"; };
 		042479862B66916B0082581B /* DOJailbreakButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOJailbreakButton.m; sourceTree = "<group>"; };
 		042479872B66916B0082581B /* DOHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOHeaderView.m; sourceTree = "<group>"; };
 		042479882B66916B0082581B /* DOUIManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOUIManager.m; sourceTree = "<group>"; };
@@ -355,7 +354,6 @@
 				042479872B66916B0082581B /* DOHeaderView.m */,
 				042479832B66916B0082581B /* GlobalAppearance.h */,
 				042479A02B66916B0082581B /* GlobalAppearance.m */,
-				042479852B66916B0082581B /* ActionMenuDelegate.h */,
 			);
 			path = UI;
 			sourceTree = "<group>";
