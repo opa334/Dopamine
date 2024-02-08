@@ -42,7 +42,13 @@
     dispatch_once(&onceToken, ^{
         NSURL *url = [NSURL URLWithString:@"https://api.github.com/repos/opa334/Dopamine/releases"];
         NSData *data = [NSData dataWithContentsOfURL:url];
-        releases = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+        NSError *error;
+        releases = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+        if (error)
+        {
+            onceToken = 0;
+            releases = @[];
+        }
     });
     return releases;
 }
