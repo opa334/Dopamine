@@ -211,6 +211,11 @@
         return kernelcachePath;
     }
     else {
+        NSString *kernelInApp = [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"kernelcache"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:kernelInApp]) {
+            return kernelInApp;
+        }
+        
         [[DOUIManager sharedInstance] sendLog:@"Downloading Kernel" debug:NO];
         NSString *kernelcachePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/kernelcache"];
         if (![[NSFileManager defaultManager] fileExistsAtPath:kernelcachePath]) {
