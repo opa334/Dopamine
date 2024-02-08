@@ -61,6 +61,24 @@ static int root_steal_ucred(audit_token_t *clientToken, uint64_t ucred, uint64_t
 	return 0;
 }
 
+static int root_set_mac_label(audit_token_t *clientToken, uint64_t slot, uint64_t newLabel, uint64_t *orgLabel)
+{
+	if (slot >= 3) return -1;
+
+	pid_t pid = audit_token_to_pid(*clientToken);
+	uint64_t proc = proc_find(pid);
+	if (!proc) return -1;
+	uint64_t ucred = proc_ucred(proc);
+	if (!ucred) return -1;
+
+	uint64_t label = kread_ptr(ucred + koffsetof(ucred, label));
+
+	*orgLabel = mac_label_get(label, slot);
+	mac_label_set(label, slot, newLabel);
+
+	return 0;
+}
+
 static int root_add_cdhash(uint8_t *cdhashData, size_t cdhashLen)
 {
 	if (cdhashLen != CS_CDHASH_LEN) return -1;
@@ -111,6 +129,17 @@ struct jbserver_domain gRootDomain = {
 				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
 				{ .name = "ucred", .type = JBS_TYPE_UINT64, .out = false },
 				{ .name = "org-ucred", .type = JBS_TYPE_UINT64, .out = true },
+				{ 0 },
+			},
+		},
+		// JBS_ROOT_SET_MAC_LABEL
+		{
+			.handler = root_set_mac_label,
+			.args = (jbserver_arg[]){
+				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
+				{ .name = "slot", .type = JBS_TYPE_UINT64, .out = false },
+				{ .name = "label", .type = JBS_TYPE_UINT64, .out = false },
+				{ .name = "org-label", .type = JBS_TYPE_UINT64, .out = true },
 				{ 0 },
 			},
 		},

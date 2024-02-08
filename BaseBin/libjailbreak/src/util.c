@@ -304,6 +304,46 @@ uint64_t kptr_sign(uint64_t kaddr, uint64_t pointer, uint16_t salt)
 	return kpacda(UNSIGN_PTR(pointer), modifier);
 }
 
+int cmd_wait_for_exit(pid_t pid)
+{
+	int status = 0;
+	do {
+		if (waitpid(pid, &status, 0) == -1) {
+			return -1;
+		}
+	} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+	return status;
+}
+
+int __exec_cmd_internal_va(bool suspended, pid_t *pidOut, const char *binary, int argc, va_list va_args)
+{
+	const char *argv[argc+1];
+	argv[0] = binary;
+	for (int i = 1; i < argc; i++) {
+		argv[i] = va_arg(va_args, const char *);
+	}
+	argv[argc] = NULL;
+
+	posix_spawnattr_t attr = NULL;
+	if (suspended) {
+		posix_spawnattr_init(&attr);
+		posix_spawnattr_setflags(&attr, POSIX_SPAWN_START_SUSPENDED);
+	}
+
+	pid_t spawnedPid = 0;
+	int spawnError = posix_spawn(&spawnedPid, binary, NULL, &attr, (char *const *)argv, environ);
+	if (attr) posix_spawnattr_destroy(&attr);
+	if (spawnError != 0) return spawnError;
+
+	if (!suspended) {
+		return cmd_wait_for_exit(spawnedPid);
+	}
+	else if (pidOut) {
+		*pidOut = spawnedPid;
+	}
+	return 0;
+}
+
 int exec_cmd(const char *binary, ...)
 {
 	int argc = 1;
@@ -313,25 +353,23 @@ int exec_cmd(const char *binary, ...)
 	va_end(args);
 
 	va_start(args, binary);
-	const char *argv[argc+1];
-	argv[0] = binary;
-	for (int i = 1; i < argc; i++) {
-		argv[i] = va_arg(args, const char *);
-	}
-	argv[argc] = NULL;
+	int r = __exec_cmd_internal_va(false, NULL, binary, argc, args);
+	va_end(args);
+	return r;
+}
 
-	pid_t spawnedPid = 0;
-	int spawnError = posix_spawn(&spawnedPid, binary, NULL, NULL, (char *const *)argv, environ);
-	if (spawnError != 0) return spawnError;
+int exec_cmd_suspended(pid_t *pidOut, const char *binary, ...)
+{
+	int argc = 1;
+	va_list args;
+	va_start(args, binary);
+	while (va_arg(args, const char *)) argc++;
+	va_end(args);
 
-	int status = 0;
-	do {
-		if (waitpid(spawnedPid, &status, 0) == -1) {
-			return -1;
-		}
-	} while (!WIFEXITED(status) && !WIFSIGNALED(status));
-
-	return status;
+	va_start(args, binary);
+	int r = __exec_cmd_internal_va(true, pidOut, binary, argc, args);
+	va_end(args);
+	return r;
 }
 
 void killall(const char *executablePathToKill, bool softly)

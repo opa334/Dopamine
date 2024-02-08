@@ -19,13 +19,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) NSData *bootManifestHash;
 
+- (BOOL)isInstalledThroughTrollStore;
+- (BOOL)isJailbroken;
+
 - (BOOL)isArm64e;
 - (NSString *)versionSupportString;
-- (BOOL)installedThroughTrollStore;
 - (NSString *)accessibleKernelPath;
 - (void)determineJailbreakRootPath;
 
-- (BOOL)isJailbroken;
 - (void)runAsRoot:(void (^)(void))rootBlock;
 - (void)respring;
 - (void)rebootUserspace;

@@ -54,6 +54,8 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (!kernelPath) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedToFindKernel userInfo:@{NSLocalizedDescriptionKey:@"Failed to find kernelcache"}];
     NSLog(@"Kernel at %s", kernelPath.UTF8String);
     
+    [[DOUIManager sharedInstance] sendLog:@"Patchfinding" debug:NO];
+    
     int r = xpf_start_with_kernel_path(kernelPath.fileSystemRepresentation);
     if (r == 0) {
         const char *sets[] = {
@@ -140,17 +142,13 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         if ([pplBypass load] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PPL bypass: %s", dlerror()]}];};
         if ([pplBypass run] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PPL"}];}
         // At this point we presume the PPL bypass gave us unrestricted phys write primitives
-        if (@available(iOS 16.0, *)) {
-            // IOSurface kallocs don't work on iOS 16+, use these instead
-            libjailbreak_kalloc_pt_init();
-        }
     }
-    else {
-        if (@available(iOS 16.0, *)) {
-            // IOSurface kallocs don't work on iOS 16+, use these instead
-            libjailbreak_kalloc_pt_init();
-        }
+
+    if (@available(iOS 16.0, *)) {
+        // IOSurface kallocs don't work on iOS 16+, use these instead
+        libjailbreak_kalloc_pt_init();
     }
+
     return nil;
 }
 
@@ -324,7 +322,6 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (NSError *)run
 {
-    [[DOUIManager sharedInstance] sendLog:@"Patchfinding" debug:NO];
     NSError *err = nil;
     err = [self gatherSystemInformation];
     if (err) return err;
@@ -343,7 +340,6 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     // Now that we are unsandboxed, populate the jailbreak root path
     [[EnvironmentManager sharedManager] determineJailbreakRootPath];
     
-    [[DOUIManager sharedInstance] sendLog:@"Preparing Bootstrap" debug:NO];
     err = [[EnvironmentManager sharedManager] prepareBootstrap];
     if (err) return err;
     setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/jb/sbin:/var/jb/bin:/var/jb/usr/sbin:/var/jb/usr/bin", 1);
@@ -365,7 +361,6 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     // Unsandbox iconservicesagent so that app icons can work
     exec_cmd_trusted(JBRootPath("/usr/bin/killall"), "-9", "iconservicesagent", NULL);
     
-    [[DOUIManager sharedInstance] sendLog:@"Finalizing Bootstrap" debug:NO];
     err = [self finalizeBootstrapIfNeeded];
     if (err) return err;
     

@@ -151,10 +151,6 @@ static int systemwide_process_checkin(audit_token_t *processToken, char **rootPa
 		kwrite32(proc + koffsetof(proc, svgid), 0);
 		kwrite32(ucred + koffsetof(ucred, svgid), 0);
 
-		// unsandbox
-		uint64_t label = kread_ptr(ucred + koffsetof(ucred, label));
-    	mac_label_set(label, 1, -1);
-
 		// platformize
 		proc_csflags_set(proc, CS_PLATFORM_BINARY);
 	}

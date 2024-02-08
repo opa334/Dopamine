@@ -216,6 +216,14 @@
     return NO;
 }
 
+- (BOOL)actionMenuActionIsEnabled:(UIAction *)action
+{
+    if ([action.identifier isEqualToString:@"respring"] || [action.identifier isEqualToString:@"reboot-userspace"]) {
+        return [[EnvironmentManager sharedManager] isJailbroken];
+    }
+    return YES;
+}
+
 #pragma mark - Status Bar
 
 - (UIStatusBarStyle)preferredStatusBarStyle

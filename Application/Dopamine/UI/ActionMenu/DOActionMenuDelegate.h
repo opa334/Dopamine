@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DOActionMenuDelegate <NSObject>
 
 - (BOOL)actionMenuShowsChevronForAction:(UIAction *)action;
+- (BOOL)actionMenuActionIsEnabled:(UIAction *)action;
 
 @end
 

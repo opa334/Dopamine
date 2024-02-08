@@ -14,6 +14,7 @@
 #import <libjailbreak/util.h>
 
 #import <IOKit/IOKitLib.h>
+#import "DOUIManager.h"
 #import "NSData+Hex.h"
 
 @implementation EnvironmentManager
@@ -116,10 +117,15 @@
     }
 }
 
-- (BOOL)installedThroughTrollStore
+- (BOOL)isInstalledThroughTrollStore
 {
-    NSString* trollStoreMarkerPath = [[[NSBundle mainBundle].bundlePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"_TrollStore"];
-    return [[NSFileManager defaultManager] fileExistsAtPath:trollStoreMarkerPath];
+    static BOOL trollstoreInstallation = NO;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSString* trollStoreMarkerPath = [[[NSBundle mainBundle].bundlePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"_TrollStore"];
+        trollstoreInstallation = [[NSFileManager defaultManager] fileExistsAtPath:trollStoreMarkerPath];
+    });
+    return trollstoreInstallation;
 }
 
 - (BOOL)isJailbroken
@@ -134,38 +140,83 @@
     return jailbroken;
 }
 
+- (void)runUnsandboxed:(void (^)(void))unsandboxBlock
+{
+    if ([self isInstalledThroughTrollStore]) {
+        unsandboxBlock();
+    }
+    else {
+        uint64_t labelBackup = 0;
+        jbclient_root_set_mac_label(1, -1, &labelBackup);
+        unsandboxBlock();
+        jbclient_root_set_mac_label(1, labelBackup, NULL);
+    }
+}
+
 - (void)runAsRoot:(void (^)(void))rootBlock
 {
     uint32_t orgUid = getuid();
     uint32_t orgGid = getgid();
     if (setuid(0) == 0 && setgid(0) == 0) {
         rootBlock();
-        setuid(orgUid);
-        setgid(orgGid);
     }
+    setuid(orgUid);
+    setgid(orgGid);
 }
 
 - (void)respring
 {
     [self runAsRoot:^{
-        exec_cmd(JBRootPath("/usr/bin/sbreload"), NULL);
+        __block int pid = 0;
+        __block int r = 0;
+        [self runUnsandboxed:^{
+            r = exec_cmd_suspended(&pid, JBRootPath("/usr/bin/sbreload"), NULL);
+            if (r == 0) {
+                kill(pid, SIGCONT);
+            }
+        }];
+        if (r == 0) {
+            cmd_wait_for_exit(pid);
+        }
     }];
 }
 
 - (void)rebootUserspace
 {
     [self runAsRoot:^{
-        exec_cmd(JBRootPath("/basebin/jbctl"), "reboot_userspace", NULL);
+        __block int pid = 0;
+        __block int r = 0;
+        [self runUnsandboxed:^{
+            r = exec_cmd_suspended(&pid, JBRootPath("/basebin/jbctl"), "reboot_userspace", NULL);
+            if (r == 0) {
+                // the original plan was to have the process continue outside of this block
+                // unfortunately sandbox blocks kill aswell, so it's a bit racy but works
+
+                // we assume we leave this unsandbox block before the userspace reboot starts
+                // to avoid leaking the label, this seems to work in practice
+                // and even if it doesn't work, leaking the label is no big deal
+                kill(pid, SIGCONT);
+            }
+        }];
+        if (r == 0) {
+            cmd_wait_for_exit(pid);
+        }
     }];
 }
 
 - (NSString *)accessibleKernelPath
 {
-    if ([self installedThroughTrollStore]) {
+    if ([self isInstalledThroughTrollStore]) {
         NSString *kernelcachePath = [[self activePrebootPath] stringByAppendingPathComponent:@"System/Library/Caches/com.apple.kernelcaches/kernelcache"];
         return kernelcachePath;
     }
     else {
+        NSString *kernelInApp = [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"kernelcache"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:kernelInApp]) {
+            return kernelInApp;
+        }
+        
+        [[DOUIManager sharedInstance] sendLog:@"Downloading Kernel" debug:NO];
         NSString *kernelcachePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/kernelcache"];
         if (![[NSFileManager defaultManager] fileExistsAtPath:kernelcachePath]) {
             if (grabkernel((char *)kernelcachePath.fileSystemRepresentation, 0) != 0) return nil;

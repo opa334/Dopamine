@@ -7,6 +7,7 @@
 
 #import "Bootstrapper.h"
 #import "EnvironmentManager.h"
+#import "DOUIManager.h"
 #import <libjailbreak/info.h>
 #import <libjailbreak/util.h>
 #import <libjailbreak/jbclient_xpc.h>
@@ -188,20 +189,9 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (NSError *)extractTar:(NSString *)tarPath toPath:(NSString *)destinationPath
 {
-    // "Oh no I have to run tar somehow"
-    // "Wait a minute... do I?"
-    static void *tarHandle = NULL;
-    if (!tarHandle) {
-        tarHandle = dlopen([[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"tar.dylib"].fileSystemRepresentation, RTLD_NOW);
-        if (!tarHandle) {
-            return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedExtracting userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to dlopen tar: %s", dlerror()]}];
-        }
-    }
-    int (*tarMain)(int argc, const char *argv[]) = dlsym(tarHandle, "main");
-    
-    int r = tarMain(5, (const char *[]){ "tar", "-xpkf", tarPath.fileSystemRepresentation, "-C", destinationPath.fileSystemRepresentation, NULL });
+    int r = libarchive_unarchive(tarPath.fileSystemRepresentation, destinationPath.fileSystemRepresentation);
     if (r != 0) {
-        return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedExtracting userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"tar returned %d", r]}];
+        return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedExtracting userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"libarchive returned %d", r]}];
     }
     return nil;
 }
@@ -355,6 +345,8 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (void)prepareBootstrapWithCompletion:(void (^)(NSError *))completion
 {
+    [[DOUIManager sharedInstance] sendLog:@"Updating BaseBin" debug:NO];
+
     // Ensure /private/preboot is mounted writable (Not writable by default on iOS <=15)
     if (![self isPrivatePrebootMountedWritable]) {
         int r = [self remountPrivatePrebootWritable:YES];
@@ -505,6 +497,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
                 completion(error);
                 return;
             }
+            [[DOUIManager sharedInstance] sendLog:@"Extracting Bootstrap" debug:NO];
             [self extractBootstrap:path withCompletion:bootstrapFinishedCompletion];
         };
         
@@ -518,6 +511,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             bootstrapDownloadCompletion(bundleCandidate, nil);
         }
         else {
+            [[DOUIManager sharedInstance] sendLog:@"Downloading Bootstrap" debug:NO];
             [self downloadBootstrapWithCompletion:bootstrapDownloadCompletion];
         }
     }
@@ -560,6 +554,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 {
     // Initial setup on first jailbreak
     if ([[NSFileManager defaultManager] fileExistsAtPath:NSJBRootPath(@"/prep_bootstrap.sh")]) {
+        [[DOUIManager sharedInstance] sendLog:@"Finalizing Bootstrap" debug:NO];
         int r = exec_cmd_trusted(JBRootPath("/bin/sh"), JBRootPath("/prep_bootstrap.sh"), NULL);
         if (r != 0) {
             return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"prep_bootstrap.sh returned %d\n", r]}];
@@ -579,17 +574,22 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     }
     
     NSString *librootInstalledVersion = [self installedVersionForPackageWithIdentifier:@"libroot-dopamine"];
-    if (!librootInstalledVersion || ![librootInstalledVersion isEqualToString:LIBROOT_DOPAMINE_BUNDLED_VERSION]) {
-        NSString *librootPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"libroot.deb"];
-        int r = [self installPackage:librootPath];
-        if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install libroot: %d\n", r]}];
-    }
-    
     NSString *libkrwDopamineInstalledVersion = [self installedVersionForPackageWithIdentifier:@"libkrw0-dopamine"];
-    if (!libkrwDopamineInstalledVersion || ![libkrwDopamineInstalledVersion isEqualToString:LIBKRW_DOPAMINE_BUNDLED_VERSION]) {
-        NSString *libkrwPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"libkrw-plugin.deb"];
-        int r = [self installPackage:libkrwPath];
-        if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install the libkrw plugin: %d\n", r]}];
+    
+    if (!librootInstalledVersion || !libkrwDopamineInstalledVersion || ![librootInstalledVersion isEqualToString:LIBROOT_DOPAMINE_BUNDLED_VERSION] || ![libkrwDopamineInstalledVersion isEqualToString:LIBKRW_DOPAMINE_BUNDLED_VERSION]) {
+        [[DOUIManager sharedInstance] sendLog:@"Updating Bootstrap" debug:NO];
+        if (!librootInstalledVersion || ![librootInstalledVersion isEqualToString:LIBROOT_DOPAMINE_BUNDLED_VERSION]) {
+            NSString *librootPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"libroot.deb"];
+            int r = [self installPackage:librootPath];
+            if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install libroot: %d\n", r]}];
+        }
+        
+        
+        if (!libkrwDopamineInstalledVersion || ![libkrwDopamineInstalledVersion isEqualToString:LIBKRW_DOPAMINE_BUNDLED_VERSION]) {
+            NSString *libkrwPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"libkrw-plugin.deb"];
+            int r = [self installPackage:libkrwPath];
+            if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install the libkrw plugin: %d\n", r]}];
+        }
     }
 
     return nil;

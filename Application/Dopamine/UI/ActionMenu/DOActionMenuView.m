@@ -44,6 +44,7 @@
 
     [self.actions enumerateObjectsUsingBlock:^(UIAction *action, NSUInteger idx, BOOL *stop) {
         DOActionMenuButton *button = [DOActionMenuButton buttonWithAction:action chevron:[self.delegate actionMenuShowsChevronForAction:action]];
+        button.enabled = [self.delegate actionMenuActionIsEnabled:action];
         [button setBottomSeparator:idx != self.actions.count - 1];
         [self.buttonsView addArrangedSubview:button];
         [NSLayoutConstraint activateConstraints:@[
