@@ -17,6 +17,7 @@
 
 @property DOJailbreakButton *jailbreakBtn;
 @property NSArray<NSLayoutConstraint *> *jailbreakButtonConstraints;
+@property DOActionMenuButton *updateButton;
 
 @end
 
@@ -117,8 +118,10 @@
         [actionView hide];
         [self.jailbreakBtn showLog: self.jailbreakButtonConstraints];
 
+        self.updateButton.userInteractionEnabled = NO;
         [UIView animateWithDuration:0.75 delay:0 usingSpringWithDamping:0.9 initialSpringVelocity:2.0  options: UIViewAnimationOptionCurveEaseInOut animations:^{
             [headerView setTransform:CGAffineTransformMakeTranslation(0, -25)];
+            self.updateButton.alpha = 0;
         } completion:nil];
 
         
@@ -182,24 +185,24 @@
 
 -(void)setupUpdateAvailable
 {
-    DOActionMenuButton *updateButton = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:@"Update Available" image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"update-available" handler:^(__kindof UIAction * _Nonnull action) {
+    self.updateButton = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:@"Update Available" image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"update-available" handler:^(__kindof UIAction * _Nonnull action) {
         [(UINavigationController*)(self.parentViewController) pushViewController:[[DOUpdateViewController alloc] init] animated:YES];
     }] chevron:NO];
 
-    updateButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:updateButton];
+    self.updateButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.updateButton];
 
     [NSLayoutConstraint activateConstraints:@[
-        [updateButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
-        [updateButton.heightAnchor constraintEqualToConstant:30],
-        [updateButton.bottomAnchor constraintEqualToAnchor:self.jailbreakBtn.topAnchor constant:-20]
+        [self.updateButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+        [self.updateButton.heightAnchor constraintEqualToConstant:30],
+        [self.updateButton.bottomAnchor constraintEqualToAnchor:self.jailbreakBtn.topAnchor constant:-20]
     ]];
 
-    [updateButton setTransform:CGAffineTransformMakeTranslation(0, 25)];
-    [updateButton setAlpha:0];
+    [self.updateButton setTransform:CGAffineTransformMakeTranslation(0, 25)];
+    [self.updateButton setAlpha:0];
     [UIView animateWithDuration:0.5 delay:0 usingSpringWithDamping:0.9 initialSpringVelocity:2.0  options: UIViewAnimationOptionCurveEaseInOut animations:^{
-        [updateButton setTransform:CGAffineTransformIdentity];
-        [updateButton setAlpha:1];
+        [self.updateButton setTransform:CGAffineTransformIdentity];
+        [self.updateButton setAlpha:1];
     } completion:nil];
 }
 
