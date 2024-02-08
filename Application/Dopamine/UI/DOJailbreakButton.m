@@ -8,6 +8,7 @@
 #import "DOJailbreakButton.h"
 #import "DODoubleHelixIndicator.h"
 #import "DOUIManager.h"
+#import "GlobalAppearance.h"
 
 
 @implementation DOJailbreakButton
@@ -125,9 +126,9 @@
 {
     self.button.userInteractionEnabled = enabled;
     if (enabled) {
-        self.backgroundColor = [UIColor colorWithWhite:0.25 alpha:0.45];
+        self.backgroundColor = [GlobalAppearance windowColorWithAlpha:1.0];
     } else {
-        self.backgroundColor = [UIColor colorWithWhite:0.25 alpha:0.25];
+        self.backgroundColor = [GlobalAppearance windowColorWithAlpha:0.55];
     }
 }
 

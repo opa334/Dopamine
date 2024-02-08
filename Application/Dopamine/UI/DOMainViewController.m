@@ -10,6 +10,8 @@
 #import "EnvironmentManager.h"
 #import "Jailbreaker.h"
 #import "GlobalAppearance.h"
+#import "DOActionMenuButton.h"
+#import "DOUpdateViewController.h"
 
 @interface DOMainViewController ()
 
@@ -122,7 +124,7 @@
         
         Jailbreaker *jailbreaker = [[Jailbreaker alloc] init];
 
-        //[self simulateJailbreak];
+        [self simulateJailbreak];return;
         [[DOUIManager sharedInstance] startLogCapture];
         
         //dispatch async so the UI can update as this blocks the main thread
@@ -168,9 +170,38 @@
         [self.jailbreakBtn.centerYAnchor constraintEqualToAnchor:buttonPlaceHolder.centerYAnchor]
     ])];
 
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (![[DOUIManager sharedInstance] isUpdateAvailable])
+            return;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self setupUpdateAvailable];
+        });
+    });
+    
 }
 
+-(void)setupUpdateAvailable
+{
+    DOActionMenuButton *updateButton = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:@"Update Available" image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"update-available" handler:^(__kindof UIAction * _Nonnull action) {
+        [(UINavigationController*)(self.parentViewController) pushViewController:[[DOUpdateViewController alloc] init] animated:YES];
+    }] chevron:NO];
 
+    updateButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:updateButton];
+
+    [NSLayoutConstraint activateConstraints:@[
+        [updateButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+        [updateButton.heightAnchor constraintEqualToConstant:30],
+        [updateButton.bottomAnchor constraintEqualToAnchor:self.jailbreakBtn.topAnchor constant:-20]
+    ]];
+
+    [updateButton setTransform:CGAffineTransformMakeTranslation(0, 25)];
+    [updateButton setAlpha:0];
+    [UIView animateWithDuration:0.5 delay:0 usingSpringWithDamping:0.9 initialSpringVelocity:2.0  options: UIViewAnimationOptionCurveEaseInOut animations:^{
+        [updateButton setTransform:CGAffineTransformIdentity];
+        [updateButton setAlpha:1];
+    } completion:nil];
+}
 
 -(void)simulateJailbreak
 {

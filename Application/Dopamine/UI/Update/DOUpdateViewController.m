@@ -56,8 +56,6 @@
     NSMutableParagraphStyle * paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.alignment = NSTextAlignmentCenter;
 
-    self.changelog.attributedText = [[NSAttributedString alloc] initWithString:@"\nLoading..." attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:16], NSForegroundColorAttributeName : [UIColor whiteColor], NSParagraphStyleAttributeName:paragraphStyle}];
-
     [self.changelogSuperview addSubview:self.changelog];
     [self.view addSubview:self.changelogSuperview];
 

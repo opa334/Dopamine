@@ -17,7 +17,7 @@
     {
         [self setDelegate:delegate];
         [self setActions:actions];
-        self.backgroundColor = [UIColor colorWithWhite:0.25 alpha:0.45];
+        self.backgroundColor = [GlobalAppearance windowColorWithAlpha:1.0];
         self.layer.cornerRadius = 14;
         self.layer.masksToBounds = YES;
         self.layer.cornerCurve = kCACornerCurveContinuous;

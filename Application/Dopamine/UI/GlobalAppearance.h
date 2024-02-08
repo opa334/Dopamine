@@ -27,6 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSAttributedString*)mainSubtitleString:(NSString*)string;
 + (NSAttributedString*)secondarySubtitleString:(NSString*)string;
 + (BOOL)isHomeButtonDevice;
++ (UIColor*)windowColorWithAlpha:(float)alpha;
 
 @end
 

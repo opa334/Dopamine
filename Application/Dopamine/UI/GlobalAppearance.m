@@ -97,6 +97,11 @@
    return [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && [[UIApplication sharedApplication] keyWindow].safeAreaInsets.bottom == 0;
 }
 
++ (UIColor*)windowColorWithAlpha:(float)alpha
+{
+    return [UIColor colorWithWhite:0.25 alpha:0.45 * alpha];
+}
+
 
 
 @end
