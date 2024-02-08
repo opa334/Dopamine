@@ -189,20 +189,9 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (NSError *)extractTar:(NSString *)tarPath toPath:(NSString *)destinationPath
 {
-    // "Oh no I have to run tar somehow"
-    // "Wait a minute... do I?"
-    static void *tarHandle = NULL;
-    if (!tarHandle) {
-        tarHandle = dlopen([[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"tar.dylib"].fileSystemRepresentation, RTLD_NOW);
-        if (!tarHandle) {
-            return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedExtracting userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to dlopen tar: %s", dlerror()]}];
-        }
-    }
-    int (*tarMain)(int argc, const char *argv[]) = dlsym(tarHandle, "main");
-    
-    int r = tarMain(5, (const char *[]){ "tar", "-xpkf", tarPath.fileSystemRepresentation, "-C", destinationPath.fileSystemRepresentation, NULL });
+    int r = libarchive_unarchive(tarPath.fileSystemRepresentation, destinationPath.fileSystemRepresentation);
     if (r != 0) {
-        return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedExtracting userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"tar returned %d", r]}];
+        return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedExtracting userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"libarchive returned %d", r]}];
     }
     return nil;
 }
