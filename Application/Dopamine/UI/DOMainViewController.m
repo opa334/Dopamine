@@ -124,7 +124,7 @@
         
         Jailbreaker *jailbreaker = [[Jailbreaker alloc] init];
 
-        [self simulateJailbreak];return;
+        // [self simulateJailbreak];return;
         [[DOUIManager sharedInstance] startLogCapture];
         
         //dispatch async so the UI can update as this blocks the main thread
