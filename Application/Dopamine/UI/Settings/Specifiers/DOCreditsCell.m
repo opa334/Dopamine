@@ -46,12 +46,12 @@
     return self;
 }
 
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     self.alpha = 0.5;
 }
 
--(void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     [UIView animateWithDuration:0.1 animations:^{
         self.alpha = 1.0;
@@ -60,14 +60,14 @@
         [[UIApplication sharedApplication] openURL:self.url options:@{} completionHandler:nil];
 }
 
--(void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     [UIView animateWithDuration:0.1 animations:^{
         self.alpha = 1.0;
     }];
 }
 
--(void)setName:(NSString*)name url:(NSURL*)url
+- (void)setName:(NSString*)name url:(NSURL*)url
 {
     self.label.text = name;
     self.url = url;
