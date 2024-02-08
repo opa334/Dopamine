@@ -33,6 +33,9 @@
 		042479B82B66916B0082581B /* DOMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424799F2B66916B0082581B /* DOMainViewController.m */; };
 		042479B92B66916B0082581B /* GlobalAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = 042479A02B66916B0082581B /* GlobalAppearance.m */; };
 		042479E52B66B0DD0082581B /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 042479E42B66B0DD0082581B /* Preferences.framework */; };
+		04C2469C2B73220400E17924 /* DOUpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246982B73220400E17924 /* DOUpdateViewController.m */; };
+		04C2469D2B73220400E17924 /* DOUpdateCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246992B73220400E17924 /* DOUpdateCircleView.m */; };
+		04C246A12B73225800E17924 /* DODownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246A02B73225800E17924 /* DODownloadViewController.m */; };
 		8C029F432B4DFD5D0071DE58 /* ExploitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F422B4DFD5D0071DE58 /* ExploitManager.m */; };
 		8C029F462B4DFD910071DE58 /* Bootstrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F452B4DFD910071DE58 /* Bootstrapper.m */; };
 		8C029F4E2B4E1FF30071DE58 /* Exploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F4D2B4E1FF30071DE58 /* Exploit.m */; };
@@ -208,6 +211,12 @@
 		0424799F2B66916B0082581B /* DOMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOMainViewController.m; sourceTree = "<group>"; };
 		042479A02B66916B0082581B /* GlobalAppearance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalAppearance.m; sourceTree = "<group>"; };
 		042479E42B66B0DD0082581B /* Preferences.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Preferences.framework; path = Frameworks/Preferences.framework; sourceTree = "<group>"; };
+		04C246982B73220400E17924 /* DOUpdateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOUpdateViewController.m; sourceTree = "<group>"; };
+		04C246992B73220400E17924 /* DOUpdateCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOUpdateCircleView.m; sourceTree = "<group>"; };
+		04C2469A2B73220400E17924 /* DOUpdateCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOUpdateCircleView.h; sourceTree = "<group>"; };
+		04C2469B2B73220400E17924 /* DOUpdateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOUpdateViewController.h; sourceTree = "<group>"; };
+		04C2469F2B73225800E17924 /* DODownloadViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DODownloadViewController.h; sourceTree = "<group>"; };
+		04C246A02B73225800E17924 /* DODownloadViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DODownloadViewController.m; sourceTree = "<group>"; };
 		8C029F412B4DFD5D0071DE58 /* ExploitManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploitManager.h; sourceTree = "<group>"; };
 		8C029F422B4DFD5D0071DE58 /* ExploitManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploitManager.m; sourceTree = "<group>"; };
 		8C029F442B4DFD910071DE58 /* Bootstrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bootstrapper.h; sourceTree = "<group>"; };
@@ -343,6 +352,7 @@
 				042479692B66916B0082581B /* Settings */,
 				0424798A2B66916B0082581B /* Log */,
 				042479992B66916B0082581B /* ActionMenu */,
+				04C246972B73220400E17924 /* Update */,
 				042479812B66916B0082581B /* DOUIManager.h */,
 				042479882B66916B0082581B /* DOUIManager.m */,
 				042479802B66916B0082581B /* DONavigationController.h */,
@@ -441,6 +451,20 @@
 			);
 			path = ActionMenu;
 			sourceTree = "<group>";
+		};
+		04C246972B73220400E17924 /* Update */ = {
+			isa = PBXGroup;
+			children = (
+				04C2469B2B73220400E17924 /* DOUpdateViewController.h */,
+				04C246982B73220400E17924 /* DOUpdateViewController.m */,
+				04C2469A2B73220400E17924 /* DOUpdateCircleView.h */,
+				04C246992B73220400E17924 /* DOUpdateCircleView.m */,
+				04C2469F2B73225800E17924 /* DODownloadViewController.h */,
+				04C246A02B73225800E17924 /* DODownloadViewController.m */,
+			);
+			name = Update;
+			path = Dopamine/UI/Update;
+			sourceTree = SOURCE_ROOT;
 		};
 		8C029F402B4DFCFE0071DE58 /* Jailbreak */ = {
 			isa = PBXGroup;
@@ -1006,9 +1030,12 @@
 				042479AA2B66916B0082581B /* DOModalTransitionPop.m in Sources */,
 				8C71982B2ABF0E84003C6658 /* main.m in Sources */,
 				8C029F602B4E25350071DE58 /* EnvironmentManager.m in Sources */,
+				04C246A12B73225800E17924 /* DODownloadViewController.m in Sources */,
 				042479B52B66916B0082581B /* DOLyricsLogItemView.m in Sources */,
 				8C029F4E2B4E1FF30071DE58 /* Exploit.m in Sources */,
+				04C2469D2B73220400E17924 /* DOUpdateCircleView.m in Sources */,
 				042479B42B66916B0082581B /* DOProgressiveBlurView.m in Sources */,
+				04C2469C2B73220400E17924 /* DOUpdateViewController.m in Sources */,
 				042479B62B66916B0082581B /* DOActionMenuButton.m in Sources */,
 				8C71981D2ABF0E82003C6658 /* SceneDelegate.m in Sources */,
 				042479A32B66916B0082581B /* DOSettingsController.m in Sources */,
