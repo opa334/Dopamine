@@ -35,9 +35,11 @@
 
 - (void)setupBackground
 {
+    NSString *theme = @"Green";
+    
     self.view.backgroundColor = [UIColor blackColor];
     self.backgroundImageView = [[UIImageView alloc] init];
-    self.backgroundImageView.image = [[[UIImage imageNamed:@"Background"] imageWithBlur:18.0] imageWithHue: M_PI * 2]; // 0 - 2PI
+    self.backgroundImageView.image = [[[UIImage imageNamed:[NSString stringWithFormat:@"Background_%@.jpg", theme]] imageWithBlur:18.0] imageWithHue: M_PI * 2]; // 0 - 2PI
     self.backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.backgroundImageView.translatesAutoresizingMaskIntoConstraints = NO;
     self.backgroundImageView.userInteractionEnabled = NO;
