@@ -31,6 +31,7 @@
     [self setNavigationBarHidden:YES];
     [self pushViewController:(self.mainView = [[DOMainViewController alloc] init]) animated:NO];
     [self setDelegate:self];
+    [self setOverrideUserInterfaceStyle:UIUserInterfaceStyleDark];
 }
 
 - (void)setupBackground
