@@ -10,6 +10,7 @@
 #include <sys/sysctl.h>
 #include <archive.h>
 #include <archive_entry.h>
+#include <math.h>
 extern char **environ;
 
 void proc_iterate(void (^itBlock)(uint64_t, bool*))
@@ -302,6 +303,46 @@ uint64_t kptr_sign(uint64_t kaddr, uint64_t pointer, uint16_t salt)
 {
 	uint64_t modifier = (kaddr & 0xffffffffffff) | ((uint64_t)salt << 48);
 	return kpacda(UNSIGN_PTR(pointer), modifier);
+}
+
+int kwrite1_bits(uint64_t startPtr, uint32_t bitCount)
+{
+	uint32_t byteSize = ceil((float)bitCount / 8);
+	uint8_t buf[byteSize];
+
+	for (uint32_t i = 0; i < bitCount; i += 8) {
+		uint32_t rem = (bitCount - i);
+		if (rem < 8) {
+			for (int y = 0; y < rem; y++) {
+				buf[i/8] |= (1 << y);
+			}
+		}
+		else {
+			buf[i/8] = 0xff;
+		}
+	}
+
+	return kwritebuf(startPtr, buf, byteSize);
+}
+
+void proc_allow_all_syscalls(uint64_t proc)
+{
+	if (!gSystemInfo.kernelStruct.proc_ro.exists) return;
+	uint64_t proc_ro = kread_ptr(proc + koffsetof(proc, proc_ro));
+
+	uint64_t bsdFilter = kread_ptr(proc_ro + koffsetof(proc_ro, syscall_filter_mask));
+	uint64_t machFilter = kread_ptr(proc_ro + koffsetof(proc_ro, mach_trap_filter_mask));
+	uint64_t machKobjFilter = kread_ptr(proc_ro + koffsetof(proc_ro, mach_kobj_filter_mask));
+
+	if (bsdFilter) {
+		kwrite1_bits(bsdFilter, kconstant(nsysent));
+	}
+	if (machFilter) {
+		kwrite1_bits(machFilter, kconstant(mach_trap_count));
+	}
+	if (machKobjFilter) {
+		kwrite1_bits(machFilter, kread64(ksymbol(mach_kobj_count)));
+	}
 }
 
 int cmd_wait_for_exit(pid_t pid)

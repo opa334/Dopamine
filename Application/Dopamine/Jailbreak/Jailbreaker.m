@@ -62,6 +62,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (r == 0) {
         const char *sets[] = {
             "translation",
+            "sandbox",
             "trustcache",
             "physmap",
             "struct",

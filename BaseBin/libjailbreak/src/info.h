@@ -23,6 +23,8 @@ struct system_info {
 		uint64_t ARM_TT_L1_INDEX_MASK;
 		uint64_t smdBase;
 		uint64_t PT_INDEX_MAX;
+		uint64_t nsysent;
+		uint64_t mach_trap_count;
 	} kernelConstant;
 
 	struct {
@@ -68,6 +70,7 @@ struct system_info {
 		uint64_t vm_page_array_ending_addr;
 		uint64_t pmap_image4_trust_caches;
 		uint64_t ppl_trust_cache_rt;
+		uint64_t mach_kobj_count;
 	} kernelSymbol;
 
 	struct {
@@ -97,6 +100,7 @@ struct system_info {
 
 			uint32_t ucred;
 			uint32_t csflags;
+			uint32_t syscall_filter_mask;
 			uint32_t struct_size;
 		} proc;
 
@@ -104,6 +108,9 @@ struct system_info {
 			bool exists;
 			uint32_t ucred;
 			uint32_t csflags;
+			uint32_t syscall_filter_mask;
+			uint32_t mach_trap_filter_mask;
+			uint32_t mach_kobj_filter_mask;
 		} proc_ro;
 
 		struct {
@@ -125,6 +132,8 @@ struct system_info {
 			uint32_t threads;
 			uint32_t itk_space;
 			uint32_t task_can_transfer_memory_ownership;
+			uint32_t mach_trap_filter_mask;
+			uint32_t mach_kobj_filter_mask;
 		} task;
 
 		struct {
@@ -211,7 +220,9 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelConstant.T1SZ_BOOT); \
     iterator(ctx, kernelConstant.ARM_TT_L1_INDEX_MASK); \
     iterator(ctx, kernelConstant.smdBase); \
-    iterator(ctx, kernelConstant.PT_INDEX_MAX);
+    iterator(ctx, kernelConstant.PT_INDEX_MAX); \
+    iterator(ctx, kernelConstant.nsysent); \
+    iterator(ctx, kernelConstant.mach_trap_count);
 
 #define JAILBREAK_INFO_ITERATE(ctx, iterator) \
 	iterator(ctx, jailbreakInfo.usesPACBypass); \
@@ -252,7 +263,8 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelSymbol.vm_page_array_beginning_addr); \
     iterator(ctx, kernelSymbol.vm_page_array_ending_addr); \
     iterator(ctx, kernelSymbol.pmap_image4_trust_caches); \
-    iterator(ctx, kernelSymbol.ppl_trust_cache_rt);
+    iterator(ctx, kernelSymbol.ppl_trust_cache_rt); \
+    iterator(ctx, kernelSymbol.mach_kobj_count);
 
 #define KERNEL_GADGETS_ITERATE(ctx, iterator) \
     iterator(ctx, kernelGadget.pacda); \
@@ -278,11 +290,15 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelStruct.proc.textvp); \
     iterator(ctx, kernelStruct.proc.ucred); \
     iterator(ctx, kernelStruct.proc.csflags); \
+    iterator(ctx, kernelStruct.proc.syscall_filter_mask); \
     iterator(ctx, kernelStruct.proc.struct_size); \
 	\
     iterator(ctx, kernelStruct.proc_ro.exists); \
     iterator(ctx, kernelStruct.proc_ro.ucred); \
     iterator(ctx, kernelStruct.proc_ro.csflags); \
+    iterator(ctx, kernelStruct.proc_ro.syscall_filter_mask); \
+    iterator(ctx, kernelStruct.proc_ro.mach_trap_filter_mask); \
+    iterator(ctx, kernelStruct.proc_ro.mach_kobj_filter_mask); \
 	\
     iterator(ctx, kernelStruct.filedesc.ofiles_start); \
 	\
@@ -298,6 +314,8 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelStruct.task.threads); \
     iterator(ctx, kernelStruct.task.itk_space); \
     iterator(ctx, kernelStruct.task.task_can_transfer_memory_ownership); \
+    iterator(ctx, kernelStruct.task.mach_trap_filter_mask); \
+    iterator(ctx, kernelStruct.task.mach_kobj_filter_mask); \
 	\
     iterator(ctx, kernelStruct.thread.recover); \
     iterator(ctx, kernelStruct.thread.machine_kstackptr); \
