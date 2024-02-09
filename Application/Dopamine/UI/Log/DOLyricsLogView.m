@@ -12,7 +12,8 @@
 
 @implementation DOLyricsLogView
 
-- (id)init {
+- (id)init
+{
     if (self = [super init]) {
         self.stackView = [[UIStackView alloc] init];
         self.stackView.axis = UILayoutConstraintAxisVertical;
@@ -43,8 +44,8 @@
     return self;
 }
 
-- (void)showLog:(nonnull NSString *)log {
-
+- (void)showLog:(nonnull NSString *)log
+{
     if (![NSThread isMainThread]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self showLog:log];
@@ -70,7 +71,20 @@
     }];
 }
 
-- (void)didComplete {
+- (void)updateLog:(nonnull NSString *)log
+{
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self updateLog:log];
+        });
+        return;
+    }
+    DOLyricsLogItemView *lastItemView = self.stackView.arrangedSubviews.lastObject;
+    lastItemView.label.text = log;
+}
+
+- (void)didComplete
+{
     if (![NSThread isMainThread]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self didComplete];

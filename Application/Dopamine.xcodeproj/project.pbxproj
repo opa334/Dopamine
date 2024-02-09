@@ -48,6 +48,8 @@
 		8C05B0142B6315DB001A7CF3 /* badRecovery.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C05B0132B6315DB001A7CF3 /* badRecovery.m */; };
 		8C05B0152B631738001A7CF3 /* badRecovery.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8C05B0032B63152B001A7CF3 /* badRecovery.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8C05B0182B632925001A7CF3 /* badRecovery.s in Sources */ = {isa = PBXBuildFile; fileRef = 8C05B0172B632925001A7CF3 /* badRecovery.s */; };
+		8C05C59F2B75A1770097A931 /* bootstrap_1800.tar.zst in Resources */ = {isa = PBXBuildFile; fileRef = 8C05C59E2B759F8A0097A931 /* bootstrap_1800.tar.zst */; };
+		8C05C5A02B75A17A0097A931 /* bootstrap_1900.tar.zst in Resources */ = {isa = PBXBuildFile; fileRef = 8C05C59D2B759F8A0097A931 /* bootstrap_1900.tar.zst */; };
 		8C2131912B50CA4B008E682C /* krkw.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C2131782B50CA4B008E682C /* krkw.h */; };
 		8C2131922B50CA4B008E682C /* kread_sem_open.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C21317B2B50CA4B008E682C /* kread_sem_open.h */; };
 		8C2131932B50CA4B008E682C /* kread_IOSurface.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C21317C2B50CA4B008E682C /* kread_IOSurface.h */; };
@@ -231,6 +233,8 @@
 		8C05B0132B6315DB001A7CF3 /* badRecovery.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = badRecovery.m; sourceTree = "<group>"; };
 		8C05B0162B6319D7001A7CF3 /* badRecovery.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = badRecovery.h; sourceTree = "<group>"; };
 		8C05B0172B632925001A7CF3 /* badRecovery.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = badRecovery.s; sourceTree = "<group>"; };
+		8C05C59D2B759F8A0097A931 /* bootstrap_1900.tar.zst */ = {isa = PBXFileReference; lastKnownFileType = file; path = bootstrap_1900.tar.zst; sourceTree = "<group>"; };
+		8C05C59E2B759F8A0097A931 /* bootstrap_1800.tar.zst */ = {isa = PBXFileReference; lastKnownFileType = file; path = bootstrap_1800.tar.zst; sourceTree = "<group>"; };
 		8C1FC8422B6460FD00282536 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8C2131782B50CA4B008E682C /* krkw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = krkw.h; sourceTree = "<group>"; };
 		8C21317B2B50CA4B008E682C /* kread_sem_open.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kread_sem_open.h; sourceTree = "<group>"; };
@@ -677,6 +681,8 @@
 		8CB94F012B59E16D0098BAFD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8C05C59E2B759F8A0097A931 /* bootstrap_1800.tar.zst */,
+				8C05C59D2B759F8A0097A931 /* bootstrap_1900.tar.zst */,
 				8CB94F032B59E17A0098BAFD /* basebin.tar */,
 				8CB94F022B59E17A0098BAFD /* basebin.tc */,
 				8C512B8B2B5C9DE800C6F14A /* sileo.deb */,
@@ -900,6 +906,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C05C5A02B75A17A0097A931 /* bootstrap_1900.tar.zst in Resources */,
+				8C05C59F2B75A1770097A931 /* bootstrap_1800.tar.zst in Resources */,
 				042479A42B66916B0082581B /* Credits.plist in Resources */,
 				042479A12B66916B0082581B /* Settings.plist in Resources */,
 				8C512B912B5C9F9100C6F14A /* sileo.deb in Resources */,

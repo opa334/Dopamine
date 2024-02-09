@@ -30,6 +30,8 @@
 #import "spawn.h"
 int posix_spawnattr_set_registered_ports_np(posix_spawnattr_t * __restrict attr, mach_port_t portarray[], uint32_t count);
 
+//char *_dirhelper(int a, char *dst, size_t size);
+
 NSString *const JBErrorDomain = @"JBErrorDomain";
 typedef NS_ENUM(NSInteger, JBErrorCode) {
     JBErrorCodeFailedToFindKernel            = -1,
@@ -204,6 +206,27 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     setenv("HOME", "/var/root", true);
     setenv("CFFIXED_USER_HOME", "/var/root", true);
     setenv("TMPDIR", "/var/tmp", true);
+    
+    // FUCKING dirhelper caches the temporary path
+    // So we have to do userland patchfinding to find the fucking string and overwrite it
+    /*char **pain = NULL;
+    uint32_t *dirhelperData = (uint32_t *)_dirhelper;
+    for (int i = 0; i < 100; i++) {
+        arm64_register destinationReg;
+        uint64_t imm = 0;
+        if (arm64_dec_ldr_imm(dirhelperData[i], &destinationReg, NULL, &imm, NULL, NULL) == 0) {
+            if (ARM64_REG_GET_NUM(destinationReg) == 1) {
+                uint32_t *adrpAddr = &dirhelperData[i - 1];
+                uint64_t adrpTarget = 0;
+                uint32_t adrpInst = *adrpAddr;
+                if (arm64_dec_adr_p(adrpInst, (uint64_t)adrpAddr, &adrpTarget, NULL, NULL) == 0) {
+                    pain = (char **)(uint64_t)(adrpTarget + imm);
+                    break;
+                }
+            }
+        }
+    }
+    *pain = strdup("/var/tmp");*/
     
     // Get CS_PLATFORM_BINARY
     proc_csflags_set(proc, CS_PLATFORM_BINARY);

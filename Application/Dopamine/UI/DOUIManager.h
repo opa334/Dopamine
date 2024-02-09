@@ -22,13 +22,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 +(id)sharedInstance;
 
--(NSArray*)availablePackageManagers;
--(BOOL)isDebug;
--(void)sendLog:(NSString*)log debug:(BOOL)debug;
--(void)completeJailbreak;
--(void)startLogCapture;
--(BOOL)isUpdateAvailable;
--(NSArray *)getLatestReleases;
+- (NSArray*)availablePackageManagers;
+- (BOOL)isDebug;
+- (void)sendLog:(NSString*)log debug:(BOOL)debug update:(BOOL)update;
+- (void)sendLog:(NSString*)log debug:(BOOL)debug;
+- (void)completeJailbreak;
+- (void)startLogCapture;
+- (BOOL)isUpdateAvailable;
+- (NSArray *)getLatestReleases;
 
 @end
 

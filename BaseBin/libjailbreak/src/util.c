@@ -123,7 +123,7 @@ uint64_t alloc_page_table_unassigned(void)
 
 	// Handle case where all entries in the level 2 table are 0 after we leak ours
 	// In that case, leak an allocation in the span of it to keep it alive
-	/*uint64_t lvl2Table = tte_lvl2 & ~PAGE_MASK;
+	uint64_t lvl2Table = tte_lvl2 & ~PAGE_MASK;
 	uint64_t lvl2TableEntries[PAGE_SIZE / sizeof(uint64_t)];
 	physreadbuf(lvl2Table, lvl2TableEntries, PAGE_SIZE);
 	int freeIdx = -1;
@@ -144,7 +144,7 @@ uint64_t alloc_page_table_unassigned(void)
 		if (vm_allocate(mach_task_self(), &freeUserspace, 0x4000, VM_FLAGS_FIXED) == 0) {
 			*(volatile uint8_t *)freeUserspace;
 		}
-	}*/
+	}
 
 	// Bump reference count of our allocated page table
 	physwrite16(pinfo_pa, 0x1337);
