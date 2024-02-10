@@ -32,6 +32,8 @@ int sign_kernel_thread(uint64_t proc, mach_port_t threadPort);
 uint64_t kpacda(uint64_t pointer, uint64_t modifier);
 uint64_t kptr_sign(uint64_t kaddr, uint64_t pointer, uint16_t salt);
 
+void proc_allow_all_syscalls(uint64_t proc);
+
 void killall(const char *executablePathToKill, bool softly);
 int libarchive_unarchive(const char *fileToExtract, const char *extractionPath);
 

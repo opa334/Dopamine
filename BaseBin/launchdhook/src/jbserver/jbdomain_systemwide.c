@@ -125,6 +125,15 @@ static int systemwide_process_checkin(audit_token_t *processToken, char **rootPa
 		}
 	}
 
+	// In iOS 16+ there is a super annoying security feature called Protobox
+	// Amongst other things, it allows for a process to have a syscall mask
+	// If a process calls a syscall it's not allowed to call, it immediately crashes
+	// Because for tweaks and hooking this is unacceptable, we update these masks to be 1 for all syscalls on all processes
+	// That will at least get rid of the syscall mask part of Protobox
+	if (__builtin_available(iOS 16.0, *)) {
+		proc_allow_all_syscalls(proc);
+	}
+
 	// For whatever reason after SpringBoard has restarted, AutoFill and other stuff stops working
 	// The fix is to always also restart the kbd daemon alongside SpringBoard
 	// Seems to be something sandbox related where kbd doesn't have the right extensions until restarted

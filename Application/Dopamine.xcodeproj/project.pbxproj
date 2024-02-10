@@ -51,6 +51,8 @@
 		8C05B0142B6315DB001A7CF3 /* badRecovery.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C05B0132B6315DB001A7CF3 /* badRecovery.m */; };
 		8C05B0152B631738001A7CF3 /* badRecovery.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8C05B0032B63152B001A7CF3 /* badRecovery.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8C05B0182B632925001A7CF3 /* badRecovery.s in Sources */ = {isa = PBXBuildFile; fileRef = 8C05B0172B632925001A7CF3 /* badRecovery.s */; };
+		8C05C59F2B75A1770097A931 /* bootstrap_1800.tar.zst in Resources */ = {isa = PBXBuildFile; fileRef = 8C05C59E2B759F8A0097A931 /* bootstrap_1800.tar.zst */; };
+		8C05C5A02B75A17A0097A931 /* bootstrap_1900.tar.zst in Resources */ = {isa = PBXBuildFile; fileRef = 8C05C59D2B759F8A0097A931 /* bootstrap_1900.tar.zst */; };
 		8C2131912B50CA4B008E682C /* krkw.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C2131782B50CA4B008E682C /* krkw.h */; };
 		8C2131922B50CA4B008E682C /* kread_sem_open.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C21317B2B50CA4B008E682C /* kread_sem_open.h */; };
 		8C2131932B50CA4B008E682C /* kread_IOSurface.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C21317C2B50CA4B008E682C /* kread_IOSurface.h */; };
@@ -89,6 +91,7 @@
 		8CB94F052B59E17A0098BAFD /* basebin.tar in Resources */ = {isa = PBXBuildFile; fileRef = 8CB94F032B59E17A0098BAFD /* basebin.tar */; };
 		8CC139822B53DE6C00230143 /* NSData+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC139812B53DE6C00230143 /* NSData+Hex.m */; };
 		8CC139832B53E05300230143 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08372B4F682500A32B61 /* IOKit.framework */; };
+		8CCD2FC42B77AAA000F9C5DA /* basebin-link.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD2FC32B77AA9200F9C5DA /* basebin-link.deb */; };
 		8CCD8A872B6F16CC004B72B0 /* libkrw-plugin.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD8A852B6F1662004B72B0 /* libkrw-plugin.deb */; };
 		8CCD8A882B6F16D0004B72B0 /* libroot.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD8A832B6F165A004B72B0 /* libroot.deb */; };
 		8CDD07AA2B4F619000A32B61 /* kfd.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CDD07A92B4F619000A32B61 /* kfd.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -239,6 +242,8 @@
 		8C05B0132B6315DB001A7CF3 /* badRecovery.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = badRecovery.m; sourceTree = "<group>"; };
 		8C05B0162B6319D7001A7CF3 /* badRecovery.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = badRecovery.h; sourceTree = "<group>"; };
 		8C05B0172B632925001A7CF3 /* badRecovery.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = badRecovery.s; sourceTree = "<group>"; };
+		8C05C59D2B759F8A0097A931 /* bootstrap_1900.tar.zst */ = {isa = PBXFileReference; lastKnownFileType = file; path = bootstrap_1900.tar.zst; sourceTree = "<group>"; };
+		8C05C59E2B759F8A0097A931 /* bootstrap_1800.tar.zst */ = {isa = PBXFileReference; lastKnownFileType = file; path = bootstrap_1800.tar.zst; sourceTree = "<group>"; };
 		8C1FC8422B6460FD00282536 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8C2131782B50CA4B008E682C /* krkw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = krkw.h; sourceTree = "<group>"; };
 		8C21317B2B50CA4B008E682C /* kread_sem_open.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kread_sem_open.h; sourceTree = "<group>"; };
@@ -285,6 +290,7 @@
 		8CB94F032B59E17A0098BAFD /* basebin.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; name = basebin.tar; path = ../../../BaseBin/basebin.tar; sourceTree = "<group>"; };
 		8CC139802B53DE6C00230143 /* NSData+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Hex.h"; sourceTree = "<group>"; };
 		8CC139812B53DE6C00230143 /* NSData+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Hex.m"; sourceTree = "<group>"; };
+		8CCD2FC32B77AA9200F9C5DA /* basebin-link.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "basebin-link.deb"; path = "../../../Packages/basebin-link/basebin-link.deb"; sourceTree = "<group>"; };
 		8CCD8A832B6F165A004B72B0 /* libroot.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libroot.deb; path = ../../../Packages/libroot/libroot.deb; sourceTree = "<group>"; };
 		8CCD8A852B6F1662004B72B0 /* libkrw-plugin.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libkrw-plugin.deb"; path = "../../../Packages/libkrw-provider/libkrw-plugin.deb"; sourceTree = "<group>"; };
 		8CDD07A72B4F619000A32B61 /* kfd.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = kfd.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -698,12 +704,15 @@
 		8CB94F012B59E16D0098BAFD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8C05C59E2B759F8A0097A931 /* bootstrap_1800.tar.zst */,
+				8C05C59D2B759F8A0097A931 /* bootstrap_1900.tar.zst */,
 				8CB94F032B59E17A0098BAFD /* basebin.tar */,
 				8CB94F022B59E17A0098BAFD /* basebin.tc */,
 				8C512B8B2B5C9DE800C6F14A /* sileo.deb */,
 				8C512B8C2B5C9DE800C6F14A /* zebra.deb */,
 				8CCD8A852B6F1662004B72B0 /* libkrw-plugin.deb */,
 				8CCD8A832B6F165A004B72B0 /* libroot.deb */,
+				8CCD2FC32B77AA9200F9C5DA /* basebin-link.deb */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -921,6 +930,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CCD2FC42B77AAA000F9C5DA /* basebin-link.deb in Resources */,
+				8C05C5A02B75A17A0097A931 /* bootstrap_1900.tar.zst in Resources */,
+				8C05C59F2B75A1770097A931 /* bootstrap_1800.tar.zst in Resources */,
 				042479A42B66916B0082581B /* Credits.plist in Resources */,
 				042479A12B66916B0082581B /* Settings.plist in Resources */,
 				8C512B912B5C9F9100C6F14A /* sileo.deb in Resources */,

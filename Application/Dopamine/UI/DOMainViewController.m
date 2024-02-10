@@ -33,7 +33,7 @@
 {
     UIStackView *stackView = [[UIStackView alloc] init];
     [stackView setAxis:UILayoutConstraintAxisVertical];
-    [stackView setAlignment:UIStackViewAlignmentLeading];
+    [stackView setAlignment:UIStackViewAlignmentTrailing];
     [stackView setDistribution:UIStackViewDistributionEqualSpacing];
     [stackView setTranslatesAutoresizingMaskIntoConstraints:NO];
 

@@ -1,15 +1,17 @@
 {
   "images" : [
     {
+      "filename" : "Dopamine.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Dopamine@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Dopamine.png",
+      "filename" : "Dopamine@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

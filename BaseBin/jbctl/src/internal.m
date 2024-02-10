@@ -6,6 +6,8 @@
 #import <libjailbreak/libjailbreak.h>
 #import <sys/mount.h>
 
+SInt32 CFUserNotificationDisplayAlert(CFTimeInterval timeout, CFOptionFlags flags, CFURLRef iconURL, CFURLRef soundURL, CFURLRef localizationURL, CFStringRef alertHeader, CFStringRef alertMessage, CFStringRef defaultButtonTitle, CFStringRef alternateButtonTitle, CFStringRef otherButtonTitle, CFOptionFlags *responseFlags) API_AVAILABLE(ios(3.0));
+
 int jbctl_handle_internal(const char *command)
 {
 	if (!strcmp(command, "launchd_stash_port")) {
@@ -93,6 +95,12 @@ int jbctl_handle_internal(const char *command)
 		return ret;
 	}
 	else if (!strcmp(command, "startup")) {
+		char *panicMessage = NULL;
+		if (jbclient_watchdog_get_last_userspace_panic(&panicMessage) == 0) {
+			NSString *printMessage = [NSString stringWithFormat:@"Dopamine has protected you from a userspace panic by temporarily disabling tweak injection and triggering a userspace reboot instead. A log is available under Analytics in the Preferences app. You can reenable tweak injection in the Dopamine app.\n\nPanic message: \n%s", panicMessage];
+			CFUserNotificationDisplayAlert(0, 2/*kCFUserNotificationCautionAlertLevel*/, NULL, NULL, NULL, CFSTR("Watchdog Timeout"), (__bridge CFStringRef)printMessage, NULL, NULL, NULL, NULL);
+			free(panicMessage);
+		}
 		exec_cmd(JBRootPath("/usr/bin/uicache"), "-a", NULL);
 	}
 	return -1;

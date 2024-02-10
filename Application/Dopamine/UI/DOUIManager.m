@@ -20,14 +20,15 @@
     return sharedInstance;
 }
 
-- (id)init {
+- (id)init
+{
     if (self = [super init]){
         self.userDefaults = [NSUserDefaults standardUserDefaults];
     }
     return self;
 }
 
-- (BOOL) isUpdateAvailable
+- (BOOL)isUpdateAvailable
 {
     NSArray *releases = [self getLatestReleases];
     if (releases.count == 0)
@@ -45,12 +46,14 @@
     dispatch_once(&onceToken, ^{
         NSURL *url = [NSURL URLWithString:@"https://api.github.com/repos/opa334/Dopamine/releases"];
         NSData *data = [NSData dataWithContentsOfURL:url];
-        NSError *error;
-        releases = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-        if (error)
-        {
-            onceToken = 0;
-            releases = @[];
+        if (data) {
+            NSError *error;
+            releases = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+            if (error)
+            {
+                onceToken = 0;
+                releases = @[];
+            }
         }
     });
     return releases;
@@ -116,7 +119,7 @@
     return tweaks == nil ? YES : [tweaks boolValue];
 }
 
-- (void)sendLog:(NSString*)log debug:(BOOL)debug
+- (void)sendLog:(NSString*)log debug:(BOOL)debug update:(BOOL)update
 {
     if (!self.logView)
         return;
@@ -124,8 +127,20 @@
     BOOL isDebug = self.logView.class == DODebugLogView.class;
     if (debug && !isDebug)
         return;
+    
+    if (update) {
+        if ([self.logView respondsToSelector:@selector(updateLog:)]) {
+            [self.logView updateLog:log];
+        }
+    }
+    else {
+        [self.logView showLog:log];
+    }
+}
 
-    [self.logView showLog:log];
+- (void)sendLog:(NSString*)log debug:(BOOL)debug
+{
+    [self sendLog:log debug:debug update:NO];
 }
 
 - (void)completeJailbreak

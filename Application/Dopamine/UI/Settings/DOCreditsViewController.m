@@ -6,6 +6,7 @@
 //
 
 #import "DOCreditsViewController.h"
+#import <Preferences/PSSpecifier.h>
 
 @interface DOCreditsViewController ()
 
@@ -13,15 +14,30 @@
 
 @implementation DOCreditsViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
 }
 
-- (id)specifiers {
+- (id)specifiers
+{
     if(_specifiers == nil) {
         _specifiers = [self loadSpecifiersFromPlistName:@"Credits" target:self];
+
+        PSSpecifier *headerSpecifier = _specifiers[0];
+        [headerSpecifier setProperty:[NSString stringWithFormat:@"Dopamine %@ - Credits", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]] forKey:@"title"];
     }
     return _specifiers;
+}
+
+- (void)openSourceCode
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/opa334/Dopamine"] options:@{} completionHandler:nil];
+}
+
+- (void)openDiscord
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://discord.gg/jb"] options:@{} completionHandler:nil];
 }
 
 @end

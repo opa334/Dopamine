@@ -116,6 +116,7 @@ void jbupdate_update_system_info(void)
 			const char *sets[] = {
 				"translation",
 				"trustcache",
+				"sandbox",
 				"physmap",
 				"struct",
 				"physrw",

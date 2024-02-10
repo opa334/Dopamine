@@ -18,6 +18,7 @@
 
 #define LIBKRW_DOPAMINE_BUNDLED_VERSION @"2.0.0"
 #define LIBROOT_DOPAMINE_BUNDLED_VERSION @"1.0.0"
+#define BASEBIN_LINK_BUNDLED_VERSION @"1.0.0"
 
 struct hfs_mount_args {
     char    *fspec;
@@ -45,6 +46,16 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 #define BUFFER_SIZE 8192
 
 @implementation Bootstrapper
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        /*NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"com.opa334.bootstrapper.background-session"];
+        _urlSession = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];*/
+    }
+    return self;
+}
 
 - (NSError *)decompressZstd:(NSString *)zstdPath toTar:(NSString *)tarPath
 {
@@ -298,35 +309,43 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     }
 }
 
-- (NSURL *)bootstrapURL
+- (NSString *)bootstrapVersion
 {
     uint64_t cfver = (((uint64_t)kCFCoreFoundationVersionNumber / 100) * 100);
     if (cfver >= 2000) {
         return nil;
     }
-    return [NSURL URLWithString:[NSString stringWithFormat:@"https://apt.procurs.us/bootstraps/%llu/bootstrap-ssh-iphoneos-arm64.tar.zst", cfver]];
+    return [NSString stringWithFormat:@"%llu", cfver];
 }
 
-- (void)downloadBootstrapWithCompletion:(void (^)(NSString *path, NSError *error))completion
+- (NSURL *)bootstrapURL
+{
+    return [NSURL URLWithString:[NSString stringWithFormat:@"https://apt.procurs.us/bootstraps/%@/bootstrap-ssh-iphoneos-arm64.tar.zst", [self bootstrapVersion]]];
+}
+
+/*- (void)downloadBootstrapWithCompletion:(void (^)(NSString *path, NSError *error))completion
 {
     NSURL *bootstrapURL = [self bootstrapURL];
     if (!bootstrapURL) {
         completion(nil, [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedToGetURL userInfo:@{NSLocalizedDescriptionKey : @"Failed to obtain bootstrap URL"}]);
         return;
     }
-    _bootstrapDownloadTask = [[NSURLSession sharedSession] downloadTaskWithURL:bootstrapURL completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    
+    _downloadCompletionBlock = ^(NSURL * _Nullable location, NSError * _Nullable error) {
         NSError *ourError;
         if (error) {
             ourError = [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedToDownload userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to download bootstrap: %@", error.localizedDescription]}];
         }
         completion(location.path, ourError);
-    }];
+    };
+    
+    _bootstrapDownloadTask = [_urlSession downloadTaskWithURL:bootstrapURL];
     [_bootstrapDownloadTask resume];
-}
+}*/
 
 - (void)extractBootstrap:(NSString *)path withCompletion:(void (^)(NSError *))completion
 {
-    NSString *bootstrapTar = [NSTemporaryDirectory() stringByAppendingPathComponent:@"bootstrap.tar"];
+    NSString *bootstrapTar = [@"/var/tmp" stringByAppendingPathComponent:@"bootstrap.tar"];
     NSError *decompressionError = [self decompressZstd:path toTar:bootstrapTar];
     if (decompressionError) {
         completion(decompressionError);
@@ -459,16 +478,6 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             @"Components:\n";
         [defaultSources writeToFile:NSJBRootPath(@"/etc/apt/sources.list.d/default.sources") atomically:NO encoding:NSUTF8StringEncoding error:nil];
         
-        if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/bin/opainject")]) {
-            [self createSymlinkAtPath:NSJBRootPath(@"/usr/bin/opainject") toPath:NSJBRootPath(@"/basebin/opainject") createIntermediateDirectories:YES];
-        }
-        if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/bin/jbctl")]) {
-            [self createSymlinkAtPath:NSJBRootPath(@"/usr/bin/jbctl") toPath:NSJBRootPath(@"/basebin/jbctl") createIntermediateDirectories:YES];
-        }
-        if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/lib/libjailbreak.dylib")]) {
-            [self createSymlinkAtPath:NSJBRootPath(@"/usr/lib/libjailbreak.dylib") toPath:NSJBRootPath(@"/basebin/libjailbreak.dylib") createIntermediateDirectories:YES];
-        }
-        
         NSString *mobilePreferencesPath = NSJBRootPath(@"/var/mobile/Library/Preferences");
         if (![[NSFileManager defaultManager] fileExistsAtPath:mobilePreferencesPath]) {
             NSDictionary<NSFileAttributeKey, id> *attributes = @{
@@ -492,16 +501,20 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             }
         }
         
-        void (^bootstrapDownloadCompletion)(NSString *, NSError *) = ^(NSString *path, NSError *error) {
+        /*void (^bootstrapDownloadCompletion)(NSString *, NSError *) = ^(NSString *path, NSError *error) {
             if (error) {
                 completion(error);
                 return;
             }
-            [[DOUIManager sharedInstance] sendLog:@"Extracting Bootstrap" debug:NO];
             [self extractBootstrap:path withCompletion:bootstrapFinishedCompletion];
-        };
+        };*/
         
-        NSString *documentsCandidate = @"/var/mobile/Documents/bootstrap.tar.zstd";
+        [[DOUIManager sharedInstance] sendLog:@"Extracting Bootstrap" debug:NO];
+
+        NSString *bootstrapZstdPath = [NSString stringWithFormat:@"%@/bootstrap_%@.tar.zst", [NSBundle mainBundle].bundlePath, [self bootstrapVersion]];
+        [self extractBootstrap:bootstrapZstdPath withCompletion:completion];
+
+        /*NSString *documentsCandidate = @"/var/mobile/Documents/bootstrap.tar.zstd";
         NSString *bundleCandidate = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"bootstrap.tar.zstd"];
         // Check if the user provided a bootstrap
         if ([[NSFileManager defaultManager] fileExistsAtPath:documentsCandidate]) {
@@ -513,7 +526,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         else {
             [[DOUIManager sharedInstance] sendLog:@"Downloading Bootstrap" debug:NO];
             [self downloadBootstrapWithCompletion:bootstrapDownloadCompletion];
-        }
+        }*/
     }
     else {
         bootstrapFinishedCompletion(nil);
@@ -575,24 +588,67 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     
     NSString *librootInstalledVersion = [self installedVersionForPackageWithIdentifier:@"libroot-dopamine"];
     NSString *libkrwDopamineInstalledVersion = [self installedVersionForPackageWithIdentifier:@"libkrw0-dopamine"];
+    NSString *basebinLinkInstalledVersion = [self installedVersionForPackageWithIdentifier:@"dopamine-basebin-link"];
     
-    if (!librootInstalledVersion || !libkrwDopamineInstalledVersion || ![librootInstalledVersion isEqualToString:LIBROOT_DOPAMINE_BUNDLED_VERSION] || ![libkrwDopamineInstalledVersion isEqualToString:LIBKRW_DOPAMINE_BUNDLED_VERSION]) {
-        [[DOUIManager sharedInstance] sendLog:@"Updating Bootstrap" debug:NO];
+    if (!librootInstalledVersion || ![librootInstalledVersion isEqualToString:LIBROOT_DOPAMINE_BUNDLED_VERSION] ||
+        !libkrwDopamineInstalledVersion || ![libkrwDopamineInstalledVersion isEqualToString:LIBKRW_DOPAMINE_BUNDLED_VERSION] ||
+        !basebinLinkInstalledVersion || ![basebinLinkInstalledVersion isEqualToString:BASEBIN_LINK_BUNDLED_VERSION]) {
+        [[DOUIManager sharedInstance] sendLog:@"Updating Bundled Packages" debug:NO];
         if (!librootInstalledVersion || ![librootInstalledVersion isEqualToString:LIBROOT_DOPAMINE_BUNDLED_VERSION]) {
             NSString *librootPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"libroot.deb"];
             int r = [self installPackage:librootPath];
             if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install libroot: %d\n", r]}];
         }
         
-        
         if (!libkrwDopamineInstalledVersion || ![libkrwDopamineInstalledVersion isEqualToString:LIBKRW_DOPAMINE_BUNDLED_VERSION]) {
             NSString *libkrwPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"libkrw-plugin.deb"];
             int r = [self installPackage:libkrwPath];
             if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install the libkrw plugin: %d\n", r]}];
         }
+        
+        if (!basebinLinkInstalledVersion || ![basebinLinkInstalledVersion isEqualToString:BASEBIN_LINK_BUNDLED_VERSION]) {
+            // Clean symlinks from earlier Dopamine versions
+            if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/bin/opainject")]) {
+                [[NSFileManager defaultManager] removeItemAtPath:NSJBRootPath(@"/usr/bin/opainject") error:nil];
+            }
+            if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/bin/jbctl")]) {
+                [[NSFileManager defaultManager] removeItemAtPath:NSJBRootPath(@"/usr/bin/jbctl") error:nil];
+            }
+            if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/lib/libjailbreak.dylib")]) {
+                [[NSFileManager defaultManager] removeItemAtPath:NSJBRootPath(@"/usr/lib/libjailbreak.dylib") error:nil];
+            }
+            if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/bin/libjailbreak.dylib")]) {
+                // Yes this exists >.< was a typo
+                [[NSFileManager defaultManager] removeItemAtPath:NSJBRootPath(@"/usr/bin/libjailbreak.dylib") error:nil];
+            }
+            
+            NSString *basebinLinkPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"basebin-link.deb"];
+            int r = [self installPackage:basebinLinkPath];
+            if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install basebin link: %d\n", r]}];
+        }
     }
 
     return nil;
+}
+
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
+{
+    if (downloadTask == _bootstrapDownloadTask) {
+        NSString *sizeString = [NSByteCountFormatter stringFromByteCount:totalBytesWritten countStyle:NSByteCountFormatterCountStyleFile];
+        NSString *writtenBytesString = [NSByteCountFormatter stringFromByteCount:totalBytesExpectedToWrite countStyle:NSByteCountFormatterCountStyleFile];
+        
+        [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:@"Downloading Bootstrap (%@/%@)", sizeString, writtenBytesString] debug:NO update:YES];
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
+{
+    _downloadCompletionBlock(nil, error);
+}
+
+- (void)URLSession:(nonnull NSURLSession *)session downloadTask:(nonnull NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(nonnull NSURL *)location
+{
+    _downloadCompletionBlock(location, nil);
 }
 
 @end

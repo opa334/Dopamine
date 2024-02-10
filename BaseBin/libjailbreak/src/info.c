@@ -202,6 +202,10 @@ void jbinfo_initialize_hardcoded_offsets(void)
 					gSystemInfo.kernelStruct.proc.flag    = 0x25C;
 					gSystemInfo.kernelStruct.proc.textvp  = 0x350;
 
+					gSystemInfo.kernelStruct.proc_ro.syscall_filter_mask = 0x28;
+					gSystemInfo.kernelStruct.proc_ro.mach_trap_filter_mask = 0x68;
+					gSystemInfo.kernelStruct.proc_ro.mach_kobj_filter_mask = 0x70;
+
 					// task
 #ifdef __arm64e__
 					gSystemInfo.kernelStruct.task.task_can_transfer_memory_ownership = 0x548 + taskJitboxAdjust;

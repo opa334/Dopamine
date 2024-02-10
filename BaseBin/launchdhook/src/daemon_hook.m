@@ -34,24 +34,40 @@ void xpc_dictionary_add_launch_daemon_plist_at_path(xpc_object_t xdict, const ch
 xpc_object_t (*xpc_dictionary_get_value_orig)(xpc_object_t xdict, const char *key);
 xpc_object_t xpc_dictionary_get_value_hook(xpc_object_t xdict, const char *key)
 {
-	xpc_object_t origXdict = xpc_dictionary_get_value_orig(xdict, key);
+	xpc_object_t origXvalue = xpc_dictionary_get_value_orig(xdict, key);
 	if (!strcmp(key, "LaunchDaemons")) {
-		for (NSString *daemonPlistName in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:NSJBRootPath(@"/basebin/LaunchDaemons") error:nil]) {
-			if ([daemonPlistName.pathExtension isEqualToString:@"plist"]) {
-				xpc_dictionary_add_launch_daemon_plist_at_path(origXdict, [NSJBRootPath(@"/basebin/LaunchDaemons") stringByAppendingPathComponent:daemonPlistName].fileSystemRepresentation);
+		if (xpc_get_type(origXvalue) == XPC_TYPE_DICTIONARY) {
+			for (NSString *daemonPlistName in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:NSJBRootPath(@"/basebin/LaunchDaemons") error:nil]) {
+				if ([daemonPlistName.pathExtension isEqualToString:@"plist"]) {
+					xpc_dictionary_add_launch_daemon_plist_at_path(origXvalue, [NSJBRootPath(@"/basebin/LaunchDaemons") stringByAppendingPathComponent:daemonPlistName].fileSystemRepresentation);
+				}
 			}
-		}
-		for (NSString *daemonPlistName in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:NSJBRootPath(@"/Library/LaunchDaemons") error:nil]) {
-			if ([daemonPlistName.pathExtension isEqualToString:@"plist"]) {
-				xpc_dictionary_add_launch_daemon_plist_at_path(origXdict, [NSJBRootPath(@"/Library/LaunchDaemons") stringByAppendingPathComponent:daemonPlistName].fileSystemRepresentation);
+			for (NSString *daemonPlistName in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:NSJBRootPath(@"/Library/LaunchDaemons") error:nil]) {
+				if ([daemonPlistName.pathExtension isEqualToString:@"plist"]) {
+					xpc_dictionary_add_launch_daemon_plist_at_path(origXvalue, [NSJBRootPath(@"/Library/LaunchDaemons") stringByAppendingPathComponent:daemonPlistName].fileSystemRepresentation);
+				}
 			}
 		}
 	}
 	else if (!strcmp(key, "Paths")) {
-		xpc_array_set_string(origXdict, XPC_ARRAY_APPEND, JBRootPath("/basebin/LaunchDaemons"));
-		xpc_array_set_string(origXdict, XPC_ARRAY_APPEND, JBRootPath("/Library/LaunchDaemons"));
+		if (xpc_get_type(origXvalue) == XPC_TYPE_ARRAY) {
+			xpc_array_set_string(origXvalue, XPC_ARRAY_APPEND, JBRootPath("/basebin/LaunchDaemons"));
+			xpc_array_set_string(origXvalue, XPC_ARRAY_APPEND, JBRootPath("/Library/LaunchDaemons"));
+		}
 	}
-	return origXdict;
+	else if (!strcmp(key, "com.apple.private.xpc.launchd.userspace-reboot")) {
+		if (!origXvalue || xpc_get_type(origXvalue) == XPC_TYPE_BOOL) {
+			bool origValue = false;
+			if (origXvalue) {
+				origValue = xpc_bool_get_value(origXvalue);
+			}
+			if (!origValue) {
+				// Allow watchdogd to do userspace reboots
+				return xpc_dictionary_get_value_orig(xdict, "com.apple.private.iowatchdog.user-access");
+			}
+		}
+	}
+	return origXvalue;
 }
 
 void initDaemonHooks(void)
