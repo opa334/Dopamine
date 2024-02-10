@@ -18,5 +18,9 @@
 	<true/>
 	<key>com.apple.private.bindfs-allow</key>
 	<true/>
+	<key>com.apple.private.iowatchdog.user-access</key>
+	<true/>
+	<key>com.apple.springboard.CFUserNotification</key>
+	<true/>
 </dict>
 </plist>

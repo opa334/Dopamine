@@ -1,4 +1,5 @@
 #import <mach/mach.h>
+#include <stdio.h>
 
 typedef int                             exception_type_t;
 typedef integer_t                       exception_data_type_t;
@@ -40,3 +41,6 @@ typedef enum {
 void crashreporter_start(void);
 void crashreporter_pause(void);
 void crashreporter_resume(void);
+
+FILE *crashreporter_open_outfile(const char *source, char **nameOut);
+void crashreporter_save_outfile(FILE *f);

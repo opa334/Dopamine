@@ -318,6 +318,21 @@ int jbclient_watchdog_intercept_userspace_panic(const char *panicMessage)
 	return -1;
 }
 
+int jbclient_watchdog_get_last_userspace_panic(char **panicMessage)
+{
+	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_WATCHDOG, JBS_WATCHDOG_GET_LAST_USERSPACE_PANIC, NULL);
+	if (xreply) {
+		int result = xpc_dictionary_get_int64(xreply, "result");
+		const char *receivedMessage = xpc_dictionary_get_string(xreply, "panic-message");
+		if (receivedMessage) {
+			*panicMessage = strdup(receivedMessage);
+		}
+		xpc_release(xreply);
+		return result;
+	}
+	return -1;
+}
+
 int jbclient_root_get_physrw(bool singlePTE)
 {
 	xpc_object_t xargs = xpc_dictionary_create_empty();

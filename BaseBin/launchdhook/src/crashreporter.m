@@ -10,6 +10,7 @@
 #include <dispatch/dispatch.h>
 #include <stdio.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 #include <CoreFoundation/CoreFoundation.h>
 extern CFStringRef CFCopySystemVersionString(void);
 
@@ -138,14 +139,15 @@ void crashreporter_dump_backtrace_line(FILE *f, vm_address_t addr)
 	fprintf(f, "0x%lX: %s (0x%lX + 0x%lX) (%s(0x%lX) + 0x%lX)\n", addr, sname, (vm_address_t)info.dli_saddr, addr - (vm_address_t)info.dli_saddr, fname, (vm_address_t)info.dli_fbase, addr - (vm_address_t)info.dli_fbase);
 }
 
-FILE *crashreporter_open_outfile(char **nameOut)
+FILE *crashreporter_open_outfile(const char *source, char **nameOut)
 {
 	time_t t = time(NULL);
 	char timestamp[64];
 	sprintf(&timestamp[0], "%lu", t);
 
 	char *name = malloc(100);
-	strlcpy(name, "launchd-", 100);
+	strlcpy(name, source, 100);
+	strlcat(name, "-", 100);
 	strlcat(name, timestamp, 100);
 	strlcat(name, ".ips", 100);
 
@@ -187,6 +189,8 @@ FILE *crashreporter_open_outfile(char **nameOut)
 void crashreporter_save_outfile(FILE *f)
 {
 	fflush(f);
+	fchown(fileno(f), 0, 250);
+	fchmod(fileno(f), 00660);
 	if (fcntl(fileno(f), F_FULLFSYNC) != 0) {
 		fsync(fileno(f));
 	}
@@ -258,7 +262,7 @@ void crashreporter_catch_mach(exception_raise_request *request, exception_raise_
 	pthread_backtrace(pthread, bt, c, &c, 0, (void *)__darwin_arm_thread_state64_get_fp(threadState));
 
 	char *name = NULL;
-	FILE *f = crashreporter_open_outfile(&name);
+	FILE *f = crashreporter_open_outfile("launchd", &name);
 	if (f) {
 		crashreporter_dump_mach(f, request->code, request->subcode, threadState, exceptionState, bt);
 		crashreporter_save_outfile(f);
@@ -301,11 +305,6 @@ void crashreporter_dump_objc(FILE *f, NSException *e)
 
 void crashreporter_catch_objc(NSException *e)
 {
-	FILE *df = fopen("/var/mobile/launchd_crashreport.txt", "a");
-	fprintf(df, "catcher did trigger\n");
-	fclose(df);
-	sleep(1);
-
 	@autoreleasepool {
 		static BOOL hasCrashed = NO;
 		if (hasCrashed) {
@@ -316,7 +315,7 @@ void crashreporter_catch_objc(NSException *e)
 		}
 
 		char *name = NULL;
-		FILE *f = crashreporter_open_outfile(&name);
+		FILE *f = crashreporter_open_outfile("launchd", &name);
 		if (f) {
 			@try {
 				crashreporter_dump_objc(f, e);
