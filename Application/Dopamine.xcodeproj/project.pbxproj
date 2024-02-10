@@ -88,6 +88,7 @@
 		8CB94F052B59E17A0098BAFD /* basebin.tar in Resources */ = {isa = PBXBuildFile; fileRef = 8CB94F032B59E17A0098BAFD /* basebin.tar */; };
 		8CC139822B53DE6C00230143 /* NSData+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC139812B53DE6C00230143 /* NSData+Hex.m */; };
 		8CC139832B53E05300230143 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08372B4F682500A32B61 /* IOKit.framework */; };
+		8CCD2FC42B77AAA000F9C5DA /* basebin-link.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD2FC32B77AA9200F9C5DA /* basebin-link.deb */; };
 		8CCD8A872B6F16CC004B72B0 /* libkrw-plugin.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD8A852B6F1662004B72B0 /* libkrw-plugin.deb */; };
 		8CCD8A882B6F16D0004B72B0 /* libroot.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD8A832B6F165A004B72B0 /* libroot.deb */; };
 		8CDD07AA2B4F619000A32B61 /* kfd.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CDD07A92B4F619000A32B61 /* kfd.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -281,6 +282,7 @@
 		8CB94F032B59E17A0098BAFD /* basebin.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; name = basebin.tar; path = ../../../BaseBin/basebin.tar; sourceTree = "<group>"; };
 		8CC139802B53DE6C00230143 /* NSData+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Hex.h"; sourceTree = "<group>"; };
 		8CC139812B53DE6C00230143 /* NSData+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Hex.m"; sourceTree = "<group>"; };
+		8CCD2FC32B77AA9200F9C5DA /* basebin-link.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "basebin-link.deb"; path = "../../../Packages/basebin-link/basebin-link.deb"; sourceTree = "<group>"; };
 		8CCD8A832B6F165A004B72B0 /* libroot.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libroot.deb; path = ../../../Packages/libroot/libroot.deb; sourceTree = "<group>"; };
 		8CCD8A852B6F1662004B72B0 /* libkrw-plugin.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libkrw-plugin.deb"; path = "../../../Packages/libkrw-provider/libkrw-plugin.deb"; sourceTree = "<group>"; };
 		8CDD07A72B4F619000A32B61 /* kfd.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = kfd.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -689,6 +691,7 @@
 				8C512B8C2B5C9DE800C6F14A /* zebra.deb */,
 				8CCD8A852B6F1662004B72B0 /* libkrw-plugin.deb */,
 				8CCD8A832B6F165A004B72B0 /* libroot.deb */,
+				8CCD2FC32B77AA9200F9C5DA /* basebin-link.deb */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -906,6 +909,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CCD2FC42B77AAA000F9C5DA /* basebin-link.deb in Resources */,
 				8C05C5A02B75A17A0097A931 /* bootstrap_1900.tar.zst in Resources */,
 				8C05C59F2B75A1770097A931 /* bootstrap_1800.tar.zst in Resources */,
 				042479A42B66916B0082581B /* Credits.plist in Resources */,

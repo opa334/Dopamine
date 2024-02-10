@@ -18,6 +18,7 @@
 
 #define LIBKRW_DOPAMINE_BUNDLED_VERSION @"2.0.0"
 #define LIBROOT_DOPAMINE_BUNDLED_VERSION @"1.0.0"
+#define BASEBIN_LINK_BUNDLED_VERSION @"1.0.0"
 
 struct hfs_mount_args {
     char    *fspec;
@@ -477,16 +478,6 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             @"Components:\n";
         [defaultSources writeToFile:NSJBRootPath(@"/etc/apt/sources.list.d/default.sources") atomically:NO encoding:NSUTF8StringEncoding error:nil];
         
-        if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/bin/opainject")]) {
-            [self createSymlinkAtPath:NSJBRootPath(@"/usr/bin/opainject") toPath:NSJBRootPath(@"/basebin/opainject") createIntermediateDirectories:YES];
-        }
-        if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/bin/jbctl")]) {
-            [self createSymlinkAtPath:NSJBRootPath(@"/usr/bin/jbctl") toPath:NSJBRootPath(@"/basebin/jbctl") createIntermediateDirectories:YES];
-        }
-        if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/lib/libjailbreak.dylib")]) {
-            [self createSymlinkAtPath:NSJBRootPath(@"/usr/lib/libjailbreak.dylib") toPath:NSJBRootPath(@"/basebin/libjailbreak.dylib") createIntermediateDirectories:YES];
-        }
-        
         NSString *mobilePreferencesPath = NSJBRootPath(@"/var/mobile/Library/Preferences");
         if (![[NSFileManager defaultManager] fileExistsAtPath:mobilePreferencesPath]) {
             NSDictionary<NSFileAttributeKey, id> *attributes = @{
@@ -597,8 +588,11 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     
     NSString *librootInstalledVersion = [self installedVersionForPackageWithIdentifier:@"libroot-dopamine"];
     NSString *libkrwDopamineInstalledVersion = [self installedVersionForPackageWithIdentifier:@"libkrw0-dopamine"];
+    NSString *basebinLinkInstalledVersion = [self installedVersionForPackageWithIdentifier:@"dopamine-basebin-link"];
     
-    if (!librootInstalledVersion || !libkrwDopamineInstalledVersion || ![librootInstalledVersion isEqualToString:LIBROOT_DOPAMINE_BUNDLED_VERSION] || ![libkrwDopamineInstalledVersion isEqualToString:LIBKRW_DOPAMINE_BUNDLED_VERSION]) {
+    if (!librootInstalledVersion || ![librootInstalledVersion isEqualToString:LIBROOT_DOPAMINE_BUNDLED_VERSION] ||
+        !libkrwDopamineInstalledVersion || ![libkrwDopamineInstalledVersion isEqualToString:LIBKRW_DOPAMINE_BUNDLED_VERSION] ||
+        !basebinLinkInstalledVersion || ![basebinLinkInstalledVersion isEqualToString:BASEBIN_LINK_BUNDLED_VERSION]) {
         [[DOUIManager sharedInstance] sendLog:@"Updating Bundled Packages" debug:NO];
         if (!librootInstalledVersion || ![librootInstalledVersion isEqualToString:LIBROOT_DOPAMINE_BUNDLED_VERSION]) {
             NSString *librootPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"libroot.deb"];
@@ -606,11 +600,31 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install libroot: %d\n", r]}];
         }
         
-        
         if (!libkrwDopamineInstalledVersion || ![libkrwDopamineInstalledVersion isEqualToString:LIBKRW_DOPAMINE_BUNDLED_VERSION]) {
             NSString *libkrwPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"libkrw-plugin.deb"];
             int r = [self installPackage:libkrwPath];
             if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install the libkrw plugin: %d\n", r]}];
+        }
+        
+        if (!basebinLinkInstalledVersion || ![basebinLinkInstalledVersion isEqualToString:BASEBIN_LINK_BUNDLED_VERSION]) {
+            // Clean symlinks from earlier Dopamine versions
+            if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/bin/opainject")]) {
+                [[NSFileManager defaultManager] removeItemAtPath:NSJBRootPath(@"/usr/bin/opainject") error:nil];
+            }
+            if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/bin/jbctl")]) {
+                [[NSFileManager defaultManager] removeItemAtPath:NSJBRootPath(@"/usr/bin/jbctl") error:nil];
+            }
+            if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/lib/libjailbreak.dylib")]) {
+                [[NSFileManager defaultManager] removeItemAtPath:NSJBRootPath(@"/usr/lib/libjailbreak.dylib") error:nil];
+            }
+            if (![self fileOrSymlinkExistsAtPath:NSJBRootPath(@"/usr/bin/libjailbreak.dylib")]) {
+                // Yes this exists >.< was a typo
+                [[NSFileManager defaultManager] removeItemAtPath:NSJBRootPath(@"/usr/bin/libjailbreak.dylib") error:nil];
+            }
+            
+            NSString *basebinLinkPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"basebin-link.deb"];
+            int r = [self installPackage:basebinLinkPath];
+            if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install basebin link: %d\n", r]}];
         }
     }
 
