@@ -10,7 +10,8 @@
 
 @implementation DOUIManager
 
-+(id)sharedInstance {
++ (id)sharedInstance
+{
     static DOUIManager *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -19,14 +20,15 @@
     return sharedInstance;
 }
 
--(id)init {
+- (id)init {
     if (self = [super init]){
         self.userDefaults = [NSUserDefaults standardUserDefaults];
     }
     return self;
 }
 
-- (BOOL) isUpdateAvailable {
+- (BOOL) isUpdateAvailable
+{
     NSArray *releases = [self getLatestReleases];
     if (releases.count == 0)
         return NO;
@@ -36,7 +38,8 @@
     return ![latestVersion isEqualToString:currentVersion];
 }
 
-- (NSArray *)getLatestReleases {
+- (NSArray *)getLatestReleases
+{
     static dispatch_once_t onceToken;
     static NSArray *releases;
     dispatch_once(&onceToken, ^{
@@ -54,21 +57,67 @@
 }
 
 
--(NSArray*)availablePackageManagers {
-    return @[kSileoPackageManager, kZebraPackageManager];
+- (NSArray*)availablePackageManagers
+{
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"PkgManagers" ofType:@"plist"];
+    return [NSArray arrayWithContentsOfFile:path];
 }
 
--(BOOL)isDebug {
+- (NSArray*)enabledPackageManagers
+{
+    NSMutableArray *enabledPkgManagers = [NSMutableArray new];
+    NSArray *enabledKeys = [self.userDefaults valueForKey:@"enabledPkgManagers"] ?: @[];
+
+    [[self availablePackageManagers] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *key = obj[@"Key"];
+        if ([enabledKeys containsObject:key]) {
+            [enabledPkgManagers addObject:key];
+        }
+    }];
+
+    return enabledPkgManagers;
+}
+
+- (void)resetPackageManagers
+{
+    [self.userDefaults removeObjectForKey:@"enabledPkgManagers"];
+}
+
+- (void)resetSettings
+{
+    [self.userDefaults removeObjectForKey:@"debug"];
+    [self.userDefaults removeObjectForKey:@"tweaks"];
+    [self resetPackageManagers];
+}
+
+- (void)setPackageManager:(NSString*)key enabled:(BOOL)enabled
+{
+    NSMutableArray *pkgManagers = [self enabledPackageManagers];
+    
+    if (enabled && ![pkgManagers containsObject:key]) {
+        [pkgManagers addObject:key];
+    }
+    else if (!enabled && [pkgManagers containsObject:key]) {
+        [pkgManagers removeObject:key];
+    }
+
+    [self.userDefaults setObject:pkgManagers forKey:@"enabledPkgManagers"];
+}
+
+- (BOOL)isDebug
+{
     NSNumber *debug = [self.userDefaults valueForKey:@"debug"];
     return debug == nil ? NO : [debug boolValue];
 }
 
--(BOOL)enableTweaks {
+- (BOOL)enableTweaks
+{
     NSNumber *tweaks = [self.userDefaults valueForKey:@"tweaks"];
     return tweaks == nil ? YES : [tweaks boolValue];
 }
 
--(void)sendLog:(NSString*)log debug:(BOOL)debug {
+- (void)sendLog:(NSString*)log debug:(BOOL)debug
+{
     if (!self.logView)
         return;
     
@@ -79,14 +128,16 @@
     [self.logView showLog:log];
 }
 
--(void)completeJailbreak {
+- (void)completeJailbreak
+{
     if (!self.logView)
         return;
 
     [self.logView didComplete];
 }
 
--(void)startLogCapture {
+- (void)startLogCapture
+{
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         int stdout_pipe[2];
         int stdout_orig[2];

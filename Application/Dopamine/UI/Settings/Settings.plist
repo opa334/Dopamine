@@ -42,6 +42,20 @@
 			<key>headerCellClass</key>
 			<string>DOButtonCell</string>
 			<key>title</key>
+			<string>Reset Settings</string>
+			<key>key</key>
+			<string>reset</string>
+			<key>image</key>
+			<string>gearshape.arrow.triangle.2.circlepath</string>
+			<key>action</key>
+			<string>resetSettings</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>headerCellClass</key>
+			<string>DOButtonCell</string>
+			<key>title</key>
 			<string>Hide Jailbreak</string>
 			<key>key</key>
 			<string>hidejb</string>
@@ -64,7 +78,7 @@
 			<key>action</key>
 			<string>removeJailbreak</string>
 			<key>footerText</key>
-			<string>"Hide jailbreak" temporarily removes jailbreak-related files until next jailbreak</string>
+			<string>&quot;Hide jailbreak&quot; temporarily removes jailbreak-related files until next jailbreak</string>
 		</dict>
 	</array>
 	<key>title</key>

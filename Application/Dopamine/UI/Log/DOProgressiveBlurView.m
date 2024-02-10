@@ -23,22 +23,30 @@
 
 @end
 
+@interface DOProgressiveBlurView ()
+
+@property (retain) id variableBlur;
+
+@end
+
 @implementation DOProgressiveBlurView
 
 - (instancetype)initWithGradientMask:(UIImage *)gradientMask maxBlurRadius:(CGFloat)maxBlurRadius {
     self = [super initWithEffect:[DOBlurEffect effectWithStyle:UIBlurEffectStyleRegular]];
     if (self) {
         Class CAFilter = NSClassFromString(@"CAFilter");
-        id variableBlur = [CAFilter performSelector:NSSelectorFromString(@"filterWithType:") withObject:@"variableBlur"];
-
-        CGImageRef gradientImageRef = gradientMask.CGImage;
-        [variableBlur setValue:@(maxBlurRadius) forKey:@"inputRadius"];
-        [variableBlur setValue:(__bridge id)(gradientImageRef) forKey:@"inputMaskImage"];
-        [variableBlur setValue:@YES forKey:@"inputNormalizeEdges"];
-
-        [self.subviews.firstObject.layer setValue:@[variableBlur] forKey:@"filters"];
+        self.variableBlur = [CAFilter performSelector:NSSelectorFromString(@"filterWithType:") withObject:@"variableBlur"];
+        [self.variableBlur setValue:@(maxBlurRadius) forKey:@"inputRadius"];
+        [self.variableBlur setValue:(__bridge id)(gradientMask.CGImage) forKey:@"inputMaskImage"];
+        [self.variableBlur setValue:@YES forKey:@"inputNormalizeEdges"];
     }
     return self;
+}
+
+-(void)layoutSubviews
+{
+    [super layoutSubviews];
+    [self.subviews.firstObject.layer setValue:@[self.variableBlur] forKey:@"filters"];
 }
 
 @end

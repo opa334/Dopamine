@@ -7,6 +7,7 @@
 
 #import "DOSettingsController.h"
 #import <objc/runtime.h>
+#import "DOUIManager.h"
 
 @interface DOSettingsController ()
 
@@ -37,6 +38,12 @@
 {
     //TODO
     NSLog(@"Remove Jailbreak");
+}
+
+-(void)resetSettings
+{
+    [[DOUIManager sharedInstance] resetSettings];
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 @end

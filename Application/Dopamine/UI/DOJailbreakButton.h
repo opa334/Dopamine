@@ -9,6 +9,8 @@
 #import "DOActionMenuButton.h"
 #import "DOLyricsLogView.h"
 #import "DODebugLogView.h"
+#import "DOPkgManagerPickerView.h"
+#import <pthread.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -16,10 +18,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property DOActionMenuButton *button;
 @property UIView<DOLogViewProtocol> *logView;
+@property DOPkgManagerPickerView *pkgManagerPickerView;
+
 @property (nonatomic, getter=isEnabled) BOOL enabled;
+@property (nonatomic) BOOL didExpand;
+@property (nonatomic, assign) pthread_mutex_t canStartJailbreak;
 
 - (instancetype)initWithAction:(UIAction *)actions;
-- (void)showLog:(NSArray<NSLayoutConstraint *> *)constraints;
+- (void)expandButton:(NSArray<NSLayoutConstraint *> *)constraints;
+
+- (void)lockMutex;
+- (void)unlockMutex;
 
 @end
 
