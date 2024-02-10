@@ -341,7 +341,7 @@ void proc_allow_all_syscalls(uint64_t proc)
 		kwrite1_bits(machFilter, kconstant(mach_trap_count));
 	}
 	if (machKobjFilter) {
-		kwrite1_bits(machFilter, kread64(ksymbol(mach_kobj_count)));
+		kwrite1_bits(machKobjFilter, kread64(ksymbol(mach_kobj_count)));
 	}
 }
 
