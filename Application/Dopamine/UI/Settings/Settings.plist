@@ -56,6 +56,20 @@
 			<key>headerCellClass</key>
 			<string>DOButtonCell</string>
 			<key>title</key>
+			<string>Reinstall Pkg Managers</string>
+			<key>key</key>
+			<string>resetPkg</string>
+			<key>image</key>
+			<string>shippingbox.and.arrow.backward</string>
+			<key>action</key>
+			<string>resetPkg</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>headerCellClass</key>
+			<string>DOButtonCell</string>
+			<key>title</key>
 			<string>Hide Jailbreak</string>
 			<key>key</key>
 			<string>hidejb</string>

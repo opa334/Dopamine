@@ -8,6 +8,7 @@
 #import "DOSettingsController.h"
 #import <objc/runtime.h>
 #import "DOUIManager.h"
+#import "DOPkgManagerPickerViewController.h"
 
 @interface DOSettingsController ()
 
@@ -44,6 +45,11 @@
 {
     [[DOUIManager sharedInstance] resetSettings];
     [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+-(void)resetPkg
+{
+    [self.navigationController pushViewController:[[DOPkgManagerPickerViewController alloc] init] animated:YES];
 }
 
 @end
