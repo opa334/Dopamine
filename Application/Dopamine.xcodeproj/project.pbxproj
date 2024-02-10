@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		040622AA2B77FE8E00393AAD /* DOPkgManagerPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 040622A92B77FE8E00393AAD /* DOPkgManagerPickerViewController.m */; };
 		042479A12B66916B0082581B /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0424796A2B66916B0082581B /* Settings.plist */; };
 		042479A22B66916B0082581B /* DOCreditsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424796B2B66916B0082581B /* DOCreditsViewController.m */; };
 		042479A32B66916B0082581B /* DOSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424796C2B66916B0082581B /* DOSettingsController.m */; };
@@ -163,6 +164,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		040622A82B77FE8E00393AAD /* DOPkgManagerPickerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOPkgManagerPickerViewController.h; sourceTree = "<group>"; };
+		040622A92B77FE8E00393AAD /* DOPkgManagerPickerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOPkgManagerPickerViewController.m; sourceTree = "<group>"; };
 		042479682B66916B0082581B /* DOJailbreakButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOJailbreakButton.h; sourceTree = "<group>"; };
 		0424796A2B66916B0082581B /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
 		0424796B2B66916B0082581B /* DOCreditsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOCreditsViewController.m; sourceTree = "<group>"; };
@@ -483,6 +486,8 @@
 				04C246AD2B74ACA200E17924 /* DOAppSwitch.m */,
 				04C246AF2B74B05800E17924 /* DOPkgManagerPickerView.h */,
 				04C246B02B74B05800E17924 /* DOPkgManagerPickerView.m */,
+				040622A82B77FE8E00393AAD /* DOPkgManagerPickerViewController.h */,
+				040622A92B77FE8E00393AAD /* DOPkgManagerPickerViewController.m */,
 				04C246B22B74B65900E17924 /* PkgManagers.plist */,
 			);
 			path = PkgManagers;
@@ -1048,6 +1053,7 @@
 				8C71981A2ABF0E82003C6658 /* AppDelegate.m in Sources */,
 				042479B72B66916B0082581B /* DOActionMenuView.m in Sources */,
 				8C029F632B4E2E140071DE58 /* Jailbreaker.m in Sources */,
+				040622AA2B77FE8E00393AAD /* DOPkgManagerPickerViewController.m in Sources */,
 				042479A82B66916B0082581B /* DOPSListController.m in Sources */,
 				042479B12B66916B0082581B /* DODoubleHelixIndicator.m in Sources */,
 				042479A72B66916B0082581B /* DOButtonCell.m in Sources */,
