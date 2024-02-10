@@ -1,22 +1,11 @@
 #include "info.h"
 #include "kernel.h"
+#include "machine_info.h"
 #include "primitives.h"
 #include <sys/utsname.h>
 #include <xpc/xpc.h>
 #include <sys/types.h>
 #include <sys/sysctl.h>
-
-#ifndef CPUFAMILY_ARM_BLIZZARD_AVALANCHE
-# define CPUFAMILY_ARM_BLIZZARD_AVALANCHE   0xda33d83d
-#endif
-
-#ifndef CPUFAMILY_ARM_EVEREST_SAWTOOTH
-# define CPUFAMILY_ARM_EVEREST_SAWTOOTH     0x8765edea
-#endif
-
-#ifndef CPUFAMILY_ARM_COLL
-# define CPUFAMILY_ARM_COLL                 0x2876f5b5
-#endif
 
 struct system_info gSystemInfo = { 0 };
 

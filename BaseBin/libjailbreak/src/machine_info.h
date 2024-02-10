@@ -1,0 +1,56 @@
+#ifndef MACHINE_INFO_H
+#define MACHINE_INFO_H
+
+#include <mach/machine.h>
+
+/* A8 */
+#ifndef CPUFAMILY_ARM_TYPHOON
+#define CPUFAMILY_ARM_TYPHOON               0x2c91a47e
+#endif
+
+/* A9 */
+#ifndef CPUFAMILY_ARM_TWISTER
+#define CPUFAMILY_ARM_TWISTER               0x92fb37c8
+#endif
+
+/* A10 */
+#ifndef CPUFAMILY_ARM_HURRICANE
+#define CPUFAMILY_ARM_HURRICANE             0x67ceee93
+#endif
+
+/* A11 */
+#ifndef CPUFAMILY_ARM_MONSOON_MISTRAL
+#define CPUFAMILY_ARM_MONSOON_MISTRAL       0xe81e7ef6
+#endif
+
+/* A12 */
+#ifndef CPUFAMILY_ARM_VORTEX_TEMPEST
+#define CPUFAMILY_ARM_VORTEX_TEMPEST        0x07d34b9f
+#endif
+
+/* A13 */
+#ifndef CPUFAMILY_ARM_LIGHTNING_THUNDER
+#define CPUFAMILY_ARM_LIGHTNING_THUNDER     0x462504d2
+#endif
+
+/* A14 */
+#ifndef CPUFAMILY_ARM_FIRESTORM_ICESTORM
+#define CPUFAMILY_ARM_FIRESTORM_ICESTORM    0x1b588bb3
+#endif
+
+/* A15 */
+#ifndef CPUFAMILY_ARM_BLIZZARD_AVALANCHE
+#define CPUFAMILY_ARM_BLIZZARD_AVALANCHE    0xda33d83d
+#endif
+
+/* A16 */
+#ifndef CPUFAMILY_ARM_EVEREST_SAWTOOTH
+#define CPUFAMILY_ARM_EVEREST_SAWTOOTH      0x8765edea
+#endif
+
+/* A17 */
+#ifndef CPUFAMILY_ARM_COLL
+#define CPUFAMILY_ARM_COLL                  0x2876f5b5
+#endif
+
+#endif /* MACHINE_INFO_H */
