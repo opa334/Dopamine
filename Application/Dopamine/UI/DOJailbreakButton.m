@@ -33,18 +33,29 @@
             [self.button.topAnchor constraintEqualToAnchor:self.topAnchor],
             [self.button.bottomAnchor constraintEqualToAnchor:self.bottomAnchor],
         ]];
+        //We're doing some setup, let's lock the mutex
+        [self lockMutex];
     }
     return self;
 }
 
-- (void)showLog:(NSArray<NSLayoutConstraint *> *)constraints
+- (void)expandButton:(NSArray<NSLayoutConstraint *> *)constraints
 {
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    if (self.didExpand)
+        return;
+        
+    self.didExpand = TRUE;
 
-    [NSLayoutConstraint deactivateConstraints:constraints];
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
 
     float topPadding = (window.frame.size.height * (1 - 0.74));
     topPadding += 35;
+    
+    [self setupLog: topPadding];
+    [self setupPackageManagerPicker: topPadding];
+    
+    [NSLayoutConstraint deactivateConstraints:constraints];
+
 
     [NSLayoutConstraint activateConstraints:@[
         [self.leadingAnchor constraintEqualToAnchor:window.leadingAnchor],
@@ -54,19 +65,25 @@
     ]];
     
     [self.button setUserInteractionEnabled:NO];
-    
+
     [UIView animateWithDuration: 0.2 animations:^{ [self.button setAlpha:0.0]; }];
     [UIView animateWithDuration:0.75 delay:0.0 usingSpringWithDamping:0.9 initialSpringVelocity:2.0  options: UIViewAnimationOptionCurveEaseInOut animations:^{
         [window layoutIfNeeded];
         [self.button setAlpha:0.0];
     } completion:nil];
-    [self setupLog: topPadding];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.25 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [self setupTitle];
     });
+
+    if (!self.pkgManagerPickerView)
+    {
+        //we can start, unlock the mutex
+        [self unlockMutex];
+    }
+
 }
 
--(void)setupLog: (float)topPadding
+- (void)setupLog: (float)topPadding
 {
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
 
@@ -86,9 +103,43 @@
         [self.logView.topAnchor constraintEqualToAnchor:window.topAnchor constant:topPadding],
         [self.logView.bottomAnchor constraintEqualToAnchor:window.bottomAnchor constant:0]
     ]];
+
+    [window layoutIfNeeded];
 }
 
--(void)setupTitle
+- (void)setupPackageManagerPicker: (float)topPadding
+{
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+
+    if ([[DOUIManager sharedInstance] enabledPackageManagers].count > 0)
+        return;
+
+    self.pkgManagerPickerView = [[DOPkgManagerPickerView alloc] initWithCallback:^(BOOL success) {
+        [self.pkgManagerPickerView removeFromSuperview];
+        self.logView.hidden = NO;
+        [self unlockMutex];
+    }];
+
+    self.pkgManagerPickerView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.pkgManagerPickerView.alpha = 0.0;
+
+    [self addSubview:self.pkgManagerPickerView];
+
+    [NSLayoutConstraint activateConstraints:@[
+       [self.pkgManagerPickerView.leadingAnchor constraintEqualToAnchor:window.leadingAnchor],
+       [self.pkgManagerPickerView.trailingAnchor constraintEqualToAnchor:window.trailingAnchor],
+       [self.pkgManagerPickerView.topAnchor constraintEqualToAnchor:window.topAnchor constant:topPadding],
+       [self.pkgManagerPickerView.bottomAnchor constraintEqualToAnchor:window.bottomAnchor constant:0]
+    ]];
+    
+    [UIView animateWithDuration:0.25 delay:0.25 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.pkgManagerPickerView.alpha = 1.0;
+    } completion:nil];
+
+    [window layoutIfNeeded];
+}
+
+- (void)setupTitle
 {
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
 
@@ -135,6 +186,22 @@
 - (BOOL)isEnabled
 {
     return self.button.userInteractionEnabled;
+}
+
+#pragma mark - Mutex
+
+-(void)lockMutex
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        pthread_mutex_init(&self->_canStartJailbreak, NULL);
+    });
+    pthread_mutex_lock(&self->_canStartJailbreak);
+}
+
+-(void)unlockMutex
+{
+    pthread_mutex_unlock(&self->_canStartJailbreak);
 }
 
 @end

@@ -62,7 +62,49 @@
 
 - (NSArray*)availablePackageManagers
 {
-    return @[kSileoPackageManager, kZebraPackageManager];
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"PkgManagers" ofType:@"plist"];
+    return [NSArray arrayWithContentsOfFile:path];
+}
+
+- (NSArray*)enabledPackageManagers
+{
+    NSMutableArray *enabledPkgManagers = [NSMutableArray new];
+    NSArray *enabledKeys = [self.userDefaults valueForKey:@"enabledPkgManagers"] ?: @[];
+
+    [[self availablePackageManagers] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *key = obj[@"Key"];
+        if ([enabledKeys containsObject:key]) {
+            [enabledPkgManagers addObject:key];
+        }
+    }];
+
+    return enabledPkgManagers;
+}
+
+- (void)resetPackageManagers
+{
+    [self.userDefaults removeObjectForKey:@"enabledPkgManagers"];
+}
+
+- (void)resetSettings
+{
+    [self.userDefaults removeObjectForKey:@"debug"];
+    [self.userDefaults removeObjectForKey:@"tweaks"];
+    [self resetPackageManagers];
+}
+
+- (void)setPackageManager:(NSString*)key enabled:(BOOL)enabled
+{
+    NSMutableArray *pkgManagers = [self enabledPackageManagers];
+    
+    if (enabled && ![pkgManagers containsObject:key]) {
+        [pkgManagers addObject:key];
+    }
+    else if (!enabled && [pkgManagers containsObject:key]) {
+        [pkgManagers removeObject:key];
+    }
+
+    [self.userDefaults setObject:pkgManagers forKey:@"enabledPkgManagers"];
 }
 
 - (BOOL)isDebug

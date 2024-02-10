@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		040622AA2B77FE8E00393AAD /* DOPkgManagerPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 040622A92B77FE8E00393AAD /* DOPkgManagerPickerViewController.m */; };
 		042479A12B66916B0082581B /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0424796A2B66916B0082581B /* Settings.plist */; };
 		042479A22B66916B0082581B /* DOCreditsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424796B2B66916B0082581B /* DOCreditsViewController.m */; };
 		042479A32B66916B0082581B /* DOSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424796C2B66916B0082581B /* DOSettingsController.m */; };
@@ -36,6 +37,9 @@
 		04C2469C2B73220400E17924 /* DOUpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246982B73220400E17924 /* DOUpdateViewController.m */; };
 		04C2469D2B73220400E17924 /* DOUpdateCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246992B73220400E17924 /* DOUpdateCircleView.m */; };
 		04C246A12B73225800E17924 /* DODownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246A02B73225800E17924 /* DODownloadViewController.m */; };
+		04C246AE2B74ACA200E17924 /* DOAppSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246AD2B74ACA200E17924 /* DOAppSwitch.m */; };
+		04C246B12B74B05800E17924 /* DOPkgManagerPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246B02B74B05800E17924 /* DOPkgManagerPickerView.m */; };
+		04C246B32B74B65900E17924 /* PkgManagers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 04C246B22B74B65900E17924 /* PkgManagers.plist */; };
 		8C029F432B4DFD5D0071DE58 /* ExploitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F422B4DFD5D0071DE58 /* ExploitManager.m */; };
 		8C029F462B4DFD910071DE58 /* Bootstrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F452B4DFD910071DE58 /* Bootstrapper.m */; };
 		8C029F4E2B4E1FF30071DE58 /* Exploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F4D2B4E1FF30071DE58 /* Exploit.m */; };
@@ -160,6 +164,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		040622A82B77FE8E00393AAD /* DOPkgManagerPickerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOPkgManagerPickerViewController.h; sourceTree = "<group>"; };
+		040622A92B77FE8E00393AAD /* DOPkgManagerPickerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOPkgManagerPickerViewController.m; sourceTree = "<group>"; };
 		042479682B66916B0082581B /* DOJailbreakButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOJailbreakButton.h; sourceTree = "<group>"; };
 		0424796A2B66916B0082581B /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
 		0424796B2B66916B0082581B /* DOCreditsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOCreditsViewController.m; sourceTree = "<group>"; };
@@ -217,6 +223,11 @@
 		04C2469B2B73220400E17924 /* DOUpdateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOUpdateViewController.h; sourceTree = "<group>"; };
 		04C2469F2B73225800E17924 /* DODownloadViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DODownloadViewController.h; sourceTree = "<group>"; };
 		04C246A02B73225800E17924 /* DODownloadViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DODownloadViewController.m; sourceTree = "<group>"; };
+		04C246AC2B74ACA200E17924 /* DOAppSwitch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOAppSwitch.h; sourceTree = "<group>"; };
+		04C246AD2B74ACA200E17924 /* DOAppSwitch.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOAppSwitch.m; sourceTree = "<group>"; };
+		04C246AF2B74B05800E17924 /* DOPkgManagerPickerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOPkgManagerPickerView.h; sourceTree = "<group>"; };
+		04C246B02B74B05800E17924 /* DOPkgManagerPickerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOPkgManagerPickerView.m; sourceTree = "<group>"; };
+		04C246B22B74B65900E17924 /* PkgManagers.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PkgManagers.plist; sourceTree = "<group>"; };
 		8C029F412B4DFD5D0071DE58 /* ExploitManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploitManager.h; sourceTree = "<group>"; };
 		8C029F422B4DFD5D0071DE58 /* ExploitManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploitManager.m; sourceTree = "<group>"; };
 		8C029F442B4DFD910071DE58 /* Bootstrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bootstrapper.h; sourceTree = "<group>"; };
@@ -350,6 +361,7 @@
 		042479672B66916B0082581B /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				04C246A22B74ABD600E17924 /* PkgManagers */,
 				042479792B66916B0082581B /* Transition */,
 				042479692B66916B0082581B /* Settings */,
 				0424798A2B66916B0082581B /* Log */,
@@ -421,8 +433,8 @@
 				042479942B66916B0082581B /* DOLyricsLogView.m */,
 				0424798B2B66916B0082581B /* DOLyricsLogItemView.h */,
 				042479972B66916B0082581B /* DOLyricsLogItemView.m */,
-				042479962B66916B0082581B /* DOProgressiveBlurView.m */,
 				042479912B66916B0082581B /* DOProgressiveBlurView.h */,
+				042479962B66916B0082581B /* DOProgressiveBlurView.m */,
 				042479952B66916B0082581B /* DODebugLogView.m */,
 				042479922B66916B0082581B /* DODebugLogView.h */,
 				042479932B66916B0082581B /* DOLogViewProtocol.h */,
@@ -466,6 +478,20 @@
 			name = Update;
 			path = Dopamine/UI/Update;
 			sourceTree = SOURCE_ROOT;
+		};
+		04C246A22B74ABD600E17924 /* PkgManagers */ = {
+			isa = PBXGroup;
+			children = (
+				04C246AC2B74ACA200E17924 /* DOAppSwitch.h */,
+				04C246AD2B74ACA200E17924 /* DOAppSwitch.m */,
+				04C246AF2B74B05800E17924 /* DOPkgManagerPickerView.h */,
+				04C246B02B74B05800E17924 /* DOPkgManagerPickerView.m */,
+				040622A82B77FE8E00393AAD /* DOPkgManagerPickerViewController.h */,
+				040622A92B77FE8E00393AAD /* DOPkgManagerPickerViewController.m */,
+				04C246B22B74B65900E17924 /* PkgManagers.plist */,
+			);
+			path = PkgManagers;
+			sourceTree = "<group>";
 		};
 		8C029F402B4DFCFE0071DE58 /* Jailbreak */ = {
 			isa = PBXGroup;
@@ -919,6 +945,7 @@
 				8CCD8A872B6F16CC004B72B0 /* libkrw-plugin.deb in Resources */,
 				8CCD8A882B6F16D0004B72B0 /* libroot.deb in Resources */,
 				8CB94F052B59E17A0098BAFD /* basebin.tar in Resources */,
+				04C246B32B74B65900E17924 /* PkgManagers.plist in Resources */,
 				8CB94F042B59E17A0098BAFD /* basebin.tc in Resources */,
 				8C7198282ABF0E84003C6658 /* LaunchScreen.storyboard in Resources */,
 				8C7198252ABF0E84003C6658 /* Assets.xcassets in Resources */,
@@ -1012,6 +1039,7 @@
 				042479A22B66916B0082581B /* DOCreditsViewController.m in Sources */,
 				042479B32B66916B0082581B /* DODebugLogView.m in Sources */,
 				042479AF2B66916B0082581B /* DONavigationController.m in Sources */,
+				04C246AE2B74ACA200E17924 /* DOAppSwitch.m in Sources */,
 				042479B22B66916B0082581B /* DOLyricsLogView.m in Sources */,
 				042479A52B66916B0082581B /* DOCreditsCell.m in Sources */,
 				042479B82B66916B0082581B /* DOMainViewController.m in Sources */,
@@ -1025,6 +1053,7 @@
 				8C71981A2ABF0E82003C6658 /* AppDelegate.m in Sources */,
 				042479B72B66916B0082581B /* DOActionMenuView.m in Sources */,
 				8C029F632B4E2E140071DE58 /* Jailbreaker.m in Sources */,
+				040622AA2B77FE8E00393AAD /* DOPkgManagerPickerViewController.m in Sources */,
 				042479A82B66916B0082581B /* DOPSListController.m in Sources */,
 				042479B12B66916B0082581B /* DODoubleHelixIndicator.m in Sources */,
 				042479A72B66916B0082581B /* DOButtonCell.m in Sources */,
@@ -1040,6 +1069,7 @@
 				042479B52B66916B0082581B /* DOLyricsLogItemView.m in Sources */,
 				8C029F4E2B4E1FF30071DE58 /* Exploit.m in Sources */,
 				04C2469D2B73220400E17924 /* DOUpdateCircleView.m in Sources */,
+				04C246B12B74B05800E17924 /* DOPkgManagerPickerView.m in Sources */,
 				042479B42B66916B0082581B /* DOProgressiveBlurView.m in Sources */,
 				04C2469C2B73220400E17924 /* DOUpdateViewController.m in Sources */,
 				042479B62B66916B0082581B /* DOActionMenuButton.m in Sources */,

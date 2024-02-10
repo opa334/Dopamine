@@ -12,6 +12,7 @@
 #import "GlobalAppearance.h"
 #import "DOActionMenuButton.h"
 #import "DOUpdateViewController.h"
+#import <pthread.h>
 
 @interface DOMainViewController ()
 
@@ -116,51 +117,16 @@
     NSString *jailbreakButtonTitle = isJailbroken ? @"Jailbroken" : @"Jailbreak";
     self.jailbreakBtn = [[DOJailbreakButton alloc] initWithAction: [UIAction actionWithTitle:jailbreakButtonTitle image:[UIImage systemImageNamed:@"lock.open" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"jailbreak" handler:^(__kindof UIAction * _Nonnull action) {
         [actionView hide];
-        [self.jailbreakBtn showLog: self.jailbreakButtonConstraints];
+        [self.jailbreakBtn expandButton: self.jailbreakButtonConstraints];
 
         self.updateButton.userInteractionEnabled = NO;
         [UIView animateWithDuration:0.75 delay:0 usingSpringWithDamping:0.9 initialSpringVelocity:2.0  options: UIViewAnimationOptionCurveEaseInOut animations:^{
             [headerView setTransform:CGAffineTransformMakeTranslation(0, -25)];
             self.updateButton.alpha = 0;
         } completion:nil];
-
         
-        Jailbreaker *jailbreaker = [[Jailbreaker alloc] init];
-
-        // [self simulateJailbreak];return;
-        [[DOUIManager sharedInstance] startLogCapture];
+        [self startJailbreak];
         
-        //dispatch async so the UI can update as this blocks the main thread
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-            NSError *error = [jailbreaker run];
-            NSString *title;
-            NSString *message;
-            
-            if (error) {
-                NSLog(@"FAIL: %@", error);
-                title = @"Error";
-                message = error.localizedDescription;
-            }
-            else {
-                title = @"Success";
-                message = @"";
-                [[DOUIManager sharedInstance] completeJailbreak];
-            }
-
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-                //UIAlertAction *viewLogAction = [UIAlertAction actionWithTitle:@"View Log" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}];
-                //[alertController addAction:viewLogAction];
-                UIAlertAction *doneAction = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
-                    if (!error) {
-                        [jailbreaker finalize];
-                    }
-                }];
-                [alertController addAction:doneAction];
-                
-                [self presentViewController:alertController animated:YES completion:nil];
-            });
-        });
     }]];
     self.jailbreakBtn.enabled = !isJailbroken;
 
@@ -183,8 +149,58 @@
     
 }
 
+-(void)startJailbreak
+{
+    Jailbreaker *jailbreaker = [[Jailbreaker alloc] init];
+
+    [[DOUIManager sharedInstance] startLogCapture];
+    
+    //dispatch async so the UI can update as this blocks the main thread
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+
+        //We need to get the preconfig mutex to start the jailbreak (self.jailbreakBtn.canStartJailbreak)
+        [self.jailbreakBtn lockMutex];
+
+//        [self simulateJailbreak];return;
+
+        NSError *error = [jailbreaker run];
+        NSString *title;
+        NSString *message;
+        
+        if (error) {
+            NSLog(@"FAIL: %@", error);
+            title = @"Error";
+            message = error.localizedDescription;
+        }
+        else {
+            title = @"Success";
+            message = @"";
+            [[DOUIManager sharedInstance] completeJailbreak];
+        }
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+            //UIAlertAction *viewLogAction = [UIAlertAction actionWithTitle:@"View Log" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}];
+            //[alertController addAction:viewLogAction];
+            UIAlertAction *doneAction = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+                if (!error) {
+                    [jailbreaker finalize];
+                }
+            }];
+            [alertController addAction:doneAction];
+            
+            [self presentViewController:alertController animated:YES completion:nil];
+        });
+        
+        [self.jailbreakBtn unlockMutex];
+    });
+}
+
 -(void)setupUpdateAvailable
 {
+    if (self.jailbreakBtn.didExpand)
+        return;
+        
     self.updateButton = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:@"Update Available" image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"update-available" handler:^(__kindof UIAction * _Nonnull action) {
         [(UINavigationController*)(self.parentViewController) pushViewController:[[DOUpdateViewController alloc] init] animated:YES];
     }] chevron:NO];

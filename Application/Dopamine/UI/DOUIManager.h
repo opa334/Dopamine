@@ -11,18 +11,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#define kSileoPackageManager @"Sileo"
-#define kZebraPackageManager @"Zebra"
-
-
 @interface DOUIManager : NSObject
 
 @property (nonatomic, retain) NSUserDefaults *userDefaults;
 @property (nonatomic, retain) NSObject<DOLogViewProtocol> *logView;
 
-+(id)sharedInstance;
++ (id)sharedInstance;
 
-- (NSArray*)availablePackageManagers;
 - (BOOL)isDebug;
 - (void)sendLog:(NSString*)log debug:(BOOL)debug update:(BOOL)update;
 - (void)sendLog:(NSString*)log debug:(BOOL)debug;
@@ -30,6 +25,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startLogCapture;
 - (BOOL)isUpdateAvailable;
 - (NSArray *)getLatestReleases;
+- (NSArray*)availablePackageManagers;
+- (NSArray*)enabledPackageManagers;
+- (void)resetPackageManagers;
+- (void)resetSettings;
+- (void)setPackageManager:(NSString*)key enabled:(BOOL)enabled;
 
 @end
 
