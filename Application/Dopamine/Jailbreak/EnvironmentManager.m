@@ -66,10 +66,43 @@
         NSString *activePrebootPath = [self activePrebootPath];
         
         NSString *randomizedJailbreakPath;
+        
+        // First attempt at finding jailbreak root, look for Dopamine 2.x path
         for (NSString *subItem in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:activePrebootPath error:nil]) {
-            if (subItem.length == 9 && [subItem hasPrefix:@"jb-"]) {
+            if (subItem.length == 15 && [subItem hasPrefix:@"dopamine-"]) {
                 randomizedJailbreakPath = [activePrebootPath stringByAppendingPathComponent:subItem];
                 break;
+            }
+        }
+        
+        // Second attempt at finding jailbreak root, look for Dopamine 1.x path, but as other jailbreaks use it too, make sure it is Dopamine
+        // Some other jailbreaks also commit the sin of creating .installed_dopamine, for these we try to filter them out by checking for their installed_ file
+        // If we find this and are sure it's from Dopamine 1.x, rename it so all Dopamine 2.x users will have the same path
+        for (NSString *subItem in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:activePrebootPath error:nil]) {
+            if (subItem.length == 9 && [subItem hasPrefix:@"jb-"]) {
+                NSString *candidateLegacyPath = [activePrebootPath stringByAppendingPathComponent:subItem];
+                
+                BOOL installedDopamine = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.installed_dopamine"]];
+                
+                if (installedDopamine) {
+                    // Hopefully all other jailbreaks that use jb-<UUID>?
+                    // These checks exist because of dumb users (and jailbreak developers) creating .installed_dopamine on jailbreaks that are NOT dopamine...
+                    BOOL installedNekoJB = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.installed_nekojb"]];
+                    BOOL installedDefinitelyNotAGoodName = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.xia0o0o0o_jb_installed"]];
+                    BOOL installedPalera1n = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.palecursus_strapped"]];
+                    if (installedNekoJB || installedPalera1n || installedDefinitelyNotAGoodName) {
+                        continue;
+                    }
+                    
+                    // At this point we can be sure we found a Dopamine 1.x jailbreak root
+                    // Rename it to the 2.x path, then use it
+                    NSString *newPath = [[candidateLegacyPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:[candidateLegacyPath.lastPathComponent stringByReplacingOccurrencesOfString:@"jb-" withString:@"dopamine-"]];
+
+                    if ([[NSFileManager defaultManager] moveItemAtPath:candidateLegacyPath toPath:newPath error:nil]) {
+                        randomizedJailbreakPath = newPath;
+                        break;
+                    }
+                }
             }
         }
 
@@ -83,7 +116,7 @@
                 [randomString appendFormat:@"%C", randomCharacter];
             }
             
-            NSString *randomJailbreakFolderName = [NSString stringWithFormat:@"jb-%@", randomString];
+            NSString *randomJailbreakFolderName = [NSString stringWithFormat:@"dopamine-%@", randomString];
             randomizedJailbreakPath = [activePrebootPath stringByAppendingPathComponent:randomJailbreakFolderName];
         }
         
