@@ -7,8 +7,8 @@
 
 #import "DOMainViewController.h"
 #import "DOUIManager.h"
-#import "EnvironmentManager.h"
-#import "Jailbreaker.h"
+#import "DOEnvironmentManager.h"
+#import "DOJailbreaker.h"
 #import "GlobalAppearance.h"
 #import "DOActionMenuButton.h"
 #import "DOUpdateViewController.h"
@@ -70,7 +70,7 @@
 
     //Header
     DOHeaderView *headerView = [[DOHeaderView alloc] initWithImage: [UIImage imageNamed:@"Dopamine"] subtitles: @[
-        [GlobalAppearance mainSubtitleString:[[EnvironmentManager sharedManager] versionSupportString]],
+        [GlobalAppearance mainSubtitleString:[[DOEnvironmentManager sharedManager] versionSupportString]],
         [GlobalAppearance secondarySubtitleString:@"by opa334, ElleKit by évelyne"],
     ]];
     
@@ -87,10 +87,10 @@
             [(UINavigationController*)(self.parentViewController) pushViewController:[[DOSettingsController alloc] init] animated:YES];
         }],
         [UIAction actionWithTitle:@"Respring" image:[UIImage systemImageNamed:@"arrow.clockwise" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"respring" handler:^(__kindof UIAction * _Nonnull action) {
-            [[EnvironmentManager sharedManager] respring];
+            [[DOEnvironmentManager sharedManager] respring];
         }],
         [UIAction actionWithTitle:@"Reboot Userspace" image:[UIImage systemImageNamed:@"arrow.clockwise.circle" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"reboot-userspace" handler:^(__kindof UIAction * _Nonnull action) {
-            [[EnvironmentManager sharedManager] rebootUserspace];
+            [[DOEnvironmentManager sharedManager] rebootUserspace];
         }],
         [UIAction actionWithTitle:@"Credits" image:[UIImage systemImageNamed:@"info.circle" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"credits" handler:^(__kindof UIAction * _Nonnull action) {
             [(UINavigationController*)(self.parentViewController) pushViewController:[[DOCreditsViewController alloc] init] animated:YES];
@@ -113,7 +113,7 @@
     ]];
     
     //Jailbreak Button
-    BOOL isJailbroken = [[EnvironmentManager sharedManager] isJailbroken];
+    BOOL isJailbroken = [[DOEnvironmentManager sharedManager] isJailbroken];
     NSString *jailbreakButtonTitle = isJailbroken ? @"Jailbroken" : @"Jailbreak";
     self.jailbreakBtn = [[DOJailbreakButton alloc] initWithAction: [UIAction actionWithTitle:jailbreakButtonTitle image:[UIImage systemImageNamed:@"lock.open" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"jailbreak" handler:^(__kindof UIAction * _Nonnull action) {
         [actionView hide];
@@ -151,7 +151,7 @@
 
 -(void)startJailbreak
 {
-    Jailbreaker *jailbreaker = [[Jailbreaker alloc] init];
+    DOJailbreaker *jailbreaker = [[DOJailbreaker alloc] init];
 
     [[DOUIManager sharedInstance] startLogCapture];
     
@@ -269,7 +269,7 @@
 - (BOOL)actionMenuActionIsEnabled:(UIAction *)action
 {
     if ([action.identifier isEqualToString:@"respring"] || [action.identifier isEqualToString:@"reboot-userspace"]) {
-        return [[EnvironmentManager sharedManager] isJailbroken];
+        return [[DOEnvironmentManager sharedManager] isJailbroken];
     }
     return YES;
 }

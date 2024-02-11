@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Bootstrapper : NSObject <NSURLSessionDelegate, NSURLSessionDownloadDelegate>
+@interface DOBootstrapper : NSObject <NSURLSessionDelegate, NSURLSessionDownloadDelegate>
 {
     NSURLSession *_urlSession;
     NSURLSessionDownloadTask *_bootstrapDownloadTask;

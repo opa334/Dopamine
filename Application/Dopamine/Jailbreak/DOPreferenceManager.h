@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PreferenceManager : NSObject
+@interface DOPreferenceManager : NSObject
 
 @end
 

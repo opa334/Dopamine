@@ -5,9 +5,9 @@
 //  Created by Lars Fröder on 10.01.24.
 //
 
-#import "Jailbreaker.h"
-#import "EnvironmentManager.h"
-#import "ExploitManager.h"
+#import "DOJailbreaker.h"
+#import "DOEnvironmentManager.h"
+#import "DOExploitManager.h"
 #import "DOUIManager.h"
 #import <sys/stat.h>
 #import <compression.h>
@@ -48,11 +48,11 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     JBErrorCodeFailedInitFakeLib             = -12,
 };
 
-@implementation Jailbreaker
+@implementation DOJailbreaker
 
 - (NSError *)gatherSystemInformation
 {
-    NSString *kernelPath = [[EnvironmentManager sharedManager] accessibleKernelPath];
+    NSString *kernelPath = [[DOEnvironmentManager sharedManager] accessibleKernelPath];
     if (!kernelPath) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedToFindKernel userInfo:@{NSLocalizedDescriptionKey:@"Failed to find kernelcache"}];
     NSLog(@"Kernel at %s", kernelPath.UTF8String);
     
@@ -119,7 +119,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (NSError *)doExploitation
 {
-    Exploit *kernelExploit = [ExploitManager sharedManager].preferredKernelExploit;
+    DOExploit *kernelExploit = [DOExploitManager sharedManager].preferredKernelExploit;
     
     [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:@"Exploiting Kernel (%@)", kernelExploit.name] debug:NO];
 
@@ -130,7 +130,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     libjailbreak_translation_init();
     libjailbreak_IOSurface_primitives_init();
     
-    Exploit *pacBypass = [ExploitManager sharedManager].preferredPACBypass;
+    DOExploit *pacBypass = [DOExploitManager sharedManager].preferredPACBypass;
     if (pacBypass) {
         [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:@"Bypassing PAC (%@)", pacBypass.name] debug:NO];
         if ([pacBypass load] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PAC bypass: %s", dlerror()]}];};
@@ -139,8 +139,8 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         gSystemInfo.jailbreakInfo.usesPACBypass = true;
     }
 
-    if ([[EnvironmentManager sharedManager] isPPLBypassRequired]) {
-        Exploit *pplBypass = [ExploitManager sharedManager].preferredPPLBypass;
+    if ([[DOEnvironmentManager sharedManager] isPPLBypassRequired]) {
+        DOExploit *pplBypass = [DOExploitManager sharedManager].preferredPPLBypass;
         [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:@"Bypassing PPL (%@)", pplBypass.name] debug:NO];
         if ([pplBypass load] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PPL bypass: %s", dlerror()]}];};
         if ([pplBypass run] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PPL"}];}
@@ -166,7 +166,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (NSError *)cleanUpExploits
 {
-    int r = [[ExploitManager sharedManager] cleanUpExploits];
+    int r = [[DOExploitManager sharedManager] cleanUpExploits];
     if (r != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedCleanup userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to cleanup exploits: %d", r]}];
     return nil;
 }
@@ -341,7 +341,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (NSError *)finalizeBootstrapIfNeeded
 {
-    return [[EnvironmentManager sharedManager] finalizeBootstrap];
+    return [[DOEnvironmentManager sharedManager] finalizeBootstrap];
 }
 
 - (NSError *)run
@@ -362,9 +362,9 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (err) return err;
 
     // Now that we are unsandboxed, populate the jailbreak root path
-    [[EnvironmentManager sharedManager] determineJailbreakRootPath];
+    [[DOEnvironmentManager sharedManager] determineJailbreakRootPath];
     
-    err = [[EnvironmentManager sharedManager] prepareBootstrap];
+    err = [[DOEnvironmentManager sharedManager] prepareBootstrap];
     if (err) return err;
     setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/jb/sbin:/var/jb/bin:/var/jb/usr/sbin:/var/jb/usr/bin", 1);
     setenv("TERM", "xterm-256color", 1);

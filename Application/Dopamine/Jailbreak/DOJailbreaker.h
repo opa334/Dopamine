@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Jailbreaker : NSObject
+@interface DOJailbreaker : NSObject
 {
     xpc_object_t _systemInfoXdict;
 }

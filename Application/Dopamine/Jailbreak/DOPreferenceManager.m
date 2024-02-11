@@ -5,8 +5,8 @@
 //  Created by Lars Fröder on 13.01.24.
 //
 
-#import "PreferenceManager.h"
+#import "DOPreferenceManager.h"
 
-@implementation PreferenceManager
+@implementation DOPreferenceManager
 
 @end

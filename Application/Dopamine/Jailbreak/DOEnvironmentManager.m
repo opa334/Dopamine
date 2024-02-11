@@ -5,7 +5,7 @@
 //  Created by Lars Fröder on 10.01.24.
 //
 
-#import "EnvironmentManager.h"
+#import "DOEnvironmentManager.h"
 
 #import <sys/sysctl.h>
 #import <libgrabkernel/libgrabkernel.h>
@@ -17,16 +17,16 @@
 #import "DOUIManager.h"
 #import "NSData+Hex.h"
 
-@implementation EnvironmentManager
+@implementation DOEnvironmentManager
 
 @synthesize bootManifestHash = _bootManifestHash;
 
 + (instancetype)sharedManager
 {
-    static EnvironmentManager *shared;
+    static DOEnvironmentManager *shared;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        shared = [[EnvironmentManager alloc] init];
+        shared = [[DOEnvironmentManager alloc] init];
     });
     return shared;
 }
@@ -35,7 +35,7 @@
 {
     self = [super init];
     if (self) {
-        _bootstrapper = [[Bootstrapper alloc] init];
+        _bootstrapper = [[DOBootstrapper alloc] init];
         if ([self isJailbroken]) {
             const char *jbRoot = jbclient_get_jbroot();
             gSystemInfo.jailbreakInfo.rootPath = jbRoot ? strdup(jbRoot) : NULL;
