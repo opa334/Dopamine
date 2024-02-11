@@ -19,6 +19,8 @@
 @property DOJailbreakButton *jailbreakBtn;
 @property NSArray<NSLayoutConstraint *> *jailbreakButtonConstraints;
 @property DOActionMenuButton *updateButton;
+@property(nonatomic) BOOL hideStatusBar;
+@property(nonatomic) BOOL hideHomeIndicator;
 
 @end
 
@@ -160,37 +162,31 @@
 
         //We need to get the preconfig mutex to start the jailbreak (self.jailbreakBtn.canStartJailbreak)
         [self.jailbreakBtn lockMutex];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.hideHomeIndicator = YES;
+        });
 
 //        [self simulateJailbreak];return;
 
         NSError *error = [jailbreaker run];
-        NSString *title;
-        NSString *message;
-        
-        if (error) {
-            NSLog(@"FAIL: %@", error);
-            title = @"Error";
-            message = error.localizedDescription;
-        }
-        else {
-            title = @"Success";
-            message = @"";
-            [[DOUIManager sharedInstance] completeJailbreak];
-        }
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-            //UIAlertAction *viewLogAction = [UIAlertAction actionWithTitle:@"View Log" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}];
-            //[alertController addAction:viewLogAction];
-            UIAlertAction *doneAction = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
-                if (!error) {
+            if (error) {
+                NSLog(@"FAIL: %@", error);
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *doneAction = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:nil];
+                [alertController addAction:doneAction];
+                [self presentViewController:alertController animated:YES completion:nil];
+            }
+            else {
+                [[DOUIManager sharedInstance] completeJailbreak];
+                [self fadeToBlack: ^{
                     [jailbreaker finalize];
-                }
-            }];
-            [alertController addAction:doneAction];
-            
-            [self presentViewController:alertController animated:YES completion:nil];
+                }];
+            }
         });
+
         
         [self.jailbreakBtn unlockMutex];
     });
@@ -235,6 +231,9 @@
         [uiManager completeJailbreak];
         [uiManager sendLog:@"Rebooting Userspace" debug: NO];
         didFinish = YES;
+        [self fadeToBlack: ^{
+
+        }];
     });
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -256,6 +255,26 @@
         }
     });
 }
+
+- (void)fadeToBlack:(void (^)(void))completion
+{
+    UIView *mainView = self.parentViewController.view;
+    float deviceCornerRadius = [[[UIScreen mainScreen] valueForKey:@"_displayCornerRadius"] floatValue];
+
+    mainView.layer.cornerRadius = deviceCornerRadius;
+    mainView.layer.cornerCurve = kCACornerCurveContinuous;
+    mainView.layer.masksToBounds = YES;
+    
+    self.hideStatusBar = YES;
+
+    [UIView animateWithDuration:0.5 delay:0 usingSpringWithDamping:0.9 initialSpringVelocity:2.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+        mainView.transform = CGAffineTransformMakeScale(0.9, 0.9);
+        mainView.alpha = 0.0;
+    } completion:^(BOOL success) {
+        completion();
+    }];
+}
+
 
 
 #pragma mark - Action Menu Delegate
@@ -279,6 +298,28 @@
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
     return UIStatusBarStyleLightContent;
+}
+
+- (BOOL)prefersStatusBarHidden
+{
+    return self.hideStatusBar;
+}
+
+- (BOOL)prefersHomeIndicatorAutoHidden
+{
+    return self.hideHomeIndicator;
+}
+
+- (void)setHideStatusBar:(BOOL)hideStatusBar
+{
+    _hideStatusBar = hideStatusBar;
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
+- (void)setHideHomeIndicator:(BOOL)hideHomeIndicator
+{
+    _hideHomeIndicator = hideHomeIndicator;
+    [self setNeedsUpdateOfHomeIndicatorAutoHidden];
 }
 
 @end
