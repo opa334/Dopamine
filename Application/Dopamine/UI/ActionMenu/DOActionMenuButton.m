@@ -21,6 +21,7 @@
 +(DOActionMenuButton*)buttonWithAction:(UIAction *)action chevron:(BOOL)chevron
 {
     DOActionMenuButton *button = [DOActionMenuButton buttonWithConfiguration:[DOGlobalAppearance defaultButtonConfiguration] primaryAction:action];
+    [button.titleLabel setAdjustsFontSizeToFitWidth:YES];
     [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
 
     if (chevron)
