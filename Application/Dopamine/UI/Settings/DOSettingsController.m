@@ -113,25 +113,36 @@
             [specifiers addObject:exploitGroupSpecifier];
         
             PSSpecifier *kernelExploitSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Kernel Exploit" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
+            [kernelExploitSpecifier setProperty:@YES forKey:@"enabled"];
+            [kernelExploitSpecifier setProperty:exploitManager.preferredKernelExploit.identfier forKey:@"default"];
             kernelExploitSpecifier.detailControllerClass = [DOPSListItemsController class];
             [kernelExploitSpecifier setProperty:@"availableKernelExploitIdentifiers" forKey:@"valuesDataSource"];
             [kernelExploitSpecifier setProperty:@"availableKernelExploitNames" forKey:@"titlesDataSource"];
-            [kernelExploitSpecifier setProperty:@YES forKey:@"enabled"];
+            [kernelExploitSpecifier setProperty:@"selectedKernelExploit" forKey:@"key"];
             [specifiers addObject:kernelExploitSpecifier];
             
             if (envManager.isArm64e) {
                 PSSpecifier *pacBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:@"PAC Bypass" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
                 [pacBypassSpecifier setProperty:@YES forKey:@"enabled"];
+                if (!envManager.isPACBypassRequired) {
+                    [pacBypassSpecifier setProperty:@"none" forKey:@"default"];
+                }
+                else {
+                    [pacBypassSpecifier setProperty:exploitManager.preferredPACBypass.identfier forKey:@"default"];
+                }
                 pacBypassSpecifier.detailControllerClass = [DOPSListItemsController class];
                 [pacBypassSpecifier setProperty:@"availablePACBypassIdentifiers" forKey:@"valuesDataSource"];
                 [pacBypassSpecifier setProperty:@"availablePACBypassNames" forKey:@"titlesDataSource"];
+                [pacBypassSpecifier setProperty:@"selectedPACBypass" forKey:@"key"];
                 [specifiers addObject:pacBypassSpecifier];
                 
                 PSSpecifier *pplBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:@"PPL Bypass" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
                 [pplBypassSpecifier setProperty:@YES forKey:@"enabled"];
+                [pplBypassSpecifier setProperty:exploitManager.preferredPPLBypass.identfier forKey:@"default"];
                 pplBypassSpecifier.detailControllerClass = [DOPSListItemsController class];
                 [pplBypassSpecifier setProperty:@"availablePPLBypassIdentifiers" forKey:@"valuesDataSource"];
                 [pplBypassSpecifier setProperty:@"availablePPLBypassNames" forKey:@"titlesDataSource"];
+                [pplBypassSpecifier setProperty:@"selectedPPLBypass" forKey:@"key"];
                 [specifiers addObject:pplBypassSpecifier];
             }
         }
@@ -212,11 +223,13 @@
 }
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
-    [[DOPreferenceManager sharedManager] setPreferenceValue:value forKey:[specifier propertyForKey:@"key"]];
+    NSString *key = [specifier propertyForKey:@"key"];
+    [[DOPreferenceManager sharedManager] setPreferenceValue:value forKey:key];
 }
 
 - (id)readPreferenceValue:(PSSpecifier*)specifier {
-    id value = [[DOPreferenceManager sharedManager] preferenceValueForKey:[specifier propertyForKey:@"key"]];
+    NSString *key = [specifier propertyForKey:@"key"];
+    id value = [[DOPreferenceManager sharedManager] preferenceValueForKey:key];
     if (!value) {
         return [specifier propertyForKey:@"default"];
     }
@@ -225,15 +238,13 @@
 
 #pragma mark - Button Actions
 
-- (void)hideJailbreak
+- (void)toggleJailbreakHidden
 {
-    //TODO
     NSLog(@"Hide Jailbreak");
 }
 
 - (void)removeJailbreak
 {
-    //TODO
     NSLog(@"Remove Jailbreak");
 }
 

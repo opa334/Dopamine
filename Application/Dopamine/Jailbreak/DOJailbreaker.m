@@ -119,10 +119,20 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (NSError *)doExploitation
 {
-    DOExploit *kernelExploit = [DOExploitManager sharedManager].preferredKernelExploit;
+    DOExploit *kernelExploit = [DOExploitManager sharedManager].selectedKernelExploit;
+    DOExploit *pacBypass = [DOExploitManager sharedManager].selectedPACBypass;
+    DOExploit *pplBypass = [DOExploitManager sharedManager].selectedPPLBypass;
+    if (!kernelExploit) {
+        return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Kernel exploit is required but we did not find any"}];
+    }
+    if (!pacBypass && [DOEnvironmentManager sharedManager].isPACBypassRequired) {
+        return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"PAC bypass is required but we did not find any"}];
+    }
+    if (!pplBypass && [DOEnvironmentManager sharedManager].isPPLBypassRequired) {
+        return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"PPL bypass is required but we did not find any"}];
+    }
     
     [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:@"Exploiting Kernel (%@)", kernelExploit.name] debug:NO];
-
     if ([kernelExploit load] != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load kernel exploit: %s", dlerror()]}];
     if ([kernelExploit run] != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to exploit kernel"}];
     
@@ -130,7 +140,6 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     libjailbreak_translation_init();
     libjailbreak_IOSurface_primitives_init();
     
-    DOExploit *pacBypass = [DOExploitManager sharedManager].preferredPACBypass;
     if (pacBypass) {
         [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:@"Bypassing PAC (%@)", pacBypass.name] debug:NO];
         if ([pacBypass load] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PAC bypass: %s", dlerror()]}];};
@@ -140,7 +149,6 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     }
 
     if ([[DOEnvironmentManager sharedManager] isPPLBypassRequired]) {
-        DOExploit *pplBypass = [DOExploitManager sharedManager].preferredPPLBypass;
         [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:@"Bypassing PPL (%@)", pplBypass.name] debug:NO];
         if ([pplBypass load] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PPL bypass: %s", dlerror()]}];};
         if ([pplBypass run] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PPL"}];}
