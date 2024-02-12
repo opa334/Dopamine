@@ -8,7 +8,7 @@
 #import <UIKit/UIKit.h>
 #import "DOActionMenuDelegate.h"
 #import "DOHeaderView.h"
-#import "GlobalAppearance.h"
+#import "DOGlobalAppearance.h"
 #import "DOActionMenuView.h"
 #import "DOCreditsViewController.h"
 #import "DOSettingsController.h"

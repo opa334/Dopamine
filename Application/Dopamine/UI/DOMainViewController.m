@@ -9,7 +9,7 @@
 #import "DOUIManager.h"
 #import "DOEnvironmentManager.h"
 #import "DOJailbreaker.h"
-#import "GlobalAppearance.h"
+#import "DOGlobalAppearance.h"
 #import "DOActionMenuButton.h"
 #import "DOUpdateViewController.h"
 #import <pthread.h>
@@ -44,7 +44,7 @@
 
     [NSLayoutConstraint activateConstraints:@[
         [stackView.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor constant:statusBarHeight],//-35
-        [stackView.heightAnchor constraintEqualToAnchor:self.view.heightAnchor multiplier:[GlobalAppearance isHomeButtonDevice] ? 0.78 : 0.73]
+        [stackView.heightAnchor constraintEqualToAnchor:self.view.heightAnchor multiplier:[DOGlobalAppearance isHomeButtonDevice] ? 0.78 : 0.73]
     ]];
 
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
@@ -70,8 +70,8 @@
 
     //Header
     DOHeaderView *headerView = [[DOHeaderView alloc] initWithImage: [UIImage imageNamed:@"Dopamine"] subtitles: @[
-        [GlobalAppearance mainSubtitleString:[[DOEnvironmentManager sharedManager] versionSupportString]],
-        [GlobalAppearance secondarySubtitleString:@"by opa334, ElleKit by évelyne"],
+        [DOGlobalAppearance mainSubtitleString:[[DOEnvironmentManager sharedManager] versionSupportString]],
+        [DOGlobalAppearance secondarySubtitleString:@"by opa334, ElleKit by évelyne"],
     ]];
     
     [stackView addArrangedSubview:headerView];
@@ -83,16 +83,16 @@
     
     //Action Menu
     DOActionMenuView *actionView = [[DOActionMenuView alloc] initWithActions:@[
-        [UIAction actionWithTitle:@"Settings" image:[UIImage systemImageNamed:@"gearshape" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"settings" handler:^(__kindof UIAction * _Nonnull action) {
+        [UIAction actionWithTitle:@"Settings" image:[UIImage systemImageNamed:@"gearshape" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"settings" handler:^(__kindof UIAction * _Nonnull action) {
             [(UINavigationController*)(self.parentViewController) pushViewController:[[DOSettingsController alloc] init] animated:YES];
         }],
-        [UIAction actionWithTitle:@"Respring" image:[UIImage systemImageNamed:@"arrow.clockwise" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"respring" handler:^(__kindof UIAction * _Nonnull action) {
+        [UIAction actionWithTitle:@"Respring" image:[UIImage systemImageNamed:@"arrow.clockwise" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"respring" handler:^(__kindof UIAction * _Nonnull action) {
             [[DOEnvironmentManager sharedManager] respring];
         }],
-        [UIAction actionWithTitle:@"Reboot Userspace" image:[UIImage systemImageNamed:@"arrow.clockwise.circle" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"reboot-userspace" handler:^(__kindof UIAction * _Nonnull action) {
+        [UIAction actionWithTitle:@"Reboot Userspace" image:[UIImage systemImageNamed:@"arrow.clockwise.circle" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"reboot-userspace" handler:^(__kindof UIAction * _Nonnull action) {
             [[DOEnvironmentManager sharedManager] rebootUserspace];
         }],
-        [UIAction actionWithTitle:@"Credits" image:[UIImage systemImageNamed:@"info.circle" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"credits" handler:^(__kindof UIAction * _Nonnull action) {
+        [UIAction actionWithTitle:@"Credits" image:[UIImage systemImageNamed:@"info.circle" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"credits" handler:^(__kindof UIAction * _Nonnull action) {
             [(UINavigationController*)(self.parentViewController) pushViewController:[[DOCreditsViewController alloc] init] animated:YES];
         }]
     ] delegate:self];
@@ -115,7 +115,7 @@
     //Jailbreak Button
     BOOL isJailbroken = [[DOEnvironmentManager sharedManager] isJailbroken];
     NSString *jailbreakButtonTitle = isJailbroken ? @"Jailbroken" : @"Jailbreak";
-    self.jailbreakBtn = [[DOJailbreakButton alloc] initWithAction: [UIAction actionWithTitle:jailbreakButtonTitle image:[UIImage systemImageNamed:@"lock.open" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"jailbreak" handler:^(__kindof UIAction * _Nonnull action) {
+    self.jailbreakBtn = [[DOJailbreakButton alloc] initWithAction: [UIAction actionWithTitle:jailbreakButtonTitle image:[UIImage systemImageNamed:@"lock.open" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"jailbreak" handler:^(__kindof UIAction * _Nonnull action) {
         [actionView hide];
         [self.jailbreakBtn expandButton: self.jailbreakButtonConstraints];
 
@@ -201,7 +201,7 @@
     if (self.jailbreakBtn.didExpand)
         return;
         
-    self.updateButton = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:@"Update Available" image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"update-available" handler:^(__kindof UIAction * _Nonnull action) {
+    self.updateButton = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:@"Update Available" image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"update-available" handler:^(__kindof UIAction * _Nonnull action) {
         [(UINavigationController*)(self.parentViewController) pushViewController:[[DOUpdateViewController alloc] init] animated:YES];
     }] chevron:NO];
 

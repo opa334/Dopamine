@@ -6,7 +6,7 @@
 //
 
 #import "DOActionMenuButton.h"
-#import "GlobalAppearance.h"
+#import "DOGlobalAppearance.h"
 
 @interface DOActionMenuButton () {
     UIView *_separator;
@@ -20,7 +20,7 @@
 
 +(DOActionMenuButton*)buttonWithAction:(UIAction *)action chevron:(BOOL)chevron
 {
-    DOActionMenuButton *button = [DOActionMenuButton buttonWithConfiguration:[GlobalAppearance defaultButtonConfiguration] primaryAction:action];
+    DOActionMenuButton *button = [DOActionMenuButton buttonWithConfiguration:[DOGlobalAppearance defaultButtonConfiguration] primaryAction:action];
     [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
 
     if (chevron)

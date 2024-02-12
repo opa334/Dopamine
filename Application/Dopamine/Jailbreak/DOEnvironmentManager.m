@@ -137,7 +137,6 @@
     size_t len = sizeof(cpusubtype);
     if (sysctlbyname("hw.cpusubtype", &cpusubtype, &len, NULL, 0) == -1) { return NO; }
     return (cpusubtype & ~CPU_SUBTYPE_MASK) == CPU_SUBTYPE_ARM64E;
-
 }
 
 - (NSString *)versionSupportString

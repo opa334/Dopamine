@@ -10,6 +10,13 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DOPreferenceManager : NSObject
+{
+    NSString *_preferencesPath;
+    NSMutableDictionary *_preferences;
+}
+
+- (NSObject *)preferenceValueForKey:(NSString *)key;
+- (void)setPreferenceValue:(NSObject *)obj forKey:(NSString *)key;
 
 @end
 

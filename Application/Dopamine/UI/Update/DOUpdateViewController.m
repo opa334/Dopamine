@@ -8,7 +8,7 @@
 #import "DOUpdateViewController.h"
 #import "DOUpdateCircleView.h"
 #import "DOActionMenuButton.h"
-#import "GlobalAppearance.h"
+#import "DOGlobalAppearance.h"
 #import "DODownloadViewController.h"
 #import "DOUIManager.h"
 
@@ -78,7 +78,7 @@
     self.gradientMask.locations = @[@0.0, @0.01, @0.5, @0.87];
     self.changelogSuperview.layer.mask = self.gradientMask;
     
-    self.button = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:@"Update" image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"update" handler:^(__kindof UIAction * _Nonnull action) {
+    self.button = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:@"Update" image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"update" handler:^(__kindof UIAction * _Nonnull action) {
         DODownloadViewController *downloadVC = [[DODownloadViewController alloc] initWithUrl:self.lastestDownloadUrl callback:^(NSURL * _Nonnull file) {
             NSLog(@"Downloaded %@", file);
         }];

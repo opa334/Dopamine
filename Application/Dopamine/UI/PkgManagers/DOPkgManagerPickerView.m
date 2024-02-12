@@ -9,7 +9,7 @@
 #import "DOAppSwitch.h"
 #import "DOUIManager.h"
 #import "DOActionMenuButton.h"
-#import "GlobalAppearance.h"
+#import "DOGlobalAppearance.h"
 
 @interface DOPkgManagerPickerView ()
 
@@ -32,7 +32,7 @@
 
         [NSLayoutConstraint activateConstraints:@[
             [switchStack.centerXAnchor constraintEqualToAnchor:self.centerXAnchor],
-            [switchStack.centerYAnchor constraintEqualToAnchor:self.centerYAnchor constant: -([GlobalAppearance isHomeButtonDevice] ? 0 : 10)]
+            [switchStack.centerYAnchor constraintEqualToAnchor:self.centerYAnchor constant: -([DOGlobalAppearance isHomeButtonDevice] ? 0 : 10)]
         ]];
 
         NSArray *packageManagers = [[DOUIManager sharedInstance] availablePackageManagers];
@@ -85,7 +85,7 @@
             [tooltip.widthAnchor constraintEqualToAnchor:switchStack.widthAnchor multiplier:1.25]
         ]];
         
-        self.continueAction = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:@"Continue" image:[UIImage systemImageNamed:@"arrow.right" withConfiguration:[GlobalAppearance smallIconImageConfiguration]] identifier:@"continue" handler:^(__kindof UIAction * _Nonnull action) {
+        self.continueAction = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:@"Continue" image:[UIImage systemImageNamed:@"arrow.right" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"continue" handler:^(__kindof UIAction * _Nonnull action) {
             callback(TRUE);
         }] chevron:NO];
         self.continueAction.layer.cornerRadius = 14.0;
@@ -98,7 +98,7 @@
         
         [NSLayoutConstraint activateConstraints:@[
             [self.continueAction.heightAnchor constraintEqualToConstant:50],
-            [self.continueAction.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-PADDING_BTN_CONTINUE - ([GlobalAppearance isHomeButtonDevice] ? 0 : 10)],
+            [self.continueAction.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-PADDING_BTN_CONTINUE - ([DOGlobalAppearance isHomeButtonDevice] ? 0 : 10)],
             [self.continueAction.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:PADDING_BTN_CONTINUE],
             [self.continueAction.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-PADDING_BTN_CONTINUE]
         ]];
