@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)prepareBootstrapWithCompletion:(void (^)(NSError *))completion;
 - (NSError *)finalizeBootstrap;
+- (NSError *)deleteBootstrap;
 
 @end
 

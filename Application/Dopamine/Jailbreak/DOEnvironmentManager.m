@@ -19,6 +19,8 @@
 #import "DOExploitManager.h"
 #import "NSData+Hex.h"
 
+int reboot3(uint64_t flags, ...);
+
 @implementation DOEnvironmentManager
 
 @synthesize bootManifestHash = _bootManifestHash;
@@ -238,6 +240,61 @@
     }];
 }
 
+- (void)reboot
+{
+    [self runAsRoot:^{
+        [self runUnsandboxed:^{
+            reboot3(0x8000000000000000, 0);
+        }];
+    }];
+}
+
+- (void)setTweakInjectionEnabled:(BOOL)enabled
+{
+    NSString *safeModePath = NSJBRootPath(@"/basebin/.safe_mode");
+    if ([self isJailbroken]) {
+        [self runAsRoot:^{
+            [self runUnsandboxed:^{
+                if (enabled) {
+                    [[NSFileManager defaultManager] removeItemAtPath:safeModePath error:nil];
+                }
+                else {
+                    [[NSData data] writeToFile:safeModePath atomically:YES];
+                }
+            }];
+        }];
+    }
+}
+
+- (void)setIDownloadEnabled:(BOOL)enabled
+{
+    NSString *idownloaddEnabledPath = NSJBRootPath(@"/basebin/.idownloadd_enabled");
+    if ([self isJailbroken]) {
+        [self runAsRoot:^{
+            [self runUnsandboxed:^{
+                if (enabled) {
+                    [[NSFileManager defaultManager] removeItemAtPath:idownloaddEnabledPath error:nil];
+                    exec_cmd("/usr/bin/launchctl", "load", JBRootPath("/basebin/LaunchDaemons/com.opa334.idownloadd.plist"), NULL);
+                }
+                else {
+                    [[NSFileManager defaultManager] removeItemAtPath:idownloaddEnabledPath error:nil];
+                    exec_cmd("/usr/bin/launchctl", "unload", JBRootPath("/basebin/LaunchDaemons/com.opa334.idownloadd.plist"), NULL);
+                }
+            }];
+        }];
+    }
+}
+
+- (BOOL)isJailbreakHidden
+{
+    return NO;
+}
+
+- (void)setJailbreakHidden:(BOOL)hidden
+{
+    
+}
+
 - (NSString *)accessibleKernelPath
 {
     if ([self isInstalledThroughTrollStore]) {
@@ -308,6 +365,11 @@
 - (NSError *)finalizeBootstrap
 {
     return [_bootstrapper finalizeBootstrap];
+}
+
+- (NSError *)deleteBootstrap
+{
+    return [_bootstrapper deleteBootstrap];
 }
 
 @end

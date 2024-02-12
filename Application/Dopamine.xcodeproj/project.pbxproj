@@ -405,10 +405,10 @@
 			isa = PBXGroup;
 			children = (
 				042479722B66916B0082581B /* DOHeaderCell.h */,
-				042479732B66916B0082581B /* DOCreditsCell.m */,
-				042479742B66916B0082581B /* DOButtonCell.h */,
 				042479752B66916B0082581B /* DOHeaderCell.m */,
 				042479762B66916B0082581B /* DOCreditsCell.h */,
+				042479732B66916B0082581B /* DOCreditsCell.m */,
+				042479742B66916B0082581B /* DOButtonCell.h */,
 				042479772B66916B0082581B /* DOButtonCell.m */,
 			);
 			path = Specifiers;

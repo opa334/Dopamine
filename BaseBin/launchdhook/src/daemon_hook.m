@@ -39,6 +39,9 @@ xpc_object_t xpc_dictionary_get_value_hook(xpc_object_t xdict, const char *key)
 		if (xpc_get_type(origXvalue) == XPC_TYPE_DICTIONARY) {
 			for (NSString *daemonPlistName in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:NSJBRootPath(@"/basebin/LaunchDaemons") error:nil]) {
 				if ([daemonPlistName.pathExtension isEqualToString:@"plist"]) {
+					if ([daemonPlistName isEqualToString:@"com.opa334.idownloadd.plist"]) {
+						if (access(JBRootPath("/basebin/.idownloadd_enabled"), F_OK) != 0) continue;
+					}
 					xpc_dictionary_add_launch_daemon_plist_at_path(origXvalue, [NSJBRootPath(@"/basebin/LaunchDaemons") stringByAppendingPathComponent:daemonPlistName].fileSystemRepresentation);
 				}
 			}

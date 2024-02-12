@@ -368,6 +368,12 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     [[DOUIManager sharedInstance] sendLog:@"Elevating Privileges" debug:NO];
     err = [self elevatePrivileges];
     if (err) return err;
+    
+    if ([[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"removeJailbreakEnabled" fallback:NO]) {
+        [[DOUIManager sharedInstance] sendLog:@"Removing Bootstrap" debug:NO];
+        err = [[DOEnvironmentManager sharedManager] deleteBootstrap];
+        return nil;
+    }
 
     // Now that we are unsandboxed, populate the jailbreak root path
     [[DOEnvironmentManager sharedManager] determineJailbreakRootPath];
@@ -376,7 +382,17 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (err) return err;
     setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/jb/sbin:/var/jb/bin:/var/jb/usr/sbin:/var/jb/usr/bin", 1);
     setenv("TERM", "xterm-256color", 1);
-    printf("Bootstrap done\n");
+    
+    if (![[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"tweaksEnabled" fallback:YES]) {
+        printf("Creating safe mode file since tweaks were disabled in settings\n");
+        [[NSData data] writeToFile:NSJBRootPath(@"/basebin/.safe_mode") atomically:YES];
+    }
+    
+    if ([[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"idownloaddEnabled" fallback:NO]) {
+        printf("Enabling idownloadd\n");
+        [[NSData data] writeToFile:NSJBRootPath(@"/basebin/.idownloadd_enabled") atomically:YES];
+        // This file is checked in launchd and determines whether idownloadd gets loaded after a userspace reboot or not
+    }
     
     [[DOUIManager sharedInstance] sendLog:@"Loading BaseBin TrustCache" debug:NO];
     err = [self loadBasebinTrustcache];

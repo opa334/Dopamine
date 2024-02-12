@@ -631,6 +631,22 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     return nil;
 }
 
+- (NSError *)deleteBootstrap
+{
+    if (![self isPrivatePrebootMountedWritable]) {
+        int r = [self remountPrivatePrebootWritable:YES];
+        if (r != 0) {
+            return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedRemount userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Remounting /private/preboot as writable failed with error: %s", strerror(errno)]}];
+        }
+    }
+    
+    [[DOEnvironmentManager sharedManager] determineJailbreakRootPath];
+    NSString *path = [[NSString stringWithUTF8String:gSystemInfo.jailbreakInfo.rootPath] stringByDeletingLastPathComponent];
+    NSError *error;
+    [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
+    return error;
+}
+
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 {
     if (downloadTask == _bootstrapDownloadTask) {

@@ -44,6 +44,15 @@
     return [_preferences objectForKey:key];
 }
 
+- (BOOL)boolPreferenceValueForKey:(NSString *)key fallback:(BOOL)fallback
+{
+    NSNumber *num = [self preferenceValueForKey:key];
+    if (num && [num.class isKindOfClass:[NSNumber class]]) {
+        return num.boolValue;
+    }
+    return fallback;
+}
+
 - (void)setPreferenceValue:(NSObject *)obj forKey:(NSString *)key
 {
     [_preferences setObject:obj forKey:key];

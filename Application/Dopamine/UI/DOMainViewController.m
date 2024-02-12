@@ -116,8 +116,18 @@
     
     //Jailbreak Button
     BOOL isJailbroken = [[DOEnvironmentManager sharedManager] isJailbroken];
-    NSString *jailbreakButtonTitle = isJailbroken ? @"Jailbroken" : @"Jailbreak";
-    self.jailbreakBtn = [[DOJailbreakButton alloc] initWithAction: [UIAction actionWithTitle:jailbreakButtonTitle image:[UIImage systemImageNamed:@"lock.open" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"jailbreak" handler:^(__kindof UIAction * _Nonnull action) {
+    BOOL isSupported = [[DOEnvironmentManager sharedManager] isSupported];
+    NSString *jailbreakButtonTitle = !isSupported ? @"Unsupported" : (isJailbroken ? @"Jailbroken" : @"Jailbreak");
+    
+    UIImage *jailbreakButtonImage;
+    if (isSupported) {
+        jailbreakButtonImage = [UIImage systemImageNamed:@"lock.open" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]];
+    }
+    else {
+        jailbreakButtonImage = [UIImage systemImageNamed:@"lock.slash" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]];
+    }
+    
+    self.jailbreakBtn = [[DOJailbreakButton alloc] initWithAction: [UIAction actionWithTitle:jailbreakButtonTitle image:jailbreakButtonImage identifier:@"jailbreak" handler:^(__kindof UIAction * _Nonnull action) {
         [actionView hide];
         [self.jailbreakBtn expandButton: self.jailbreakButtonConstraints];
 
@@ -130,7 +140,7 @@
         [self startJailbreak];
         
     }]];
-    self.jailbreakBtn.enabled = !isJailbroken;
+    self.jailbreakBtn.enabled = !isJailbroken && isSupported;
 
     [self.view addSubview:self.jailbreakBtn];
 

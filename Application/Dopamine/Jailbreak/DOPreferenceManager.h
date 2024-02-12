@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedManager;
 
 - (id)preferenceValueForKey:(NSString *)key;
+- (BOOL)boolPreferenceValueForKey:(NSString *)key fallback:(BOOL)fallback;
+
 - (void)setPreferenceValue:(NSObject *)obj forKey:(NSString *)key;
 - (void)removePreferenceValueForKey:(NSString *)key;
 

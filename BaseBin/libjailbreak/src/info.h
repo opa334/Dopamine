@@ -226,7 +226,7 @@ extern struct system_info gSystemInfo;
 
 #define JAILBREAK_INFO_ITERATE(ctx, iterator) \
 	iterator(ctx, jailbreakInfo.usesPACBypass); \
-	iterator(ctx, jailbreakInfo.rootPath); \
+	iterator(ctx, jailbreakInfo.rootPath);
 
 #define KERNEL_SYMBOLS_ITERATE(ctx, iterator) \
     iterator(ctx, kernelSymbol.perfmon_dev_open); \

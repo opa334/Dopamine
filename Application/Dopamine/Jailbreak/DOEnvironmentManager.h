@@ -22,20 +22,29 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isInstalledThroughTrollStore;
 - (BOOL)isJailbroken;
 
+- (BOOL)isSupported;
 - (BOOL)isArm64e;
 - (NSString *)versionSupportString;
 - (NSString *)accessibleKernelPath;
 - (void)determineJailbreakRootPath;
 
+- (void)runUnsandboxed:(void (^)(void))unsandboxBlock;
 - (void)runAsRoot:(void (^)(void))rootBlock;
+
 - (void)respring;
 - (void)rebootUserspace;
+- (void)reboot;
+- (void)setTweakInjectionEnabled:(BOOL)enabled;
+- (void)setIDownloadEnabled:(BOOL)enabled;
+- (BOOL)isJailbreakHidden;
+- (void)setJailbreakHidden:(BOOL)hidden;
 
 - (BOOL)isPACBypassRequired;
 - (BOOL)isPPLBypassRequired;
 
 - (NSError *)prepareBootstrap;
 - (NSError *)finalizeBootstrap;
+- (NSError *)deleteBootstrap;
 @end
 
 NS_ASSUME_NONNULL_END
