@@ -104,10 +104,9 @@
             _availablePPLBypasses = [exploitManager availableExploitsForType:EXPLOIT_TYPE_PPL].allObjects;
         }
         
-        NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
         PSSpecifier *headerSpecifier = [PSSpecifier emptyGroupSpecifier];
         [headerSpecifier setProperty:@"DOHeaderCell" forKey:@"headerCellClass"];
-        [headerSpecifier setProperty:[NSString stringWithFormat:@"Dopamine %@ - Settings", version] forKey:@"title"];
+        [headerSpecifier setProperty:[NSString stringWithFormat:@"Settings"] forKey:@"title"];
         [specifiers addObject:headerSpecifier];
         
         if (1 || !envManager.isJailbroken) {
