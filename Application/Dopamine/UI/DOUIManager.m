@@ -24,6 +24,7 @@
 {
     if (self = [super init]){
         _preferenceManager = [DOPreferenceManager sharedManager];
+        _logRecord = [NSMutableArray new];
     }
     return self;
 }
@@ -143,6 +144,16 @@
     [self sendLog:log debug:debug update:NO];
 }
 
+- (void)shareLogRecord
+{
+    if (self.logRecord.count == 0)
+        return;
+
+    NSString *log = [self.logRecord componentsJoinedByString:@"\n"];
+    UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[log] applicationActivities:nil];
+    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:activityViewController animated:YES completion:nil];
+}
+
 - (void)completeJailbreak
 {
     if (!self.logView)
@@ -177,7 +188,9 @@
                 for (int i = 0; i < bytes_read; ++i) {
                     if (buffer[i] == '\n') {
                         line[line_index] = '\0';
-                        [[DOUIManager sharedInstance] sendLog:[NSString stringWithUTF8String:line] debug:YES];
+                        NSString *str = [NSString stringWithUTF8String:line];
+                        [[DOUIManager sharedInstance] sendLog:str debug:YES];
+                        [self.logRecord addObject:str];
                         line_index = 0;
                     } else {
                         if (line_index < sizeof(line) - 1) {

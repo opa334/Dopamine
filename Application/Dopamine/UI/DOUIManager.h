@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 @property (nonatomic, retain) NSObject<DOLogViewProtocol> *logView;
+@property (nonatomic, retain) NSMutableArray<NSString*> *logRecord;
 
 + (id)sharedInstance;
 
@@ -26,6 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)sendLog:(NSString*)log debug:(BOOL)debug;
 - (void)completeJailbreak;
 - (void)startLogCapture;
+- (void)shareLogRecord;
 - (BOOL)isUpdateAvailable;
 - (NSArray *)getLatestReleases;
 - (NSArray*)availablePackageManagers;
