@@ -8,12 +8,15 @@
 #import <Foundation/Foundation.h>
 #import "DOLogViewProtocol.h"
 #import "DODebugLogView.h"
+#import "DOPreferenceManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DOUIManager : NSObject
+{
+    DOPreferenceManager *_preferenceManager;
+}
 
-@property (nonatomic, retain) NSUserDefaults *userDefaults;
 @property (nonatomic, retain) NSObject<DOLogViewProtocol> *logView;
 
 + (id)sharedInstance;

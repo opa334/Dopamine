@@ -95,6 +95,9 @@
         DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
         DOExploitManager *exploitManager = [DOExploitManager sharedManager];
         
+        SEL defGetter = @selector(readPreferenceValue:);
+        SEL defSetter = @selector(setPreferenceValue:specifier:);
+        
         _availableKernelExploits = [exploitManager availableExploitsForType:EXPLOIT_TYPE_KERNEL].allObjects;
         if (envManager.isArm64e) {
             _availablePACBypasses = [exploitManager availableExploitsForType:EXPLOIT_TYPE_PAC].allObjects;
@@ -112,7 +115,7 @@
             exploitGroupSpecifier.name = @"Exploits";
             [specifiers addObject:exploitGroupSpecifier];
         
-            PSSpecifier *kernelExploitSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Kernel Exploit" target:self set:nil get:nil detail:nil cell:PSLinkListCell edit:nil];
+            PSSpecifier *kernelExploitSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Kernel Exploit" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
             kernelExploitSpecifier.detailControllerClass = [PSListItemsController class];
             [kernelExploitSpecifier setProperty:@"availableKernelExploitIdentifiers" forKey:@"valuesDataSource"];
             [kernelExploitSpecifier setProperty:@"availableKernelExploitNames" forKey:@"titlesDataSource"];
@@ -120,14 +123,14 @@
             [specifiers addObject:kernelExploitSpecifier];
             
             if (envManager.isArm64e) {
-                PSSpecifier *pacBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:@"PAC Bypass" target:self set:nil get:nil detail:nil cell:PSLinkListCell edit:nil];
+                PSSpecifier *pacBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:@"PAC Bypass" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
                 [pacBypassSpecifier setProperty:@YES forKey:@"enabled"];
                 pacBypassSpecifier.detailControllerClass = [PSListItemsController class];
                 [pacBypassSpecifier setProperty:@"availablePACBypassIdentifiers" forKey:@"valuesDataSource"];
                 [pacBypassSpecifier setProperty:@"availablePACBypassNames" forKey:@"titlesDataSource"];
                 [specifiers addObject:pacBypassSpecifier];
                 
-                PSSpecifier *pplBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:@"PPL Bypass" target:self set:nil get:nil detail:nil cell:PSLinkListCell edit:nil];
+                PSSpecifier *pplBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:@"PPL Bypass" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
                 [pplBypassSpecifier setProperty:@YES forKey:@"enabled"];
                 pplBypassSpecifier.detailControllerClass = [PSListItemsController class];
                 [pplBypassSpecifier setProperty:@"availablePPLBypassIdentifiers" forKey:@"valuesDataSource"];
@@ -140,28 +143,28 @@
         settingsGroupSpecifier.name = @"Jailbreak Settings";
         [specifiers addObject:settingsGroupSpecifier];
         
-        PSSpecifier *tweakInjectionSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Tweak Injection" target:self set:nil get:nil detail:nil cell:PSSwitchCell edit:nil];
+        PSSpecifier *tweakInjectionSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Tweak Injection" target:self set:defSetter get:defGetter detail:nil cell:PSSwitchCell edit:nil];
         [tweakInjectionSpecifier setProperty:@YES forKey:@"enabled"];
         [tweakInjectionSpecifier setProperty:@"tweakInjectionEnabled" forKey:@"key"];
         [tweakInjectionSpecifier setProperty:@YES forKey:@"default"];
         [specifiers addObject:tweakInjectionSpecifier];
         
         if (!envManager.isJailbroken) {
-            PSSpecifier *verboseLogSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Verbose Logs" target:self set:nil get:nil detail:nil cell:PSSwitchCell edit:nil];
+            PSSpecifier *verboseLogSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Verbose Logs" target:self set:defSetter get:defGetter detail:nil cell:PSSwitchCell edit:nil];
             [verboseLogSpecifier setProperty:@YES forKey:@"enabled"];
             [verboseLogSpecifier setProperty:@"verboseLogsEnabled" forKey:@"key"];
             [verboseLogSpecifier setProperty:@NO forKey:@"default"];
             [specifiers addObject:verboseLogSpecifier];
         }
         
-        PSSpecifier *idownloadSpecifier = [PSSpecifier preferenceSpecifierNamed:@"iDownload (Developer Shell)" target:self set:nil get:nil detail:nil cell:PSSwitchCell edit:nil];
+        PSSpecifier *idownloadSpecifier = [PSSpecifier preferenceSpecifierNamed:@"iDownload (Developer Shell)" target:self set:defSetter get:defGetter detail:nil cell:PSSwitchCell edit:nil];
         [idownloadSpecifier setProperty:@YES forKey:@"enabled"];
         [idownloadSpecifier setProperty:@"idownloaddEnabled" forKey:@"key"];
         [idownloadSpecifier setProperty:@NO forKey:@"default"];
         [specifiers addObject:idownloadSpecifier];
         
         if (!envManager.isJailbroken && !envManager.isInstalledThroughTrollStore) {
-            PSSpecifier *removeJailbreakSwitchSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Remove Jailbreak" target:self set:nil get:nil detail:nil cell:PSSwitchCell edit:nil];
+            PSSpecifier *removeJailbreakSwitchSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Remove Jailbreak" target:self set:defSetter get:defGetter detail:nil cell:PSSwitchCell edit:nil];
             [removeJailbreakSwitchSpecifier setProperty:@YES forKey:@"enabled"];
             [removeJailbreakSwitchSpecifier setProperty:@"removeJailbreakEnabled" forKey:@"key"];
             [specifiers addObject:removeJailbreakSwitchSpecifier];
@@ -209,6 +212,18 @@
         _specifiers = specifiers;
     }
     return _specifiers;
+}
+
+- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
+    [[DOPreferenceManager sharedManager] setPreferenceValue:value forKey:[specifier propertyForKey:@"key"]];
+}
+
+- (id)readPreferenceValue:(PSSpecifier*)specifier {
+    id value = [[DOPreferenceManager sharedManager] preferenceValueForKey:[specifier propertyForKey:@"key"]];
+    if (!value) {
+        return [specifier propertyForKey:@"default"];
+    }
+    return value;
 }
 
 #pragma mark - Button Actions

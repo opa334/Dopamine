@@ -12,9 +12,11 @@
 #import <libjailbreak/info.h>
 #import <libjailbreak/codesign.h>
 #import <libjailbreak/util.h>
+#import <libjailbreak/machine_info.h>
 
 #import <IOKit/IOKitLib.h>
 #import "DOUIManager.h"
+#import "DOExploitManager.h"
 #import "NSData+Hex.h"
 
 @implementation DOEnvironmentManager
@@ -270,6 +272,25 @@
 - (BOOL)isPPLBypassRequired
 {
     return [self isArm64e];
+}
+
+- (BOOL)isSupported
+{
+    cpu_subtype_t cpuFamily = 0;
+    size_t cpuFamilySize = sizeof(cpuFamily);
+    sysctlbyname("hw.cpufamily", &cpuFamily, &cpuFamilySize, NULL, 0);
+    if (cpuFamily == CPUFAMILY_ARM_TYPHOON) return false; // A8X is unsupported for now (due to 4k page size)
+    
+    DOExploitManager *exploitManager = [DOExploitManager sharedManager];
+    if ([exploitManager availableExploitsForType:EXPLOIT_TYPE_KERNEL].count) {
+        if (![self isPACBypassRequired] || [exploitManager availableExploitsForType:EXPLOIT_TYPE_PAC].count) {
+            if (![self isPPLBypassRequired] || [exploitManager availableExploitsForType:EXPLOIT_TYPE_PPL].count) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
 }
 
 - (NSError *)prepareBootstrap

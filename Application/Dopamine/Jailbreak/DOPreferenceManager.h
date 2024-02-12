@@ -15,8 +15,11 @@ NS_ASSUME_NONNULL_BEGIN
     NSMutableDictionary *_preferences;
 }
 
-- (NSObject *)preferenceValueForKey:(NSString *)key;
++ (instancetype)sharedManager;
+
+- (id)preferenceValueForKey:(NSString *)key;
 - (void)setPreferenceValue:(NSObject *)obj forKey:(NSString *)key;
+- (void)removePreferenceValueForKey:(NSString *)key;
 
 @end
 

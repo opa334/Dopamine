@@ -23,7 +23,8 @@
 {
     self = [super init];
     if (self) {
-        _preferencesPath = [NSHomeDirectory() stringByAppendingString:@"Library/Preferences/com.opa334.dopamine.plist"];
+        _preferencesPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Preferences/com.opa334.Dopamine.plist"];
+        [self loadPreferences];
     }
     return self;
 }
@@ -38,7 +39,7 @@
     [_preferences writeToFile:_preferencesPath atomically:YES];
 }
 
-- (NSObject *)preferenceValueForKey:(NSString *)key
+- (id)preferenceValueForKey:(NSString *)key
 {
     return [_preferences objectForKey:key];
 }
@@ -46,6 +47,12 @@
 - (void)setPreferenceValue:(NSObject *)obj forKey:(NSString *)key
 {
     [_preferences setObject:obj forKey:key];
+    [self savePreferences];
+}
+
+- (void)removePreferenceValueForKey:(NSString *)key
+{
+    [_preferences removeObjectForKey:key];
     [self savePreferences];
 }
 
