@@ -110,8 +110,8 @@
         [NSLayoutConstraint activateConstraints:@[
             [self.collectionView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:20],
             [self.collectionView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-20],
-            [self.collectionView.topAnchor constraintEqualToAnchor:self.topAnchor constant:15],
-            [self.collectionView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-15],
+            [self.collectionView.topAnchor constraintEqualToAnchor:self.topAnchor constant:0],
+            [self.collectionView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-0],
         ]];
         
     }
@@ -139,7 +139,7 @@
 
 - (CGFloat)preferredHeightForWidth:(CGFloat)width
 {
-    return CREDITS_CELL_HEIGHT * ceil(self.names.count/2.0) + 30;
+    return CREDITS_CELL_HEIGHT * ceil(self.names.count/2.0);
 }
 
 

@@ -22,7 +22,7 @@
         [self.contentView addSubview:titleLabel];
 
         [NSLayoutConstraint activateConstraints:@[
-            [titleLabel.centerYAnchor constraintEqualToAnchor:self.centerYAnchor constant:-6],
+            [titleLabel.centerYAnchor constraintEqualToAnchor:self.centerYAnchor constant:-3],
             [titleLabel.centerXAnchor constraintEqualToAnchor:self.centerXAnchor]
         ]];
 
@@ -34,7 +34,7 @@
         [NSLayoutConstraint activateConstraints:@[
             [border.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:20],
             [border.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-20],
-            [border.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-10],
+            [border.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-2],
             [border.heightAnchor constraintEqualToConstant:1]
         ]];
     }
@@ -43,7 +43,7 @@
 
 - (CGFloat)preferredHeightForWidth:(CGFloat)width
 {
-	return 72;
+	return 60;
 }
 
 @end
