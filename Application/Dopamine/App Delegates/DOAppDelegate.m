@@ -5,13 +5,13 @@
 //  Created by Lars Fröder on 23.09.23.
 //
 
-#import "AppDelegate.h"
+#import "DOAppDelegate.h"
 
-@interface AppDelegate ()
+@interface DOAppDelegate ()
 
 @end
 
-@implementation AppDelegate
+@implementation DOAppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {

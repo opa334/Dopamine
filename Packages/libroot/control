@@ -3,7 +3,7 @@ Name: libroot (Dopamine)
 Author: opa334
 Maintainer: opa334
 Architecture: iphoneos-arm64
-Version: 1.0.0
+Version: 1.0.1
 Priority: optional
 Section: Development
 Description: libroot for Dopamine

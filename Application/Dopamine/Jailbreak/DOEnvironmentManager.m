@@ -5,28 +5,30 @@
 //  Created by Lars Fröder on 10.01.24.
 //
 
-#import "EnvironmentManager.h"
+#import "DOEnvironmentManager.h"
 
 #import <sys/sysctl.h>
 #import <libgrabkernel/libgrabkernel.h>
 #import <libjailbreak/info.h>
 #import <libjailbreak/codesign.h>
 #import <libjailbreak/util.h>
+#import <libjailbreak/machine_info.h>
 
 #import <IOKit/IOKitLib.h>
 #import "DOUIManager.h"
+#import "DOExploitManager.h"
 #import "NSData+Hex.h"
 
-@implementation EnvironmentManager
+@implementation DOEnvironmentManager
 
 @synthesize bootManifestHash = _bootManifestHash;
 
 + (instancetype)sharedManager
 {
-    static EnvironmentManager *shared;
+    static DOEnvironmentManager *shared;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        shared = [[EnvironmentManager alloc] init];
+        shared = [[DOEnvironmentManager alloc] init];
     });
     return shared;
 }
@@ -35,7 +37,7 @@
 {
     self = [super init];
     if (self) {
-        _bootstrapper = [[Bootstrapper alloc] init];
+        _bootstrapper = [[DOBootstrapper alloc] init];
         if ([self isJailbroken]) {
             const char *jbRoot = jbclient_get_jbroot();
             gSystemInfo.jailbreakInfo.rootPath = jbRoot ? strdup(jbRoot) : NULL;
@@ -66,10 +68,43 @@
         NSString *activePrebootPath = [self activePrebootPath];
         
         NSString *randomizedJailbreakPath;
+        
+        // First attempt at finding jailbreak root, look for Dopamine 2.x path
         for (NSString *subItem in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:activePrebootPath error:nil]) {
-            if (subItem.length == 9 && [subItem hasPrefix:@"jb-"]) {
+            if (subItem.length == 15 && [subItem hasPrefix:@"dopamine-"]) {
                 randomizedJailbreakPath = [activePrebootPath stringByAppendingPathComponent:subItem];
                 break;
+            }
+        }
+        
+        // Second attempt at finding jailbreak root, look for Dopamine 1.x path, but as other jailbreaks use it too, make sure it is Dopamine
+        // Some other jailbreaks also commit the sin of creating .installed_dopamine, for these we try to filter them out by checking for their installed_ file
+        // If we find this and are sure it's from Dopamine 1.x, rename it so all Dopamine 2.x users will have the same path
+        for (NSString *subItem in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:activePrebootPath error:nil]) {
+            if (subItem.length == 9 && [subItem hasPrefix:@"jb-"]) {
+                NSString *candidateLegacyPath = [activePrebootPath stringByAppendingPathComponent:subItem];
+                
+                BOOL installedDopamine = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.installed_dopamine"]];
+                
+                if (installedDopamine) {
+                    // Hopefully all other jailbreaks that use jb-<UUID>?
+                    // These checks exist because of dumb users (and jailbreak developers) creating .installed_dopamine on jailbreaks that are NOT dopamine...
+                    BOOL installedNekoJB = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.installed_nekojb"]];
+                    BOOL installedDefinitelyNotAGoodName = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.xia0o0o0o_jb_installed"]];
+                    BOOL installedPalera1n = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.palecursus_strapped"]];
+                    if (installedNekoJB || installedPalera1n || installedDefinitelyNotAGoodName) {
+                        continue;
+                    }
+                    
+                    // At this point we can be sure we found a Dopamine 1.x jailbreak root
+                    // Rename it to the 2.x path, then use it
+                    NSString *newPath = [[candidateLegacyPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:[candidateLegacyPath.lastPathComponent stringByReplacingOccurrencesOfString:@"jb-" withString:@"dopamine-"]];
+
+                    if ([[NSFileManager defaultManager] moveItemAtPath:candidateLegacyPath toPath:newPath error:nil]) {
+                        randomizedJailbreakPath = newPath;
+                        break;
+                    }
+                }
             }
         }
 
@@ -83,7 +118,7 @@
                 [randomString appendFormat:@"%C", randomCharacter];
             }
             
-            NSString *randomJailbreakFolderName = [NSString stringWithFormat:@"jb-%@", randomString];
+            NSString *randomJailbreakFolderName = [NSString stringWithFormat:@"dopamine-%@", randomString];
             randomizedJailbreakPath = [activePrebootPath stringByAppendingPathComponent:randomJailbreakFolderName];
         }
         
@@ -104,7 +139,6 @@
     size_t len = sizeof(cpusubtype);
     if (sysctlbyname("hw.cpusubtype", &cpusubtype, &len, NULL, 0) == -1) { return NO; }
     return (cpusubtype & ~CPU_SUBTYPE_MASK) == CPU_SUBTYPE_ARM64E;
-
 }
 
 - (NSString *)versionSupportString
@@ -238,6 +272,25 @@
 - (BOOL)isPPLBypassRequired
 {
     return [self isArm64e];
+}
+
+- (BOOL)isSupported
+{
+    cpu_subtype_t cpuFamily = 0;
+    size_t cpuFamilySize = sizeof(cpuFamily);
+    sysctlbyname("hw.cpufamily", &cpuFamily, &cpuFamilySize, NULL, 0);
+    if (cpuFamily == CPUFAMILY_ARM_TYPHOON) return false; // A8X is unsupported for now (due to 4k page size)
+    
+    DOExploitManager *exploitManager = [DOExploitManager sharedManager];
+    if ([exploitManager availableExploitsForType:EXPLOIT_TYPE_KERNEL].count) {
+        if (![self isPACBypassRequired] || [exploitManager availableExploitsForType:EXPLOIT_TYPE_PAC].count) {
+            if (![self isPPLBypassRequired] || [exploitManager availableExploitsForType:EXPLOIT_TYPE_PPL].count) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
 }
 
 - (NSError *)prepareBootstrap

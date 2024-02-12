@@ -21,8 +21,11 @@ static int platform_set_process_debugged(uint64_t pid)
 
 static int platform_stage_jailbreak_update(const char *updateTar)
 {
-	setenv("STAGED_JAILBREAK_UPDATE", updateTar, 1);
-	return 0;
+	if (!access(updateTar, F_OK)) {
+		setenv("STAGED_JAILBREAK_UPDATE", updateTar, 1);
+		return 0;
+	}
+	return 1;
 }
 
 static int platform_set_jailbreak_visible(bool visible)

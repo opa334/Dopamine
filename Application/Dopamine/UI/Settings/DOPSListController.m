@@ -28,18 +28,6 @@
     [UISwitch appearanceWhenContainedInInstancesOfClasses:@[[self class]]].onTintColor = [UIColor colorWithRed: 71.0/255.0 green: 169.0/255.0 blue: 135.0/255.0 alpha: 1.0];
 }
 
-- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
-    [[NSUserDefaults standardUserDefaults] setObject:value forKey:[specifier propertyForKey:@"key"]];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-- (id)readPreferenceValue:(PSSpecifier*)specifier {
-    id value = [[NSUserDefaults standardUserDefaults] objectForKey:[specifier propertyForKey:@"key"]];
-    if (value == nil)
-        return [super readPreferenceValue:specifier];
-    return value;
-}
-
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     cell.backgroundColor = [UIColor clearColor];
 }

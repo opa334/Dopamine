@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 #define UI_ACTION_HEIGHT 73
 #define UI_ACTION_HEIGHT_HOME_BTN 65
 
-@interface GlobalAppearance : NSObject
+@interface DOGlobalAppearance : NSObject
 
 + (UIImageSymbolConfiguration *)smallIconImageConfiguration;
 + (UIButtonConfiguration *)defaultButtonConfiguration;

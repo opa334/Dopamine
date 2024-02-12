@@ -13,6 +13,11 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DOSettingsController : DOPSListController
+{
+    NSArray *_availableKernelExploits;
+    NSArray *_availablePACBypasses;
+    NSArray *_availablePPLBypasses;
+}
 
 @end
 

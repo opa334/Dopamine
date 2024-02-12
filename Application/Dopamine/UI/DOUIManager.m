@@ -23,7 +23,7 @@
 - (id)init
 {
     if (self = [super init]){
-        self.userDefaults = [NSUserDefaults standardUserDefaults];
+        _preferenceManager = [DOPreferenceManager sharedManager];
     }
     return self;
 }
@@ -69,7 +69,7 @@
 - (NSArray*)enabledPackageManagers
 {
     NSMutableArray *enabledPkgManagers = [NSMutableArray new];
-    NSArray *enabledKeys = [self.userDefaults valueForKey:@"enabledPkgManagers"] ?: @[];
+    NSArray *enabledKeys = [_preferenceManager preferenceValueForKey:@"enabledPkgManagers"] ?: @[];
 
     [[self availablePackageManagers] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *key = obj[@"Key"];
@@ -83,19 +83,19 @@
 
 - (void)resetPackageManagers
 {
-    [self.userDefaults removeObjectForKey:@"enabledPkgManagers"];
+    [_preferenceManager removePreferenceValueForKey:@"enabledPkgManagers"];
 }
 
 - (void)resetSettings
 {
-    [self.userDefaults removeObjectForKey:@"debug"];
-    [self.userDefaults removeObjectForKey:@"tweaks"];
+    [_preferenceManager removePreferenceValueForKey:@"verboseLogsEnabled"];
+    [_preferenceManager removePreferenceValueForKey:@"tweakInjectionEnabled"];
     [self resetPackageManagers];
 }
 
 - (void)setPackageManager:(NSString*)key enabled:(BOOL)enabled
 {
-    NSMutableArray *pkgManagers = [self enabledPackageManagers];
+    NSMutableArray *pkgManagers = [self enabledPackageManagers].mutableCopy;
     
     if (enabled && ![pkgManagers containsObject:key]) {
         [pkgManagers addObject:key];
@@ -104,18 +104,18 @@
         [pkgManagers removeObject:key];
     }
 
-    [self.userDefaults setObject:pkgManagers forKey:@"enabledPkgManagers"];
+    [_preferenceManager setPreferenceValue:pkgManagers forKey:@"enabledPkgManagers"];
 }
 
 - (BOOL)isDebug
 {
-    NSNumber *debug = [self.userDefaults valueForKey:@"debug"];
+    NSNumber *debug = [_preferenceManager preferenceValueForKey:@"verboseLogsEnabled"];
     return debug == nil ? NO : [debug boolValue];
 }
 
 - (BOOL)enableTweaks
 {
-    NSNumber *tweaks = [self.userDefaults valueForKey:@"tweaks"];
+    NSNumber *tweaks = [_preferenceManager preferenceValueForKey:@"tweakInjectionEnabled"];
     return tweaks == nil ? YES : [tweaks boolValue];
 }
 

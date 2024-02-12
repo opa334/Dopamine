@@ -95,7 +95,7 @@ int main(int argc, char* argv[])
 			return reboot3(RB2_USERREBOOT);
 		}
 		else {
-			printf("Update failed with error code %lld\n", result);
+			printf("Staging update failed with error code %lld\n", result);
 			return result;
 		}
 	} else if (!strcmp(cmd, "internal")) {

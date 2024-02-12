@@ -7,7 +7,7 @@
 
 #import "DOActionMenuView.h"
 #import "DOActionMenuButton.h"
-#import "GlobalAppearance.h"
+#import "DOGlobalAppearance.h"
 
 @implementation DOActionMenuView
 
@@ -17,7 +17,7 @@
     {
         [self setDelegate:delegate];
         [self setActions:actions];
-        self.backgroundColor = [GlobalAppearance windowColorWithAlpha:1.0];
+        self.backgroundColor = [DOGlobalAppearance windowColorWithAlpha:1.0];
         self.layer.cornerRadius = 14;
         self.layer.masksToBounds = YES;
         self.layer.cornerCurve = kCACornerCurveContinuous;
@@ -40,7 +40,7 @@
     self.buttonsView.axis = UILayoutConstraintAxisVertical;
     self.buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
 
-    BOOL isHomeButtonDevice = [GlobalAppearance isHomeButtonDevice];
+    BOOL isHomeButtonDevice = [DOGlobalAppearance isHomeButtonDevice];
 
     [self.actions enumerateObjectsUsingBlock:^(UIAction *action, NSUInteger idx, BOOL *stop) {
         DOActionMenuButton *button = [DOActionMenuButton buttonWithAction:action chevron:[self.delegate actionMenuShowsChevronForAction:action]];

@@ -5,10 +5,10 @@
 //  Created by Lars Fröder on 10.10.23.
 //
 
-#import "GlobalAppearance.h"
+#import "DOGlobalAppearance.h"
 #import <CoreGraphics/CoreGraphics.h>
 
-@implementation GlobalAppearance
+@implementation DOGlobalAppearance
 
 + (UIImageSymbolConfiguration *)smallIconImageConfiguration
 {
@@ -69,7 +69,7 @@
 
 + (UIButtonConfiguration *)defaultButtonConfigurationWithImagePadding:(CGFloat)imagePadding
 {
-    UIButtonConfiguration *configuration = [GlobalAppearance defaultButtonConfiguration];
+    UIButtonConfiguration *configuration = [DOGlobalAppearance defaultButtonConfiguration];
     configuration.imagePadding = imagePadding;
     return configuration;
 }

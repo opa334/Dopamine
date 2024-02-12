@@ -6,13 +6,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Bootstrapper.h"
+#import "DOBootstrapper.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EnvironmentManager : NSObject
+@interface DOEnvironmentManager : NSObject
 {
-    Bootstrapper *_bootstrapper;
+    DOBootstrapper *_bootstrapper;
 }
 
 + (instancetype)sharedManager;

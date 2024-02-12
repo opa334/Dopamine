@@ -32,7 +32,7 @@
 		042479B62B66916B0082581B /* DOActionMenuButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424799A2B66916B0082581B /* DOActionMenuButton.m */; };
 		042479B72B66916B0082581B /* DOActionMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424799D2B66916B0082581B /* DOActionMenuView.m */; };
 		042479B82B66916B0082581B /* DOMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424799F2B66916B0082581B /* DOMainViewController.m */; };
-		042479B92B66916B0082581B /* GlobalAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = 042479A02B66916B0082581B /* GlobalAppearance.m */; };
+		042479B92B66916B0082581B /* DOGlobalAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = 042479A02B66916B0082581B /* DOGlobalAppearance.m */; };
 		042479E52B66B0DD0082581B /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 042479E42B66B0DD0082581B /* Preferences.framework */; };
 		04C2469C2B73220400E17924 /* DOUpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246982B73220400E17924 /* DOUpdateViewController.m */; };
 		04C2469D2B73220400E17924 /* DOUpdateCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246992B73220400E17924 /* DOUpdateCircleView.m */; };
@@ -40,11 +40,11 @@
 		04C246AE2B74ACA200E17924 /* DOAppSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246AD2B74ACA200E17924 /* DOAppSwitch.m */; };
 		04C246B12B74B05800E17924 /* DOPkgManagerPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246B02B74B05800E17924 /* DOPkgManagerPickerView.m */; };
 		04C246B32B74B65900E17924 /* PkgManagers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 04C246B22B74B65900E17924 /* PkgManagers.plist */; };
-		8C029F432B4DFD5D0071DE58 /* ExploitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F422B4DFD5D0071DE58 /* ExploitManager.m */; };
-		8C029F462B4DFD910071DE58 /* Bootstrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F452B4DFD910071DE58 /* Bootstrapper.m */; };
-		8C029F4E2B4E1FF30071DE58 /* Exploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F4D2B4E1FF30071DE58 /* Exploit.m */; };
-		8C029F602B4E25350071DE58 /* EnvironmentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F5F2B4E25350071DE58 /* EnvironmentManager.m */; };
-		8C029F632B4E2E140071DE58 /* Jailbreaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F622B4E2E140071DE58 /* Jailbreaker.m */; };
+		8C029F432B4DFD5D0071DE58 /* DOExploitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F422B4DFD5D0071DE58 /* DOExploitManager.m */; };
+		8C029F462B4DFD910071DE58 /* DOBootstrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F452B4DFD910071DE58 /* DOBootstrapper.m */; };
+		8C029F4E2B4E1FF30071DE58 /* DOExploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F4D2B4E1FF30071DE58 /* DOExploit.m */; };
+		8C029F602B4E25350071DE58 /* DOEnvironmentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F5F2B4E25350071DE58 /* DOEnvironmentManager.m */; };
+		8C029F632B4E2E140071DE58 /* DOJailbreaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F622B4E2E140071DE58 /* DOJailbreaker.m */; };
 		8C029F662B4E2E970071DE58 /* libcompression.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F652B4E2E7D0071DE58 /* libcompression.tbd */; };
 		8C029F682B4E31D50071DE58 /* libMobileGestalt.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F672B4E31D50071DE58 /* libMobileGestalt.tbd */; };
 		8C029F6B2B4E320E0071DE58 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C029F6A2B4E320E0071DE58 /* libz.tbd */; };
@@ -79,11 +79,11 @@
 		8C46D7252B588973002899DB /* libzstd in Frameworks */ = {isa = PBXBuildFile; productRef = 8C46D7242B588973002899DB /* libzstd */; };
 		8C4ABEB62B52094100B43C9B /* libjailbreak.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */; };
 		8C4ABEB92B520E7B00B43C9B /* libjailbreak.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CDD08422B4F6DD800A32B61 /* libjailbreak.dylib */; platformFilter = ios; };
-		8C4ABEBE2B52274300B43C9B /* PreferenceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4ABEBD2B52274300B43C9B /* PreferenceManager.m */; };
+		8C4ABEBE2B52274300B43C9B /* DOPreferenceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4ABEBD2B52274300B43C9B /* DOPreferenceManager.m */; };
 		8C512B912B5C9F9100C6F14A /* sileo.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C512B8B2B5C9DE800C6F14A /* sileo.deb */; };
 		8C512B922B5C9F9400C6F14A /* zebra.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C512B8C2B5C9DE800C6F14A /* zebra.deb */; };
-		8C71981A2ABF0E82003C6658 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7198192ABF0E82003C6658 /* AppDelegate.m */; };
-		8C71981D2ABF0E82003C6658 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71981C2ABF0E82003C6658 /* SceneDelegate.m */; };
+		8C71981A2ABF0E82003C6658 /* DOAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7198192ABF0E82003C6658 /* DOAppDelegate.m */; };
+		8C71981D2ABF0E82003C6658 /* DOSceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71981C2ABF0E82003C6658 /* DOSceneDelegate.m */; };
 		8C7198252ABF0E84003C6658 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C7198242ABF0E84003C6658 /* Assets.xcassets */; };
 		8C7198282ABF0E84003C6658 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C7198262ABF0E84003C6658 /* LaunchScreen.storyboard */; };
 		8C71982B2ABF0E84003C6658 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71982A2ABF0E84003C6658 /* main.m */; };
@@ -190,7 +190,7 @@
 		042479802B66916B0082581B /* DONavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DONavigationController.h; sourceTree = "<group>"; };
 		042479812B66916B0082581B /* DOUIManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOUIManager.h; sourceTree = "<group>"; };
 		042479822B66916B0082581B /* DOHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOHeaderView.h; sourceTree = "<group>"; };
-		042479832B66916B0082581B /* GlobalAppearance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalAppearance.h; sourceTree = "<group>"; };
+		042479832B66916B0082581B /* DOGlobalAppearance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOGlobalAppearance.h; sourceTree = "<group>"; };
 		042479842B66916B0082581B /* DOMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOMainViewController.h; sourceTree = "<group>"; };
 		042479862B66916B0082581B /* DOJailbreakButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOJailbreakButton.m; sourceTree = "<group>"; };
 		042479872B66916B0082581B /* DOHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOHeaderView.m; sourceTree = "<group>"; };
@@ -215,7 +215,7 @@
 		0424799D2B66916B0082581B /* DOActionMenuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOActionMenuView.m; sourceTree = "<group>"; };
 		0424799E2B66916B0082581B /* DOActionMenuDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOActionMenuDelegate.h; sourceTree = "<group>"; };
 		0424799F2B66916B0082581B /* DOMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOMainViewController.m; sourceTree = "<group>"; };
-		042479A02B66916B0082581B /* GlobalAppearance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalAppearance.m; sourceTree = "<group>"; };
+		042479A02B66916B0082581B /* DOGlobalAppearance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOGlobalAppearance.m; sourceTree = "<group>"; };
 		042479E42B66B0DD0082581B /* Preferences.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Preferences.framework; path = Frameworks/Preferences.framework; sourceTree = "<group>"; };
 		04C246982B73220400E17924 /* DOUpdateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOUpdateViewController.m; sourceTree = "<group>"; };
 		04C246992B73220400E17924 /* DOUpdateCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOUpdateCircleView.m; sourceTree = "<group>"; };
@@ -228,16 +228,16 @@
 		04C246AF2B74B05800E17924 /* DOPkgManagerPickerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOPkgManagerPickerView.h; sourceTree = "<group>"; };
 		04C246B02B74B05800E17924 /* DOPkgManagerPickerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOPkgManagerPickerView.m; sourceTree = "<group>"; };
 		04C246B22B74B65900E17924 /* PkgManagers.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PkgManagers.plist; sourceTree = "<group>"; };
-		8C029F412B4DFD5D0071DE58 /* ExploitManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploitManager.h; sourceTree = "<group>"; };
-		8C029F422B4DFD5D0071DE58 /* ExploitManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploitManager.m; sourceTree = "<group>"; };
-		8C029F442B4DFD910071DE58 /* Bootstrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bootstrapper.h; sourceTree = "<group>"; };
-		8C029F452B4DFD910071DE58 /* Bootstrapper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Bootstrapper.m; sourceTree = "<group>"; };
-		8C029F4C2B4E1FF30071DE58 /* Exploit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Exploit.h; sourceTree = "<group>"; };
-		8C029F4D2B4E1FF30071DE58 /* Exploit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Exploit.m; sourceTree = "<group>"; };
-		8C029F5E2B4E25350071DE58 /* EnvironmentManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EnvironmentManager.h; sourceTree = "<group>"; };
-		8C029F5F2B4E25350071DE58 /* EnvironmentManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EnvironmentManager.m; sourceTree = "<group>"; };
-		8C029F612B4E2E140071DE58 /* Jailbreaker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Jailbreaker.h; sourceTree = "<group>"; };
-		8C029F622B4E2E140071DE58 /* Jailbreaker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Jailbreaker.m; sourceTree = "<group>"; };
+		8C029F412B4DFD5D0071DE58 /* DOExploitManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOExploitManager.h; sourceTree = "<group>"; };
+		8C029F422B4DFD5D0071DE58 /* DOExploitManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOExploitManager.m; sourceTree = "<group>"; };
+		8C029F442B4DFD910071DE58 /* DOBootstrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOBootstrapper.h; sourceTree = "<group>"; };
+		8C029F452B4DFD910071DE58 /* DOBootstrapper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOBootstrapper.m; sourceTree = "<group>"; };
+		8C029F4C2B4E1FF30071DE58 /* DOExploit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOExploit.h; sourceTree = "<group>"; };
+		8C029F4D2B4E1FF30071DE58 /* DOExploit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOExploit.m; sourceTree = "<group>"; };
+		8C029F5E2B4E25350071DE58 /* DOEnvironmentManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOEnvironmentManager.h; sourceTree = "<group>"; };
+		8C029F5F2B4E25350071DE58 /* DOEnvironmentManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOEnvironmentManager.m; sourceTree = "<group>"; };
+		8C029F612B4E2E140071DE58 /* DOJailbreaker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOJailbreaker.h; sourceTree = "<group>"; };
+		8C029F622B4E2E140071DE58 /* DOJailbreaker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOJailbreaker.m; sourceTree = "<group>"; };
 		8C029F652B4E2E7D0071DE58 /* libcompression.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcompression.tbd; path = usr/lib/libcompression.tbd; sourceTree = SDKROOT; };
 		8C029F672B4E31D50071DE58 /* libMobileGestalt.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libMobileGestalt.tbd; path = usr/lib/libMobileGestalt.tbd; sourceTree = SDKROOT; };
 		8C029F6A2B4E320E0071DE58 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -274,15 +274,15 @@
 		8C46D71E2B588875002899DB /* zstd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zstd.h; sourceTree = "<group>"; };
 		8C46D71F2B588875002899DB /* zstd_errors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zstd_errors.h; sourceTree = "<group>"; };
 		8C46D7202B588875002899DB /* zdict.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zdict.h; sourceTree = "<group>"; };
-		8C4ABEBC2B52274300B43C9B /* PreferenceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PreferenceManager.h; sourceTree = "<group>"; };
-		8C4ABEBD2B52274300B43C9B /* PreferenceManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PreferenceManager.m; sourceTree = "<group>"; };
+		8C4ABEBC2B52274300B43C9B /* DOPreferenceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOPreferenceManager.h; sourceTree = "<group>"; };
+		8C4ABEBD2B52274300B43C9B /* DOPreferenceManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOPreferenceManager.m; sourceTree = "<group>"; };
 		8C512B8B2B5C9DE800C6F14A /* sileo.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = sileo.deb; sourceTree = "<group>"; };
 		8C512B8C2B5C9DE800C6F14A /* zebra.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = zebra.deb; sourceTree = "<group>"; };
 		8C7198152ABF0E82003C6658 /* Dopamine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dopamine.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8C7198182ABF0E82003C6658 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		8C7198192ABF0E82003C6658 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		8C71981B2ABF0E82003C6658 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
-		8C71981C2ABF0E82003C6658 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
+		8C7198182ABF0E82003C6658 /* DOAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOAppDelegate.h; sourceTree = "<group>"; };
+		8C7198192ABF0E82003C6658 /* DOAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOAppDelegate.m; sourceTree = "<group>"; };
+		8C71981B2ABF0E82003C6658 /* DOSceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOSceneDelegate.h; sourceTree = "<group>"; };
+		8C71981C2ABF0E82003C6658 /* DOSceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOSceneDelegate.m; sourceTree = "<group>"; };
 		8C7198242ABF0E84003C6658 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8C7198272ABF0E84003C6658 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8C7198292ABF0E84003C6658 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -377,8 +377,8 @@
 				042479862B66916B0082581B /* DOJailbreakButton.m */,
 				042479822B66916B0082581B /* DOHeaderView.h */,
 				042479872B66916B0082581B /* DOHeaderView.m */,
-				042479832B66916B0082581B /* GlobalAppearance.h */,
-				042479A02B66916B0082581B /* GlobalAppearance.m */,
+				042479832B66916B0082581B /* DOGlobalAppearance.h */,
+				042479A02B66916B0082581B /* DOGlobalAppearance.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -496,18 +496,18 @@
 		8C029F402B4DFCFE0071DE58 /* Jailbreak */ = {
 			isa = PBXGroup;
 			children = (
-				8C029F442B4DFD910071DE58 /* Bootstrapper.h */,
-				8C029F452B4DFD910071DE58 /* Bootstrapper.m */,
-				8C029F612B4E2E140071DE58 /* Jailbreaker.h */,
-				8C029F622B4E2E140071DE58 /* Jailbreaker.m */,
-				8C029F4C2B4E1FF30071DE58 /* Exploit.h */,
-				8C029F4D2B4E1FF30071DE58 /* Exploit.m */,
-				8C029F412B4DFD5D0071DE58 /* ExploitManager.h */,
-				8C029F422B4DFD5D0071DE58 /* ExploitManager.m */,
-				8C029F5E2B4E25350071DE58 /* EnvironmentManager.h */,
-				8C029F5F2B4E25350071DE58 /* EnvironmentManager.m */,
-				8C4ABEBC2B52274300B43C9B /* PreferenceManager.h */,
-				8C4ABEBD2B52274300B43C9B /* PreferenceManager.m */,
+				8C029F442B4DFD910071DE58 /* DOBootstrapper.h */,
+				8C029F452B4DFD910071DE58 /* DOBootstrapper.m */,
+				8C029F612B4E2E140071DE58 /* DOJailbreaker.h */,
+				8C029F622B4E2E140071DE58 /* DOJailbreaker.m */,
+				8C029F4C2B4E1FF30071DE58 /* DOExploit.h */,
+				8C029F4D2B4E1FF30071DE58 /* DOExploit.m */,
+				8C029F412B4DFD5D0071DE58 /* DOExploitManager.h */,
+				8C029F422B4DFD5D0071DE58 /* DOExploitManager.m */,
+				8C029F5E2B4E25350071DE58 /* DOEnvironmentManager.h */,
+				8C029F5F2B4E25350071DE58 /* DOEnvironmentManager.m */,
+				8C4ABEBC2B52274300B43C9B /* DOPreferenceManager.h */,
+				8C4ABEBD2B52274300B43C9B /* DOPreferenceManager.m */,
 			);
 			path = Jailbreak;
 			sourceTree = "<group>";
@@ -687,10 +687,10 @@
 		8C7198332ABF133D003C6658 /* App Delegates */ = {
 			isa = PBXGroup;
 			children = (
-				8C7198182ABF0E82003C6658 /* AppDelegate.h */,
-				8C7198192ABF0E82003C6658 /* AppDelegate.m */,
-				8C71981B2ABF0E82003C6658 /* SceneDelegate.h */,
-				8C71981C2ABF0E82003C6658 /* SceneDelegate.m */,
+				8C7198182ABF0E82003C6658 /* DOAppDelegate.h */,
+				8C7198192ABF0E82003C6658 /* DOAppDelegate.m */,
+				8C71981B2ABF0E82003C6658 /* DOSceneDelegate.h */,
+				8C71981C2ABF0E82003C6658 /* DOSceneDelegate.m */,
 			);
 			path = "App Delegates";
 			sourceTree = "<group>";
@@ -1043,37 +1043,37 @@
 				042479B22B66916B0082581B /* DOLyricsLogView.m in Sources */,
 				042479A52B66916B0082581B /* DOCreditsCell.m in Sources */,
 				042479B82B66916B0082581B /* DOMainViewController.m in Sources */,
-				8C029F432B4DFD5D0071DE58 /* ExploitManager.m in Sources */,
+				8C029F432B4DFD5D0071DE58 /* DOExploitManager.m in Sources */,
 				042479B02B66916B0082581B /* DOLoadingIndicator.m in Sources */,
 				042479AC2B66916B0082581B /* DOJailbreakButton.m in Sources */,
-				8C4ABEBE2B52274300B43C9B /* PreferenceManager.m in Sources */,
+				8C4ABEBE2B52274300B43C9B /* DOPreferenceManager.m in Sources */,
 				042479A92B66916B0082581B /* DOModalBackAction.m in Sources */,
 				8CC139822B53DE6C00230143 /* NSData+Hex.m in Sources */,
 				042479AE2B66916B0082581B /* DOUIManager.m in Sources */,
-				8C71981A2ABF0E82003C6658 /* AppDelegate.m in Sources */,
+				8C71981A2ABF0E82003C6658 /* DOAppDelegate.m in Sources */,
 				042479B72B66916B0082581B /* DOActionMenuView.m in Sources */,
-				8C029F632B4E2E140071DE58 /* Jailbreaker.m in Sources */,
+				8C029F632B4E2E140071DE58 /* DOJailbreaker.m in Sources */,
 				040622AA2B77FE8E00393AAD /* DOPkgManagerPickerViewController.m in Sources */,
 				042479A82B66916B0082581B /* DOPSListController.m in Sources */,
 				042479B12B66916B0082581B /* DODoubleHelixIndicator.m in Sources */,
 				042479A72B66916B0082581B /* DOButtonCell.m in Sources */,
-				042479B92B66916B0082581B /* GlobalAppearance.m in Sources */,
+				042479B92B66916B0082581B /* DOGlobalAppearance.m in Sources */,
 				8C9E46292ACA1CC700B5456A /* UIImage+Blur.m in Sources */,
-				8C029F462B4DFD910071DE58 /* Bootstrapper.m in Sources */,
+				8C029F462B4DFD910071DE58 /* DOBootstrapper.m in Sources */,
 				042479AD2B66916B0082581B /* DOHeaderView.m in Sources */,
 				042479AB2B66916B0082581B /* DOModalTransitionPush.m in Sources */,
 				042479AA2B66916B0082581B /* DOModalTransitionPop.m in Sources */,
 				8C71982B2ABF0E84003C6658 /* main.m in Sources */,
-				8C029F602B4E25350071DE58 /* EnvironmentManager.m in Sources */,
+				8C029F602B4E25350071DE58 /* DOEnvironmentManager.m in Sources */,
 				04C246A12B73225800E17924 /* DODownloadViewController.m in Sources */,
 				042479B52B66916B0082581B /* DOLyricsLogItemView.m in Sources */,
-				8C029F4E2B4E1FF30071DE58 /* Exploit.m in Sources */,
+				8C029F4E2B4E1FF30071DE58 /* DOExploit.m in Sources */,
 				04C2469D2B73220400E17924 /* DOUpdateCircleView.m in Sources */,
 				04C246B12B74B05800E17924 /* DOPkgManagerPickerView.m in Sources */,
 				042479B42B66916B0082581B /* DOProgressiveBlurView.m in Sources */,
 				04C2469C2B73220400E17924 /* DOUpdateViewController.m in Sources */,
 				042479B62B66916B0082581B /* DOActionMenuButton.m in Sources */,
-				8C71981D2ABF0E82003C6658 /* SceneDelegate.m in Sources */,
+				8C71981D2ABF0E82003C6658 /* DOSceneDelegate.m in Sources */,
 				042479A32B66916B0082581B /* DOSettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

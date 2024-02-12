@@ -5,14 +5,14 @@
 //  Created by Lars Fröder on 23.09.23.
 //
 
-#import "SceneDelegate.h"
+#import "DOSceneDelegate.h"
 #import "DONavigationController.h"
 
-@interface SceneDelegate ()
+@interface DOSceneDelegate ()
 
 @end
 
-@implementation SceneDelegate
+@implementation DOSceneDelegate
 
 
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {

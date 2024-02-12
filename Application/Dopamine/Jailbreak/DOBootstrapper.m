@@ -5,8 +5,8 @@
 //  Created by Lars Fröder on 09.01.24.
 //
 
-#import "Bootstrapper.h"
-#import "EnvironmentManager.h"
+#import "DOBootstrapper.h"
+#import "DOEnvironmentManager.h"
 #import "DOUIManager.h"
 #import <libjailbreak/info.h>
 #import <libjailbreak/util.h>
@@ -17,7 +17,7 @@
 #import <sys/stat.h>
 
 #define LIBKRW_DOPAMINE_BUNDLED_VERSION @"2.0.0"
-#define LIBROOT_DOPAMINE_BUNDLED_VERSION @"1.0.0"
+#define LIBROOT_DOPAMINE_BUNDLED_VERSION @"1.0.1"
 #define BASEBIN_LINK_BUNDLED_VERSION @"1.0.0"
 
 struct hfs_mount_args {
@@ -45,7 +45,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 #define BUFFER_SIZE 8192
 
-@implementation Bootstrapper
+@implementation DOBootstrapper
 
 - (instancetype)init
 {

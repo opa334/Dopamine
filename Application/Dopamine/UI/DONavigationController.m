@@ -8,7 +8,7 @@
 #import "DONavigationController.h"
 #import <objc/runtime.h>
 #import "DOModalBackAction.h"
-#import "GlobalAppearance.h"
+#import "DOGlobalAppearance.h"
 
 @interface DONavigationController ()
 
