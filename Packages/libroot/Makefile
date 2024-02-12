@@ -16,7 +16,7 @@ clean:
 	@rm -f $(TARGET)
 	@rm -f libroot.deb
 
-package: $(TARGET)
+package: all
 	@mkdir -p .package/DEBIAN
 	@mkdir -p .package/var/jb/usr/lib
 	@cp control .package/DEBIAN/control
