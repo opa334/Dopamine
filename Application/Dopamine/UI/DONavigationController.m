@@ -86,13 +86,11 @@
            animationControllerForOperation:(UINavigationControllerOperation)operation
                         fromViewController:(UIViewController *)fromVC
                           toViewController:(UIViewController *)toVC {
-    if (operation == UINavigationControllerOperationPush) {
-        return [[DOModalTransitionPush alloc] init];
-    }
-    else if (operation == UINavigationControllerOperationPop) {
-        return [[DOModalTransitionPop alloc] init];
-    }
-    return nil;
+    
+    
+    if (fromVC.class == DOMainViewController.class || toVC.class == DOMainViewController.class)
+        return [[DOModalTransitionScale alloc] initForwards: operation == UINavigationControllerOperationPush];
+    return [[DOModalTransitionPush alloc] initForwards: operation == UINavigationControllerOperationPush];
 }
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated

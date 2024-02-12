@@ -8,8 +8,8 @@
 #import <UIKit/UIKit.h>
 #import "UIImage+Blur.h"
 #import "DOMainViewController.h"
+#import "Transition/DOModalTransitionScale.h"
 #import "Transition/DOModalTransitionPush.h"
-#import "Transition/DOModalTransitionPop.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

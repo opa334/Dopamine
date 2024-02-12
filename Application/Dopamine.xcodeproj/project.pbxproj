@@ -17,8 +17,8 @@
 		042479A72B66916B0082581B /* DOButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042479772B66916B0082581B /* DOButtonCell.m */; };
 		042479A82B66916B0082581B /* DOPSListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042479782B66916B0082581B /* DOPSListController.m */; };
 		042479A92B66916B0082581B /* DOModalBackAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424797C2B66916B0082581B /* DOModalBackAction.m */; };
-		042479AA2B66916B0082581B /* DOModalTransitionPop.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424797D2B66916B0082581B /* DOModalTransitionPop.m */; };
-		042479AB2B66916B0082581B /* DOModalTransitionPush.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424797E2B66916B0082581B /* DOModalTransitionPush.m */; };
+		042479AA2B66916B0082581B /* DOModalTransitionPush.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424797D2B66916B0082581B /* DOModalTransitionPush.m */; };
+		042479AB2B66916B0082581B /* DOModalTransitionScale.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424797E2B66916B0082581B /* DOModalTransitionScale.m */; };
 		042479AC2B66916B0082581B /* DOJailbreakButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 042479862B66916B0082581B /* DOJailbreakButton.m */; };
 		042479AD2B66916B0082581B /* DOHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 042479872B66916B0082581B /* DOHeaderView.m */; };
 		042479AE2B66916B0082581B /* DOUIManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 042479882B66916B0082581B /* DOUIManager.m */; };
@@ -182,11 +182,11 @@
 		042479762B66916B0082581B /* DOCreditsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOCreditsCell.h; sourceTree = "<group>"; };
 		042479772B66916B0082581B /* DOButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOButtonCell.m; sourceTree = "<group>"; };
 		042479782B66916B0082581B /* DOPSListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOPSListController.m; sourceTree = "<group>"; };
-		0424797A2B66916B0082581B /* DOModalTransitionPop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOModalTransitionPop.h; sourceTree = "<group>"; };
-		0424797B2B66916B0082581B /* DOModalTransitionPush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOModalTransitionPush.h; sourceTree = "<group>"; };
+		0424797A2B66916B0082581B /* DOModalTransitionPush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOModalTransitionPush.h; sourceTree = "<group>"; };
+		0424797B2B66916B0082581B /* DOModalTransitionScale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOModalTransitionScale.h; sourceTree = "<group>"; };
 		0424797C2B66916B0082581B /* DOModalBackAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOModalBackAction.m; sourceTree = "<group>"; };
-		0424797D2B66916B0082581B /* DOModalTransitionPop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOModalTransitionPop.m; sourceTree = "<group>"; };
-		0424797E2B66916B0082581B /* DOModalTransitionPush.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOModalTransitionPush.m; sourceTree = "<group>"; };
+		0424797D2B66916B0082581B /* DOModalTransitionPush.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOModalTransitionPush.m; sourceTree = "<group>"; };
+		0424797E2B66916B0082581B /* DOModalTransitionScale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOModalTransitionScale.m; sourceTree = "<group>"; };
 		0424797F2B66916B0082581B /* DOModalBackAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOModalBackAction.h; sourceTree = "<group>"; };
 		042479802B66916B0082581B /* DONavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DONavigationController.h; sourceTree = "<group>"; };
 		042479812B66916B0082581B /* DOUIManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOUIManager.h; sourceTree = "<group>"; };
@@ -405,10 +405,10 @@
 			isa = PBXGroup;
 			children = (
 				042479722B66916B0082581B /* DOHeaderCell.h */,
-				042479732B66916B0082581B /* DOCreditsCell.m */,
-				042479742B66916B0082581B /* DOButtonCell.h */,
 				042479752B66916B0082581B /* DOHeaderCell.m */,
 				042479762B66916B0082581B /* DOCreditsCell.h */,
+				042479732B66916B0082581B /* DOCreditsCell.m */,
+				042479742B66916B0082581B /* DOButtonCell.h */,
 				042479772B66916B0082581B /* DOButtonCell.m */,
 			);
 			path = Specifiers;
@@ -417,10 +417,10 @@
 		042479792B66916B0082581B /* Transition */ = {
 			isa = PBXGroup;
 			children = (
-				0424797A2B66916B0082581B /* DOModalTransitionPop.h */,
-				0424797D2B66916B0082581B /* DOModalTransitionPop.m */,
-				0424797B2B66916B0082581B /* DOModalTransitionPush.h */,
-				0424797E2B66916B0082581B /* DOModalTransitionPush.m */,
+				0424797A2B66916B0082581B /* DOModalTransitionPush.h */,
+				0424797D2B66916B0082581B /* DOModalTransitionPush.m */,
+				0424797B2B66916B0082581B /* DOModalTransitionScale.h */,
+				0424797E2B66916B0082581B /* DOModalTransitionScale.m */,
 				0424797F2B66916B0082581B /* DOModalBackAction.h */,
 				0424797C2B66916B0082581B /* DOModalBackAction.m */,
 			);
@@ -1074,8 +1074,8 @@
 				8C9E46292ACA1CC700B5456A /* UIImage+Blur.m in Sources */,
 				8C029F462B4DFD910071DE58 /* DOBootstrapper.m in Sources */,
 				042479AD2B66916B0082581B /* DOHeaderView.m in Sources */,
-				042479AB2B66916B0082581B /* DOModalTransitionPush.m in Sources */,
-				042479AA2B66916B0082581B /* DOModalTransitionPop.m in Sources */,
+				042479AB2B66916B0082581B /* DOModalTransitionScale.m in Sources */,
+				042479AA2B66916B0082581B /* DOModalTransitionPush.m in Sources */,
 				0443A9B12B79D9C10014C933 /* DOPSListItemsController.m in Sources */,
 				8C71982B2ABF0E84003C6658 /* main.m in Sources */,
 				8C029F602B4E25350071DE58 /* DOEnvironmentManager.m in Sources */,
