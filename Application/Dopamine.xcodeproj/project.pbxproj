@@ -34,6 +34,7 @@
 		042479B82B66916B0082581B /* DOMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0424799F2B66916B0082581B /* DOMainViewController.m */; };
 		042479B92B66916B0082581B /* DOGlobalAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = 042479A02B66916B0082581B /* DOGlobalAppearance.m */; };
 		042479E52B66B0DD0082581B /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 042479E42B66B0DD0082581B /* Preferences.framework */; };
+		0443A9B12B79D9C10014C933 /* DOPSListItemsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0443A9AF2B79D9C10014C933 /* DOPSListItemsController.m */; };
 		04C2469C2B73220400E17924 /* DOUpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246982B73220400E17924 /* DOUpdateViewController.m */; };
 		04C2469D2B73220400E17924 /* DOUpdateCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246992B73220400E17924 /* DOUpdateCircleView.m */; };
 		04C246A12B73225800E17924 /* DODownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246A02B73225800E17924 /* DODownloadViewController.m */; };
@@ -217,6 +218,8 @@
 		0424799F2B66916B0082581B /* DOMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOMainViewController.m; sourceTree = "<group>"; };
 		042479A02B66916B0082581B /* DOGlobalAppearance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOGlobalAppearance.m; sourceTree = "<group>"; };
 		042479E42B66B0DD0082581B /* Preferences.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Preferences.framework; path = Frameworks/Preferences.framework; sourceTree = "<group>"; };
+		0443A9AF2B79D9C10014C933 /* DOPSListItemsController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOPSListItemsController.m; sourceTree = "<group>"; };
+		0443A9B02B79D9C10014C933 /* DOPSListItemsController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOPSListItemsController.h; sourceTree = "<group>"; };
 		04C246982B73220400E17924 /* DOUpdateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOUpdateViewController.m; sourceTree = "<group>"; };
 		04C246992B73220400E17924 /* DOUpdateCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOUpdateCircleView.m; sourceTree = "<group>"; };
 		04C2469A2B73220400E17924 /* DOUpdateCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOUpdateCircleView.h; sourceTree = "<group>"; };
@@ -386,6 +389,7 @@
 		042479692B66916B0082581B /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				0443A9AE2B79D9A40014C933 /* PSLists */,
 				042479712B66916B0082581B /* Specifiers */,
 				0424796A2B66916B0082581B /* Settings.plist */,
 				0424796F2B66916B0082581B /* Credits.plist */,
@@ -393,8 +397,6 @@
 				0424796B2B66916B0082581B /* DOCreditsViewController.m */,
 				042479702B66916B0082581B /* DOSettingsController.h */,
 				0424796C2B66916B0082581B /* DOSettingsController.m */,
-				0424796D2B66916B0082581B /* DOPSListController.h */,
-				042479782B66916B0082581B /* DOPSListController.m */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -463,6 +465,17 @@
 				0424799E2B66916B0082581B /* DOActionMenuDelegate.h */,
 			);
 			path = ActionMenu;
+			sourceTree = "<group>";
+		};
+		0443A9AE2B79D9A40014C933 /* PSLists */ = {
+			isa = PBXGroup;
+			children = (
+				0424796D2B66916B0082581B /* DOPSListController.h */,
+				042479782B66916B0082581B /* DOPSListController.m */,
+				0443A9B02B79D9C10014C933 /* DOPSListItemsController.h */,
+				0443A9AF2B79D9C10014C933 /* DOPSListItemsController.m */,
+			);
+			path = PSLists;
 			sourceTree = "<group>";
 		};
 		04C246972B73220400E17924 /* Update */ = {
@@ -1063,6 +1076,7 @@
 				042479AD2B66916B0082581B /* DOHeaderView.m in Sources */,
 				042479AB2B66916B0082581B /* DOModalTransitionPush.m in Sources */,
 				042479AA2B66916B0082581B /* DOModalTransitionPop.m in Sources */,
+				0443A9B12B79D9C10014C933 /* DOPSListItemsController.m in Sources */,
 				8C71982B2ABF0E84003C6658 /* main.m in Sources */,
 				8C029F602B4E25350071DE58 /* DOEnvironmentManager.m in Sources */,
 				04C246A12B73225800E17924 /* DODownloadViewController.m in Sources */,

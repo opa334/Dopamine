@@ -56,7 +56,7 @@
     ]];
 
     self.backAction = [[DOModalBackAction alloc] initWithAction:^{
-        [self popToRootViewControllerAnimated:YES];
+        [self popViewControllerAnimated:YES];
     }];
     self.backAction.translatesAutoresizingMaskIntoConstraints = NO;
     self.backAction.hidden = YES;

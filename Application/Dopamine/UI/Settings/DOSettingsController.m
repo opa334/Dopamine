@@ -12,10 +12,8 @@
 #import "DOHeaderCell.h"
 #import "DOEnvironmentManager.h"
 #import "DOExploitManager.h"
+#import "DOPSListItemsController.h"
 
-@interface PSListItemsController : NSObject
-- (id)itemsFromDataSource;
-@end
 
 @interface DOSettingsController ()
 
@@ -115,7 +113,7 @@
             [specifiers addObject:exploitGroupSpecifier];
         
             PSSpecifier *kernelExploitSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Kernel Exploit" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
-            kernelExploitSpecifier.detailControllerClass = [PSListItemsController class];
+            kernelExploitSpecifier.detailControllerClass = [DOPSListItemsController class];
             [kernelExploitSpecifier setProperty:@"availableKernelExploitIdentifiers" forKey:@"valuesDataSource"];
             [kernelExploitSpecifier setProperty:@"availableKernelExploitNames" forKey:@"titlesDataSource"];
             [kernelExploitSpecifier setProperty:@YES forKey:@"enabled"];
@@ -124,14 +122,14 @@
             if (envManager.isArm64e) {
                 PSSpecifier *pacBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:@"PAC Bypass" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
                 [pacBypassSpecifier setProperty:@YES forKey:@"enabled"];
-                pacBypassSpecifier.detailControllerClass = [PSListItemsController class];
+                pacBypassSpecifier.detailControllerClass = [DOPSListItemsController class];
                 [pacBypassSpecifier setProperty:@"availablePACBypassIdentifiers" forKey:@"valuesDataSource"];
                 [pacBypassSpecifier setProperty:@"availablePACBypassNames" forKey:@"titlesDataSource"];
                 [specifiers addObject:pacBypassSpecifier];
                 
                 PSSpecifier *pplBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:@"PPL Bypass" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
                 [pplBypassSpecifier setProperty:@YES forKey:@"enabled"];
-                pplBypassSpecifier.detailControllerClass = [PSListItemsController class];
+                pplBypassSpecifier.detailControllerClass = [DOPSListItemsController class];
                 [pplBypassSpecifier setProperty:@"availablePPLBypassIdentifiers" forKey:@"valuesDataSource"];
                 [pplBypassSpecifier setProperty:@"availablePPLBypassNames" forKey:@"titlesDataSource"];
                 [specifiers addObject:pplBypassSpecifier];
