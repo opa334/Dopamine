@@ -14,6 +14,9 @@
 @property (strong, nonatomic) NSString *urlString;
 @property (copy, nonatomic) void (^downloadCallback)(NSURL *file);
 
+@property (nonatomic, retain) UILabel *titleLabel;
+@property (nonatomic, retain) UILabel *descriptionLabel;
+
 @end
 
 @implementation DODownloadViewController
@@ -37,17 +40,17 @@
     stackView.spacing = 10;
     stackView.translatesAutoresizingMaskIntoConstraints = NO;
 
-    UILabel *titleLabel = [[UILabel alloc] init];
-    titleLabel.text = @"Downloading update...";
-    titleLabel.font = [UIFont systemFontOfSize:24 weight:UIFontWeightMedium];
-    titleLabel.textColor = [UIColor colorWithWhite:1.0 alpha:1.0];
+    self.titleLabel = [[UILabel alloc] init];
+    self.titleLabel.text = NSLocalizedString(@"Update_Status_Downloading", nil);
+    self.titleLabel.font = [UIFont systemFontOfSize:24 weight:UIFontWeightMedium];
+    self.titleLabel.textColor = [UIColor colorWithWhite:1.0 alpha:1.0];
 
-    UILabel *descriptionLabel = [[UILabel alloc] init];
-    descriptionLabel.text = @"Please wait while files finish downloading";
-    descriptionLabel.font = [UIFont systemFontOfSize:18 weight:UIFontWeightRegular];
-    descriptionLabel.textColor = [UIColor colorWithWhite:1.0 alpha:0.5];
-    descriptionLabel.textAlignment = NSTextAlignmentCenter;
-    descriptionLabel.numberOfLines = 0;
+    self.descriptionLabel = [[UILabel alloc] init];
+    self.descriptionLabel.text = NSLocalizedString(@"Update_Status_Subtitle_Please_Wait", nil);
+    self.descriptionLabel.font = [UIFont systemFontOfSize:18 weight:UIFontWeightRegular];
+    self.descriptionLabel.textColor = [UIColor colorWithWhite:1.0 alpha:0.5];
+    self.descriptionLabel.textAlignment = NSTextAlignmentCenter;
+    self.descriptionLabel.numberOfLines = 0;
 
     self.circleView = [[DOUpdateCircleView alloc] initWithFrame:CGRectNull];
     self.circleView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -55,8 +58,8 @@
     UIView *spacer = [[UIView alloc] init];
     spacer.translatesAutoresizingMaskIntoConstraints = NO;
 
-    [stackView addArrangedSubview:titleLabel];
-    [stackView addArrangedSubview:descriptionLabel];
+    [stackView addArrangedSubview:self.titleLabel];
+    [stackView addArrangedSubview:self.descriptionLabel];
     [stackView addArrangedSubview:spacer];
     [stackView addArrangedSubview:self.circleView];
 
@@ -135,6 +138,8 @@
 }
 
 - (void)startBlinking {
+    self.titleLabel.text = NSLocalizedString(@"Update_Status_Installing", nil);
+    self.descriptionLabel.text = NSLocalizedString(@"Update_Status_Subtitle_Restart_Soon", nil);
     [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionAutoreverse | UIViewAnimationOptionRepeat | UIViewAnimationOptionAllowUserInteraction animations:^{
         self.circleView.alpha = 0.7;
     } completion:nil];
