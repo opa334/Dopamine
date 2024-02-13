@@ -37,7 +37,39 @@
     
     NSString *latestVersion = releases[0][@"tag_name"];
     NSString *currentVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-    return ![latestVersion isEqualToString:currentVersion];
+    return [self numericalRepresentationForVersion:latestVersion] > [self numericalRepresentationForVersion:currentVersion];
+}
+
+- (long long)numericalRepresentationForVersion:(NSString*)version {
+    long long numericalRepresentation = 0;
+
+    NSArray *components = [version componentsSeparatedByCharactersInSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]];
+    while (components.count < 3)
+        components = [components arrayByAddingObject:@"0"];
+
+    numericalRepresentation |= [components[0] integerValue] << 16;
+    numericalRepresentation |= [components[1] integerValue] << 8;
+    numericalRepresentation |= [components[2] integerValue];
+    return numericalRepresentation;
+}
+
+- (NSArray *)getUpdatesInRange: (NSString *)start end: (NSString *)end
+{
+    NSArray *releases = [self getLatestReleases];
+    if (releases.count == 0)
+        return @[];
+
+    long long startVersion = [self numericalRepresentationForVersion:start];
+    long long endVersion = [self numericalRepresentationForVersion:end];
+    NSMutableArray *updates = [NSMutableArray new];
+    for (NSDictionary *release in releases) {
+        NSString *version = release[@"tag_name"];
+        long long numericalVersion = [self numericalRepresentationForVersion:version];
+        if (numericalVersion >= startVersion && numericalVersion <= endVersion) {
+            [updates addObject:release];
+        }
+    }
+    return updates;
 }
 
 - (NSArray *)getLatestReleases

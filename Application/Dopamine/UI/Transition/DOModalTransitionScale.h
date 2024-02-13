@@ -1,5 +1,5 @@
 //
-//  DOModalTransition.h
+//  DOModalTransitionScale.h
 //  Dopamine
 //
 //  Created by tomt000 on 08/01/2024.
@@ -10,7 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DOModalTransitionPop : NSObject <UIViewControllerAnimatedTransitioning>
+@interface DOModalTransitionScale : NSObject <UIViewControllerAnimatedTransitioning>
+
+- (id)initForwards:(BOOL)forwards;
 
 @end
 

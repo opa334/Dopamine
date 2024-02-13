@@ -1,5 +1,5 @@
 //
-//  DOModalTransition.m
+//  DOModalTransitionPush.m
 //  Dopamine
 //
 //  Created by tomt000 on 08/01/2024.
@@ -7,7 +7,22 @@
 
 #import "DOModalTransitionPush.h"
 
+@interface DOModalTransitionPush ()
+
+@property (nonatomic, assign) BOOL forwards;
+
+@end
+
 @implementation DOModalTransitionPush
+
+- (id)initForwards:(BOOL)forwards {
+    self = [super init];
+    if (self) {
+        _forwards = forwards;
+    }
+    return self;
+}
+
 
 - (NSTimeInterval)transitionDuration:(nullable id<UIViewControllerContextTransitioning>)transitionContext {
     return 0.5;
@@ -16,26 +31,31 @@
 - (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    
+    int screen_width = fromViewController.navigationController.view.bounds.size.width;
 
     [[transitionContext containerView] addSubview:toViewController.view];
 
-    toViewController.view.alpha = 0;
-    toViewController.view.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.7, 0.7);
+    screen_width *= _forwards ? 1 : -1;
 
-    [UIView animateWithDuration:0.2 animations:^{
-        fromViewController.view.alpha = 0;
-    }];
+    
+    toViewController.view.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, screen_width, 0);
+    fromViewController.view.transform = CGAffineTransformIdentity;
     
     [UIView animateWithDuration:0.6 delay:0.0 usingSpringWithDamping:0.9 initialSpringVelocity:2.0  options: UIViewAnimationOptionCurveEaseInOut animations:^{
-        toViewController.view.alpha = 1;
         toViewController.view.transform = CGAffineTransformIdentity;
-        
-        fromViewController.view.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.9, 0.9);
+        fromViewController.view.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, -screen_width, 0);
+
+//        if (_forwards)
+//            fromViewController.view.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, -screen_width, 0);
+//        else
+//            fromViewController.view.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
         fromViewController.view.transform = CGAffineTransformIdentity;
         [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
     }];
 
+    
     
 }
 

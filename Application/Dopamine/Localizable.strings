@@ -1,0 +1,186 @@
+
+
+"Credits_Made_By" = "by opa334, ElleKit by évelyne";
+"Status_Title_Jailbreaking" = "Jailbreaking";
+"Button_Jailbreak_Title" = "Jailbreak";
+"Status_Title_Jailbroken" = "Jailbroken";
+
+"Title_Changelog" = "Changelog";
+
+// Action Menu
+"Menu_Settings_Title" = "Settings";
+"Menu_Restart_SpringBoard_Title" = "Restart SpringBoard";
+"Menu_Reboot_Userspace_Title" = "Reboot Userspace";
+"Menu_Credits_Title" = "Credits";
+
+// Updating
+"Button_Update" = "Update";
+"Button_Update_Available" = "Update Available";
+"Button_Update_Environment" = "Update Environment";
+
+// Update View
+"Update_Status_Downloading" = "Downloading update...";
+"Update_Status_Subtitle_Please_Wait" = "Please wait while files finish downloading";
+"Update_Status_Installing" = "Installing update...";
+"Update_Status_Subtitle_Restart_Soon" = "The device will restart soon";
+
+
+//"Bootstrapping" = "Bootstrapping";
+//
+//"Button_Cancel" = "Cancel";
+//
+//"Button_Hide_Jailbreak" = "Hide Jailbreak";
+//
+//"Button_Hide_Logs_Title" = "Hide Logs";
+//
+//"Button_Jailbreak_Title" = "Jailbreak";
+//
+//"Button_Remove_Jailbreak" = "Remove Jailbreak";
+//
+//"Button_Set_Mobile_Password" = "Set Mobile Password";
+//
+//"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+//
+//"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
+//
+//"Button_Set" = "Set";
+//
+//"Button_Show_Logs_Title" = "Show Logs";
+//
+//"Button_Unhide_Jailbreak" = "Unhide Jailbreak";
+//
+//"Button_Update" = "Update";
+//
+//"Button_Update_Available" = "Update Available";
+//
+//"Button_Update_Environment" = "Update Environment";
+//
+//"Bypassing PAC" = "Bypassing PAC";
+//
+//"Bypassing PPL" = "Bypassing PPL";
+//
+//"Changelog_Unavailable_Text" = "Changelog Unavailable";
+//
+//"Context_Menu_Copy_To_Clipboard" = "Copy to Clipboard";
+//
+//"Credits_Button_Discord" = "Discord";
+//
+//"Credits_Button_License" = "License";
+//
+//"Credits_Button_Source_Code" = "Source Code";
+//
+//"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
+//
+//"Credits_Header_Special_Thanks" = "Special thanks:";
+//
+//"Credits_Made_By" = "Made by opa334, évelyne";
+//
+//"Credits_Made_By_Subheadline" = "UI by sourcelocation\nLogo and icon by xerus";
+//
+//"Finalizing Bootstrap" = "Finalizing Bootstrap";
+//
+//"Gaining r/w" = "Gaining r/w";
+//
+//"Hint_Hide_Jailbreak" = "\"Hide Jailbreak\" temporarily removes jailbreak-related files until next jailbreak";
+//
+//"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+//
+//"Initializing Environment" = "Initializing Environment";
+//
+//"Initializing System Hook" = "Initializing System Hook";
+//
+//"Jailbreak_Done" = "Done!";
+//
+//"Launching kexploitd" = "Launching kexploitd";
+//
+//"Enabling Wi-Fi" = "Enabling Wi-Fi";
+//
+//"Disabling Wi-Fi" = "Disabling Wi-Fi";
+//
+//"Launching oobPCI" = "Launching oobPCI";
+//
+//"Loading Basebin Trustcache" = "Loading Basebin Trustcache";
+//
+//"Menu_Credits_Title" = "Credits";
+//
+//"Menu_Settings_Title" = "Settings";
+//
+//"Menu_Reboot_Userspace_Title" = "Reboot Userspace";
+//
+//"Menu_Restart_SpringBoard_Title" = "Restart SpringBoard";
+//
+//"Settings_iDownload" = "iDownload (Developer Shell)";
+//
+//"Settings_Tweak_Injection" = "Tweak Injection";
+//
+//"Settings_Verbose_Logs" = "Verbose Logs";
+//
+//"Patchfinding" = "Patchfinding";
+//
+//"PM_Reinstall_Done_Text" = "The selected package managers have been reinstalled";
+//
+//"Rebuilding TrustCache" = "Rebuilding TrustCache";
+//
+//"Refreshing Icon Cache" = "Refreshing Icon Cache";
+//
+//"Settings_Footer_Device_Bootstrapped" = "Device is bootstrapped";
+//
+//"Settings_Footer_Device_Not_Bootstrapped" = "Device is not bootstrapped";
+//
+//"Starting jailbreakd" = "Starting jailbreakd";
+//
+//"Starting Launch Daemons" = "Starting Launch Daemons";
+//
+//"Status_Title_Jailbreaking" = "Jailbreaking";
+//
+//"Status_Title_Jailbroken" = "Jailbroken";
+//
+//"Status_Title_Select_Package_Managers" = "Select Package Manager(s)";
+//
+//"Status_Title_Unsuccessful" = "Unsuccessful";
+//
+//"Success_Rate %@%% (%lld/%lld)" = "Success rate: %@%% (%lld/%lld)";
+//
+//"Title_Changelog" = "Changelog";
+//
+//"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
+//
+//"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
+//
+//"Unsupported" = "Unsupported";
+//
+//"Update_Log_Hint_Scrollable" = "Log view can be scrolled";
+//
+//"Update_Status_Downloading" = "Downloading update...";
+//
+//"Update_Status_Installing" = "Installing update...";
+//
+//"Update_Status_Subtitle_Please_Wait" = "Please wait while files finish downloading";
+//
+//"Update_Status_Subtitle_Restart_Soon" = "The device will restart soon";
+//
+//"Alert_Button_Uninstall" = "Uninstall";
+//
+//"Alert_Tweak_Injection_Toggled_Body" = "A userspace reboot is neccessary to apply the changes. Do you want to do it now?";
+//
+//"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
+//
+//"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+//
+//"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+//
+//"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace Reboot Required";
+//
+//"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+//
+//"Select_Package_Managers_Reinstall_Message" = "Select package managers to reinstall";
+//
+//"Reinstall" = "Reinstall";
+//
+//"Continue" = "Continue";
+//
+//"Close" = "Close";
+//
+//"Title_Mismatching_Environment_Version" = "Mismatching Environment Version";
+//
+//"Mismatching_Environment_Version_Update_Body" = "The environment version this device was jailbroken with (%@) mismatches the currently installed app version (%@)\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";

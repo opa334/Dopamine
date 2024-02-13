@@ -145,7 +145,7 @@
 
     UILabel *titleLabel = [[UILabel alloc] init];
     titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    titleLabel.text = @"Jailbreaking";
+    titleLabel.text = NSLocalizedString(@"Status_Title_Jailbreaking", nil);
     titleLabel.textColor = [UIColor whiteColor];
     titleLabel.font = [UIFont systemFontOfSize:18 weight:UIFontWeightRegular];
     titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -177,9 +177,9 @@
 {
     self.button.userInteractionEnabled = enabled;
     if (enabled) {
-        self.backgroundColor = [DOGlobalAppearance windowColorWithAlpha:1.0];
+        self.alpha = 1.0;
     } else {
-        self.backgroundColor = [DOGlobalAppearance windowColorWithAlpha:0.55];
+        self.alpha = 0.7;
     }
 }
 

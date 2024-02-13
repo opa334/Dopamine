@@ -28,7 +28,7 @@
     [super viewDidLoad];
 
     UILabel *title = [[UILabel alloc] init];
-    title.text = @"Changelog";
+    title.text = NSLocalizedString(@"Title_Changelog", nil);
     title.font = [UIFont systemFontOfSize:24 weight:UIFontWeightMedium];
     title.textColor = [UIColor colorWithWhite:1.0 alpha:1.0];
     title.textAlignment = NSTextAlignmentCenter;
@@ -78,7 +78,7 @@
     self.gradientMask.locations = @[@0.0, @0.01, @0.5, @0.87];
     self.changelogSuperview.layer.mask = self.gradientMask;
     
-    self.button = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:@"Update" image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"update" handler:^(__kindof UIAction * _Nonnull action) {
+    self.button = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:NSLocalizedString(@"Button_Update", nil) image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"update" handler:^(__kindof UIAction * _Nonnull action) {
         DODownloadViewController *downloadVC = [[DODownloadViewController alloc] initWithUrl:self.lastestDownloadUrl callback:^(NSURL * _Nonnull file) {
             NSLog(@"Downloaded %@", file);
         }];

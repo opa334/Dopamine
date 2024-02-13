@@ -73,7 +73,7 @@
     //Header
     DOHeaderView *headerView = [[DOHeaderView alloc] initWithImage: [UIImage imageNamed:@"Dopamine"] subtitles: @[
         [DOGlobalAppearance mainSubtitleString:[[DOEnvironmentManager sharedManager] versionSupportString]],
-        [DOGlobalAppearance secondarySubtitleString:@"by opa334, ElleKit by évelyne"],
+        [DOGlobalAppearance secondarySubtitleString:NSLocalizedString(@"Credits_Made_By" , nil)],
     ]];
     
     [stackView addArrangedSubview:headerView];
@@ -85,16 +85,16 @@
     
     //Action Menu
     DOActionMenuView *actionView = [[DOActionMenuView alloc] initWithActions:@[
-        [UIAction actionWithTitle:@"Settings" image:[UIImage systemImageNamed:@"gearshape" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"settings" handler:^(__kindof UIAction * _Nonnull action) {
+        [UIAction actionWithTitle:NSLocalizedString(@"Menu_Settings_Title", nil) image:[UIImage systemImageNamed:@"gearshape" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"settings" handler:^(__kindof UIAction * _Nonnull action) {
             [(UINavigationController*)(self.parentViewController) pushViewController:[[DOSettingsController alloc] init] animated:YES];
         }],
-        [UIAction actionWithTitle:@"Respring" image:[UIImage systemImageNamed:@"arrow.clockwise" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"respring" handler:^(__kindof UIAction * _Nonnull action) {
+        [UIAction actionWithTitle:NSLocalizedString(@"Menu_Restart_SpringBoard_Title", nil) image:[UIImage systemImageNamed:@"arrow.clockwise" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"respring" handler:^(__kindof UIAction * _Nonnull action) {
             [[DOEnvironmentManager sharedManager] respring];
         }],
-        [UIAction actionWithTitle:@"Reboot Userspace" image:[UIImage systemImageNamed:@"arrow.clockwise.circle" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"reboot-userspace" handler:^(__kindof UIAction * _Nonnull action) {
+        [UIAction actionWithTitle:NSLocalizedString(@"Menu_Reboot_Userspace_Title", nil) image:[UIImage systemImageNamed:@"arrow.clockwise.circle" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"reboot-userspace" handler:^(__kindof UIAction * _Nonnull action) {
             [[DOEnvironmentManager sharedManager] rebootUserspace];
         }],
-        [UIAction actionWithTitle:@"Credits" image:[UIImage systemImageNamed:@"info.circle" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"credits" handler:^(__kindof UIAction * _Nonnull action) {
+        [UIAction actionWithTitle:NSLocalizedString(@"Menu_Credits_Title", nil) image:[UIImage systemImageNamed:@"info.circle" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"credits" handler:^(__kindof UIAction * _Nonnull action) {
             [(UINavigationController*)(self.parentViewController) pushViewController:[[DOCreditsViewController alloc] init] animated:YES];
         }]
     ] delegate:self];
@@ -117,7 +117,7 @@
     //Jailbreak Button
     BOOL isJailbroken = [[DOEnvironmentManager sharedManager] isJailbroken];
     BOOL isSupported = [[DOEnvironmentManager sharedManager] isSupported];
-    NSString *jailbreakButtonTitle = !isSupported ? @"Unsupported" : (isJailbroken ? @"Jailbroken" : @"Jailbreak");
+    NSString *jailbreakButtonTitle = !isSupported ? @"Unsupported" : (isJailbroken ? NSLocalizedString(@"Status_Title_Jailbroken", nil) : NSLocalizedString(@"Button_Jailbreak_Title", nil));
     
     UIImage *jailbreakButtonImage;
     if (isSupported) {
@@ -152,10 +152,11 @@
     ])];
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        //TODO: Detect environment update ([self setupUpdateAvailable:YES];return;)
         if (![[DOUIManager sharedInstance] isUpdateAvailable])
             return;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self setupUpdateAvailable];
+            [self setupUpdateAvailable:NO];
         });
     });
     
@@ -202,13 +203,18 @@
     });
 }
 
--(void)setupUpdateAvailable
+-(void)setupUpdateAvailable:(BOOL)environmentUpdate
 {
     if (self.jailbreakBtn.didExpand)
         return;
-        
-    self.updateButton = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:@"Update Available" image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"update-available" handler:^(__kindof UIAction * _Nonnull action) {
-        [(UINavigationController*)(self.parentViewController) pushViewController:[[DOUpdateViewController alloc] init] animated:YES];
+
+    NSString *title = environmentUpdate ? NSLocalizedString(@"Button_Update_Environment", nil) : NSLocalizedString(@"Button_Update_Available", nil);
+    
+    self.updateButton = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:title image:[UIImage systemImageNamed:@"arrow.down.circle" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"update-available" handler:^(__kindof UIAction * _Nonnull action) {
+        if (environmentUpdate)
+            ; //update environment
+        else
+            [(UINavigationController*)(self.parentViewController) pushViewController:[[DOUpdateViewController alloc] init] animated:YES];
     }] chevron:NO];
 
     self.updateButton.translatesAutoresizingMaskIntoConstraints = NO;
