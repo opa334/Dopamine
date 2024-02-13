@@ -41,6 +41,8 @@
 		04C246AE2B74ACA200E17924 /* DOAppSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246AD2B74ACA200E17924 /* DOAppSwitch.m */; };
 		04C246B12B74B05800E17924 /* DOPkgManagerPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246B02B74B05800E17924 /* DOPkgManagerPickerView.m */; };
 		04C246B32B74B65900E17924 /* PkgManagers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 04C246B22B74B65900E17924 /* PkgManagers.plist */; };
+		04DD0B352B7BA38C0055DE4F /* DOLicenseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DD0B342B7BA38C0055DE4F /* DOLicenseViewController.m */; };
+		04DD0B372B7BA6180055DE4F /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B362B7BA6180055DE4F /* LICENSE.md */; };
 		8C029F432B4DFD5D0071DE58 /* DOExploitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F422B4DFD5D0071DE58 /* DOExploitManager.m */; };
 		8C029F462B4DFD910071DE58 /* DOBootstrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F452B4DFD910071DE58 /* DOBootstrapper.m */; };
 		8C029F4E2B4E1FF30071DE58 /* DOExploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F4D2B4E1FF30071DE58 /* DOExploit.m */; };
@@ -231,6 +233,9 @@
 		04C246AF2B74B05800E17924 /* DOPkgManagerPickerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOPkgManagerPickerView.h; sourceTree = "<group>"; };
 		04C246B02B74B05800E17924 /* DOPkgManagerPickerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOPkgManagerPickerView.m; sourceTree = "<group>"; };
 		04C246B22B74B65900E17924 /* PkgManagers.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PkgManagers.plist; sourceTree = "<group>"; };
+		04DD0B332B7BA38C0055DE4F /* DOLicenseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOLicenseViewController.h; sourceTree = "<group>"; };
+		04DD0B342B7BA38C0055DE4F /* DOLicenseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOLicenseViewController.m; sourceTree = "<group>"; };
+		04DD0B362B7BA6180055DE4F /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = LICENSE.md; path = ../LICENSE.md; sourceTree = "<group>"; };
 		8C029F412B4DFD5D0071DE58 /* DOExploitManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOExploitManager.h; sourceTree = "<group>"; };
 		8C029F422B4DFD5D0071DE58 /* DOExploitManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOExploitManager.m; sourceTree = "<group>"; };
 		8C029F442B4DFD910071DE58 /* DOBootstrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOBootstrapper.h; sourceTree = "<group>"; };
@@ -396,6 +401,8 @@
 				0424796B2B66916B0082581B /* DOCreditsViewController.m */,
 				042479702B66916B0082581B /* DOSettingsController.h */,
 				0424796C2B66916B0082581B /* DOSettingsController.m */,
+				04DD0B332B7BA38C0055DE4F /* DOLicenseViewController.h */,
+				04DD0B342B7BA38C0055DE4F /* DOLicenseViewController.m */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -651,6 +658,7 @@
 		8C71980C2ABF0E82003C6658 = {
 			isa = PBXGroup;
 			children = (
+				04DD0B362B7BA6180055DE4F /* LICENSE.md */,
 				8C7198172ABF0E82003C6658 /* Dopamine */,
 				8C7198162ABF0E82003C6658 /* Products */,
 				8C029F642B4E2E7D0071DE58 /* Frameworks */,
@@ -948,6 +956,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04DD0B372B7BA6180055DE4F /* LICENSE.md in Resources */,
 				8CCD2FC42B77AAA000F9C5DA /* basebin-link.deb in Resources */,
 				8C05C5A02B75A17A0097A931 /* bootstrap_1900.tar.zst in Resources */,
 				8C05C59F2B75A1770097A931 /* bootstrap_1800.tar.zst in Resources */,
@@ -1075,6 +1084,7 @@
 				8C029F462B4DFD910071DE58 /* DOBootstrapper.m in Sources */,
 				042479AD2B66916B0082581B /* DOHeaderView.m in Sources */,
 				042479AB2B66916B0082581B /* DOModalTransitionScale.m in Sources */,
+				04DD0B352B7BA38C0055DE4F /* DOLicenseViewController.m in Sources */,
 				042479AA2B66916B0082581B /* DOModalTransitionPush.m in Sources */,
 				0443A9B12B79D9C10014C933 /* DOPSListItemsController.m in Sources */,
 				8C71982B2ABF0E84003C6658 /* main.m in Sources */,

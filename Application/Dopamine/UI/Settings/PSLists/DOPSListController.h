@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DOPSListController : PSListController
 
++ (void)setupViewControllerStyle:(UIViewController*)vc;
+
 @end
 
 NS_ASSUME_NONNULL_END
