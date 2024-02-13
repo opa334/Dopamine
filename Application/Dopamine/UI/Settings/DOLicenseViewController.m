@@ -80,6 +80,10 @@
             @"file": @"LICENSE"
         },
         @{
+            @"name": @"kfd",
+            @"file": @"LICENSE_kfd"
+        },
+        @{
             @"name": @"ElleKit",
             @"file": @"LICENSE_ElleKit"
         },

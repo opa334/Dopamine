@@ -96,6 +96,7 @@
 		8C56D4C92B7C102B001C03D3 /* LICENSE_Sileo.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4C62B7C102B001C03D3 /* LICENSE_Sileo.md */; };
 		8C56D4CA2B7C102B001C03D3 /* LICENSE_Procursus.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4C72B7C102B001C03D3 /* LICENSE_Procursus.md */; };
 		8C56D4CB2B7C102B001C03D3 /* LICENSE_Zebra.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4C82B7C102B001C03D3 /* LICENSE_Zebra.md */; };
+		8C56D4CD2B7C118B001C03D3 /* LICENSE_kfd.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4CC2B7C118B001C03D3 /* LICENSE_kfd.md */; };
 		8C71981A2ABF0E82003C6658 /* DOAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7198192ABF0E82003C6658 /* DOAppDelegate.m */; };
 		8C71981D2ABF0E82003C6658 /* DOSceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71981C2ABF0E82003C6658 /* DOSceneDelegate.m */; };
 		8C7198252ABF0E84003C6658 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C7198242ABF0E84003C6658 /* Assets.xcassets */; };
@@ -308,6 +309,7 @@
 		8C56D4C62B7C102B001C03D3 /* LICENSE_Sileo.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_Sileo.md; sourceTree = "<group>"; };
 		8C56D4C72B7C102B001C03D3 /* LICENSE_Procursus.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_Procursus.md; sourceTree = "<group>"; };
 		8C56D4C82B7C102B001C03D3 /* LICENSE_Zebra.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_Zebra.md; sourceTree = "<group>"; };
+		8C56D4CC2B7C118B001C03D3 /* LICENSE_kfd.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_kfd.md; sourceTree = "<group>"; };
 		8C7198152ABF0E82003C6658 /* Dopamine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dopamine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C7198182ABF0E82003C6658 /* DOAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOAppDelegate.h; sourceTree = "<group>"; };
 		8C7198192ABF0E82003C6658 /* DOAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOAppDelegate.m; sourceTree = "<group>"; };
@@ -772,6 +774,7 @@
 				8C56D4C72B7C102B001C03D3 /* LICENSE_Procursus.md */,
 				8C56D4C62B7C102B001C03D3 /* LICENSE_Sileo.md */,
 				8C56D4C82B7C102B001C03D3 /* LICENSE_Zebra.md */,
+				8C56D4CC2B7C118B001C03D3 /* LICENSE_kfd.md */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -991,6 +994,7 @@
 			files = (
 				04DD0B372B7BA6180055DE4F /* LICENSE.md in Resources */,
 				04DD0B3A2B7BF3E80055DE4F /* LICENSE_libc.md in Resources */,
+				8C56D4CD2B7C118B001C03D3 /* LICENSE_kfd.md in Resources */,
 				8C56D4BF2B7C0DF2001C03D3 /* LICENSE_ChOma.md in Resources */,
 				8C56D4C22B7C0DF2001C03D3 /* LICENSE_Fugu15.md in Resources */,
 				8C56D4C02B7C0DF2001C03D3 /* LICENSE_Fugu15_Rootful.md in Resources */,
