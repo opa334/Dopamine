@@ -512,7 +512,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         [[DOUIManager sharedInstance] sendLog:@"Extracting Bootstrap" debug:NO];
 
         NSString *bootstrapZstdPath = [NSString stringWithFormat:@"%@/bootstrap_%@.tar.zst", [NSBundle mainBundle].bundlePath, [self bootstrapVersion]];
-        [self extractBootstrap:bootstrapZstdPath withCompletion:completion];
+        [self extractBootstrap:bootstrapZstdPath withCompletion:bootstrapFinishedCompletion];
 
         /*NSString *documentsCandidate = @"/var/mobile/Documents/bootstrap.tar.zstd";
         NSString *bundleCandidate = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"bootstrap.tar.zstd"];
