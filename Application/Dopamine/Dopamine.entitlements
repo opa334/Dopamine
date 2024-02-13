@@ -6,6 +6,8 @@
 	<true/>
 	<key>proc_info-allow</key>
 	<true/>
+	<key>com.apple.private.persona-mgmt</key>
+	<true/>
 	<key>com.apple.private.tcc.allow</key>
 	<array>
 		<string>kTCCServiceSystemPolicyAllFiles</string>

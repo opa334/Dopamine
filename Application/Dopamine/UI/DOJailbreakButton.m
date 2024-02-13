@@ -111,7 +111,7 @@
 {
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
 
-    if ([[DOUIManager sharedInstance] enabledPackageManagers].count > 0)
+    if ([[DOUIManager sharedInstance] enabledPackageManagerKeys].count > 0)
         return;
 
     self.pkgManagerPickerView = [[DOPkgManagerPickerView alloc] initWithCallback:^(BOOL success) {

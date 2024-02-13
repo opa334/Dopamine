@@ -13,6 +13,11 @@
 #include <math.h>
 extern char **environ;
 
+#define POSIX_SPAWN_PERSONA_FLAGS_OVERRIDE 1
+extern int posix_spawnattr_set_persona_np(const posix_spawnattr_t* __restrict, uid_t, uint32_t);
+extern int posix_spawnattr_set_persona_uid_np(const posix_spawnattr_t* __restrict, uid_t);
+extern int posix_spawnattr_set_persona_gid_np(const posix_spawnattr_t* __restrict, uid_t);
+
 void proc_iterate(void (^itBlock)(uint64_t, bool*))
 {
 	uint64_t proc = ksymbol(allproc);
@@ -356,7 +361,7 @@ int cmd_wait_for_exit(pid_t pid)
 	return status;
 }
 
-int __exec_cmd_internal_va(bool suspended, pid_t *pidOut, const char *binary, int argc, va_list va_args)
+int __exec_cmd_internal_va(bool suspended, bool root, pid_t *pidOut, const char *binary, int argc, va_list va_args)
 {
 	const char *argv[argc+1];
 	argv[0] = binary;
@@ -366,9 +371,14 @@ int __exec_cmd_internal_va(bool suspended, pid_t *pidOut, const char *binary, in
 	argv[argc] = NULL;
 
 	posix_spawnattr_t attr = NULL;
+	posix_spawnattr_init(&attr);
 	if (suspended) {
-		posix_spawnattr_init(&attr);
 		posix_spawnattr_setflags(&attr, POSIX_SPAWN_START_SUSPENDED);
+	}
+	if (root) {
+		posix_spawnattr_set_persona_np(&attr, 99, POSIX_SPAWN_PERSONA_FLAGS_OVERRIDE);
+		posix_spawnattr_set_persona_uid_np(&attr, 0);
+		posix_spawnattr_set_persona_gid_np(&attr, 0);
 	}
 
 	pid_t spawnedPid = 0;
@@ -394,7 +404,7 @@ int exec_cmd(const char *binary, ...)
 	va_end(args);
 
 	va_start(args, binary);
-	int r = __exec_cmd_internal_va(false, NULL, binary, argc, args);
+	int r = __exec_cmd_internal_va(false, false, NULL, binary, argc, args);
 	va_end(args);
 	return r;
 }
@@ -408,7 +418,21 @@ int exec_cmd_suspended(pid_t *pidOut, const char *binary, ...)
 	va_end(args);
 
 	va_start(args, binary);
-	int r = __exec_cmd_internal_va(true, pidOut, binary, argc, args);
+	int r = __exec_cmd_internal_va(true, false, pidOut, binary, argc, args);
+	va_end(args);
+	return r;
+}
+
+int exec_cmd_root(const char *binary, ...)
+{
+	int argc = 1;
+	va_list args;
+	va_start(args, binary);
+	while (va_arg(args, const char *)) argc++;
+	va_end(args);
+
+	va_start(args, binary);
+	int r = __exec_cmd_internal_va(true, true, NULL, binary, argc, args);
 	va_end(args);
 	return r;
 }

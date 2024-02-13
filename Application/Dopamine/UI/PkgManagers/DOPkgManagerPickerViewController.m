@@ -7,6 +7,7 @@
 
 #import "DOPkgManagerPickerViewController.h"
 #import "DOPkgManagerPickerView.h"
+#import "DOEnvironmentManager.h"
 
 
 @interface DOPkgManagerPickerViewController ()
@@ -18,7 +19,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     DOPkgManagerPickerView *picker = [[DOPkgManagerPickerView alloc] initWithCallback:^(BOOL success) {
-        //you can now force a deb reinstall of the enabled package managers
+        [[DOEnvironmentManager sharedManager] reinstallPackageManagers];
     }];
     picker.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:picker];

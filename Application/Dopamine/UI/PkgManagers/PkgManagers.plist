@@ -6,21 +6,21 @@
 		<key>Display Name</key>
 		<string>Sileo</string>
 		<key>Key</key>
-		<string>bundleid.sileo</string>
+		<string>org.coolstar.SileoStore</string>
 		<key>Icon</key>
 		<string>Sileo</string>
 		<key>Package</key>
-		<string>sileo-1.0.deb</string>
+		<string>sileo.deb</string>
 	</dict>
 	<dict>
 		<key>Display Name</key>
 		<string>Zebra</string>
 		<key>Key</key>
-		<string>bundleid.zebra</string>
+		<string>xyz.willy.Zebra</string>
 		<key>Icon</key>
 		<string>Zebra</string>
 		<key>Package</key>
-		<string>zebra-1.0.deb</string>
+		<string>zebra.deb</string>
 	</dict>
 </array>
 </plist>

@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)prepareBootstrapWithCompletion:(void (^)(NSError *))completion;
+- (NSError *)installPackageManagers;
 - (NSError *)finalizeBootstrap;
 - (NSError *)deleteBootstrap;
 

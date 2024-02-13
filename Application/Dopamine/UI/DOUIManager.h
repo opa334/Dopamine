@@ -31,6 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isUpdateAvailable;
 - (NSArray *)getLatestReleases;
 - (NSArray*)availablePackageManagers;
+- (NSArray*)enabledPackageManagerKeys;
 - (NSArray*)enabledPackageManagers;
 - (void)resetPackageManagers;
 - (void)resetSettings;

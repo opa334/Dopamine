@@ -99,11 +99,16 @@ int main(int argc, char* argv[])
 			return result;
 		}
 	} else if (!strcmp(cmd, "internal")) {
+		if (geteuid() == 0 && getuid() != 0) {
+			// When jailbroken the Dopamine app cannot have uid 0 because it can't drop it anymore without loosing it
+			// So in some cases (e.g. for spawning dpkg) we need to use jbctl to get it
+			setuid(0);
+		}
 		if (getuid() != 0) return -1;
 		if (argc < 3) return -1;
 
 		const char *internalCmd = argv[2];
-		return jbctl_handle_internal(internalCmd);
+		return jbctl_handle_internal(internalCmd, argc-2, &argv[2]);
 	}
 
 	return 0;

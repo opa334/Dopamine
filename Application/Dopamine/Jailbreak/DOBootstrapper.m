@@ -535,7 +535,14 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (int)installPackage:(NSString *)packagePath
 {
-    return exec_cmd_trusted(JBRootPath("/usr/bin/dpkg"), "-i", packagePath.fileSystemRepresentation, NULL);
+    if (getuid() == 0) {
+        return exec_cmd_trusted(JBRootPath("/usr/bin/dpkg"), "-i", packagePath.fileSystemRepresentation, NULL);
+    }
+    else {
+        // idk why but waitpid sometimes fails and this returns -1, so we just ignore the return value
+        exec_cmd(JBRootPath("/basebin/jbctl"), "internal", "install_pkg", packagePath.fileSystemRepresentation, NULL);
+        return 0;
+    }
 }
 
 - (int)uninstallPackageWithIdentifier:(NSString *)identifier
@@ -563,6 +570,20 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     return nil;
 }
 
+- (NSError *)installPackageManagers
+{
+    NSArray *enabledPackageManagers = [[DOUIManager sharedInstance] enabledPackageManagers];
+    for (NSDictionary *packageManagerDict in enabledPackageManagers) {
+        NSString *path = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:packageManagerDict[@"Package"]];
+        NSString *name = packageManagerDict[@"Display Name"];
+        int r = [self installPackage:path];
+        if (r != 0) {
+            return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install %@: %d\n", name, r]}];
+        }
+    }
+    return nil;
+}
+
 - (NSError *)finalizeBootstrap
 {
     // Initial setup on first jailbreak
@@ -573,17 +594,8 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"prep_bootstrap.sh returned %d\n", r]}];
         }
         
-        NSString *sileoPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"sileo.deb"];
-        NSString *zebraPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"zebra.deb"];
-        
-        if (true) { // TODO: pref (sileo)
-            int r = [self installPackage:sileoPath];
-            if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install Sileo: %d\n", r]}];
-        }
-        if (true) { // TODO: pref (zebra)
-            int r = [self installPackage:zebraPath];
-            if (r != 0) return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedFinalising userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to install Zebra: %d\n", r]}];
-        }
+        NSError *error = [self installPackageManagers];
+        if (error) return error;
     }
     
     NSString *librootInstalledVersion = [self installedVersionForPackageWithIdentifier:@"libroot-dopamine"];
@@ -640,7 +652,6 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         }
     }
     
-    [[DOEnvironmentManager sharedManager] determineJailbreakRootPath];
     NSString *path = [[NSString stringWithUTF8String:gSystemInfo.jailbreakInfo.rootPath] stringByDeletingLastPathComponent];
     NSError *error;
     [[NSFileManager defaultManager] removeItemAtPath:path error:&error];

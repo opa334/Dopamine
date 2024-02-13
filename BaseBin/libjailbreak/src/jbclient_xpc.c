@@ -293,20 +293,6 @@ int jbclient_platform_stage_jailbreak_update(const char *updateTar)
 	return -1;
 }
 
-int jbclient_platform_set_jailbreak_visible(bool visible)
-{
-	xpc_object_t xargs = xpc_dictionary_create_empty();
-	xpc_dictionary_set_bool(xargs, "visible", visible);
-	xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_PLATFORM, JBS_PLATFORM_SET_JAILBREAK_VISIBLE, xargs);
-	xpc_release(xargs);
-	if (xreply) {
-		int result = xpc_dictionary_get_int64(xreply, "result");
-		xpc_release(xreply);
-		return result;
-	}
-	return -1;
-}
-
 int jbclient_watchdog_intercept_userspace_panic(const char *panicMessage)
 {
 	xpc_object_t xargs = xpc_dictionary_create_empty();

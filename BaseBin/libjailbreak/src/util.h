@@ -43,6 +43,7 @@ void thread_caffeinate_stop(void);
 int cmd_wait_for_exit(pid_t pid);
 int exec_cmd(const char *binary, ...);
 int exec_cmd_suspended(pid_t *pidOut, const char *binary, ...);
+int exec_cmd_root(const char *binary, ...);
 
 #define exec_cmd_trusted(x, args ...) ({ \
     jbclient_trust_binary(x); \

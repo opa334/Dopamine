@@ -67,15 +67,20 @@
     return [NSArray arrayWithContentsOfFile:path];
 }
 
+- (NSArray*)enabledPackageManagerKeys
+{
+    return [_preferenceManager preferenceValueForKey:@"enabledPkgManagers"] ?: @[];
+}
+
 - (NSArray*)enabledPackageManagers
 {
     NSMutableArray *enabledPkgManagers = [NSMutableArray new];
-    NSArray *enabledKeys = [_preferenceManager preferenceValueForKey:@"enabledPkgManagers"] ?: @[];
+    NSArray *enabledKeys = [self enabledPackageManagerKeys];
 
     [[self availablePackageManagers] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *key = obj[@"Key"];
         if ([enabledKeys containsObject:key]) {
-            [enabledPkgManagers addObject:key];
+            [enabledPkgManagers addObject:obj];
         }
     }];
 
@@ -96,7 +101,7 @@
 
 - (void)setPackageManager:(NSString*)key enabled:(BOOL)enabled
 {
-    NSMutableArray *pkgManagers = [self enabledPackageManagers].mutableCopy;
+    NSMutableArray *pkgManagers = [self enabledPackageManagerKeys].mutableCopy;
     
     if (enabled && ![pkgManagers containsObject:key]) {
         [pkgManagers addObject:key];

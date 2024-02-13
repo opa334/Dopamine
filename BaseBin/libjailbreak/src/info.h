@@ -29,7 +29,7 @@ struct system_info {
 
 	struct {
 		uint64_t usesPACBypass;
-		const char *rootPath;
+		char *rootPath;
 	} jailbreakInfo;
 
 	struct {
@@ -385,6 +385,7 @@ static void _safe_xpc_dictionary_set_string(xpc_object_t xdict, const char *name
 
 #define XPC_SET_GENERIC(xdict, name, value) _Generic((value), \
 	const char *: _safe_xpc_dictionary_set_string(xdict, name, (const char*)(uint64_t)value), \
+	char *: _safe_xpc_dictionary_set_string(xdict, name, (const char*)(uint64_t)value), \
 	uint64_t: xpc_dictionary_set_uint64(xdict, name, (uint64_t)value), \
 	uint32_t: xpc_dictionary_set_uint64(xdict, name, (uint64_t)value), \
 	bool: xpc_dictionary_set_bool(xdict, name, (bool)value) \
@@ -392,6 +393,7 @@ static void _safe_xpc_dictionary_set_string(xpc_object_t xdict, const char *name
 
 #define XPC_GET_GENERIC(xdict, name, target) _Generic((target), \
 	const char *: _safe_xpc_dictionary_get_string(xdict, name, (char **)&target), \
+	char *: _safe_xpc_dictionary_get_string(xdict, name, (char **)&target), \
 	uint64_t: *((uint64_t *)&target) = xpc_dictionary_get_uint64(xdict, name), \
 	uint32_t: *((uint32_t *)&target) = (uint32_t)xpc_dictionary_get_uint64(xdict, name), \
 	bool: *((bool *)&target) = xpc_dictionary_get_bool(xdict, name) \

@@ -39,7 +39,7 @@
         [packageManagers enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             NSDictionary *manager = (NSDictionary *)obj;
             DOAppSwitch *appSwitch = [[DOAppSwitch alloc] initWithIcon:[UIImage imageNamed:manager[@"Icon"]] title:manager[@"Display Name"]];
-            appSwitch.selected = [[[DOUIManager sharedInstance] enabledPackageManagers] containsObject:manager[@"Key"]];
+            appSwitch.selected = [[[DOUIManager sharedInstance] enabledPackageManagerKeys] containsObject:manager[@"Key"]];
             appSwitch.onSwitch = ^(BOOL enabled) {
                 [[DOUIManager sharedInstance] setPackageManager:manager[@"Key"] enabled:enabled];
                 [self updateButtonState];
@@ -113,7 +113,7 @@
 
 - (void)updateButtonState
 {
-    NSArray *selected = [[DOUIManager sharedInstance] enabledPackageManagers];
+    NSArray *selected = [[DOUIManager sharedInstance] enabledPackageManagerKeys];
     self.continueAction.enabled = selected.count > 0;
     self.continueAction.backgroundColor = [UIColor colorWithWhite:1.0 alpha:selected.count > 0 ? 0.2 : 0.1];
 }

@@ -7,6 +7,7 @@
 
 #import "DOSettingsController.h"
 #import <objc/runtime.h>
+#import <libjailbreak/util.h>
 #import "DOUIManager.h"
 #import "DOPkgManagerPickerViewController.h"
 #import "DOHeaderCell.h"
@@ -151,7 +152,7 @@
         settingsGroupSpecifier.name = @"Jailbreak Settings";
         [specifiers addObject:settingsGroupSpecifier];
         
-        PSSpecifier *tweakInjectionSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Tweak Injection" target:self set:@selector(setTweakInjectionEnabled:specifier:) get:defGetter detail:nil cell:PSSwitchCell edit:nil];
+        PSSpecifier *tweakInjectionSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Tweak Injection" target:self set:@selector(setTweakInjectionEnabled:specifier:) get:@selector(readTweakInjectionEnabled:) detail:nil cell:PSSwitchCell edit:nil];
         [tweakInjectionSpecifier setProperty:@YES forKey:@"enabled"];
         [tweakInjectionSpecifier setProperty:@"tweakInjectionEnabled" forKey:@"key"];
         [tweakInjectionSpecifier setProperty:@YES forKey:@"default"];
@@ -165,7 +166,7 @@
             [specifiers addObject:verboseLogSpecifier];
         }
         
-        PSSpecifier *idownloadSpecifier = [PSSpecifier preferenceSpecifierNamed:@"iDownload (Developer Shell)" target:self set:@selector(setIDownloadEnabled:specifier:) get:defGetter detail:nil cell:PSSwitchCell edit:nil];
+        PSSpecifier *idownloadSpecifier = [PSSpecifier preferenceSpecifierNamed:@"iDownload (Developer Shell)" target:self set:@selector(setIDownloadEnabled:specifier:) get:@selector(readIDownloadEnabled:) detail:nil cell:PSSwitchCell edit:nil];
         [idownloadSpecifier setProperty:@YES forKey:@"enabled"];
         [idownloadSpecifier setProperty:@"idownloaddEnabled" forKey:@"key"];
         [idownloadSpecifier setProperty:@NO forKey:@"default"];
@@ -200,7 +201,7 @@
                 [refreshAppsSpecifier setProperty:@"refreshJailbreakAppsPressed" forKey:@"action"];
                 [specifiers addObject:refreshAppsSpecifier];
             }
-            if (envManager.isJailbroken || envManager.isInstalledThroughTrollStore) { // TODO: Only show if bootstrapped
+            if ((envManager.isJailbroken || envManager.isInstalledThroughTrollStore) && envManager.isBootstrapped) {
                 PSSpecifier *hideUnhideJailbreakSpecifier = [PSSpecifier emptyGroupSpecifier];
                 hideUnhideJailbreakSpecifier.target = self;
                 [hideUnhideJailbreakSpecifier setProperty:@"DOButtonCell" forKey:@"headerCellClass"];
@@ -213,7 +214,10 @@
                     [hideUnhideJailbreakSpecifier setProperty:@"eye.slash" forKey:@"image"];
                 }
                 [hideUnhideJailbreakSpecifier setProperty:@"hideUnhideJailbreakPressed" forKey:@"action"];
-                [specifiers addObject:hideUnhideJailbreakSpecifier];
+                BOOL hideJailbreakButtonShown = (envManager.isJailbroken || (envManager.isInstalledThroughTrollStore && envManager.isBootstrapped && !envManager.isJailbreakHidden));
+                if (hideJailbreakButtonShown) {
+                    [specifiers addObject:hideUnhideJailbreakSpecifier];
+                }
                 
                 PSSpecifier *removeJailbreakSpecifier = [PSSpecifier emptyGroupSpecifier];
                 removeJailbreakSpecifier.target = self;
@@ -221,11 +225,13 @@
                 [removeJailbreakSpecifier setProperty:@"DOButtonCell" forKey:@"headerCellClass"];
                 [removeJailbreakSpecifier setProperty:@"trash" forKey:@"image"];
                 [removeJailbreakSpecifier setProperty:@"removeJailbreakPressed" forKey:@"action"];
-                if (envManager.isJailbroken) {
-                    [removeJailbreakSpecifier setProperty:@"\"Hide Jailbreak\" temporarily removes jailbreak-related files and disables the jailbreak until you unhide it again." forKey:@"footerText"];
-                }
-                else {
-                    [removeJailbreakSpecifier setProperty:@"\"Hide Jailbreak\" temporarily removes jailbreak-related files until the next jailbreak." forKey:@"footerText"];
+                if (hideJailbreakButtonShown) {
+                    if (envManager.isJailbroken) {
+                        [removeJailbreakSpecifier setProperty:@"\"Hide Jailbreak\" temporarily removes jailbreak-related files and disables the jailbreak until you unhide it again." forKey:@"footerText"];
+                    }
+                    else {
+                        [removeJailbreakSpecifier setProperty:@"\"Hide Jailbreak\" temporarily removes jailbreak-related files until the next jailbreak." forKey:@"footerText"];
+                    }
                 }
                 [specifiers addObject:removeJailbreakSpecifier];
             }
@@ -252,9 +258,27 @@
     return value;
 }
 
+- (id)readIDownloadEnabled:(PSSpecifier *)specifier
+{
+    DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
+    if (envManager.isJailbroken) {
+        return @([DOEnvironmentManager sharedManager].isIDownloadEnabled);
+    }
+    return [self readPreferenceValue:specifier];
+}
+
 - (void)setIDownloadEnabled:(id)value specifier:(PSSpecifier *)specifier {
     [[DOEnvironmentManager sharedManager] setIDownloadEnabled:((NSNumber *)value).boolValue];
     [self setPreferenceValue:value specifier:specifier];
+}
+
+- (id)readTweakInjectionEnabled:(PSSpecifier *)specifier
+{
+    DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
+    if (envManager.isJailbroken) {
+        return @([DOEnvironmentManager sharedManager].isTweakInjectionEnabled);
+    }
+    return [self readPreferenceValue:specifier];
 }
 
 - (void)setTweakInjectionEnabled:(id)value specifier:(PSSpecifier *)specifier {
@@ -271,12 +295,13 @@
 
 - (void)refreshJailbreakAppsPressed
 {
-    
+    [[DOEnvironmentManager sharedManager] refreshJailbreakApps];
 }
 
 - (void)hideUnhideJailbreakPressed
 {
-    NSLog(@"Hide Jailbreak");
+    DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
+    [envManager setJailbreakHidden:!envManager.isJailbreakHidden];
     [self reloadSpecifiers];
 }
 

@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DOEnvironmentManager : NSObject
 {
     DOBootstrapper *_bootstrapper;
+    BOOL _bootstrapNeedsMigration;
 }
 
 + (instancetype)sharedManager;
@@ -21,12 +22,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)isInstalledThroughTrollStore;
 - (BOOL)isJailbroken;
+- (BOOL)isBootstrapped;
 
 - (BOOL)isSupported;
 - (BOOL)isArm64e;
 - (NSString *)versionSupportString;
 - (NSString *)accessibleKernelPath;
-- (void)determineJailbreakRootPath;
+- (void)locateJailbreakRoot;
+- (void)ensureJailbreakRootExists;
+
 
 - (void)runUnsandboxed:(void (^)(void))unsandboxBlock;
 - (void)runAsRoot:(void (^)(void))rootBlock;
@@ -34,7 +38,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)respring;
 - (void)rebootUserspace;
 - (void)reboot;
+- (void)refreshJailbreakApps;
+
+- (BOOL)isTweakInjectionEnabled;
 - (void)setTweakInjectionEnabled:(BOOL)enabled;
+- (BOOL)isIDownloadEnabled;
 - (void)setIDownloadEnabled:(BOOL)enabled;
 - (BOOL)isJailbreakHidden;
 - (void)setJailbreakHidden:(BOOL)hidden;
@@ -45,6 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSError *)prepareBootstrap;
 - (NSError *)finalizeBootstrap;
 - (NSError *)deleteBootstrap;
+- (NSError *)reinstallPackageManagers;
 @end
 
 NS_ASSUME_NONNULL_END

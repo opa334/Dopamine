@@ -1,14 +1,14 @@
 #import "internal.h"
 #import "dyldpatch.h"
-#import "carboncopy.h"
 #import "codesign.h"
+#import <libjailbreak/carboncopy.h>
 #import <Foundation/Foundation.h>
 #import <libjailbreak/libjailbreak.h>
 #import <sys/mount.h>
 
 SInt32 CFUserNotificationDisplayAlert(CFTimeInterval timeout, CFOptionFlags flags, CFURLRef iconURL, CFURLRef soundURL, CFURLRef localizationURL, CFStringRef alertHeader, CFStringRef alertMessage, CFStringRef defaultButtonTitle, CFStringRef alternateButtonTitle, CFStringRef otherButtonTitle, CFOptionFlags *responseFlags) API_AVAILABLE(ios(3.0));
 
-int jbctl_handle_internal(const char *command)
+int jbctl_handle_internal(const char *command, int argc, char* argv[])
 {
 	if (!strcmp(command, "launchd_stash_port")) {
 		mach_port_t *selfInitPorts = NULL;
@@ -102,6 +102,15 @@ int jbctl_handle_internal(const char *command)
 			free(panicMessage);
 		}
 		exec_cmd(JBRootPath("/usr/bin/uicache"), "-a", NULL);
+	}
+	else if (!strcmp(command, "install_pkg")) {
+		if (argc > 1) {
+			extern char **environ;
+			char *dpkg = JBRootPath("/usr/bin/dpkg");
+			int r = execve(dpkg, (const char *[]){dpkg, "-i", argv[1], NULL}, environ);
+			return r;
+		}
+		return -1;
 	}
 	return -1;
 }

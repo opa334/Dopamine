@@ -376,7 +376,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     }
 
     // Now that we are unsandboxed, populate the jailbreak root path
-    [[DOEnvironmentManager sharedManager] determineJailbreakRootPath];
+    [[DOEnvironmentManager sharedManager] ensureJailbreakRootExists];
     
     err = [[DOEnvironmentManager sharedManager] prepareBootstrap];
     if (err) return err;
