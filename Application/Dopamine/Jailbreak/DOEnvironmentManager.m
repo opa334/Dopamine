@@ -150,6 +150,8 @@ int reboot3(uint64_t flags, ...);
                 [[NSFileManager defaultManager] createDirectoryAtPath:jailbreakRootPath withIntermediateDirectories:YES attributes:nil error:nil];
             }
         }
+        
+        gSystemInfo.jailbreakInfo.rootPath = strdup(jailbreakRootPath.UTF8String);
     }
 }
 

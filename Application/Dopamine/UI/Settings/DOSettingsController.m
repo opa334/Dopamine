@@ -268,7 +268,10 @@
 }
 
 - (void)setIDownloadEnabled:(id)value specifier:(PSSpecifier *)specifier {
-    [[DOEnvironmentManager sharedManager] setIDownloadEnabled:((NSNumber *)value).boolValue];
+    DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
+    if (envManager.isJailbroken) {
+        [[DOEnvironmentManager sharedManager] setIDownloadEnabled:((NSNumber *)value).boolValue];
+    }
     [self setPreferenceValue:value specifier:specifier];
 }
 
@@ -282,7 +285,10 @@
 }
 
 - (void)setTweakInjectionEnabled:(id)value specifier:(PSSpecifier *)specifier {
-    [[DOEnvironmentManager sharedManager] setTweakInjectionEnabled:((NSNumber *)value).boolValue];
+    DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
+    if (envManager.isJailbroken) {
+        [[DOEnvironmentManager sharedManager] setTweakInjectionEnabled:((NSNumber *)value).boolValue];
+    }
     [self setPreferenceValue:value specifier:specifier];
 }
 
