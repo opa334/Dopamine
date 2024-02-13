@@ -2,7 +2,7 @@
 //  DOLicenseViewController.m
 //  Dopamine
 //
-//  Created by Mac on 13/02/2024.
+//  Created by tomt000 on 13/02/2024.
 //
 
 #import "DOLicenseViewController.h"
@@ -11,15 +11,22 @@
 
 @interface DOLicenseViewController ()
 
+@property (nonatomic, strong) UITextView *license;
+@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, assign) int selectedLicense;
+
+@property (nonatomic, strong) UIImpactFeedbackGenerator *impactGenerator;
+
 @end
 
 @implementation DOLicenseViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     [DOPSListController setupViewControllerStyle:self];
 
-    UIView *header = [DOPSListItemsController makeHeader:@"License" withTarget:self];
+    UIView *header = [DOPSListItemsController makeHeader:@"Licenses" withTarget:self];
     header.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:header];
 
@@ -30,27 +37,125 @@
         [header.heightAnchor constraintEqualToConstant:70]
     ]]; 
     
-    UITextView *license = [[UITextView alloc] init];
-    license.translatesAutoresizingMaskIntoConstraints = NO;
-
-    [self.view addSubview:license];
+    self.scrollView = [[UIScrollView alloc] init];
+    self.scrollView.showsHorizontalScrollIndicator = NO;
+    self.scrollView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.scrollView];
 
     [NSLayoutConstraint activateConstraints:@[
-        [license.topAnchor constraintEqualToAnchor:header.bottomAnchor constant:-12],
-        [license.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:20],
-        [license.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-20],
-        [license.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:0]
+        [self.scrollView.topAnchor constraintEqualToAnchor:header.bottomAnchor],
+        [self.scrollView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:25],
+        [self.scrollView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+        [self.scrollView.heightAnchor constraintEqualToConstant:30]
     ]];
 
-    NSString *licenseText = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"LICENSE" ofType:@"md"] encoding:NSUTF8StringEncoding error:nil];
-    license.text = [NSString stringWithFormat:@"\n%@", licenseText];
-    license.editable = NO;
-    license.font = [UIFont systemFontOfSize:14];
-    license.textColor = [UIColor whiteColor];
-    license.backgroundColor = [UIColor clearColor];
+    [self setupLicenseButtons];
+    
+    self.license = [[UITextView alloc] init];
+    self.license.translatesAutoresizingMaskIntoConstraints = NO;
+
+    [self.view addSubview:self.license];
+
+    [NSLayoutConstraint activateConstraints:@[
+        [self.license.topAnchor constraintEqualToAnchor:self.scrollView.bottomAnchor constant:10],
+        [self.license.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:20],
+        [self.license.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-20],
+        [self.license.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:0]
+    ]];
+
+    self.license.editable = NO;
+    self.license.font = [UIFont systemFontOfSize:14];
+    self.license.textColor = [UIColor whiteColor];
+    self.license.backgroundColor = [UIColor clearColor];
+    self.selectedLicense = 0;
+
+    self.impactGenerator = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleLight];
 }
 
-- (void)dismiss {
++ (NSArray*)licenses
+{
+    return @[
+        @{
+            @"name": @"Dopamine",
+            @"file": @"LICENSE"
+        },
+        @{
+            @"name": @"Fugu15",
+            @"file": @"LICENSE"
+        },
+        @{
+            @"name": @"LibC",
+            @"file": @"LICENSE_libc"
+        },
+        @{
+            @"name": @"Ch0ma",
+            @"file": @"LICENSE"
+        },
+        @{
+            @"name": @"Test4",
+            @"file": @"LICENSE_libc"
+        },
+    ];
+}
+
+- (void)setupLicenseButtons
+{
+    NSArray *licenses = [DOLicenseViewController licenses];
+
+    NSLayoutAnchor *lastAnchor = self.scrollView.leadingAnchor;
+    for (NSDictionary *license in licenses)
+    {
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+        [button setTitle:license[@"name"] forState:UIControlStateNormal];
+        [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        button.titleLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightMedium];
+        button.backgroundColor = [UIColor whiteColor];
+        button.layer.cornerRadius = 8;
+        button.layer.cornerCurve = kCACornerCurveContinuous;
+        button.translatesAutoresizingMaskIntoConstraints = NO;
+        [button addTarget:self action:@selector(licenseButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+
+        [self.scrollView addSubview:button];
+
+        NSString *buttonTitle = license[@"name"];
+        CGSize textSize = [buttonTitle sizeWithAttributes:@{NSFontAttributeName: button.titleLabel.font}];
+        CGFloat buttonWidth = textSize.width + 20;
+        
+        BOOL isFirst = self.scrollView.leadingAnchor == lastAnchor;
+
+        [NSLayoutConstraint activateConstraints: @[
+            [button.centerYAnchor constraintEqualToAnchor:self.scrollView.centerYAnchor],
+            [button.heightAnchor constraintEqualToConstant:30],
+            [button.widthAnchor constraintEqualToConstant:buttonWidth],
+            [button.leadingAnchor constraintEqualToAnchor:lastAnchor constant:isFirst ? 0 : 5]
+        ]];
+        
+        lastAnchor = button.trailingAnchor;
+    }
+
+    [lastAnchor constraintEqualToAnchor:self.scrollView.trailingAnchor constant:-25].active = YES;
+}
+
+- (void)licenseButtonTapped:(UIButton *)sender
+{
+    NSInteger index = [self.scrollView.subviews indexOfObject:sender];
+    self.selectedLicense = (int)index;
+    [self.impactGenerator impactOccurred];
+}
+
+
+- (void)setSelectedLicense:(int)selectedLicense
+{
+    _selectedLicense = selectedLicense;
+    self.license.text = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:[DOLicenseViewController licenses][_selectedLicense][@"file"] ofType:@"md"] encoding:NSUTF8StringEncoding error:nil];
+    [self.scrollView.subviews enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
+        [view setAlpha:0.2];
+    }];
+    [[self.scrollView.subviews objectAtIndex:_selectedLicense] setAlpha:1.0];
+}
+
+- (void)dismiss
+{
     [self.navigationController popViewControllerAnimated:YES];
 }
 

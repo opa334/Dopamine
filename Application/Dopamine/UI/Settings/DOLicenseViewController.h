@@ -2,7 +2,7 @@
 //  DOLicenseViewController.h
 //  Dopamine
 //
-//  Created by Mac on 13/02/2024.
+//  Created by tomt000 on 13/02/2024.
 //
 
 #import <UIKit/UIKit.h>

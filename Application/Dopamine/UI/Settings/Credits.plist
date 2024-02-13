@@ -44,11 +44,11 @@
 			<key>headerCellClass</key>
 			<string>DOButtonCell</string>
 			<key>title</key>
-			<string>License</string>
+			<string>Licenses</string>
 			<key>key</key>
 			<string>license</string>
 			<key>image</key>
-			<string>checkmark.seal.fill</string>
+			<string>newspaper</string>
 			<key>action</key>
 			<string>openLicense</string>
 		</dict>
