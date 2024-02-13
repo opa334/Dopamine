@@ -28,7 +28,7 @@
     [super viewDidLoad];
 
     UILabel *title = [[UILabel alloc] init];
-    title.text = @"Changelog";
+    title.text = NSLocalizedString(@"Title_Changelog", nil);
     title.font = [UIFont systemFontOfSize:24 weight:UIFontWeightMedium];
     title.textColor = [UIColor colorWithWhite:1.0 alpha:1.0];
     title.textAlignment = NSTextAlignmentCenter;
