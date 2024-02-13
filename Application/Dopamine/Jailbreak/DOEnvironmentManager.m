@@ -196,6 +196,19 @@ int reboot3(uint64_t flags, ...);
     return jailbroken;
 }
 
+- (NSString *)jailbrokenVersion
+{
+    if (!self.isJailbroken) return nil;
+
+    __block NSString *version;
+    [self runAsRoot:^{
+        [self runUnsandboxed:^{
+            version = [NSString stringWithContentsOfFile:NSJBRootPath(@"/basebin/.version") encoding:NSUTF8StringEncoding error:nil];
+        }];
+    }];
+    return version;
+}
+
 - (BOOL)isBootstrapped
 {
     return (BOOL)jbinfo(rootPath);
@@ -302,6 +315,26 @@ int reboot3(uint64_t flags, ...);
     [self runAsRoot:^{
         [self runUnsandboxed:^{
             reboot3(0x8000000000000000, 0);
+        }];
+    }];
+}
+
+- (void)updateEnvironment
+{
+    NSString *newBasebinTarPath = [[NSBundle mainBundle].bundlePath stringByAppendingString:@"basebin.tar"];
+    if (jbclient_platform_stage_jailbreak_update(newBasebinTarPath.fileSystemRepresentation) == 0) {
+        [self rebootUserspace];
+    }
+}
+
+- (void)updateJailbreakFromTIPA:(NSString *)tipaPath
+{
+    [self runAsRoot:^{
+        [self runUnsandboxed:^{
+            pid_t pid = 0;
+            if (exec_cmd_suspended(&pid, JBRootPath("/basebin/jbctl"), "update", "tipa", tipaPath.fileSystemRepresentation, NULL) == 0) {
+                kill(pid, SIGCONT);
+            }
         }];
     }];
 }

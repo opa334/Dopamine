@@ -11,6 +11,7 @@
 #import "DOGlobalAppearance.h"
 #import "DODownloadViewController.h"
 #import "DOUIManager.h"
+#import "DOEnvironmentManager.h"
 
 @interface DOUpdateViewController ()
 
@@ -81,6 +82,7 @@
     self.button = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:NSLocalizedString(@"Button_Update", nil) image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"update" handler:^(__kindof UIAction * _Nonnull action) {
         DODownloadViewController *downloadVC = [[DODownloadViewController alloc] initWithUrl:self.lastestDownloadUrl callback:^(NSURL * _Nonnull file) {
             NSLog(@"Downloaded %@", file);
+            [[DOEnvironmentManager sharedManager] updateJailbreakFromTIPA:file.path];
         }];
         [(UINavigationController*)(self.parentViewController) pushViewController:downloadVC animated:YES];
     }] chevron:NO];

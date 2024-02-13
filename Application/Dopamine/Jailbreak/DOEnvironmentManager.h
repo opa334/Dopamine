@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isInstalledThroughTrollStore;
 - (BOOL)isJailbroken;
 - (BOOL)isBootstrapped;
+- (NSString *)jailbrokenVersion;
 
 - (BOOL)isSupported;
 - (BOOL)isArm64e;
@@ -37,8 +38,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)respring;
 - (void)rebootUserspace;
-- (void)reboot;
 - (void)refreshJailbreakApps;
+- (void)reboot;
+- (void)updateEnvironment;
+- (void)updateJailbreakFromTIPA:(NSString *)tipaPath;
 
 - (BOOL)isTweakInjectionEnabled;
 - (void)setTweakInjectionEnabled:(BOOL)enabled;
