@@ -47,7 +47,7 @@
 - (BOOL)boolPreferenceValueForKey:(NSString *)key fallback:(BOOL)fallback
 {
     NSNumber *num = [self preferenceValueForKey:key];
-    if (num && [num.class isKindOfClass:[NSNumber class]]) {
+    if (num) {
         return num.boolValue;
     }
     return fallback;

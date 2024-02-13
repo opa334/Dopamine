@@ -150,6 +150,8 @@ int reboot3(uint64_t flags, ...);
                 [[NSFileManager defaultManager] createDirectoryAtPath:jailbreakRootPath withIntermediateDirectories:YES attributes:nil error:nil];
             }
         }
+        
+        gSystemInfo.jailbreakInfo.rootPath = strdup(jailbreakRootPath.UTF8String);
     }
 }
 
@@ -352,30 +354,39 @@ int reboot3(uint64_t flags, ...);
 
 - (BOOL)isJailbreakHidden
 {
-    return [[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb"];
+    return ![[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb"];
 }
 
 - (void)setJailbreakHidden:(BOOL)hidden
 {
-    if (hidden && ![self isJailbroken] && getuid() != 0) {
+    if (hidden && ![self isJailbroken] && geteuid() != 0) {
         [self runTrollStoreAction:@"hide-jailbreak"];
         return;
     }
     
-    BOOL alreadyHidden = [self isJailbreakHidden];
-    if (hidden != alreadyHidden) {
-        if (hidden) {
-            [[NSFileManager defaultManager] removeItemAtPath:@"/var/jb" error:nil];
-            [[NSFileManager defaultManager] removeItemAtPath:@"/basebin/.fakelib/dyld" error:nil];
-            [[NSFileManager defaultManager] removeItemAtPath:@"/basebin/.fakelib/systemhook.dylib" error:nil];
-            carbonCopy(NSJBRootPath(@"/basebin/.dyld.orig"), NSJBRootPath(@"/basebin/.fakelib/dyld"));
+    void (^actionBlock)(void) = ^{
+        BOOL alreadyHidden = [self isJailbreakHidden];
+        if (hidden != alreadyHidden) {
+            if (hidden) {
+                [[NSFileManager defaultManager] removeItemAtPath:@"/var/jb" error:nil];
+                [[NSFileManager defaultManager] removeItemAtPath:NSJBRootPath(@"/basebin/.fakelib/systemhook.dylib") error:nil];
+                carbonCopy(NSJBRootPath(@"/basebin/.dyld.orig"), NSJBRootPath(@"/basebin/.fakelib/dyld"));
+            }
+            else {
+                [[NSFileManager defaultManager] createSymbolicLinkAtPath:@"/var/jb" withDestinationPath:NSJBRootPath(@"/") error:nil];
+                carbonCopy(NSJBRootPath(@"/basebin/.dyld.patched"), NSJBRootPath(@"/basebin/.fakelib/dyld"));
+                carbonCopy(NSJBRootPath(@"/basebin/systemhook.dylib"), NSJBRootPath(@"/basebin/.fakelib/systemhook.dylib"));
+            }
         }
-        else {
-            [[NSFileManager defaultManager] createSymbolicLinkAtPath:@"/var/jb" withDestinationPath:NSJBRootPath(@"/") error:nil];
-            [[NSFileManager defaultManager] removeItemAtPath:@"/basebin/.fakelib/dyld" error:nil];
-            carbonCopy(NSJBRootPath(@"/basebin/.dyld.patched"), NSJBRootPath(@"/basebin/.fakelib/dyld"));
-            carbonCopy(NSJBRootPath(@"/basebin/systemhook.dylib"), NSJBRootPath(@"/basebin/systemhook.dylib"));
-        }
+    };
+    
+    if ([self isJailbroken]) {
+        [self runAsRoot:^{
+            [self runUnsandboxed:actionBlock];
+        }];
+    }
+    else {
+        actionBlock();
     }
 }
 
@@ -460,8 +471,19 @@ int reboot3(uint64_t flags, ...);
         }
         return nil;
     }
-    
-    return [_bootstrapper deleteBootstrap];
+    else if ([self isJailbroken]) {
+        __block NSError *error;
+        [self runAsRoot:^{
+            [self runUnsandboxed:^{
+                error = [self->_bootstrapper deleteBootstrap];
+            }];
+        }];
+        return error;
+    }
+    else {
+        // Let's hope for the best
+        return [_bootstrapper deleteBootstrap];
+    }
 }
 
 - (NSError *)reinstallPackageManagers

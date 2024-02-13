@@ -159,7 +159,6 @@
             [self setupUpdateAvailable:NO];
         });
     });
-    
 }
 
 -(void)startJailbreak
