@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DOPSListItemsController : PSListItemsController
 
++ (UIView *)makeHeader:(NSString *)title withTarget:(id)target;
+
 @end
 
 NS_ASSUME_NONNULL_END

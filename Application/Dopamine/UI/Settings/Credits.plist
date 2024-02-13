@@ -41,6 +41,20 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
+			<key>headerCellClass</key>
+			<string>DOButtonCell</string>
+			<key>title</key>
+			<string>License</string>
+			<key>key</key>
+			<string>license</string>
+			<key>image</key>
+			<string>checkmark.seal.fill</string>
+			<key>action</key>
+			<string>openLicense</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Developers</string>
 		</dict>

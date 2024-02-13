@@ -6,6 +6,7 @@
 //
 
 #import "DOCreditsViewController.h"
+#import "DOLicenseViewController.h"
 #import <Preferences/PSSpecifier.h>
 
 @interface DOCreditsViewController ()
@@ -38,6 +39,11 @@
 - (void)openDiscord
 {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://discord.gg/jb"] options:@{} completionHandler:nil];
+}
+
+- (void)openLicense
+{
+    [self.navigationController pushViewController:[[DOLicenseViewController alloc] init] animated:YES];
 }
 
 @end
