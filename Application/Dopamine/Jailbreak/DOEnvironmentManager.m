@@ -462,8 +462,19 @@ int reboot3(uint64_t flags, ...);
         }
         return nil;
     }
-    
-    return [_bootstrapper deleteBootstrap];
+    else if ([self isJailbroken]) {
+        __block NSError *error;
+        [self runAsRoot:^{
+            [self runUnsandboxed:^{
+                error = [self->_bootstrapper deleteBootstrap];
+            }];
+        }];
+        return error;
+    }
+    else {
+        // Let's hope for the best
+        return [_bootstrapper deleteBootstrap];
+    }
 }
 
 - (NSError *)reinstallPackageManagers

@@ -168,7 +168,7 @@
         
         PSSpecifier *idownloadSpecifier = [PSSpecifier preferenceSpecifierNamed:@"iDownload (Developer Shell)" target:self set:@selector(setIDownloadEnabled:specifier:) get:@selector(readIDownloadEnabled:) detail:nil cell:PSSwitchCell edit:nil];
         [idownloadSpecifier setProperty:@YES forKey:@"enabled"];
-        [idownloadSpecifier setProperty:@"idownloaddEnabled" forKey:@"key"];
+        [idownloadSpecifier setProperty:@"idownloadEnabled" forKey:@"key"];
         [idownloadSpecifier setProperty:@NO forKey:@"default"];
         [specifiers addObject:idownloadSpecifier];
         

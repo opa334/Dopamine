@@ -354,6 +354,10 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (NSError *)run
 {
+    BOOL removeJailbreakEnabled = [[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"removeJailbreakEnabled" fallback:NO];
+    BOOL tweaksEnabled = [[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"tweaksEnabled" fallback:YES];
+    BOOL idownloadEnabled = [[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"idownloadEnabled" fallback:NO];
+    
     NSError *err = nil;
     err = [self gatherSystemInformation];
     if (err) return err;
@@ -365,30 +369,34 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     [[DOUIManager sharedInstance] sendLog:@"Cleaning Up Exploits" debug:NO];
     err = [self cleanUpExploits];
     if (err) return err;
+    
+    // We will not be able to reset this after elevating privileges, so do it now
+    if (removeJailbreakEnabled) [[DOPreferenceManager sharedManager] setPreferenceValue:@NO forKey:@"removeJailbreakEnabled"];
+
     [[DOUIManager sharedInstance] sendLog:@"Elevating Privileges" debug:NO];
     err = [self elevatePrivileges];
     if (err) return err;
-    
-    if ([[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"removeJailbreakEnabled" fallback:NO]) {
-        [[DOUIManager sharedInstance] sendLog:@"Removing Bootstrap" debug:NO];
-        err = [[DOEnvironmentManager sharedManager] deleteBootstrap];
-        return nil;
-    }
 
     // Now that we are unsandboxed, populate the jailbreak root path
     [[DOEnvironmentManager sharedManager] ensureJailbreakRootExists];
+    
+    if (removeJailbreakEnabled) {
+        [[DOUIManager sharedInstance] sendLog:@"Removing Jailbreak" debug:NO];
+        err = [[DOEnvironmentManager sharedManager] deleteBootstrap];
+        return nil;
+    }
     
     err = [[DOEnvironmentManager sharedManager] prepareBootstrap];
     if (err) return err;
     setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/jb/sbin:/var/jb/bin:/var/jb/usr/sbin:/var/jb/usr/bin", 1);
     setenv("TERM", "xterm-256color", 1);
     
-    if (![[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"tweaksEnabled" fallback:YES]) {
-        printf("Creating safe mode file since tweaks were disabled in settings\n");
+    if (!tweaksEnabled) {
+        printf("Creating safe mode marker file since tweaks were disabled in settings\n");
         [[NSData data] writeToFile:NSJBRootPath(@"/basebin/.safe_mode") atomically:YES];
     }
     
-    if ([[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"idownloaddEnabled" fallback:NO]) {
+    if (idownloadEnabled) {
         printf("Enabling idownloadd\n");
         [[NSData data] writeToFile:NSJBRootPath(@"/basebin/.idownloadd_enabled") atomically:YES];
         // This file is checked in launchd and determines whether idownloadd gets loaded after a userspace reboot or not
