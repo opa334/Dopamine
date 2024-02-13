@@ -80,20 +80,48 @@
             @"file": @"LICENSE"
         },
         @{
+            @"name": @"ElleKit",
+            @"file": @"LICENSE_ElleKit"
+        },
+        @{
             @"name": @"Fugu15",
-            @"file": @"LICENSE"
+            @"file": @"LICENSE_Fugu15"
         },
         @{
-            @"name": @"LibC",
+            @"name": @"Fugu15_Rootful",
+            @"file": @"LICENSE_Fugu15_Rootful"
+        },
+        @{
+            @"name": @"libc",
             @"file": @"LICENSE_libc"
         },
         @{
-            @"name": @"Ch0ma",
-            @"file": @"LICENSE"
+            @"name": @"ChOma",
+            @"file": @"LICENSE_ChOma"
         },
         @{
-            @"name": @"Test4",
-            @"file": @"LICENSE_libc"
+            @"name": @"XPF",
+            @"file": @"LICENSE_XPF"
+        },
+        @{
+            @"name": @"opainject",
+            @"file": @"LICENSE_opainject"
+        },
+        @{
+            @"name": @"dimentio",
+            @"file": @"LICENSE_dimentio"
+        },
+        @{
+            @"name": @"Procursus",
+            @"file": @"LICENSE_Procursus"
+        },
+        @{
+            @"name": @"Sileo",
+            @"file": @"LICENSE_Sileo"
+        },
+        @{
+            @"name": @"Zebra",
+            @"file": @"LICENSE_Zebra"
         },
     ];
 }

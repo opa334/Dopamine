@@ -86,6 +86,16 @@
 		8C4ABEBE2B52274300B43C9B /* DOPreferenceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4ABEBD2B52274300B43C9B /* DOPreferenceManager.m */; };
 		8C512B912B5C9F9100C6F14A /* sileo.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C512B8B2B5C9DE800C6F14A /* sileo.deb */; };
 		8C512B922B5C9F9400C6F14A /* zebra.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C512B8C2B5C9DE800C6F14A /* zebra.deb */; };
+		8C56D4BF2B7C0DF2001C03D3 /* LICENSE_ChOma.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4B82B7C0DF2001C03D3 /* LICENSE_ChOma.md */; };
+		8C56D4C02B7C0DF2001C03D3 /* LICENSE_Fugu15_Rootful.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4B92B7C0DF2001C03D3 /* LICENSE_Fugu15_Rootful.md */; };
+		8C56D4C12B7C0DF2001C03D3 /* LICENSE_dimentio.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4BA2B7C0DF2001C03D3 /* LICENSE_dimentio.md */; };
+		8C56D4C22B7C0DF2001C03D3 /* LICENSE_Fugu15.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4BB2B7C0DF2001C03D3 /* LICENSE_Fugu15.md */; };
+		8C56D4C32B7C0DF2001C03D3 /* LICENSE_ElleKit.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4BC2B7C0DF2001C03D3 /* LICENSE_ElleKit.md */; };
+		8C56D4C42B7C0DF2001C03D3 /* LICENSE_XPF.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4BD2B7C0DF2001C03D3 /* LICENSE_XPF.md */; };
+		8C56D4C52B7C0DF2001C03D3 /* LICENSE_opainject.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4BE2B7C0DF2001C03D3 /* LICENSE_opainject.md */; };
+		8C56D4C92B7C102B001C03D3 /* LICENSE_Sileo.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4C62B7C102B001C03D3 /* LICENSE_Sileo.md */; };
+		8C56D4CA2B7C102B001C03D3 /* LICENSE_Procursus.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4C72B7C102B001C03D3 /* LICENSE_Procursus.md */; };
+		8C56D4CB2B7C102B001C03D3 /* LICENSE_Zebra.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4C82B7C102B001C03D3 /* LICENSE_Zebra.md */; };
 		8C71981A2ABF0E82003C6658 /* DOAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7198192ABF0E82003C6658 /* DOAppDelegate.m */; };
 		8C71981D2ABF0E82003C6658 /* DOSceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71981C2ABF0E82003C6658 /* DOSceneDelegate.m */; };
 		8C7198252ABF0E84003C6658 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C7198242ABF0E84003C6658 /* Assets.xcassets */; };
@@ -236,9 +246,8 @@
 		04C246B22B74B65900E17924 /* PkgManagers.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PkgManagers.plist; sourceTree = "<group>"; };
 		04DD0B332B7BA38C0055DE4F /* DOLicenseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOLicenseViewController.h; sourceTree = "<group>"; };
 		04DD0B342B7BA38C0055DE4F /* DOLicenseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOLicenseViewController.m; sourceTree = "<group>"; };
-		04DD0B362B7BA6180055DE4F /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = LICENSE.md; path = ../LICENSE.md; sourceTree = "<group>"; };
-		04DD0B382B7BF3DB0055DE4F /* LICENSE_libc.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = LICENSE_libc.md; path = ../LICENSE_libc.md; sourceTree = "<group>"; };
-		04DD0B392B7BF3E80055DE4F /* LICENSE_libc.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = LICENSE_libc.md; path = ../LICENSE_libc.md; sourceTree = "<group>"; };
+		04DD0B362B7BA6180055DE4F /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
+		04DD0B392B7BF3E80055DE4F /* LICENSE_libc.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_libc.md; sourceTree = "<group>"; };
 		8C029F412B4DFD5D0071DE58 /* DOExploitManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOExploitManager.h; sourceTree = "<group>"; };
 		8C029F422B4DFD5D0071DE58 /* DOExploitManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOExploitManager.m; sourceTree = "<group>"; };
 		8C029F442B4DFD910071DE58 /* DOBootstrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOBootstrapper.h; sourceTree = "<group>"; };
@@ -289,6 +298,16 @@
 		8C4ABEBD2B52274300B43C9B /* DOPreferenceManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOPreferenceManager.m; sourceTree = "<group>"; };
 		8C512B8B2B5C9DE800C6F14A /* sileo.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = sileo.deb; sourceTree = "<group>"; };
 		8C512B8C2B5C9DE800C6F14A /* zebra.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = zebra.deb; sourceTree = "<group>"; };
+		8C56D4B82B7C0DF2001C03D3 /* LICENSE_ChOma.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_ChOma.md; sourceTree = "<group>"; };
+		8C56D4B92B7C0DF2001C03D3 /* LICENSE_Fugu15_Rootful.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_Fugu15_Rootful.md; sourceTree = "<group>"; };
+		8C56D4BA2B7C0DF2001C03D3 /* LICENSE_dimentio.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_dimentio.md; sourceTree = "<group>"; };
+		8C56D4BB2B7C0DF2001C03D3 /* LICENSE_Fugu15.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_Fugu15.md; sourceTree = "<group>"; };
+		8C56D4BC2B7C0DF2001C03D3 /* LICENSE_ElleKit.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_ElleKit.md; sourceTree = "<group>"; };
+		8C56D4BD2B7C0DF2001C03D3 /* LICENSE_XPF.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_XPF.md; sourceTree = "<group>"; };
+		8C56D4BE2B7C0DF2001C03D3 /* LICENSE_opainject.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_opainject.md; sourceTree = "<group>"; };
+		8C56D4C62B7C102B001C03D3 /* LICENSE_Sileo.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_Sileo.md; sourceTree = "<group>"; };
+		8C56D4C72B7C102B001C03D3 /* LICENSE_Procursus.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_Procursus.md; sourceTree = "<group>"; };
+		8C56D4C82B7C102B001C03D3 /* LICENSE_Zebra.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_Zebra.md; sourceTree = "<group>"; };
 		8C7198152ABF0E82003C6658 /* Dopamine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dopamine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C7198182ABF0E82003C6658 /* DOAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOAppDelegate.h; sourceTree = "<group>"; };
 		8C7198192ABF0E82003C6658 /* DOAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOAppDelegate.m; sourceTree = "<group>"; };
@@ -537,7 +556,6 @@
 		8C029F642B4E2E7D0071DE58 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				04DD0B382B7BF3DB0055DE4F /* LICENSE_libc.md */,
 				042479E42B66B0DD0082581B /* Preferences.framework */,
 				8CDD08372B4F682500A32B61 /* IOKit.framework */,
 				8CDD08352B4F682000A32B61 /* IOSurface.framework */,
@@ -662,8 +680,6 @@
 		8C71980C2ABF0E82003C6658 = {
 			isa = PBXGroup;
 			children = (
-				04DD0B392B7BF3E80055DE4F /* LICENSE_libc.md */,
-				04DD0B362B7BA6180055DE4F /* LICENSE.md */,
 				8C7198172ABF0E82003C6658 /* Dopamine */,
 				8C7198162ABF0E82003C6658 /* Products */,
 				8C029F642B4E2E7D0071DE58 /* Frameworks */,
@@ -744,6 +760,18 @@
 				8CCD8A852B6F1662004B72B0 /* libkrw-plugin.deb */,
 				8CCD8A832B6F165A004B72B0 /* libroot.deb */,
 				8CCD2FC32B77AA9200F9C5DA /* basebin-link.deb */,
+				04DD0B362B7BA6180055DE4F /* LICENSE.md */,
+				04DD0B392B7BF3E80055DE4F /* LICENSE_libc.md */,
+				8C56D4B82B7C0DF2001C03D3 /* LICENSE_ChOma.md */,
+				8C56D4BA2B7C0DF2001C03D3 /* LICENSE_dimentio.md */,
+				8C56D4BC2B7C0DF2001C03D3 /* LICENSE_ElleKit.md */,
+				8C56D4B92B7C0DF2001C03D3 /* LICENSE_Fugu15_Rootful.md */,
+				8C56D4BB2B7C0DF2001C03D3 /* LICENSE_Fugu15.md */,
+				8C56D4BE2B7C0DF2001C03D3 /* LICENSE_opainject.md */,
+				8C56D4BD2B7C0DF2001C03D3 /* LICENSE_XPF.md */,
+				8C56D4C72B7C102B001C03D3 /* LICENSE_Procursus.md */,
+				8C56D4C62B7C102B001C03D3 /* LICENSE_Sileo.md */,
+				8C56D4C82B7C102B001C03D3 /* LICENSE_Zebra.md */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -963,6 +991,16 @@
 			files = (
 				04DD0B372B7BA6180055DE4F /* LICENSE.md in Resources */,
 				04DD0B3A2B7BF3E80055DE4F /* LICENSE_libc.md in Resources */,
+				8C56D4BF2B7C0DF2001C03D3 /* LICENSE_ChOma.md in Resources */,
+				8C56D4C22B7C0DF2001C03D3 /* LICENSE_Fugu15.md in Resources */,
+				8C56D4C02B7C0DF2001C03D3 /* LICENSE_Fugu15_Rootful.md in Resources */,
+				8C56D4C92B7C102B001C03D3 /* LICENSE_Sileo.md in Resources */,
+				8C56D4C12B7C0DF2001C03D3 /* LICENSE_dimentio.md in Resources */,
+				8C56D4C32B7C0DF2001C03D3 /* LICENSE_ElleKit.md in Resources */,
+				8C56D4C52B7C0DF2001C03D3 /* LICENSE_opainject.md in Resources */,
+				8C56D4C42B7C0DF2001C03D3 /* LICENSE_XPF.md in Resources */,
+				8C56D4CB2B7C102B001C03D3 /* LICENSE_Zebra.md in Resources */,
+				8C56D4CA2B7C102B001C03D3 /* LICENSE_Procursus.md in Resources */,
 				8CCD2FC42B77AAA000F9C5DA /* basebin-link.deb in Resources */,
 				8C05C5A02B75A17A0097A931 /* bootstrap_1900.tar.zst in Resources */,
 				8C05C59F2B75A1770097A931 /* bootstrap_1800.tar.zst in Resources */,
