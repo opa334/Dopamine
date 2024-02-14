@@ -34,6 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString*)getLaunchedReleaseTag;
 - (NSString*)getLatestReleaseTag;
 - (NSArray *)getUpdatesInRange: (NSString *)start end: (NSString *)end;
+- (bool)launchedReleaseNeedsManualUpdate;
 - (NSArray*)availablePackageManagers;
 - (NSArray*)enabledPackageManagerKeys;
 - (NSArray*)enabledPackageManagers;
