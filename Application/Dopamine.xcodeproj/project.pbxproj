@@ -34,7 +34,6 @@
 		042479B92B66916B0082581B /* DOGlobalAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = 042479A02B66916B0082581B /* DOGlobalAppearance.m */; };
 		042479E52B66B0DD0082581B /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 042479E42B66B0DD0082581B /* Preferences.framework */; };
 		0443A9B12B79D9C10014C933 /* DOPSListItemsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0443A9AF2B79D9C10014C933 /* DOPSListItemsController.m */; };
-		04720EAB2B7B669900C8D430 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 04720EAA2B7B669900C8D430 /* Localizable.strings */; };
 		04C2469C2B73220400E17924 /* DOUpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246982B73220400E17924 /* DOUpdateViewController.m */; };
 		04C2469D2B73220400E17924 /* DOUpdateCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246992B73220400E17924 /* DOUpdateCircleView.m */; };
 		04C246A12B73225800E17924 /* DODownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C246A02B73225800E17924 /* DODownloadViewController.m */; };
@@ -56,6 +55,7 @@
 		04DD0B562B7D0C210055DE4F /* ellekit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B4E2B7D0C210055DE4F /* ellekit@2x.png */; };
 		04DD0B572B7D0C210055DE4F /* purple@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B4F2B7D0C210055DE4F /* purple@2x.png */; };
 		04DD0B582B7D0C210055DE4F /* purple@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B502B7D0C210055DE4F /* purple@3x.png */; };
+		04DD0B592B7D19E60055DE4F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B5B2B7D19E60055DE4F /* Localizable.strings */; };
 		8C029F432B4DFD5D0071DE58 /* DOExploitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F422B4DFD5D0071DE58 /* DOExploitManager.m */; };
 		8C029F462B4DFD910071DE58 /* DOBootstrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F452B4DFD910071DE58 /* DOBootstrapper.m */; };
 		8C029F4E2B4E1FF30071DE58 /* DOExploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F4D2B4E1FF30071DE58 /* DOExploit.m */; };
@@ -245,7 +245,6 @@
 		042479E42B66B0DD0082581B /* Preferences.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Preferences.framework; path = Frameworks/Preferences.framework; sourceTree = "<group>"; };
 		0443A9AF2B79D9C10014C933 /* DOPSListItemsController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOPSListItemsController.m; sourceTree = "<group>"; };
 		0443A9B02B79D9C10014C933 /* DOPSListItemsController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOPSListItemsController.h; sourceTree = "<group>"; };
-		04720EAA2B7B669900C8D430 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		04C246982B73220400E17924 /* DOUpdateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOUpdateViewController.m; sourceTree = "<group>"; };
 		04C246992B73220400E17924 /* DOUpdateCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOUpdateCircleView.m; sourceTree = "<group>"; };
 		04C2469A2B73220400E17924 /* DOUpdateCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOUpdateCircleView.h; sourceTree = "<group>"; };
@@ -276,6 +275,8 @@
 		04DD0B4E2B7D0C210055DE4F /* ellekit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ellekit@2x.png"; sourceTree = "<group>"; };
 		04DD0B4F2B7D0C210055DE4F /* purple@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple@2x.png"; sourceTree = "<group>"; };
 		04DD0B502B7D0C210055DE4F /* purple@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple@3x.png"; sourceTree = "<group>"; };
+		04DD0B5A2B7D19E60055DE4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		04DD0B5C2B7D1A210055DE4F /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8C029F412B4DFD5D0071DE58 /* DOExploitManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOExploitManager.h; sourceTree = "<group>"; };
 		8C029F422B4DFD5D0071DE58 /* DOExploitManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOExploitManager.m; sourceTree = "<group>"; };
 		8C029F442B4DFD910071DE58 /* DOBootstrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOBootstrapper.h; sourceTree = "<group>"; };
@@ -770,7 +771,7 @@
 				8C7198262ABF0E84003C6658 /* LaunchScreen.storyboard */,
 				8C7198292ABF0E84003C6658 /* Info.plist */,
 				8C71982A2ABF0E84003C6658 /* main.m */,
-				04720EAA2B7B669900C8D430 /* Localizable.strings */,
+				04DD0B5B2B7D19E60055DE4F /* Localizable.strings */,
 			);
 			path = Dopamine;
 			sourceTree = "<group>";
@@ -1007,6 +1008,7 @@
 			knownRegions = (
 				en,
 				Base,
+				fr,
 			);
 			mainGroup = 8C71980C2ABF0E82003C6658;
 			packageReferences = (
@@ -1079,7 +1081,7 @@
 				8CCD8A882B6F16D0004B72B0 /* libroot.deb in Resources */,
 				04DD0B582B7D0C210055DE4F /* purple@3x.png in Resources */,
 				8CB94F052B59E17A0098BAFD /* basebin.tar in Resources */,
-				04720EAB2B7B669900C8D430 /* Localizable.strings in Resources */,
+				04DD0B592B7D19E60055DE4F /* Localizable.strings in Resources */,
 				04DD0B552B7D0C210055DE4F /* blue@2x.png in Resources */,
 				04C246B32B74B65900E17924 /* PkgManagers.plist in Resources */,
 				04DD0B402B7CBD3D0055DE4F /* Themes.plist in Resources */,
@@ -1249,6 +1251,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		04DD0B5B2B7D19E60055DE4F /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04DD0B5A2B7D19E60055DE4F /* en */,
+				04DD0B5C2B7D1A210055DE4F /* fr */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		8C7198262ABF0E84003C6658 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
