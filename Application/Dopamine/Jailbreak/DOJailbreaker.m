@@ -56,7 +56,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (!kernelPath) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedToFindKernel userInfo:@{NSLocalizedDescriptionKey:@"Failed to find kernelcache"}];
     NSLog(@"Kernel at %s", kernelPath.UTF8String);
     
-    [[DOUIManager sharedInstance] sendLog:@"Patchfinding" debug:NO];
+    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Patchfinding", nil) debug:NO];
     
     int r = xpf_start_with_kernel_path(kernelPath.fileSystemRepresentation);
     if (r == 0) {
@@ -132,7 +132,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"PPL bypass is required but we did not find any"}];
     }
     
-    [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:@"Exploiting Kernel (%@)", kernelExploit.name] debug:NO];
+    [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:NSLocalizedString(@"Exploiting Kernel (%@)", nil), kernelExploit.name] debug:NO];
     if ([kernelExploit load] != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load kernel exploit: %s", dlerror()]}];
     if ([kernelExploit run] != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to exploit kernel"}];
     
@@ -141,7 +141,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     libjailbreak_IOSurface_primitives_init();
     
     if (pacBypass) {
-        [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:@"Bypassing PAC (%@)", pacBypass.name] debug:NO];
+        [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:NSLocalizedString(@"Bypassing PAC (%@)", nil), pacBypass.name] debug:NO];
         if ([pacBypass load] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PAC bypass: %s", dlerror()]}];};
         if ([pacBypass run] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PAC"}];}
         // At this point we presume the PAC bypass has given us stable kcall primitives
@@ -149,7 +149,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     }
 
     if ([[DOEnvironmentManager sharedManager] isPPLBypassRequired]) {
-        [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:@"Bypassing PPL (%@)", pplBypass.name] debug:NO];
+        [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:NSLocalizedString(@"Bypassing PPL (%@)", nil), pplBypass.name] debug:NO];
         if ([pplBypass load] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PPL bypass: %s", dlerror()]}];};
         if ([pplBypass run] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PPL"}];}
         // At this point we presume the PPL bypass gave us unrestricted phys write primitives
@@ -363,17 +363,17 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (err) return err;
     err = [self doExploitation];
     if (err) return err;
-    [[DOUIManager sharedInstance] sendLog:@"Building Phys R/W Primitive" debug:NO];
+    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Building Phys R/W Primitive", nil) debug:NO];
     err = [self buildPhysRWPrimitive];
     if (err) return err;
-    [[DOUIManager sharedInstance] sendLog:@"Cleaning Up Exploits" debug:NO];
+    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Cleaning Up Exploits", nil) debug:NO];
     err = [self cleanUpExploits];
     if (err) return err;
     
     // We will not be able to reset this after elevating privileges, so do it now
     if (removeJailbreakEnabled) [[DOPreferenceManager sharedManager] setPreferenceValue:@NO forKey:@"removeJailbreakEnabled"];
 
-    [[DOUIManager sharedInstance] sendLog:@"Elevating Privileges" debug:NO];
+    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Elevating Privileges", nil) debug:NO];
     err = [self elevatePrivileges];
     if (err) return err;
 
@@ -381,7 +381,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     [[DOEnvironmentManager sharedManager] ensureJailbreakRootExists];
     
     if (removeJailbreakEnabled) {
-        [[DOUIManager sharedInstance] sendLog:@"Removing Jailbreak" debug:NO];
+        [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Removing Jailbreak", nil) debug:NO];
         err = [[DOEnvironmentManager sharedManager] deleteBootstrap];
         return nil;
     }
@@ -402,15 +402,15 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         // This file is checked in launchd and determines whether idownloadd gets loaded after a userspace reboot or not
     }
     
-    [[DOUIManager sharedInstance] sendLog:@"Loading BaseBin TrustCache" debug:NO];
+    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Loading BaseBin TrustCache", nil) debug:NO];
     err = [self loadBasebinTrustcache];
     if (err) return err;
     
-    [[DOUIManager sharedInstance] sendLog:@"Initializing Jailbreak Environment" debug:NO];
+    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Initializing Environment", nil) debug:NO];
     err = [self injectLaunchdHook];
     if (err) return err;
     
-    [[DOUIManager sharedInstance] sendLog:@"Applying Bind Mount" debug:NO];
+    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Applying Bind Mount", nil) debug:NO];
     err = [self createFakeLib];
     if (err) return err;
     
@@ -432,7 +432,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (void)finalize
 {
-    [[DOUIManager sharedInstance] sendLog:@"Rebooting Userspace" debug:NO];
+    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Rebooting Userspace", nil) debug:NO];
     exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "reboot", "userspace", NULL);
 }
 

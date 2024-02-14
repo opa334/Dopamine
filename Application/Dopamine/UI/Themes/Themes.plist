@@ -6,7 +6,7 @@
 		<key>key</key>
 		<string>default</string>
 		<key>name</key>
-		<string>Green</string>
+		<string>Dopamine</string>
 		<key>image</key>
 		<string>Background_Green.jpg</string>
 		<key>actionMenuColor</key>
@@ -34,7 +34,7 @@
 		<key>key</key>
 		<string>blue</string>
 		<key>name</key>
-		<string>Blue</string>
+		<string>Deep Blue Sky</string>
 		<key>image</key>
 		<string>Background_Blue.jpg</string>
 		<key>actionMenuColor</key>
@@ -48,7 +48,7 @@
 		<key>key</key>
 		<string>red</string>
 		<key>name</key>
-		<string>Red</string>
+		<string>Cloudy Sunset</string>
 		<key>image</key>
 		<string>Background_Red.jpg</string>
 		<key>actionMenuColor</key>
@@ -62,7 +62,7 @@
 		<key>key</key>
 		<string>purple</string>
 		<key>name</key>
-		<string>Purple</string>
+		<string>Desert Dusk</string>
 		<key>image</key>
 		<string>Background_Purple.jpg</string>
 		<key>actionMenuColor</key>
