@@ -63,6 +63,12 @@
 "Button_Cancel" = "Cancel";
 "Button_Continue" = "Continue";
 
+// Settings Lists
+"Theme" = "Theme";
+"Kernel Exploit" = "Kernel Exploit";
+"PPL Bypass" = "PPL Bypass";
+"PAC Bypass" = "PAC Bypass";
+
 // Credits
 "Credits_Button_Discord" = "Discord";
 "Credits_Button_License" = "Licenses";

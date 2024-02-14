@@ -142,7 +142,7 @@
             exploitGroupSpecifier.name = NSLocalizedString(@"Section_Exploits", nil);
             [specifiers addObject:exploitGroupSpecifier];
             
-            PSSpecifier *kernelExploitSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Kernel Exploit" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
+            PSSpecifier *kernelExploitSpecifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedString(@"Kernel Exploit", nil) target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
             [kernelExploitSpecifier setProperty:@YES forKey:@"enabled"];
             [kernelExploitSpecifier setProperty:exploitManager.preferredKernelExploit.identfier forKey:@"default"];
             kernelExploitSpecifier.detailControllerClass = [DOPSListItemsController class];
@@ -152,7 +152,7 @@
             [specifiers addObject:kernelExploitSpecifier];
             
             if (envManager.isArm64e) {
-                PSSpecifier *pacBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:@"PAC Bypass" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
+                PSSpecifier *pacBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedString(@"PAC Bypass", nil) target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
                 [pacBypassSpecifier setProperty:@YES forKey:@"enabled"];
                 if (!envManager.isPACBypassRequired) {
                     [pacBypassSpecifier setProperty:@"none" forKey:@"default"];
@@ -166,7 +166,7 @@
                 [pacBypassSpecifier setProperty:@"selectedPACBypass" forKey:@"key"];
                 [specifiers addObject:pacBypassSpecifier];
                 
-                PSSpecifier *pplBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:@"PPL Bypass" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
+                PSSpecifier *pplBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedString(@"PPL Bypass", nil) target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
                 [pplBypassSpecifier setProperty:@YES forKey:@"enabled"];
                 [pplBypassSpecifier setProperty:exploitManager.preferredPPLBypass.identfier forKey:@"default"];
                 pplBypassSpecifier.detailControllerClass = [DOPSListItemsController class];
@@ -270,7 +270,7 @@
         themingGroupSpecifier.name = NSLocalizedString(@"Section_Customization", nil);
         [specifiers addObject:themingGroupSpecifier];
         
-        PSSpecifier *themeSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Theme" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];        
+        PSSpecifier *themeSpecifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedString(@"Theme", nil) target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
         themeSpecifier.detailControllerClass = [DOPSListItemsController class];
         [themeSpecifier setProperty:@YES forKey:@"enabled"];
         [themeSpecifier setProperty:@"theme" forKey:@"key"];
