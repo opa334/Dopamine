@@ -270,17 +270,7 @@
         themingGroupSpecifier.name = @"Customization";
         [specifiers addObject:themingGroupSpecifier];
         
-        PSSpecifier *themeSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Theme" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
-        
-        // PSSpecifier *kernelExploitSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Kernel Exploit" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
-        // [kernelExploitSpecifier setProperty:@YES forKey:@"enabled"];
-        // [kernelExploitSpecifier setProperty:exploitManager.preferredKernelExploit.identfier forKey:@"default"];
-        // kernelExploitSpecifier.detailControllerClass = [DOPSListItemsController class];
-        // [kernelExploitSpecifier setProperty:@"availableKernelExploitIdentifiers" forKey:@"valuesDataSource"];
-        // [kernelExploitSpecifier setProperty:@"availableKernelExploitNames" forKey:@"titlesDataSource"];
-        // [kernelExploitSpecifier setProperty:@"selectedKernelExploit" forKey:@"key"];
-        // [specifiers addObject:kernelExploitSpecifier];
-        
+        PSSpecifier *themeSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Theme" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];        
         themeSpecifier.detailControllerClass = [DOPSListItemsController class];
         [themeSpecifier setProperty:@YES forKey:@"enabled"];
         [themeSpecifier setProperty:@"theme" forKey:@"key"];
