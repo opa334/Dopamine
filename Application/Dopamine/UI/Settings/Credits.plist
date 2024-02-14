@@ -16,7 +16,7 @@
 			<key>headerCellClass</key>
 			<string>DOButtonCell</string>
 			<key>title</key>
-			<string>Source Code</string>
+			<string>Credits_Button_Source_Code</string>
 			<key>key</key>
 			<string>src</string>
 			<key>image</key>
@@ -30,7 +30,7 @@
 			<key>headerCellClass</key>
 			<string>DOButtonCell</string>
 			<key>title</key>
-			<string>Discord</string>
+			<string>Credits_Button_Discord</string>
 			<key>key</key>
 			<string>discord</string>
 			<key>image</key>
@@ -44,7 +44,7 @@
 			<key>headerCellClass</key>
 			<string>DOButtonCell</string>
 			<key>title</key>
-			<string>Licenses</string>
+			<string>Credits_Button_License</string>
 			<key>key</key>
 			<string>license</string>
 			<key>image</key>

@@ -28,13 +28,29 @@
 "Update_Status_Installing" = "Installing update...";
 "Update_Status_Subtitle_Restart_Soon" = "The device will restart soon";
 
-//Error View
+// Error View
 "Button_Share" = "Share";
 
-//Settings
+// Settings Toggles
+"Settings_Tweak_Injection" = "Tweak Injection";
+"Settings_iDownload" = "iDownload (Developer Shell)";
+"Settings_Verbose_Logs" = "Verbose Logs";
+
+// Settings Buttons
 "Button_Remove_Jailbreak" = "Remove Jailbreak";
+"Button_Hide_Jailbreak" = "Hide Jailbreak";
+"Button_Unhide_Jailbreak" = "Unhide Jailbreak";
+"Button_Refresh_Jailbreak_Apps" = "Refresh Jailbreak Apps";
+"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
 
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"Hide Jailbreak\" temporarily removes jailbreak-related files until next jailbreak";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
 
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Licenses";
+"Credits_Button_Source_Code" = "Source Code";
 
 //"Bootstrapping" = "Bootstrapping";
 //

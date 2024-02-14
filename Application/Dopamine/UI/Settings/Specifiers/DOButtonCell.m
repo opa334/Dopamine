@@ -21,7 +21,7 @@
     self = [super init];
     if (self)
     {
-        UIAction *action = [UIAction actionWithTitle:[specifier propertyForKey:@"title"] image:[UIImage systemImageNamed:[specifier propertyForKey:@"image"] withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:[specifier propertyForKey:@"key"] handler:^(__kindof UIAction * _Nonnull action) {
+        UIAction *action = [UIAction actionWithTitle:NSLocalizedString([specifier propertyForKey:@"title"], nil) image:[UIImage systemImageNamed:[specifier propertyForKey:@"image"] withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:[specifier propertyForKey:@"key"] handler:^(__kindof UIAction * _Nonnull action) {
             SEL selector = NSSelectorFromString([specifier propertyForKey:@"action"]);
             if ([[specifier target] respondsToSelector:selector]) {
                 [[specifier target] performSelector:selector withObject:specifier];
