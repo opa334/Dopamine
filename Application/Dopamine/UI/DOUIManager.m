@@ -138,7 +138,12 @@
 
 - (NSArray*)enabledPackageManagerKeys
 {
-    return [_preferenceManager preferenceValueForKey:@"enabledPkgManagers"] ?: @[];
+    NSArray *enabledPkgManagers = [_preferenceManager preferenceValueForKey:@"enabledPkgManagers"] ?: @[];
+    NSArray *availablePkgManagers = [self availablePackageManagers];
+
+    return [availablePkgManagers filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+        return [enabledPkgManagers containsObject:evaluatedObject[@"Key"]];
+    }]];
 }
 
 - (NSArray*)enabledPackageManagers
