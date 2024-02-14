@@ -11,6 +11,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DOUpdateViewController : UIViewController
 
+- (id)initFromTag:(NSString *)fromTag toTag:(NSString *)toTag;
+
 @end
 
 NS_ASSUME_NONNULL_END

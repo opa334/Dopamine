@@ -220,11 +220,17 @@
 
     NSString *title = environmentUpdate ? NSLocalizedString(@"Button_Update_Environment", nil) : NSLocalizedString(@"Button_Update_Available", nil);
     
+    NSString *releaseFrom = [[DOUIManager sharedInstance] getLaunchedReleaseTag];
+    NSString *releaseTo = [[DOUIManager sharedInstance] getLatestReleaseTag];
+
+    if (environmentUpdate)
+    {
+        releaseFrom = [[DOEnvironmentManager sharedManager] jailbrokenVersion];
+        releaseTo = [[DOUIManager sharedInstance] getLaunchedReleaseTag];
+    }
+
     self.updateButton = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:title image:[UIImage systemImageNamed:@"arrow.down.circle" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"update-available" handler:^(__kindof UIAction * _Nonnull action) {
-        if (environmentUpdate)
-            ; //update environment
-        else
-            [self.navigationController pushViewController:[[DOUpdateViewController alloc] init] animated:YES];
+        [self.navigationController pushViewController:[[DOUpdateViewController alloc] initFromTag:releaseFrom toTag:releaseTo] animated:YES];
     }] chevron:NO];
 
     self.updateButton.translatesAutoresizingMaskIntoConstraints = NO;

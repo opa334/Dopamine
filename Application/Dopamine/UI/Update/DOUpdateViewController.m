@@ -21,9 +21,22 @@
 @property (strong, nonatomic) UIView *changelogSuperview;
 @property (strong, nonatomic) DOActionMenuButton *button;
 
+@property (strong, nonatomic) NSString *fromTag;
+@property (strong, nonatomic) NSString *toTag;
+
 @end
 
 @implementation DOUpdateViewController
+
+- (id)initFromTag:(NSString *)fromTag toTag:(NSString *)toTag
+{
+    if (self = [super init])
+    {
+        self.fromTag = fromTag;
+        self.toTag = toTag;
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -112,7 +125,7 @@
 
 - (void)updateChangelog
 {
-    NSArray *releases = [[DOUIManager sharedInstance] getLatestReleases];
+    NSArray *releases = [[DOUIManager sharedInstance] getUpdatesInRange:self.fromTag end:self.toTag];
     NSMutableParagraphStyle * paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.alignment = NSTextAlignmentCenter;
     NSMutableAttributedString *changelogText = [[NSMutableAttributedString alloc] initWithString:@""];

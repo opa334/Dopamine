@@ -36,7 +36,7 @@
         return NO;
     
     NSString *latestVersion = releases[0][@"tag_name"];
-    NSString *currentVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    NSString *currentVersion = [self getLaunchedReleaseTag];
     return [self numericalRepresentationForVersion:latestVersion] > [self numericalRepresentationForVersion:currentVersion];
 }
 
@@ -65,7 +65,7 @@
     for (NSDictionary *release in releases) {
         NSString *version = release[@"tag_name"];
         long long numericalVersion = [self numericalRepresentationForVersion:version];
-        if (numericalVersion >= startVersion && numericalVersion <= endVersion) {
+        if (numericalVersion > startVersion && numericalVersion <= endVersion) {
             [updates addObject:release];
         }
     }
@@ -92,6 +92,18 @@
     return releases;
 }
 
+- (NSString*)getLatestReleaseTag
+{
+    NSArray *releases = [self getLatestReleases];
+    if (releases.count == 0)
+        return nil;
+    return releases[0][@"tag_name"];
+}
+
+- (NSString*)getLaunchedReleaseTag
+{
+    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+}
 
 - (NSArray*)availablePackageManagers
 {

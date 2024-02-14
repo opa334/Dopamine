@@ -30,6 +30,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)shareLogRecord;
 - (BOOL)isUpdateAvailable;
 - (NSArray *)getLatestReleases;
+- (NSString*)getLaunchedReleaseTag;
+- (NSString*)getLatestReleaseTag;
+- (NSArray *)getUpdatesInRange: (NSString *)start end: (NSString *)end;
 - (NSArray*)availablePackageManagers;
 - (NSArray*)enabledPackageManagerKeys;
 - (NSArray*)enabledPackageManagers;
