@@ -69,6 +69,10 @@
 "Bypassing PAC (%@)" = "Bypassing PAC (%@)";
 "Bypassing PPL (%@)" = "Bypassing PPL (%@)";
 
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Select Package Manager(s)";
+"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+"Continue" = "Continue";
 
 
 //"Bootstrapping" = "Bootstrapping";
