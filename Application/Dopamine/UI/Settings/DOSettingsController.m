@@ -199,7 +199,7 @@
             [specifiers addObject:removeJailbreakSwitchSpecifier];
         }
         
-        if (envManager.isJailbroken || envManager.isInstalledThroughTrollStore) {
+        if (envManager.isJailbroken || (envManager.isInstalledThroughTrollStore && envManager.isBootstrapped)) {
             PSSpecifier *actionsGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
             actionsGroupSpecifier.name = @"Actions";
             [specifiers addObject:actionsGroupSpecifier];
