@@ -139,7 +139,7 @@
         
         if (!envManager.isJailbroken) {
             PSSpecifier *exploitGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
-            exploitGroupSpecifier.name = @"Exploits";
+            exploitGroupSpecifier.name = NSLocalizedString(@"Section_Exploits", nil);
             [specifiers addObject:exploitGroupSpecifier];
             
             PSSpecifier *kernelExploitSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Kernel Exploit" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
@@ -178,7 +178,7 @@
         }
         
         PSSpecifier *settingsGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
-        settingsGroupSpecifier.name = @"Jailbreak Settings";
+        settingsGroupSpecifier.name = NSLocalizedString(@"Section_Jailbreak_Settings", nil);
         [specifiers addObject:settingsGroupSpecifier];
         
         PSSpecifier *tweakInjectionSpecifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedString(@"Settings_Tweak_Injection", nil) target:self set:@selector(setTweakInjectionEnabled:specifier:) get:@selector(readTweakInjectionEnabled:) detail:nil cell:PSSwitchCell edit:nil];
@@ -210,7 +210,7 @@
         
         if (envManager.isJailbroken || (envManager.isInstalledThroughTrollStore && envManager.isBootstrapped)) {
             PSSpecifier *actionsGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
-            actionsGroupSpecifier.name = @"Actions";
+            actionsGroupSpecifier.name = NSLocalizedString(@"Section_Actions", nil);
             [specifiers addObject:actionsGroupSpecifier];
             
             if (envManager.isJailbroken) {
@@ -267,7 +267,7 @@
         }
         
         PSSpecifier *themingGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
-        themingGroupSpecifier.name = @"Customization";
+        themingGroupSpecifier.name = NSLocalizedString(@"Section_Customization", nil);
         [specifiers addObject:themingGroupSpecifier];
         
         PSSpecifier *themeSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Theme" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];        
