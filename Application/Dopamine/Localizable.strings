@@ -49,7 +49,7 @@
 "Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
 
 // Settings Hints
-"Hint_Hide_Jailbreak" = "\"Hide Jailbreak\" temporarily removes jailbreak-related files until next jailbreak";
+"Hint_Hide_Jailbreak" = "\"Hide Jailbreak\" temporarily removes jailbreak-related files until the next rejailbreak";
 "Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
 
 // Settings Alerts
