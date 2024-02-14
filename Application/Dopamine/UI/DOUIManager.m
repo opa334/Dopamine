@@ -97,7 +97,9 @@
 {
     if (![[DOEnvironmentManager sharedManager] jailbrokenVersion])
         return NO;
-    return ![[[DOEnvironmentManager sharedManager] jailbrokenVersion] isEqualToString:[self getLaunchedReleaseTag]];
+    long long latestVersion = [self numericalRepresentationForVersion:[[DOEnvironmentManager sharedManager] jailbrokenVersion]];
+    long long launchedVersion = [self numericalRepresentationForVersion:[self getLaunchedReleaseTag]];
+    return latestVersion != launchedVersion;
 }
 
 - (NSString*)getLatestReleaseTag

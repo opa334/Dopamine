@@ -11,5 +11,7 @@
 
 @property (strong, nonatomic) UIWindow * window;
 
++ (void)relaunch;
+
 @end
 

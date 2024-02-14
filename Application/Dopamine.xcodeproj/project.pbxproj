@@ -45,6 +45,9 @@
 		04DD0B372B7BA6180055DE4F /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B362B7BA6180055DE4F /* LICENSE.md */; };
 		04DD0B3A2B7BF3E80055DE4F /* LICENSE_libc.md in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B392B7BF3E80055DE4F /* LICENSE_libc.md */; };
 		04DD0B3D2B7C88210055DE4F /* DOLogCrashViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DD0B3C2B7C88210055DE4F /* DOLogCrashViewController.m */; };
+		04DD0B402B7CBD3D0055DE4F /* Themes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B3F2B7CBD3D0055DE4F /* Themes.plist */; };
+		04DD0B442B7CBE2E0055DE4F /* DOThemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DD0B432B7CBE2E0055DE4F /* DOThemeManager.m */; };
+		04DD0B472B7CBEEA0055DE4F /* DOTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DD0B462B7CBEEA0055DE4F /* DOTheme.m */; };
 		8C029F432B4DFD5D0071DE58 /* DOExploitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F422B4DFD5D0071DE58 /* DOExploitManager.m */; };
 		8C029F462B4DFD910071DE58 /* DOBootstrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F452B4DFD910071DE58 /* DOBootstrapper.m */; };
 		8C029F4E2B4E1FF30071DE58 /* DOExploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F4D2B4E1FF30071DE58 /* DOExploit.m */; };
@@ -252,6 +255,11 @@
 		04DD0B392B7BF3E80055DE4F /* LICENSE_libc.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_libc.md; sourceTree = "<group>"; };
 		04DD0B3B2B7C88210055DE4F /* DOLogCrashViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOLogCrashViewController.h; sourceTree = "<group>"; };
 		04DD0B3C2B7C88210055DE4F /* DOLogCrashViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOLogCrashViewController.m; sourceTree = "<group>"; };
+		04DD0B3F2B7CBD3D0055DE4F /* Themes.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Themes.plist; sourceTree = "<group>"; };
+		04DD0B422B7CBE2E0055DE4F /* DOThemeManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOThemeManager.h; sourceTree = "<group>"; };
+		04DD0B432B7CBE2E0055DE4F /* DOThemeManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOThemeManager.m; sourceTree = "<group>"; };
+		04DD0B452B7CBEEA0055DE4F /* DOTheme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOTheme.h; sourceTree = "<group>"; };
+		04DD0B462B7CBEEA0055DE4F /* DOTheme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOTheme.m; sourceTree = "<group>"; };
 		8C029F412B4DFD5D0071DE58 /* DOExploitManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOExploitManager.h; sourceTree = "<group>"; };
 		8C029F422B4DFD5D0071DE58 /* DOExploitManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOExploitManager.m; sourceTree = "<group>"; };
 		8C029F442B4DFD910071DE58 /* DOBootstrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOBootstrapper.h; sourceTree = "<group>"; };
@@ -396,6 +404,7 @@
 		042479672B66916B0082581B /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				04DD0B412B7CBE100055DE4F /* Themes */,
 				04C246A22B74ABD600E17924 /* PkgManagers */,
 				042479792B66916B0082581B /* Transition */,
 				042479692B66916B0082581B /* Settings */,
@@ -539,6 +548,18 @@
 				04C246B22B74B65900E17924 /* PkgManagers.plist */,
 			);
 			path = PkgManagers;
+			sourceTree = "<group>";
+		};
+		04DD0B412B7CBE100055DE4F /* Themes */ = {
+			isa = PBXGroup;
+			children = (
+				04DD0B3F2B7CBD3D0055DE4F /* Themes.plist */,
+				04DD0B422B7CBE2E0055DE4F /* DOThemeManager.h */,
+				04DD0B432B7CBE2E0055DE4F /* DOThemeManager.m */,
+				04DD0B452B7CBEEA0055DE4F /* DOTheme.h */,
+				04DD0B462B7CBEEA0055DE4F /* DOTheme.m */,
+			);
+			path = Themes;
 			sourceTree = "<group>";
 		};
 		8C029F402B4DFCFE0071DE58 /* Jailbreak */ = {
@@ -1021,6 +1042,7 @@
 				8CB94F052B59E17A0098BAFD /* basebin.tar in Resources */,
 				04720EAB2B7B669900C8D430 /* Localizable.strings in Resources */,
 				04C246B32B74B65900E17924 /* PkgManagers.plist in Resources */,
+				04DD0B402B7CBD3D0055DE4F /* Themes.plist in Resources */,
 				8CB94F042B59E17A0098BAFD /* basebin.tc in Resources */,
 				8C7198282ABF0E84003C6658 /* LaunchScreen.storyboard in Resources */,
 				8C7198252ABF0E84003C6658 /* Assets.xcassets in Resources */,
@@ -1122,6 +1144,8 @@
 				042479B02B66916B0082581B /* DOLoadingIndicator.m in Sources */,
 				042479AC2B66916B0082581B /* DOJailbreakButton.m in Sources */,
 				8C4ABEBE2B52274300B43C9B /* DOPreferenceManager.m in Sources */,
+				04DD0B472B7CBEEA0055DE4F /* DOTheme.m in Sources */,
+				04DD0B442B7CBE2E0055DE4F /* DOThemeManager.m in Sources */,
 				042479A92B66916B0082581B /* DOModalBackAction.m in Sources */,
 				8CC139822B53DE6C00230143 /* NSData+Hex.m in Sources */,
 				042479AE2B66916B0082581B /* DOUIManager.m in Sources */,

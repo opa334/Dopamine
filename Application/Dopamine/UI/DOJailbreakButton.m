@@ -9,7 +9,7 @@
 #import "DODoubleHelixIndicator.h"
 #import "DOUIManager.h"
 #import "DOGlobalAppearance.h"
-
+#import "DOThemeManager.h"
 
 @implementation DOJailbreakButton
 
@@ -17,7 +17,7 @@
 {
     if (self = [super init])
     {
-        self.backgroundColor = [UIColor colorWithWhite:0.25 alpha:0.45];
+        self.backgroundColor = [DOThemeManager menuColorWithAlpha:1.0];
         self.layer.cornerRadius = 14;
         self.layer.masksToBounds = YES;
         self.layer.cornerCurve = kCACornerCurveContinuous;

@@ -9,6 +9,7 @@
 #import <objc/runtime.h>
 #import "DOModalBackAction.h"
 #import "DOGlobalAppearance.h"
+#import "DOThemeManager.h"
 
 @interface DONavigationController ()
 
@@ -36,11 +37,11 @@
 
 - (void)setupBackground
 {
-    NSString *theme = @"Green";
+    DOTheme *theme = [[DOThemeManager sharedInstance] enabledTheme];
     
     self.view.backgroundColor = [UIColor blackColor];
     self.backgroundImageView = [[UIImageView alloc] init];
-    self.backgroundImageView.image = [[[UIImage imageNamed:[NSString stringWithFormat:@"Background_%@.jpg", theme]] imageWithBlur:18.0] imageWithHue: M_PI * 2]; // 0 - 2PI
+    self.backgroundImageView.image = [theme image];
     self.backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.backgroundImageView.translatesAutoresizingMaskIntoConstraints = NO;
     self.backgroundImageView.userInteractionEnabled = NO;

@@ -14,7 +14,6 @@
 
 @implementation DOSceneDelegate
 
-
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
     UIWindow *window = [[UIWindow alloc] initWithWindowScene:(UIWindowScene *)scene];
     window.rootViewController = [[DONavigationController alloc] init];
@@ -22,6 +21,24 @@
     self.window = window;
 }
 
++ (void)relaunch
+{
+    UIWindowScene *windowScene = (UIWindowScene *)[[[UIApplication sharedApplication] connectedScenes] anyObject];
+    DOSceneDelegate *instance = (DOSceneDelegate *)windowScene.delegate;
+
+    [UIView animateWithDuration:0.3 animations:^{
+        instance.window.alpha = 0;
+    } completion:^(BOOL finished) {
+        UIWindow *window = [[UIWindow alloc] initWithWindowScene:(UIWindowScene *)instance.window.windowScene];
+        window.rootViewController = [[DONavigationController alloc] init];
+        [window makeKeyAndVisible];
+        instance.window = window;
+        instance.window.alpha = 0;
+        [UIView animateWithDuration:0.3 animations:^{
+            instance.window.alpha = 1;
+        }];
+    }];
+}
 
 - (void)sceneDidDisconnect:(UIScene *)scene {
     // Called as the scene is being released by the system.

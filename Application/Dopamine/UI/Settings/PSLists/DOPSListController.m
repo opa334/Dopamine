@@ -6,6 +6,7 @@
 //
 
 #import "DOPSListController.h"
+#import "DOThemeManager.h"
 
 @interface DOPSListController ()
 
@@ -24,8 +25,10 @@
 
 + (void)setupViewControllerStyle:(UIViewController*)vc
 {
+    DOTheme *theme = [[DOThemeManager sharedInstance] enabledTheme];
+    
     vc.overrideUserInterfaceStyle = UIUserInterfaceStyleDark;
-    vc.view.backgroundColor = [UIColor colorWithWhite:0.3 alpha:0.6];
+    vc.view.backgroundColor = theme.windowColor;
     vc.view.layer.cornerRadius = 16;
     vc.view.layer.masksToBounds = YES;
     vc.view.layer.cornerCurve = kCACornerCurveContinuous;

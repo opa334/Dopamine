@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
     NSArray *_availableKernelExploits;
     NSArray *_availablePACBypasses;
     NSArray *_availablePPLBypasses;
+    NSString *_lastKnownTheme;
 }
 
 @end

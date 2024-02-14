@@ -14,6 +14,8 @@
 #import "DOEnvironmentManager.h"
 #import "DOExploitManager.h"
 #import "DOPSListItemsController.h"
+#import "DOThemeManager.h"
+#import "DOSceneDelegate.h"
 
 
 @interface DOSettingsController ()
@@ -24,7 +26,15 @@
 
 - (void)viewDidLoad
 {
+    _lastKnownTheme = [[DOThemeManager sharedInstance] enabledTheme].key;
     [super viewDidLoad];
+}
+
+- (void)viewWillAppear:(BOOL)arg1
+{
+    [super viewWillAppear:arg1];
+    if (_lastKnownTheme != [[DOThemeManager sharedInstance] enabledTheme].key)
+        [DOSceneDelegate relaunch];
 }
 
 - (NSArray *)availableKernelExploitIdentifiers
@@ -85,6 +95,16 @@
         [names addObject:exploit.name];
     }
     return names;
+}
+
+- (NSArray *)themeIdentifiers
+{
+    return [[DOThemeManager sharedInstance] getAvailableThemeKeys];
+}
+
+- (NSArray *)themeNames
+{
+    return [[DOThemeManager sharedInstance] getAvailableThemeNames];
 }
 
 - (id)specifiers
@@ -236,6 +256,29 @@
                 [specifiers addObject:removeJailbreakSpecifier];
             }
         }
+
+        PSSpecifier *themingGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
+        themingGroupSpecifier.name = @"Customization";
+        [specifiers addObject:themingGroupSpecifier];
+
+        PSSpecifier *themeSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Theme" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
+
+            // PSSpecifier *kernelExploitSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Kernel Exploit" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
+            // [kernelExploitSpecifier setProperty:@YES forKey:@"enabled"];
+            // [kernelExploitSpecifier setProperty:exploitManager.preferredKernelExploit.identfier forKey:@"default"];
+            // kernelExploitSpecifier.detailControllerClass = [DOPSListItemsController class];
+            // [kernelExploitSpecifier setProperty:@"availableKernelExploitIdentifiers" forKey:@"valuesDataSource"];
+            // [kernelExploitSpecifier setProperty:@"availableKernelExploitNames" forKey:@"titlesDataSource"];
+            // [kernelExploitSpecifier setProperty:@"selectedKernelExploit" forKey:@"key"];
+            // [specifiers addObject:kernelExploitSpecifier];
+            
+        themeSpecifier.detailControllerClass = [DOPSListItemsController class];
+        [themeSpecifier setProperty:@YES forKey:@"enabled"];
+        [themeSpecifier setProperty:@"theme" forKey:@"key"];
+        [themeSpecifier setProperty:[[self themeIdentifiers] firstObject] forKey:@"default"];
+        [themeSpecifier setProperty:@"themeIdentifiers" forKey:@"valuesDataSource"];
+        [themeSpecifier setProperty:@"themeNames" forKey:@"titlesDataSource"];
+        [specifiers addObject:themeSpecifier];
 
         _specifiers = specifiers;
     }

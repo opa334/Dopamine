@@ -8,6 +8,7 @@
 #import "DOActionMenuView.h"
 #import "DOActionMenuButton.h"
 #import "DOGlobalAppearance.h"
+#import "DOThemeManager.h"
 
 @implementation DOActionMenuView
 
@@ -17,7 +18,7 @@
     {
         [self setDelegate:delegate];
         [self setActions:actions];
-        self.backgroundColor = [DOGlobalAppearance windowColorWithAlpha:1.0];
+        self.backgroundColor = [DOThemeManager menuColorWithAlpha:1.0];
         self.layer.cornerRadius = 14;
         self.layer.masksToBounds = YES;
         self.layer.cornerCurve = kCACornerCurveContinuous;
