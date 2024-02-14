@@ -42,7 +42,7 @@
 		<key>windowColor</key>
 		<string>6004050A</string>
 		<key>blur</key>
-		<integer>35</integer>
+		<integer>40</integer>
 	</dict>
 	<dict>
 		<key>key</key>
@@ -70,7 +70,7 @@
 		<key>windowColor</key>
 		<string>6008040A</string>
 		<key>blur</key>
-		<integer>25</integer>
+		<integer>35</integer>
 	</dict>
 </array>
 </plist>
