@@ -218,7 +218,10 @@
                 reinstallPackageManagersSpecifier.target = self;
                 [reinstallPackageManagersSpecifier setProperty:@"Button_Reinstall_Package_Managers" forKey:@"title"];
                 [reinstallPackageManagersSpecifier setProperty:@"DOButtonCell" forKey:@"headerCellClass"];
-                [reinstallPackageManagersSpecifier setProperty:@"shippingbox.and.arrow.backward" forKey:@"image"];
+                if (@available(iOS 16.0, *))
+                    [reinstallPackageManagersSpecifier setProperty:@"shippingbox.and.arrow.backward" forKey:@"image"];
+                else
+                    [reinstallPackageManagersSpecifier setProperty:@"shippingbox" forKey:@"image"];
                 [reinstallPackageManagersSpecifier setProperty:@"reinstallPackageManagersPressed" forKey:@"action"];
                 [specifiers addObject:reinstallPackageManagersSpecifier];
                 
