@@ -102,6 +102,21 @@
     return latestVersion != launchedVersion;
 }
 
+- (bool)launchedReleaseNeedsManualUpdate
+{
+    NSString *launchedTag = [self getLaunchedReleaseTag];
+    NSDictionary *launchedVersion;
+    for (NSDictionary *release in [self getLatestReleases]) {
+        if ([release[@"tag_name"] isEqualToString:launchedTag]) {
+            launchedVersion = release;
+            break;
+        }
+    }
+    if (!launchedVersion)
+        return false;
+    return [launchedVersion[@"body"] containsString:@"*Manual Updates*"];
+}
+
 - (NSString*)getLatestReleaseTag
 {
     NSArray *releases = [self getLatestReleases];

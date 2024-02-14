@@ -107,7 +107,14 @@
                 [self presentViewController:alert animated:YES completion:nil];
             }
             return;
-        }        
+        }
+
+        if ([[DOUIManager sharedInstance] launchedReleaseNeedsManualUpdate])
+        {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/opa334/Dopamine/releases"] options:@{} completionHandler:nil];
+            return;
+        }
+
         DODownloadViewController *downloadVC = [[DODownloadViewController alloc] initWithUrl:self.lastestDownloadUrl callback:^(NSURL * _Nonnull file) {
             NSLog(@"Downloaded %@", file);
             [[DOEnvironmentManager sharedManager] updateJailbreakFromTIPA:file.path];

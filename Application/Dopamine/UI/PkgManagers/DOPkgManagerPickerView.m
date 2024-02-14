@@ -56,7 +56,7 @@
         
 
         UILabel *title = [[UILabel alloc] init];
-        title.text = @"Select Package Managers";
+        title.text = NSLocalizedString(@"Status_Title_Select_Package_Managers", nil);
         title.textColor = [UIColor whiteColor];
         title.font = [UIFont systemFontOfSize:24 weight:UIFontWeightMedium];
         title.textAlignment = NSTextAlignmentCenter;
@@ -70,7 +70,7 @@
         ]];
         
         UILabel *tooltip = [[UILabel alloc] init];
-        tooltip.text = @"If you are unsure which package manager to use, select Sileo.";
+        tooltip.text = NSLocalizedString(@"Select_Package_Managers_Install_Message", nil);
         tooltip.textColor = [UIColor colorWithWhite:1.0 alpha:0.5];
         tooltip.font = [UIFont systemFontOfSize:14 weight:UIFontWeightRegular];
         tooltip.textAlignment = NSTextAlignmentCenter;
@@ -85,7 +85,7 @@
             [tooltip.widthAnchor constraintEqualToAnchor:switchStack.widthAnchor multiplier:1.25]
         ]];
         
-        self.continueAction = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:@"Continue" image:[UIImage systemImageNamed:@"arrow.right" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"continue" handler:^(__kindof UIAction * _Nonnull action) {
+        self.continueAction = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:NSLocalizedString(@"Continue", nil) image:[UIImage systemImageNamed:@"arrow.right" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"continue" handler:^(__kindof UIAction * _Nonnull action) {
             callback(TRUE);
         }] chevron:NO];
         self.continueAction.layer.cornerRadius = 14.0;

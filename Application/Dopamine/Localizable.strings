@@ -66,6 +66,25 @@
 "Credits_Button_License" = "Licenses";
 "Credits_Button_Source_Code" = "Source Code";
 
+// Logs
+"Initializing Environment" = "Initializing Jailbreak Environment";
+"Loading BaseBin TrustCache" = "Loading BaseBin TrustCache";
+"Applying Bind Mount" = "Applying Bind Mount";
+"Removing Jailbreak" = "Removing Jailbreak";
+"Elevating Privileges" = "Elevating Privileges";
+"Cleaning Up Exploits" = "Cleaning Up Exploits";
+"Building Phys R/W Primitive" = "Building Phys R/W Primitive";
+"Rebooting Userspace" = "Rebooting Userspace";
+"Patchfinding" = "Patchfinding";
+"Exploiting Kernel (%@)" = "Exploiting Kernel (%@)";
+"Bypassing PAC (%@)" = "Bypassing PAC (%@)";
+"Bypassing PPL (%@)" = "Bypassing PPL (%@)";
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Select Package Manager(s)";
+"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+"Continue" = "Continue";
+
 
 //"Bootstrapping" = "Bootstrapping";
 //
