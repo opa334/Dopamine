@@ -7,6 +7,7 @@
 #include <util.h>
 #include "sandbox.h"
 #include <libjailbreak/jbclient_xpc.h>
+#include <libjailbreak/codesign.h>
 
 #define JBRootPath(path) ({ \
 	char *outPath = alloca(PATH_MAX); \
@@ -322,6 +323,47 @@ int daemon_hook(int __nochdir, int __noclose)
 	return daemon(__nochdir, __noclose);
 }
 
+static void (*MSHookFunction)(void *symbol, void *replace, void **result) = NULL;
+int (*csops_orig)(pid_t pid, unsigned int ops, void * useraddr, size_t usersize);
+int csops_hook(pid_t pid, unsigned int ops, void * useraddr, size_t usersize)
+{
+	int rv = csops_orig(pid, ops, useraddr, usersize);
+	if (rv) return rv;
+	if (ops == CS_OPS_STATUS) {
+		if (useraddr) {
+			uint32_t* csflag = (uint32_t*)useraddr;
+			csflag[0] |= CS_VALID;
+		}
+	}
+	return rv;
+}
+
+int (*csops_audittoken_orig)(pid_t pid, unsigned int ops, void * useraddr, size_t usersize, audit_token_t * token);
+int csops_audittoken_hook(pid_t pid, unsigned int ops, void * useraddr, size_t usersize, audit_token_t * token)
+{
+	int rv = csops_audittoken_orig(pid, ops, useraddr, usersize, token);
+	if (rv) return rv;
+	if (ops == CS_OPS_STATUS) {
+		if (useraddr) {
+			uint32_t* csflag = (uint32_t*)useraddr;
+			csflag[0] |= CS_VALID;
+		}
+	}
+	return rv;
+}
+
+void enable_csops_fix(void)
+{
+	void *handle = dlopen(JBRootPath("/usr/lib/libellekit.dylib"), RTLD_NOLOAD);
+	if (handle) {
+		MSHookFunction = dlsym(handle, "MSHookFunction");
+		if (MSHookFunction) {
+			MSHookFunction((void *)csops, (void *)csops_hook, (void **)&csops_orig);
+			MSHookFunction((void *)csops_audittoken, (void *)csops_audittoken_hook, (void **)&csops_audittoken_orig);
+		}
+	}
+}
+
 bool shouldEnableTweaks(void)
 {
 	if (access(JBRootPath("/basebin/.safe_mode"), F_OK) == 0) {
@@ -386,6 +428,10 @@ __attribute__((constructor)) static void initializer(void)
 				void *tweakLoaderHandle = dlopen_hook(tweakLoaderPath, RTLD_NOW);
 				if (tweakLoaderHandle != NULL) {
 					dlclose(tweakLoaderHandle);
+#ifndef __arm64e__
+					// Always set CS_VALID in csflag to avoid causing a crash when hooking a c function on arm64
+					enable_csops_fix();
+#endif
 				}
 			}
 		}
