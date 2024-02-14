@@ -432,7 +432,7 @@ int exec_cmd_root(const char *binary, ...)
 	va_end(args);
 
 	va_start(args, binary);
-	int r = __exec_cmd_internal_va(true, true, NULL, binary, argc, args);
+	int r = __exec_cmd_internal_va(false, true, NULL, binary, argc, args);
 	va_end(args);
 	return r;
 }

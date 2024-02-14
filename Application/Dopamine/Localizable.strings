@@ -1,6 +1,8 @@
 
 
 "Credits_Made_By" = "by opa334, ElleKit by évelyne";
+"Button_Cancel" = "Cancel";
+"Button_Continue" = "Continue";
 
 // Log
 "Status_Title_Jailbreaking" = "Jailbreaking";
@@ -47,8 +49,17 @@
 "Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
 
 // Settings Hints
-"Hint_Hide_Jailbreak" = "\"Hide Jailbreak\" temporarily removes jailbreak-related files until next jailbreak";
+"Hint_Hide_Jailbreak" = "\"Hide Jailbreak\" temporarily removes jailbreak-related files until the next rejailbreak";
 "Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+
+// Settings Alerts
+"Alert_Tweak_Injection_Toggled_Title" = "Userspace Reboot Required";
+"Alert_Tweak_Injection_Toggled_Body" = "A userspace reboot is neccessary to apply the changes. Do you want to do it now?";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Reboot Now";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Reboot Later";
+"Alert_Remove_Jailbreak_Title" = "Remove Jailbreak";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+"Alert_Remove_Jailbreak_Enabled_Body" = "Enabling \"Remove Jailbreak\" will delete all jailbreak-related files on the next jailbreak, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
 
 // Credits
 "Credits_Button_Discord" = "Discord";
@@ -77,7 +88,7 @@
 
 //"Bootstrapping" = "Bootstrapping";
 //
-//"Button_Cancel" = "Cancel";
+
 //
 //"Button_Hide_Jailbreak" = "Hide Jailbreak";
 //
