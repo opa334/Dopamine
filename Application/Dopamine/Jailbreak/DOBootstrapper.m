@@ -266,6 +266,17 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     return mount("apfs", "/private/preboot", flags, &mntargs);
 }
 
+- (NSError *)ensurePrivatePrebootIsWritable
+{
+    if (![self isPrivatePrebootMountedWritable]) {
+        int r = [self remountPrivatePrebootWritable:YES];
+        if (r != 0) {
+            return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedRemount userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Remounting /private/preboot as writable failed with error: %s", strerror(errno)]}];
+        }
+    }
+    return nil;
+}
+
 - (void)fixupPathPermissions
 {
     NSString *tmpPath = NSJBRootPath(@"/");
@@ -367,11 +378,10 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     [[DOUIManager sharedInstance] sendLog:@"Updating BaseBin" debug:NO];
 
     // Ensure /private/preboot is mounted writable (Not writable by default on iOS <=15)
-    if (![self isPrivatePrebootMountedWritable]) {
-        int r = [self remountPrivatePrebootWritable:YES];
-        if (r != 0) {
-            completion([NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedRemount userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Remounting /private/preboot as writable failed with error: %s", strerror(errno)]}]);
-        }
+    NSError *error = [self ensurePrivatePrebootIsWritable];
+    if (error) {
+        completion(error);
+        return;
     }
     
     // Remove /var/jb as it might be wrong
@@ -436,7 +446,6 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     NSString *installedPath = NSJBRootPath(@"/.installed_dopamine");
     [self createSymlinkAtPath:@"/var/jb" toPath:NSJBRootPath(@"/") createIntermediateDirectories:YES];
     
-    NSError *error;
     if ([[NSFileManager defaultManager] fileExistsAtPath:basebinPath]) {
         if (![[NSFileManager defaultManager] removeItemAtPath:basebinPath error:&error]) {
             completion([NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedExtracting userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed deleting existing basebin file with error: %@", error.localizedDescription]}]);
@@ -645,15 +654,9 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (NSError *)deleteBootstrap
 {
-    if (![self isPrivatePrebootMountedWritable]) {
-        int r = [self remountPrivatePrebootWritable:YES];
-        if (r != 0) {
-            return [NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedRemount userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Remounting /private/preboot as writable failed with error: %s", strerror(errno)]}];
-        }
-    }
-    
+    NSError *error = [self ensurePrivatePrebootIsWritable];
+    if (error) return error;
     NSString *path = [[NSString stringWithUTF8String:gSystemInfo.jailbreakInfo.rootPath] stringByDeletingLastPathComponent];
-    NSError *error;
     [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
     return error;
 }
