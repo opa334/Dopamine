@@ -44,6 +44,7 @@
 		04DD0B352B7BA38C0055DE4F /* DOLicenseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DD0B342B7BA38C0055DE4F /* DOLicenseViewController.m */; };
 		04DD0B372B7BA6180055DE4F /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B362B7BA6180055DE4F /* LICENSE.md */; };
 		04DD0B3A2B7BF3E80055DE4F /* LICENSE_libc.md in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B392B7BF3E80055DE4F /* LICENSE_libc.md */; };
+		04DD0B3D2B7C88210055DE4F /* DOLogCrashViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DD0B3C2B7C88210055DE4F /* DOLogCrashViewController.m */; };
 		8C029F432B4DFD5D0071DE58 /* DOExploitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F422B4DFD5D0071DE58 /* DOExploitManager.m */; };
 		8C029F462B4DFD910071DE58 /* DOBootstrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F452B4DFD910071DE58 /* DOBootstrapper.m */; };
 		8C029F4E2B4E1FF30071DE58 /* DOExploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F4D2B4E1FF30071DE58 /* DOExploit.m */; };
@@ -249,6 +250,8 @@
 		04DD0B342B7BA38C0055DE4F /* DOLicenseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOLicenseViewController.m; sourceTree = "<group>"; };
 		04DD0B362B7BA6180055DE4F /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 		04DD0B392B7BF3E80055DE4F /* LICENSE_libc.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_libc.md; sourceTree = "<group>"; };
+		04DD0B3B2B7C88210055DE4F /* DOLogCrashViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOLogCrashViewController.h; sourceTree = "<group>"; };
+		04DD0B3C2B7C88210055DE4F /* DOLogCrashViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOLogCrashViewController.m; sourceTree = "<group>"; };
 		8C029F412B4DFD5D0071DE58 /* DOExploitManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOExploitManager.h; sourceTree = "<group>"; };
 		8C029F422B4DFD5D0071DE58 /* DOExploitManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOExploitManager.m; sourceTree = "<group>"; };
 		8C029F442B4DFD910071DE58 /* DOBootstrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOBootstrapper.h; sourceTree = "<group>"; };
@@ -470,6 +473,8 @@
 				042479952B66916B0082581B /* DODebugLogView.m */,
 				042479922B66916B0082581B /* DODebugLogView.h */,
 				042479932B66916B0082581B /* DOLogViewProtocol.h */,
+				04DD0B3B2B7C88210055DE4F /* DOLogCrashViewController.h */,
+				04DD0B3C2B7C88210055DE4F /* DOLogCrashViewController.m */,
 			);
 			path = Log;
 			sourceTree = "<group>";
@@ -1136,6 +1141,7 @@
 				042479AA2B66916B0082581B /* DOModalTransitionPush.m in Sources */,
 				0443A9B12B79D9C10014C933 /* DOPSListItemsController.m in Sources */,
 				8C71982B2ABF0E84003C6658 /* main.m in Sources */,
+				04DD0B3D2B7C88210055DE4F /* DOLogCrashViewController.m in Sources */,
 				8C029F602B4E25350071DE58 /* DOEnvironmentManager.m in Sources */,
 				04C246A12B73225800E17924 /* DODownloadViewController.m in Sources */,
 				042479B52B66916B0082581B /* DOLyricsLogItemView.m in Sources */,

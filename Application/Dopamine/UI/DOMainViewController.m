@@ -12,6 +12,7 @@
 #import "DOGlobalAppearance.h"
 #import "DOActionMenuButton.h"
 #import "DOUpdateViewController.h"
+#import "DOLogCrashViewController.h"
 #import <pthread.h>
 
 @interface DOMainViewController ()
@@ -86,7 +87,7 @@
     //Action Menu
     DOActionMenuView *actionView = [[DOActionMenuView alloc] initWithActions:@[
         [UIAction actionWithTitle:NSLocalizedString(@"Menu_Settings_Title", nil) image:[UIImage systemImageNamed:@"gearshape" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"settings" handler:^(__kindof UIAction * _Nonnull action) {
-            [(UINavigationController*)(self.parentViewController) pushViewController:[[DOSettingsController alloc] init] animated:YES];
+            [self.navigationController pushViewController:[[DOSettingsController alloc] init] animated:YES];
         }],
         [UIAction actionWithTitle:NSLocalizedString(@"Menu_Restart_SpringBoard_Title", nil) image:[UIImage systemImageNamed:@"arrow.clockwise" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"respring" handler:^(__kindof UIAction * _Nonnull action) {
             [[DOEnvironmentManager sharedManager] respring];
@@ -95,7 +96,7 @@
             [[DOEnvironmentManager sharedManager] rebootUserspace];
         }],
         [UIAction actionWithTitle:NSLocalizedString(@"Menu_Credits_Title", nil) image:[UIImage systemImageNamed:@"info.circle" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"credits" handler:^(__kindof UIAction * _Nonnull action) {
-            [(UINavigationController*)(self.parentViewController) pushViewController:[[DOCreditsViewController alloc] init] animated:YES];
+            [self.navigationController pushViewController:[[DOCreditsViewController alloc] init] animated:YES];
         }]
     ] delegate:self];
     
@@ -117,15 +118,14 @@
     //Jailbreak Button
     BOOL isJailbroken = [[DOEnvironmentManager sharedManager] isJailbroken];
     BOOL isSupported = [[DOEnvironmentManager sharedManager] isSupported];
-    NSString *jailbreakButtonTitle = !isSupported ? @"Unsupported" : (isJailbroken ? NSLocalizedString(@"Status_Title_Jailbroken", nil) : NSLocalizedString(@"Button_Jailbreak_Title", nil));
-    
+
+    NSString *jailbreakButtonTitle = [self jailbreakButtonTitle];
+        
     UIImage *jailbreakButtonImage;
-    if (isSupported) {
+    if (isSupported)
         jailbreakButtonImage = [UIImage systemImageNamed:@"lock.open" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]];
-    }
-    else {
+    else
         jailbreakButtonImage = [UIImage systemImageNamed:@"lock.slash" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]];
-    }
     
     self.jailbreakBtn = [[DOJailbreakButton alloc] initWithAction: [UIAction actionWithTitle:jailbreakButtonTitle image:jailbreakButtonImage identifier:@"jailbreak" handler:^(__kindof UIAction * _Nonnull action) {
         [actionView hide];
@@ -161,34 +161,47 @@
     });
 }
 
--(void)startJailbreak
+- (NSString *)jailbreakButtonTitle
+{
+    BOOL isJailbroken = [[DOEnvironmentManager sharedManager] isJailbroken];
+    BOOL isSupported = [[DOEnvironmentManager sharedManager] isSupported];
+    BOOL removeJailbreakEnabled = [[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"removeJailbreakEnabled" fallback:NO];
+
+    NSString *jailbreakButtonTitle = NSLocalizedString(@"Button_Jailbreak_Title", nil);
+    if (!isSupported)
+        jailbreakButtonTitle = NSLocalizedString(@"Unsupported", nil);
+    else if (isJailbroken)
+        jailbreakButtonTitle = NSLocalizedString(@"Status_Title_Jailbroken", nil);
+    else if (removeJailbreakEnabled)
+        jailbreakButtonTitle = NSLocalizedString(@"Button_Remove_Jailbreak", nil);
+    
+    return jailbreakButtonTitle;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.jailbreakBtn.button setTitle:[self jailbreakButtonTitle] forState:UIControlStateNormal];
+}
+
+- (void)startJailbreak
 {
     DOJailbreaker *jailbreaker = [[DOJailbreaker alloc] init];
 
     [[DOUIManager sharedInstance] startLogCapture];
     
-    //dispatch async so the UI can update as this blocks the main thread
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
 
         //We need to get the preconfig mutex to start the jailbreak (self.jailbreakBtn.canStartJailbreak)
         [self.jailbreakBtn lockMutex];
-        
         dispatch_async(dispatch_get_main_queue(), ^{
             self.hideHomeIndicator = YES;
         });
 
-//        [self simulateJailbreak];return;
-
         NSError *error = [jailbreaker run];
-
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (error) {
-                NSLog(@"FAIL: %@", error);
-                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *doneAction = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault handler:nil];
-                [alertController addAction:doneAction];
-                [self presentViewController:alertController animated:YES completion:nil];
-            }
+            if (error)
+                [self.navigationController pushViewController:[[DOLogCrashViewController alloc] initWithTitle:[error localizedDescription]] animated:YES];
             else {
                 [[DOUIManager sharedInstance] completeJailbreak];
                 [self fadeToBlack: ^{
@@ -196,8 +209,6 @@
                 }];
             }
         });
-
-        
         [self.jailbreakBtn unlockMutex];
     });
 }
@@ -213,7 +224,7 @@
         if (environmentUpdate)
             ; //update environment
         else
-            [(UINavigationController*)(self.parentViewController) pushViewController:[[DOUpdateViewController alloc] init] animated:YES];
+            [self.navigationController pushViewController:[[DOUpdateViewController alloc] init] animated:YES];
     }] chevron:NO];
 
     self.updateButton.translatesAutoresizingMaskIntoConstraints = NO;

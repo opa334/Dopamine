@@ -2,10 +2,14 @@
 
 "Credits_Made_By" = "by opa334, ElleKit by évelyne";
 "Status_Title_Jailbreaking" = "Jailbreaking";
-"Button_Jailbreak_Title" = "Jailbreak";
-"Status_Title_Jailbroken" = "Jailbroken";
 
 "Title_Changelog" = "Changelog";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "Jailbreak";
+"Button_Remove_Jailbreak" = "Remove Jailbreak";
+"Status_Title_Jailbroken" = "Jailbroken";
+"Unsupported" = "Unsupported";
 
 // Action Menu
 "Menu_Settings_Title" = "Settings";
@@ -23,6 +27,13 @@
 "Update_Status_Subtitle_Please_Wait" = "Please wait while files finish downloading";
 "Update_Status_Installing" = "Installing update...";
 "Update_Status_Subtitle_Restart_Soon" = "The device will restart soon";
+
+//Error View
+"Button_Share" = "Share";
+
+//Settings
+"Button_Remove_Jailbreak" = "Remove Jailbreak";
+
 
 
 //"Bootstrapping" = "Bootstrapping";

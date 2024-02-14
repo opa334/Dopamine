@@ -166,6 +166,8 @@
     if (debug && !isDebug)
         return;
     
+    [self.logRecord addObject:log];
+    
     if (update) {
         if ([self.logView respondsToSelector:@selector(updateLog:)]) {
             [self.logView updateLog:log];
@@ -227,7 +229,6 @@
                         line[line_index] = '\0';
                         NSString *str = [NSString stringWithUTF8String:line];
                         [[DOUIManager sharedInstance] sendLog:str debug:YES];
-                        [self.logRecord addObject:str];
                         line_index = 0;
                     } else {
                         if (line_index < sizeof(line) - 1) {
