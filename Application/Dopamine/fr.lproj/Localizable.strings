@@ -1,0 +1,95 @@
+"Credits_Made_By" = "par opa334, ElleKit par évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "Jailbreak en cours";
+"Log_Error" = "Érreur";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "Jailbreak";
+"Button_Remove_Jailbreak" = "Supprimer le jailbreak";
+"Status_Title_Jailbroken" = "Jailbreaké";
+"Unsupported" = "Non supporté";
+
+// Action Menu
+"Menu_Settings_Title" = "Préférences";
+"Menu_Restart_SpringBoard_Title" = "Redémarrer le SpringBoard";
+"Menu_Reboot_Userspace_Title" = "Redémarrer l'environnement";
+"Menu_Credits_Title" = "À propos";
+
+// Updating
+"Button_Update" = "Mettre à jour";
+"Button_Update_Available" = "Mise à jour disponible";
+"Button_Update_Environment" = "Mettre à jour l'environnement";
+
+// Update View
+"Update_Status_Downloading" = "Telechargement...";
+"Update_Status_Subtitle_Please_Wait" = "Veuillez patienter pendant que Dopamine télécharge et installe la mise à jour";
+"Update_Status_Installing" = "Installation...";
+"Update_Status_Subtitle_Restart_Soon" = "L'appareil redémarrera automatiquement une fois l'installation terminée";
+"Title_Changelog" = "Nouveautés";
+"Changelog_Unavailable_Text" = "Impossible de charger les changements";
+
+// Error View
+"Button_Share" = "Partager";
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "Injection de tweaks";
+"Settings_iDownload" = "iDownload (Outil de dev)";
+"Settings_Verbose_Logs" = "Mode verbose";
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "Supprimer le jailbreak";
+"Button_Hide_Jailbreak" = "Mode jailbreak masqué";
+"Button_Unhide_Jailbreak" = "Retour au mode jailbreaké";
+"Button_Refresh_Jailbreak_Apps" = "Rafraîchir les apps jailbreakées";
+"Button_Reinstall_Package_Managers" = "Réinstaller les gestionnaires de paquets";
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "Le mode \"Jailbreak masqué\" enlève temporairement les fichiers liés au jailbreak jusqu'au prochain jailbreak.";
+"Hint_Hide_Jailbreak_Jailbroken" = "Le mode \"Jailbreak masqué\" désactive partiellement le jailbreak et vise à rendre la détection plus difficile. Cependant, il n'est pas entièrement efficace et ne cache pas tout.";
+"Section_Jailbreak_Settings" = "Paramètres du jailbreak";
+"Section_Actions" = "Actions";
+"Section_Customization" = "Personnalisation";
+"Section_Exploits" = "Exploits";
+
+// Settings Alerts
+"Alert_Tweak_Injection_Toggled_Title" = "Redémarrage nécessaire";
+"Alert_Tweak_Injection_Toggled_Body" = "Un redémarrage de l'espace utilisateur est nécessaire pour appliquer les changements. Voulez-vous le faire maintenant ?";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Redémarrer maintenant";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Redémarrer plus tard";
+"Alert_Remove_Jailbreak_Title" = "Supprimer le jailbreak";
+"Alert_Remove_Jailbreak_Pressed_Body" = "La suppression du jailbreak effacera tous les fichiers liés au jailbreak, mais toutes les applications, fichiers et données habituels seront conservés. Êtes-vous sûr de vouloir continuer ? Vous ne pouvez pas annuler cette action.";
+"Alert_Remove_Jailbreak_Enabled_Body" = "L'activation de cette option supprimera tous les fichiers liés au jailbreak au prochain jailbreak. Toutes les applications, fichiers et données habituels seront conservés. Êtes-vous sûr de vouloir continuer ?";
+"Button_Cancel" = "Annuler";
+"Button_Continue" = "Continuer";
+
+// Settings Lists
+"Theme" = "Thème";
+"Kernel Exploit" = "Exploit du noyau";
+"PPL Bypass" = "Contournement PPL";
+"PAC Bypass" = "Contournement PAC";
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Licenses";
+"Credits_Button_Source_Code" = "Code source";
+"Credits" = "Crédits";
+
+// Logs
+"Initializing Environment" = "Initialisation de l'environnement";
+"Loading BaseBin TrustCache" = "Chargement des signatures";
+"Applying Bind Mount" = "Montage du disque virtuel";
+"Removing Jailbreak" = "Suppression du jailbreak";
+"Elevating Privileges" = "Elévation des privilèges";
+"Cleaning Up Exploits" = "Nettoyage des exploits";
+"Building Phys R/W Primitive" = "Construction de primitive Phys R/W";
+"Rebooting Userspace" = "Redémarrage de l'environnement";
+"Patchfinding" = "Recherche des patchs";
+"Exploiting Kernel (%@)" = "Exploitation du noyau (%@)";
+"Bypassing PAC (%@)" = "Contournement des PAC (%@)";
+"Bypassing PPL (%@)" = "Contournement du PPL (%@)";
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Gestionnaires de paquets";
+"Select_Package_Managers_Install_Message" = "Selectionnez les gestionnaires de paquets à installer, si vous n'êtes pas sûr de votre choix, sélectionnez Sileo";
+"Continue" = "Continuer";

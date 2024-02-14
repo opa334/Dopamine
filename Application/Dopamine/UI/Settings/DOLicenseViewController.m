@@ -26,7 +26,7 @@
     [super viewDidLoad];
     [DOPSListController setupViewControllerStyle:self];
 
-    UIView *header = [DOPSListItemsController makeHeader:@"Licenses" withTarget:self];
+    UIView *header = [DOPSListItemsController makeHeader:NSLocalizedString(@"Credits_Button_License", nil) withTarget:self];
     header.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:header];
 

@@ -33,8 +33,6 @@
             [self.button.topAnchor constraintEqualToAnchor:self.topAnchor],
             [self.button.bottomAnchor constraintEqualToAnchor:self.bottomAnchor],
         ]];
-        //We're doing some setup, let's lock the mutex
-        [self lockMutex];
     }
     return self;
 }
@@ -43,6 +41,9 @@
 {
     if (self.didExpand)
         return;
+
+    //We're doing some setup, let's lock the mutex
+    [self lockMutex];
         
     self.didExpand = TRUE;
 
@@ -75,7 +76,7 @@
         [self setupTitle];
     });
 
-    if (!self.pkgManagerPickerView)
+    if ([[DOUIManager sharedInstance] enabledPackageManagerKeys].count > 0)
     {
         //we can start, unlock the mutex
         [self unlockMutex];

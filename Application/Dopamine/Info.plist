@@ -19,6 +19,48 @@
 			</array>
 		</dict>
 	</dict>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundleAlternateIcons</key>
+		<dict>
+			<key>blue</key>
+			<dict>
+				<key>UIPrerenderedIcon</key>
+				<string>NO</string>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>blue</string>
+				</array>
+			</dict>
+			<key>ellekit</key>
+			<dict>
+				<key>UIPrerenderedIcon</key>
+				<string>NO</string>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>ellekit</string>
+				</array>
+			</dict>
+			<key>purple</key>
+			<dict>
+				<key>UIPrerenderedIcon</key>
+				<string>NO</string>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>purple</string>
+				</array>
+			</dict>
+			<key>red</key>
+			<dict>
+				<key>UIPrerenderedIcon</key>
+				<string>NO</string>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>red</string>
+				</array>
+			</dict>
+		</dict>
+	</dict>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 </dict>

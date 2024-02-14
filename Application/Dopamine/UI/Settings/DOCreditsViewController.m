@@ -26,7 +26,7 @@
         _specifiers = [self loadSpecifiersFromPlistName:@"Credits" target:self];
 
         PSSpecifier *headerSpecifier = _specifiers[0];
-        [headerSpecifier setProperty:[NSString stringWithFormat:@"Dopamine %@ - Credits", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]] forKey:@"title"];
+        [headerSpecifier setProperty:[NSString stringWithFormat:@"Dopamine %@ - %@", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], NSLocalizedString(@"Credits", nil)] forKey:@"title"];
     }
     return _specifiers;
 }

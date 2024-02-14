@@ -34,7 +34,16 @@
 {
     [super viewWillAppear:arg1];
     if (_lastKnownTheme != [[DOThemeManager sharedInstance] enabledTheme].key)
+    {
         [DOSceneDelegate relaunch];
+        NSString *iconKey = [[DOThemeManager sharedInstance] enabledTheme].key;
+        if ([iconKey isEqualToString:@"default"])
+            iconKey = nil;
+        [[UIApplication sharedApplication] setAlternateIconName:iconKey completionHandler:^(NSError * _Nullable error) {
+            if (error)
+                NSLog(@"Error changing app icon: %@", error);
+        }];
+    }
 }
 
 - (NSArray *)availableKernelExploitIdentifiers
@@ -130,10 +139,10 @@
         
         if (!envManager.isJailbroken) {
             PSSpecifier *exploitGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
-            exploitGroupSpecifier.name = @"Exploits";
+            exploitGroupSpecifier.name = NSLocalizedString(@"Section_Exploits", nil);
             [specifiers addObject:exploitGroupSpecifier];
             
-            PSSpecifier *kernelExploitSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Kernel Exploit" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
+            PSSpecifier *kernelExploitSpecifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedString(@"Kernel Exploit", nil) target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
             [kernelExploitSpecifier setProperty:@YES forKey:@"enabled"];
             [kernelExploitSpecifier setProperty:exploitManager.preferredKernelExploit.identfier forKey:@"default"];
             kernelExploitSpecifier.detailControllerClass = [DOPSListItemsController class];
@@ -143,7 +152,7 @@
             [specifiers addObject:kernelExploitSpecifier];
             
             if (envManager.isArm64e) {
-                PSSpecifier *pacBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:@"PAC Bypass" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
+                PSSpecifier *pacBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedString(@"PAC Bypass", nil) target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
                 [pacBypassSpecifier setProperty:@YES forKey:@"enabled"];
                 if (!envManager.isPACBypassRequired) {
                     [pacBypassSpecifier setProperty:@"none" forKey:@"default"];
@@ -157,7 +166,7 @@
                 [pacBypassSpecifier setProperty:@"selectedPACBypass" forKey:@"key"];
                 [specifiers addObject:pacBypassSpecifier];
                 
-                PSSpecifier *pplBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:@"PPL Bypass" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
+                PSSpecifier *pplBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedString(@"PPL Bypass", nil) target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
                 [pplBypassSpecifier setProperty:@YES forKey:@"enabled"];
                 [pplBypassSpecifier setProperty:exploitManager.preferredPPLBypass.identfier forKey:@"default"];
                 pplBypassSpecifier.detailControllerClass = [DOPSListItemsController class];
@@ -169,7 +178,7 @@
         }
         
         PSSpecifier *settingsGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
-        settingsGroupSpecifier.name = @"Jailbreak Settings";
+        settingsGroupSpecifier.name = NSLocalizedString(@"Section_Jailbreak_Settings", nil);
         [specifiers addObject:settingsGroupSpecifier];
         
         PSSpecifier *tweakInjectionSpecifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedString(@"Settings_Tweak_Injection", nil) target:self set:@selector(setTweakInjectionEnabled:specifier:) get:@selector(readTweakInjectionEnabled:) detail:nil cell:PSSwitchCell edit:nil];
@@ -201,7 +210,7 @@
         
         if (envManager.isJailbroken || (envManager.isInstalledThroughTrollStore && envManager.isBootstrapped)) {
             PSSpecifier *actionsGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
-            actionsGroupSpecifier.name = @"Actions";
+            actionsGroupSpecifier.name = NSLocalizedString(@"Section_Actions", nil);
             [specifiers addObject:actionsGroupSpecifier];
             
             if (envManager.isJailbroken) {
@@ -258,20 +267,10 @@
         }
         
         PSSpecifier *themingGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
-        themingGroupSpecifier.name = @"Customization";
+        themingGroupSpecifier.name = NSLocalizedString(@"Section_Customization", nil);
         [specifiers addObject:themingGroupSpecifier];
         
-        PSSpecifier *themeSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Theme" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
-        
-        // PSSpecifier *kernelExploitSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Kernel Exploit" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
-        // [kernelExploitSpecifier setProperty:@YES forKey:@"enabled"];
-        // [kernelExploitSpecifier setProperty:exploitManager.preferredKernelExploit.identfier forKey:@"default"];
-        // kernelExploitSpecifier.detailControllerClass = [DOPSListItemsController class];
-        // [kernelExploitSpecifier setProperty:@"availableKernelExploitIdentifiers" forKey:@"valuesDataSource"];
-        // [kernelExploitSpecifier setProperty:@"availableKernelExploitNames" forKey:@"titlesDataSource"];
-        // [kernelExploitSpecifier setProperty:@"selectedKernelExploit" forKey:@"key"];
-        // [specifiers addObject:kernelExploitSpecifier];
-        
+        PSSpecifier *themeSpecifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedString(@"Theme", nil) target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
         themeSpecifier.detailControllerClass = [DOPSListItemsController class];
         [themeSpecifier setProperty:@YES forKey:@"enabled"];
         [themeSpecifier setProperty:@"theme" forKey:@"key"];

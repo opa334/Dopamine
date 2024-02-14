@@ -1,0 +1,95 @@
+"Credits_Made_By" = "by opa334, ElleKit by évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "Jailbreaking";
+"Log_Error" = "Error";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "Jailbreak";
+"Button_Remove_Jailbreak" = "Remove Jailbreak";
+"Status_Title_Jailbroken" = "Jailbroken";
+"Unsupported" = "Unsupported";
+
+// Action Menu
+"Menu_Settings_Title" = "Settings";
+"Menu_Restart_SpringBoard_Title" = "Restart SpringBoard";
+"Menu_Reboot_Userspace_Title" = "Reboot Userspace";
+"Menu_Credits_Title" = "Credits";
+
+// Updating
+"Button_Update" = "Update";
+"Button_Update_Available" = "Update Available";
+"Button_Update_Environment" = "Update Environment";
+
+// Update View
+"Update_Status_Downloading" = "Downloading update...";
+"Update_Status_Subtitle_Please_Wait" = "Please wait while files finish downloading";
+"Update_Status_Installing" = "Installing update...";
+"Update_Status_Subtitle_Restart_Soon" = "The device will restart soon";
+"Title_Changelog" = "Changelog";
+"Changelog_Unavailable_Text" = "Changelog Unavailable";
+
+// Error View
+"Button_Share" = "Share";
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "Tweak Injection";
+"Settings_iDownload" = "iDownload (Developer Shell)";
+"Settings_Verbose_Logs" = "Verbose Logs";
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "Remove Jailbreak";
+"Button_Hide_Jailbreak" = "Hide Jailbreak";
+"Button_Unhide_Jailbreak" = "Unhide Jailbreak";
+"Button_Refresh_Jailbreak_Apps" = "Refresh Jailbreak Apps";
+"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"Hide Jailbreak\" temporarily removes jailbreak-related files until the next rejailbreak";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+"Section_Jailbreak_Settings" = "Jailbreak Settings";
+"Section_Actions" = "Actions";
+"Section_Customization" = "Customization";
+"Section_Exploits" = "Exploits";
+
+// Settings Alerts
+"Alert_Tweak_Injection_Toggled_Title" = "Userspace Reboot Required";
+"Alert_Tweak_Injection_Toggled_Body" = "A userspace reboot is neccessary to apply the changes. Do you want to do it now?";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Reboot Now";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Reboot Later";
+"Alert_Remove_Jailbreak_Title" = "Remove Jailbreak";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+"Alert_Remove_Jailbreak_Enabled_Body" = "Enabling \"Remove Jailbreak\" will delete all jailbreak-related files on the next jailbreak, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+"Button_Cancel" = "Cancel";
+"Button_Continue" = "Continue";
+
+// Settings Lists
+"Theme" = "Theme";
+"Kernel Exploit" = "Kernel Exploit";
+"PPL Bypass" = "PPL Bypass";
+"PAC Bypass" = "PAC Bypass";
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Licenses";
+"Credits_Button_Source_Code" = "Source Code";
+"Credits" = "Credits";
+
+// Logs
+"Initializing Environment" = "Initializing Jailbreak Environment";
+"Loading BaseBin TrustCache" = "Loading BaseBin TrustCache";
+"Applying Bind Mount" = "Applying Bind Mount";
+"Removing Jailbreak" = "Removing Jailbreak";
+"Elevating Privileges" = "Elevating Privileges";
+"Cleaning Up Exploits" = "Cleaning Up Exploits";
+"Building Phys R/W Primitive" = "Building Phys R/W Primitive";
+"Rebooting Userspace" = "Rebooting Userspace";
+"Patchfinding" = "Patchfinding";
+"Exploiting Kernel (%@)" = "Exploiting Kernel (%@)";
+"Bypassing PAC (%@)" = "Bypassing PAC (%@)";
+"Bypassing PPL (%@)" = "Bypassing PPL (%@)";
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Select Package Manager(s)";
+"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+"Continue" = "Continue";
