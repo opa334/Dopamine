@@ -391,6 +391,11 @@
             [[DOEnvironmentManager sharedManager] reboot];
         }
         else {
+            if (gSystemInfo.jailbreakInfo.rootPath) {
+                free(gSystemInfo.jailbreakInfo.rootPath);
+                gSystemInfo.jailbreakInfo.rootPath = NULL;
+                [[DOEnvironmentManager sharedManager] locateJailbreakRoot];
+            }
             [self reloadSpecifiers];
         }
     }];

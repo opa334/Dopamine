@@ -85,27 +85,30 @@ int reboot3(uint64_t flags, ...);
             }
         }
         
-        // Second attempt at finding jailbreak root, look for Dopamine 1.x path, but as other jailbreaks use it too, make sure it is Dopamine
-        // Some other jailbreaks also commit the sin of creating .installed_dopamine, for these we try to filter them out by checking for their installed_ file
-        // If we find this and are sure it's from Dopamine 1.x, rename it so all Dopamine 2.x users will have the same path
-        for (NSString *subItem in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:activePrebootPath error:nil]) {
-            if (subItem.length == 9 && [subItem hasPrefix:@"jb-"]) {
-                NSString *candidateLegacyPath = [activePrebootPath stringByAppendingPathComponent:subItem];
-                
-                BOOL installedDopamine = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.installed_dopamine"]];
-                
-                if (installedDopamine) {
-                    // Hopefully all other jailbreaks that use jb-<UUID>?
-                    // These checks exist because of dumb users (and jailbreak developers) creating .installed_dopamine on jailbreaks that are NOT dopamine...
-                    BOOL installedNekoJB = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.installed_nekojb"]];
-                    BOOL installedDefinitelyNotAGoodName = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.xia0o0o0o_jb_installed"]];
-                    BOOL installedPalera1n = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.palecursus_strapped"]];
-                    if (installedNekoJB || installedPalera1n || installedDefinitelyNotAGoodName) {
-                        continue;
-                    }
+        if (!randomizedJailbreakPath) {
+            // Second attempt at finding jailbreak root, look for Dopamine 1.x path, but as other jailbreaks use it too, make sure it is Dopamine
+            // Some other jailbreaks also commit the sin of creating .installed_dopamine, for these we try to filter them out by checking for their installed_ file
+            // If we find this and are sure it's from Dopamine 1.x, rename it so all Dopamine 2.x users will have the same path
+            for (NSString *subItem in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:activePrebootPath error:nil]) {
+                if (subItem.length == 9 && [subItem hasPrefix:@"jb-"]) {
+                    NSString *candidateLegacyPath = [activePrebootPath stringByAppendingPathComponent:subItem];
                     
-                    randomizedJailbreakPath = candidateLegacyPath;
-                    _bootstrapNeedsMigration = YES;
+                    BOOL installedDopamine = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.installed_dopamine"]];
+                    
+                    if (installedDopamine) {
+                        // Hopefully all other jailbreaks that use jb-<UUID>?
+                        // These checks exist because of dumb users (and jailbreak developers) creating .installed_dopamine on jailbreaks that are NOT dopamine...
+                        BOOL installedNekoJB = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.installed_nekojb"]];
+                        BOOL installedDefinitelyNotAGoodName = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.xia0o0o0o_jb_installed"]];
+                        BOOL installedPalera1n = [[NSFileManager defaultManager] fileExistsAtPath:[candidateLegacyPath stringByAppendingPathComponent:@"procursus/.palecursus_strapped"]];
+                        if (installedNekoJB || installedPalera1n || installedDefinitelyNotAGoodName) {
+                            continue;
+                        }
+                        
+                        randomizedJailbreakPath = candidateLegacyPath;
+                        _bootstrapNeedsMigration = YES;
+                        break;
+                    }
                 }
             }
         }
@@ -126,6 +129,8 @@ int reboot3(uint64_t flags, ...);
     [self locateJailbreakRoot];
     
     if (!gSystemInfo.jailbreakInfo.rootPath || _bootstrapNeedsMigration) {
+        [_bootstrapper ensurePrivatePrebootIsWritable];
+
         NSString *activePrebootPath = [self activePrebootPath];
 
         NSString *characterSet = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
