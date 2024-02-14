@@ -132,7 +132,7 @@
             PSSpecifier *exploitGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
             exploitGroupSpecifier.name = @"Exploits";
             [specifiers addObject:exploitGroupSpecifier];
-        
+            
             PSSpecifier *kernelExploitSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Kernel Exploit" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
             [kernelExploitSpecifier setProperty:@YES forKey:@"enabled"];
             [kernelExploitSpecifier setProperty:exploitManager.preferredKernelExploit.identfier forKey:@"default"];
@@ -193,7 +193,7 @@
         [specifiers addObject:idownloadSpecifier];
         
         if (!envManager.isJailbroken && !envManager.isInstalledThroughTrollStore) {
-            PSSpecifier *removeJailbreakSwitchSpecifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedString(@"Button_Remove_Jailbreak", nil) target:self set:defSetter get:defGetter detail:nil cell:PSSwitchCell edit:nil];
+            PSSpecifier *removeJailbreakSwitchSpecifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedString(@"Button_Remove_Jailbreak", nil) target:self set:@selector(setRemoveJailbreakEnabled:specifier:) get:defGetter detail:nil cell:PSSwitchCell edit:nil];
             [removeJailbreakSwitchSpecifier setProperty:@YES forKey:@"enabled"];
             [removeJailbreakSwitchSpecifier setProperty:@"removeJailbreakEnabled" forKey:@"key"];
             [specifiers addObject:removeJailbreakSwitchSpecifier];
@@ -256,22 +256,22 @@
                 [specifiers addObject:removeJailbreakSpecifier];
             }
         }
-
+        
         PSSpecifier *themingGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
         themingGroupSpecifier.name = @"Customization";
         [specifiers addObject:themingGroupSpecifier];
-
+        
         PSSpecifier *themeSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Theme" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
-
-            // PSSpecifier *kernelExploitSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Kernel Exploit" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
-            // [kernelExploitSpecifier setProperty:@YES forKey:@"enabled"];
-            // [kernelExploitSpecifier setProperty:exploitManager.preferredKernelExploit.identfier forKey:@"default"];
-            // kernelExploitSpecifier.detailControllerClass = [DOPSListItemsController class];
-            // [kernelExploitSpecifier setProperty:@"availableKernelExploitIdentifiers" forKey:@"valuesDataSource"];
-            // [kernelExploitSpecifier setProperty:@"availableKernelExploitNames" forKey:@"titlesDataSource"];
-            // [kernelExploitSpecifier setProperty:@"selectedKernelExploit" forKey:@"key"];
-            // [specifiers addObject:kernelExploitSpecifier];
-            
+        
+        // PSSpecifier *kernelExploitSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Kernel Exploit" target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
+        // [kernelExploitSpecifier setProperty:@YES forKey:@"enabled"];
+        // [kernelExploitSpecifier setProperty:exploitManager.preferredKernelExploit.identfier forKey:@"default"];
+        // kernelExploitSpecifier.detailControllerClass = [DOPSListItemsController class];
+        // [kernelExploitSpecifier setProperty:@"availableKernelExploitIdentifiers" forKey:@"valuesDataSource"];
+        // [kernelExploitSpecifier setProperty:@"availableKernelExploitNames" forKey:@"titlesDataSource"];
+        // [kernelExploitSpecifier setProperty:@"selectedKernelExploit" forKey:@"key"];
+        // [specifiers addObject:kernelExploitSpecifier];
+        
         themeSpecifier.detailControllerClass = [DOPSListItemsController class];
         [themeSpecifier setProperty:@YES forKey:@"enabled"];
         [themeSpecifier setProperty:@"theme" forKey:@"key"];
@@ -279,7 +279,7 @@
         [themeSpecifier setProperty:@"themeIdentifiers" forKey:@"valuesDataSource"];
         [themeSpecifier setProperty:@"themeNames" forKey:@"titlesDataSource"];
         [specifiers addObject:themeSpecifier];
-
+        
         _specifiers = specifiers;
     }
     return _specifiers;
@@ -287,12 +287,14 @@
 
 #pragma mark - Getters & Setters
 
-- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
+- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
+{
     NSString *key = [specifier propertyForKey:@"key"];
     [[DOPreferenceManager sharedManager] setPreferenceValue:value forKey:key];
 }
 
-- (id)readPreferenceValue:(PSSpecifier*)specifier {
+- (id)readPreferenceValue:(PSSpecifier*)specifier
+{
     NSString *key = [specifier propertyForKey:@"key"];
     id value = [[DOPreferenceManager sharedManager] preferenceValueForKey:key];
     if (!value) {
@@ -310,12 +312,13 @@
     return [self readPreferenceValue:specifier];
 }
 
-- (void)setIDownloadEnabled:(id)value specifier:(PSSpecifier *)specifier {
+- (void)setIDownloadEnabled:(id)value specifier:(PSSpecifier *)specifier
+{
+    [self setPreferenceValue:value specifier:specifier];
     DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
     if (envManager.isJailbroken) {
         [[DOEnvironmentManager sharedManager] setIDownloadEnabled:((NSNumber *)value).boolValue];
     }
-    [self setPreferenceValue:value specifier:specifier];
 }
 
 - (id)readTweakInjectionEnabled:(PSSpecifier *)specifier
@@ -327,12 +330,38 @@
     return [self readPreferenceValue:specifier];
 }
 
-- (void)setTweakInjectionEnabled:(id)value specifier:(PSSpecifier *)specifier {
+- (void)setTweakInjectionEnabled:(id)value specifier:(PSSpecifier *)specifier
+{
+    [self setPreferenceValue:value specifier:specifier];
     DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
     if (envManager.isJailbroken) {
         [[DOEnvironmentManager sharedManager] setTweakInjectionEnabled:((NSNumber *)value).boolValue];
+        UIAlertController *userspaceRebootAlertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Alert_Tweak_Injection_Toggled_Title", nil) message:NSLocalizedString(@"Alert_Tweak_Injection_Toggled_Body", nil) preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *rebootNowAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Alert_Tweak_Injection_Toggled_Reboot_Now", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [[DOEnvironmentManager sharedManager] rebootUserspace];
+        }];
+        UIAlertAction *rebootLaterAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Alert_Tweak_Injection_Toggled_Reboot_Later", nil) style:UIAlertActionStyleCancel handler:nil];
+        
+        [userspaceRebootAlertController addAction:rebootNowAction];
+        [userspaceRebootAlertController addAction:rebootLaterAction];
+        [self presentViewController:userspaceRebootAlertController animated:YES completion:nil];
     }
+}
+
+- (void)setRemoveJailbreakEnabled:(id)value specifier:(PSSpecifier *)specifier
+{
     [self setPreferenceValue:value specifier:specifier];
+    if (((NSNumber *)value).boolValue) {
+        UIAlertController *confirmationAlertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Alert_Remove_Jailbreak_Title", nil) message:NSLocalizedString(@"Alert_Remove_Jailbreak_Enabled_Body", nil) preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *uninstallAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Button_Continue", nil) style:UIAlertActionStyleDestructive handler:nil];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Button_Cancel", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self setPreferenceValue:@NO specifier:specifier];
+            [self reloadSpecifiers];
+        }];
+        [confirmationAlertController addAction:uninstallAction];
+        [confirmationAlertController addAction:cancelAction];
+        [self presentViewController:confirmationAlertController animated:YES completion:nil];
+    }
 }
 
 #pragma mark - Button Actions
@@ -356,13 +385,20 @@
 
 - (void)removeJailbreakPressed
 {
-    [[DOEnvironmentManager sharedManager] deleteBootstrap];
-    if ([DOEnvironmentManager sharedManager].isJailbroken) {
-        [[DOEnvironmentManager sharedManager] reboot];
-    }
-    else {
-        [self reloadSpecifiers];
-    }
+    UIAlertController *confirmationAlertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Alert_Remove_Jailbreak_Title", nil) message:NSLocalizedString(@"Alert_Remove_Jailbreak_Pressed_Body", nil) preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *uninstallAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Button_Continue", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [[DOEnvironmentManager sharedManager] deleteBootstrap];
+        if ([DOEnvironmentManager sharedManager].isJailbroken) {
+            [[DOEnvironmentManager sharedManager] reboot];
+        }
+        else {
+            [self reloadSpecifiers];
+        }
+    }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Button_Cancel", nil) style:UIAlertActionStyleDefault handler:nil];
+    [confirmationAlertController addAction:uninstallAction];
+    [confirmationAlertController addAction:cancelAction];
+    [self presentViewController:confirmationAlertController animated:YES completion:nil];
 }
 
 - (void)resetSettingsPressed
