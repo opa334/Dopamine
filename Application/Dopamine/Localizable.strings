@@ -1,9 +1,12 @@
 
 
 "Credits_Made_By" = "by opa334, ElleKit by évelyne";
-"Status_Title_Jailbreaking" = "Jailbreaking";
 
 "Title_Changelog" = "Changelog";
+
+// Log
+"Status_Title_Jailbreaking" = "Jailbreaking";
+"Log_Error" = "Error";
 
 // Jailbreak Button
 "Button_Jailbreak_Title" = "Jailbreak";

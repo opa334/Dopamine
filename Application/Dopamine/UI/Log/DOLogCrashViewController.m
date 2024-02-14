@@ -34,7 +34,7 @@
     [super viewDidLoad];
     [DOPSListController setupViewControllerStyle:self];
 
-    UIView *header = [DOPSListItemsController makeHeader:self.title withTarget:self];
+    UIView *header = [DOPSListItemsController makeHeader:NSLocalizedString(@"Log_Error", nil) withTarget:self];
     header.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:header];
 
@@ -77,6 +77,10 @@
     license.font = [UIFont systemFontOfSize:14];
     license.textColor = [UIColor whiteColor];
     license.backgroundColor = [UIColor clearColor];
+
+
+    [[[DOUIManager sharedInstance] logRecord] insertObject:self.title atIndex:0];
+    [[[DOUIManager sharedInstance] logRecord] insertObject:@"----" atIndex:1];
 }
 
 - (void)dismiss
