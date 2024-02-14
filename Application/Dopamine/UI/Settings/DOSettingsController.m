@@ -34,7 +34,16 @@
 {
     [super viewWillAppear:arg1];
     if (_lastKnownTheme != [[DOThemeManager sharedInstance] enabledTheme].key)
+    {
         [DOSceneDelegate relaunch];
+        NSString *iconKey = [[DOThemeManager sharedInstance] enabledTheme].key;
+        if ([iconKey isEqualToString:@"default"])
+            iconKey = nil;
+        [[UIApplication sharedApplication] setAlternateIconName:iconKey completionHandler:^(NSError * _Nullable error) {
+            if (error)
+                NSLog(@"Error changing app icon: %@", error);
+        }];
+    }
 }
 
 - (NSArray *)availableKernelExploitIdentifiers
