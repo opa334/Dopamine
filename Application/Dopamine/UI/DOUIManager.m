@@ -6,6 +6,7 @@
 //
 
 #import "DOUIManager.h"
+#import "DOEnvironmentManager.h"
 #import <pthread.h>
 
 @implementation DOUIManager
@@ -90,6 +91,13 @@
         }
     });
     return releases;
+}
+
+- (BOOL)shouldUpdateEnvironment
+{
+    if (![[DOEnvironmentManager sharedManager] jailbrokenVersion])
+        return NO;
+    return ![[[DOEnvironmentManager sharedManager] jailbrokenVersion] isEqualToString:[self getLaunchedReleaseTag]];
 }
 
 - (NSString*)getLatestReleaseTag

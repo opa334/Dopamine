@@ -91,8 +91,17 @@
     self.gradientMask.colors = @[(id)[UIColor clearColor].CGColor, (id)[UIColor whiteColor].CGColor, (id)[UIColor whiteColor].CGColor, (id)[UIColor clearColor].CGColor];
     self.gradientMask.locations = @[@0.0, @0.01, @0.5, @0.87];
     self.changelogSuperview.layer.mask = self.gradientMask;
+
+    BOOL envUpdate = [[DOUIManager sharedInstance] shouldUpdateEnvironment];
     
-    self.button = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:NSLocalizedString(@"Button_Update", nil) image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"update" handler:^(__kindof UIAction * _Nonnull action) {
+    self.button = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:NSLocalizedString(envUpdate ? @"Button_Update_Environment" : @"Button_Update", nil) image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"update" handler:^(__kindof UIAction * _Nonnull action) {
+        if (envUpdate)
+        {
+            self.button.enabled = NO;
+            self.button.alpha = 0.5;
+            [[DOEnvironmentManager sharedManager] updateEnvironment];
+            return;
+        }        
         DODownloadViewController *downloadVC = [[DODownloadViewController alloc] initWithUrl:self.lastestDownloadUrl callback:^(NSURL * _Nonnull file) {
             NSLog(@"Downloaded %@", file);
             [[DOEnvironmentManager sharedManager] updateJailbreakFromTIPA:file.path];

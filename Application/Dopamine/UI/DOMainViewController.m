@@ -152,12 +152,18 @@
     ])];
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        //TODO: Detect environment update ([self setupUpdateAvailable:YES];return;)
-        if (![[DOUIManager sharedInstance] isUpdateAvailable])
-            return;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self setupUpdateAvailable:NO];
-        });
+        if ([[DOUIManager sharedInstance] shouldUpdateEnvironment])
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self setupUpdateAvailable:YES];
+            });
+        }
+        else if ([[DOUIManager sharedInstance] isUpdateAvailable])
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self setupUpdateAvailable:NO];
+            });
+        }
     });
 }
 
