@@ -99,7 +99,13 @@
         {
             self.button.enabled = NO;
             self.button.alpha = 0.5;
-            [[DOEnvironmentManager sharedManager] updateEnvironment];
+            NSError *error = [[DOEnvironmentManager sharedManager] updateEnvironment];
+            if (error)
+            {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error updating basebins" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:nil]];
+                [self presentViewController:alert animated:YES completion:nil];
+            }
             return;
         }        
         DODownloadViewController *downloadVC = [[DODownloadViewController alloc] initWithUrl:self.lastestDownloadUrl callback:^(NSURL * _Nonnull file) {
@@ -110,7 +116,7 @@
     }] chevron:NO];
     
     self.button.translatesAutoresizingMaskIntoConstraints = NO;
-    self.button.hidden = YES;
+    self.button.hidden = !envUpdate;
     [self.view addSubview:self.button];
 
     [NSLayoutConstraint activateConstraints:@[
@@ -138,6 +144,15 @@
     NSMutableParagraphStyle * paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.alignment = NSTextAlignmentCenter;
     NSMutableAttributedString *changelogText = [[NSMutableAttributedString alloc] initWithString:@""];
+
+    if (releases.count == 0)
+    {
+        [changelogText appendAttributedString:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Changelog_Unavailable_Text", nil) attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:18], NSForegroundColorAttributeName : [UIColor whiteColor], NSParagraphStyleAttributeName:paragraphStyle}]];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.changelog.attributedText = changelogText;
+        });
+        return;
+    }
 
     [releases enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSDictionary *release = (NSDictionary*)obj;

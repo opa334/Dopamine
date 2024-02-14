@@ -319,12 +319,15 @@ int reboot3(uint64_t flags, ...);
     }];
 }
 
-- (void)updateEnvironment
+- (NSError*)updateEnvironment
 {
     NSString *newBasebinTarPath = [[NSBundle mainBundle].bundlePath stringByAppendingString:@"basebin.tar"];
-    if (jbclient_platform_stage_jailbreak_update(newBasebinTarPath.fileSystemRepresentation) == 0) {
+    int result = jbclient_platform_stage_jailbreak_update(newBasebinTarPath.fileSystemRepresentation);
+    if (result == 0) {
         [self rebootUserspace];
+        return nil;
     }
+    return [NSError errorWithDomain:@"Dopamine" code:result userInfo:nil];
 }
 
 - (void)updateJailbreakFromTIPA:(NSString *)tipaPath

@@ -2,8 +2,6 @@
 
 "Credits_Made_By" = "by opa334, ElleKit by évelyne";
 
-"Title_Changelog" = "Changelog";
-
 // Log
 "Status_Title_Jailbreaking" = "Jailbreaking";
 "Log_Error" = "Error";
@@ -30,6 +28,8 @@
 "Update_Status_Subtitle_Please_Wait" = "Please wait while files finish downloading";
 "Update_Status_Installing" = "Installing update...";
 "Update_Status_Subtitle_Restart_Soon" = "The device will restart soon";
+"Title_Changelog" = "Changelog";
+"Changelog_Unavailable_Text" = "Changelog Unavailable";
 
 // Error View
 "Button_Share" = "Share";
@@ -54,6 +54,7 @@
 "Credits_Button_Discord" = "Discord";
 "Credits_Button_License" = "Licenses";
 "Credits_Button_Source_Code" = "Source Code";
+
 
 //"Bootstrapping" = "Bootstrapping";
 //

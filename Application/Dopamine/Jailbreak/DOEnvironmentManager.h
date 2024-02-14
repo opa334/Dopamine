@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)rebootUserspace;
 - (void)refreshJailbreakApps;
 - (void)reboot;
-- (void)updateEnvironment;
+- (NSError*)updateEnvironment;
 - (void)updateJailbreakFromTIPA:(NSString *)tipaPath;
 
 - (BOOL)isTweakInjectionEnabled;
