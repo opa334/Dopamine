@@ -154,11 +154,12 @@
             if (envManager.isArm64e) {
                 PSSpecifier *pacBypassSpecifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedString(@"PAC Bypass", nil) target:self set:defSetter get:defGetter detail:nil cell:PSLinkListCell edit:nil];
                 [pacBypassSpecifier setProperty:@YES forKey:@"enabled"];
-                if (!envManager.isPACBypassRequired) {
+                DOExploit *preferredPACBypass = exploitManager.preferredPACBypass;
+                if (!preferredPACBypass) {
                     [pacBypassSpecifier setProperty:@"none" forKey:@"default"];
                 }
                 else {
-                    [pacBypassSpecifier setProperty:exploitManager.preferredPACBypass.identfier forKey:@"default"];
+                    [pacBypassSpecifier setProperty:preferredPACBypass.identfier forKey:@"default"];
                 }
                 pacBypassSpecifier.detailControllerClass = [DOPSListItemsController class];
                 [pacBypassSpecifier setProperty:@"availablePACBypassIdentifiers" forKey:@"valuesDataSource"];
