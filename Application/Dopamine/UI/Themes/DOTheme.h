@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, retain) UIColor *windowColor;
 @property (nonatomic, retain) UIImage *image;
 @property (nonatomic, assign) float blur;
+@property (nonatomic, assign) BOOL titleShadow;
 
 - (id)initWithDictionary: (NSDictionary *)dictionary;
 

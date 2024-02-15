@@ -24,6 +24,7 @@
         self.windowColor = [self colorFromHexString:[dictionary objectForKey:@"windowColor"]];
         self.actionMenuColor = [self colorFromHexString:[dictionary objectForKey:@"actionMenuColor"]];
         self.blur = [[dictionary objectForKey:@"blur"] floatValue];
+        self.titleShadow = [[dictionary objectForKey:@"titleShadow"] boolValue];
     }
     return self;
 }

@@ -15,6 +15,8 @@
 		<string>994c4c4c</string>
 		<key>blur</key>
 		<integer>18</integer>
+		<key>titleShadow</key>
+		<false/>
 	</dict>
 	<dict>
 		<key>key</key>
@@ -29,6 +31,8 @@
 		<string>6009040A</string>
 		<key>blur</key>
 		<integer>18</integer>
+		<key>titleShadow</key>
+		<true/>
 	</dict>
 	<dict>
 		<key>key</key>
@@ -43,6 +47,8 @@
 		<string>6004050A</string>
 		<key>blur</key>
 		<integer>40</integer>
+		<key>titleShadow</key>
+		<false/>
 	</dict>
 	<dict>
 		<key>key</key>
@@ -57,6 +63,8 @@
 		<string>600A0404</string>
 		<key>blur</key>
 		<integer>25</integer>
+		<key>titleShadow</key>
+		<false/>
 	</dict>
 	<dict>
 		<key>key</key>
@@ -71,6 +79,8 @@
 		<string>6008040A</string>
 		<key>blur</key>
 		<integer>35</integer>
+		<key>titleShadow</key>
+		<false/>
 	</dict>
 </array>
 </plist>

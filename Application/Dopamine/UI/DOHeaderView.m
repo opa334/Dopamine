@@ -6,6 +6,7 @@
 //
 
 #import "DOHeaderView.h"
+#import "DOThemeManager.h"
 
 @interface DOHeaderView ()
 
@@ -52,6 +53,15 @@
         }];
 
         self.translatesAutoresizingMaskIntoConstraints = NO;
+
+        DOTheme *theme = [[DOThemeManager sharedInstance] enabledTheme];
+        if (theme.titleShadow)
+        {
+            self.layer.shadowColor = [UIColor blackColor].CGColor;
+            self.layer.shadowOffset = CGSizeZero;
+            self.layer.shadowRadius = 30;
+            self.layer.shadowOpacity = 0.3;
+        }
 
     }
     return self;
