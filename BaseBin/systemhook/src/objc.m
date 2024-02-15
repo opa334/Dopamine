@@ -19,7 +19,6 @@ void *(*__objc_msgSend_3)(id self, SEL _cmd, void *a1, void *a2, void *a3);
 void *(*__objc_msgSend_4)(id self, SEL _cmd, void *a1, void *a2, void *a3, void *a4);
 void *(*__objc_msgSend_5)(id self, SEL _cmd, void *a1, void *a2, void *a3, void *a4, void *a5);
 void *(*__objc_msgSend_6)(id self, SEL _cmd, void *a1, void *a2, void *a3, void *a4, void *a5, void *a6);
-Method (*__class_getInstanceMethod)(Class cls, SEL name);
 IMP (*__class_replaceMethod)(Class cls, SEL name, IMP imp, const char *types);
 
 bool (*NSConcreteTask_launchWithDictionary_error__orig)(id self, id sender, NSDictionary *dictionary, NSError **errorOut);
@@ -107,24 +106,25 @@ void dopamine_fix_NSTask(void)
 	void *libobjcHandle = dlopen("/usr/lib/libobjc.A.dylib", RTLD_NOLOAD);
 	void *foundationHandle = dlopen("/System/Library/Frameworks/Foundation.framework/Foundation", RTLD_NOLOAD);
 	if (libobjcHandle && foundationHandle) {
-		__objc_getClass = dlsym(libobjcHandle, "objc_getClass");
-		__objc_alloc = dlsym(libobjcHandle, "objc_alloc");
-		__objc_release = dlsym(libobjcHandle, "objc_release");
+		static dispatch_once_t onceToken;
+		dispatch_once (&onceToken, ^{
+			__objc_getClass = dlsym(libobjcHandle, "objc_getClass");
+			__objc_alloc = dlsym(libobjcHandle, "objc_alloc");
+			__objc_release = dlsym(libobjcHandle, "objc_release");
 
-		void *objc_msgSend = dlsym(libobjcHandle, "objc_msgSend");
-		__objc_msgSend_0 = objc_msgSend;
-		__objc_msgSend_1 = objc_msgSend;
-		__objc_msgSend_2 = objc_msgSend;
-		__objc_msgSend_3 = objc_msgSend;
-		__objc_msgSend_4 = objc_msgSend;
-		__objc_msgSend_5 = objc_msgSend;
-		__objc_msgSend_6 = objc_msgSend;
+			void *objc_msgSend = dlsym(libobjcHandle, "objc_msgSend");
+			__objc_msgSend_0 = objc_msgSend;
+			__objc_msgSend_1 = objc_msgSend;
+			__objc_msgSend_2 = objc_msgSend;
+			__objc_msgSend_3 = objc_msgSend;
+			__objc_msgSend_4 = objc_msgSend;
+			__objc_msgSend_5 = objc_msgSend;
+			__objc_msgSend_6 = objc_msgSend;
 
-		__class_getInstanceMethod = dlsym(libobjcHandle, "class_getInstanceMethod");
-		__class_replaceMethod = dlsym(libobjcHandle, "class_replaceMethod");
+			__class_replaceMethod = dlsym(libobjcHandle, "class_replaceMethod");
 
-		Class NSConcreteTask_class = __objc_getClass("NSConcreteTask");
-		Method launchWithDictionary_error_method = (void *)__class_getInstanceMethod(NSConcreteTask_class, @selector(launchWithDictionary:error:));
-		NSConcreteTask_launchWithDictionary_error__orig = (void *)__class_replaceMethod(NSConcreteTask_class, @selector(launchWithDictionary:error:), (IMP)NSConcreteTask_launchWithDictionary_error__hook, "B@:@^@");
+			Class NSConcreteTask_class = __objc_getClass("NSConcreteTask");
+			NSConcreteTask_launchWithDictionary_error__orig = (void *)__class_replaceMethod(NSConcreteTask_class, @selector(launchWithDictionary:error:), (IMP)NSConcreteTask_launchWithDictionary_error__hook, "B@:@^@");
+		});
 	}
 }
