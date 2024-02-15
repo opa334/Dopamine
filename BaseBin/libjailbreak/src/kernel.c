@@ -133,7 +133,7 @@ void mac_label_set(uint64_t label, int slot, uint64_t value)
 	// THe inverse of the condition above, treat -1 as 0 on 15.0 - 15.1.1
 	if (!gSystemInfo.kernelStruct.proc_ro.exists && value == -1) value = 0;
 #ifdef __arm64e__
-	if (jbinfo(usesPACBypass) && gSystemInfo.kernelStruct.proc_ro.exists) {
+	if (jbinfo(usesPACBypass) && !gSystemInfo.kernelStruct.proc_ro.exists) {
 		kcall(NULL, ksymbol(mac_label_set), 3, (uint64_t[]){ label, slot, value });
 		return;
 	}
