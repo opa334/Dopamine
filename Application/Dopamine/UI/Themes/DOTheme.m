@@ -19,6 +19,7 @@
     self = [super init];
     if (self) {
         self.name = [dictionary objectForKey:@"name"];
+        self.icon = [dictionary objectForKey:@"icon"];
         self.key = [dictionary objectForKey:@"key"];
         self.imageName = [dictionary objectForKey:@"image"];
         self.windowColor = [self colorFromHexString:[dictionary objectForKey:@"windowColor"]];

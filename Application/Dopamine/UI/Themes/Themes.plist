@@ -21,6 +21,8 @@
 	<dict>
 		<key>key</key>
 		<string>ellekit</string>
+		<key>icon</key>
+		<string>AppIcon_ElleKit</string>
 		<key>name</key>
 		<string>ElleKit</string>
 		<key>image</key>
@@ -37,6 +39,8 @@
 	<dict>
 		<key>key</key>
 		<string>blue</string>
+		<key>icon</key>
+		<string>AppIcon_Blue</string>
 		<key>name</key>
 		<string>Deep Blue Sky</string>
 		<key>image</key>
@@ -53,6 +57,8 @@
 	<dict>
 		<key>key</key>
 		<string>red</string>
+		<key>icon</key>
+		<string>AppIcon_Red</string>
 		<key>name</key>
 		<string>Blood Sky</string>
 		<key>image</key>
@@ -69,6 +75,8 @@
 	<dict>
 		<key>key</key>
 		<string>purple</string>
+		<key>icon</key>
+		<string>AppIcon_Purple</string>
 		<key>name</key>
 		<string>Desert Dusk</string>
 		<key>image</key>

@@ -47,14 +47,6 @@
 		04DD0B402B7CBD3D0055DE4F /* Themes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B3F2B7CBD3D0055DE4F /* Themes.plist */; };
 		04DD0B442B7CBE2E0055DE4F /* DOThemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DD0B432B7CBE2E0055DE4F /* DOThemeManager.m */; };
 		04DD0B472B7CBEEA0055DE4F /* DOTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DD0B462B7CBEEA0055DE4F /* DOTheme.m */; };
-		04DD0B512B7D0C210055DE4F /* blue@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B492B7D0C210055DE4F /* blue@3x.png */; };
-		04DD0B522B7D0C210055DE4F /* red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B4A2B7D0C210055DE4F /* red@2x.png */; };
-		04DD0B532B7D0C210055DE4F /* ellekit@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B4B2B7D0C210055DE4F /* ellekit@3x.png */; };
-		04DD0B542B7D0C210055DE4F /* red@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B4C2B7D0C210055DE4F /* red@3x.png */; };
-		04DD0B552B7D0C210055DE4F /* blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B4D2B7D0C210055DE4F /* blue@2x.png */; };
-		04DD0B562B7D0C210055DE4F /* ellekit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B4E2B7D0C210055DE4F /* ellekit@2x.png */; };
-		04DD0B572B7D0C210055DE4F /* purple@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B4F2B7D0C210055DE4F /* purple@2x.png */; };
-		04DD0B582B7D0C210055DE4F /* purple@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B502B7D0C210055DE4F /* purple@3x.png */; };
 		04DD0B592B7D19E60055DE4F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 04DD0B5B2B7D19E60055DE4F /* Localizable.strings */; };
 		8C029F432B4DFD5D0071DE58 /* DOExploitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F422B4DFD5D0071DE58 /* DOExploitManager.m */; };
 		8C029F462B4DFD910071DE58 /* DOBootstrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C029F452B4DFD910071DE58 /* DOBootstrapper.m */; };
@@ -290,14 +282,6 @@
 		04DD0B432B7CBE2E0055DE4F /* DOThemeManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOThemeManager.m; sourceTree = "<group>"; };
 		04DD0B452B7CBEEA0055DE4F /* DOTheme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOTheme.h; sourceTree = "<group>"; };
 		04DD0B462B7CBEEA0055DE4F /* DOTheme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOTheme.m; sourceTree = "<group>"; };
-		04DD0B492B7D0C210055DE4F /* blue@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue@3x.png"; sourceTree = "<group>"; };
-		04DD0B4A2B7D0C210055DE4F /* red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "red@2x.png"; sourceTree = "<group>"; };
-		04DD0B4B2B7D0C210055DE4F /* ellekit@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ellekit@3x.png"; sourceTree = "<group>"; };
-		04DD0B4C2B7D0C210055DE4F /* red@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "red@3x.png"; sourceTree = "<group>"; };
-		04DD0B4D2B7D0C210055DE4F /* blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue@2x.png"; sourceTree = "<group>"; };
-		04DD0B4E2B7D0C210055DE4F /* ellekit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ellekit@2x.png"; sourceTree = "<group>"; };
-		04DD0B4F2B7D0C210055DE4F /* purple@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple@2x.png"; sourceTree = "<group>"; };
-		04DD0B502B7D0C210055DE4F /* purple@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple@3x.png"; sourceTree = "<group>"; };
 		04DD0B5A2B7D19E60055DE4F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		04DD0B5C2B7D1A210055DE4F /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8C029F412B4DFD5D0071DE58 /* DOExploitManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOExploitManager.h; sourceTree = "<group>"; };
@@ -604,21 +588,6 @@
 			path = Themes;
 			sourceTree = "<group>";
 		};
-		04DD0B482B7D09BA0055DE4F /* AppIcons */ = {
-			isa = PBXGroup;
-			children = (
-				04DD0B4D2B7D0C210055DE4F /* blue@2x.png */,
-				04DD0B492B7D0C210055DE4F /* blue@3x.png */,
-				04DD0B4E2B7D0C210055DE4F /* ellekit@2x.png */,
-				04DD0B4B2B7D0C210055DE4F /* ellekit@3x.png */,
-				04DD0B4F2B7D0C210055DE4F /* purple@2x.png */,
-				04DD0B502B7D0C210055DE4F /* purple@3x.png */,
-				04DD0B4A2B7D0C210055DE4F /* red@2x.png */,
-				04DD0B4C2B7D0C210055DE4F /* red@3x.png */,
-			);
-			path = AppIcons;
-			sourceTree = "<group>";
-		};
 		8C029F402B4DFCFE0071DE58 /* Jailbreak */ = {
 			isa = PBXGroup;
 			children = (
@@ -837,7 +806,6 @@
 		8CB94F012B59E16D0098BAFD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				04DD0B482B7D09BA0055DE4F /* AppIcons */,
 				8C05C59E2B759F8A0097A931 /* bootstrap_1800.tar.zst */,
 				8C05C59D2B759F8A0097A931 /* bootstrap_1900.tar.zst */,
 				8CB94F032B59E17A0098BAFD /* basebin.tar */,
@@ -1102,9 +1070,6 @@
 			files = (
 				04DD0B372B7BA6180055DE4F /* LICENSE.md in Resources */,
 				04DD0B3A2B7BF3E80055DE4F /* LICENSE_libc.md in Resources */,
-				04DD0B572B7D0C210055DE4F /* purple@2x.png in Resources */,
-				04DD0B512B7D0C210055DE4F /* blue@3x.png in Resources */,
-				04DD0B542B7D0C210055DE4F /* red@3x.png in Resources */,
 				8C56D4CD2B7C118B001C03D3 /* LICENSE_kfd.md in Resources */,
 				8C56D4BF2B7C0DF2001C03D3 /* LICENSE_ChOma.md in Resources */,
 				8C56D4C22B7C0DF2001C03D3 /* LICENSE_Fugu15.md in Resources */,
@@ -1112,11 +1077,8 @@
 				8C56D4C92B7C102B001C03D3 /* LICENSE_Sileo.md in Resources */,
 				8C56D4C12B7C0DF2001C03D3 /* LICENSE_dimentio.md in Resources */,
 				8C56D4C32B7C0DF2001C03D3 /* LICENSE_ElleKit.md in Resources */,
-				04DD0B522B7D0C210055DE4F /* red@2x.png in Resources */,
-				04DD0B532B7D0C210055DE4F /* ellekit@3x.png in Resources */,
 				8C56D4C52B7C0DF2001C03D3 /* LICENSE_opainject.md in Resources */,
 				8C56D4C42B7C0DF2001C03D3 /* LICENSE_XPF.md in Resources */,
-				04DD0B562B7D0C210055DE4F /* ellekit@2x.png in Resources */,
 				8C56D4CB2B7C102B001C03D3 /* LICENSE_Zebra.md in Resources */,
 				8C56D4CA2B7C102B001C03D3 /* LICENSE_Procursus.md in Resources */,
 				8CCD2FC42B77AAA000F9C5DA /* basebin-link.deb in Resources */,
@@ -1127,10 +1089,8 @@
 				8C512B922B5C9F9400C6F14A /* zebra.deb in Resources */,
 				8CCD8A872B6F16CC004B72B0 /* libkrw-plugin.deb in Resources */,
 				8CCD8A882B6F16D0004B72B0 /* libroot.deb in Resources */,
-				04DD0B582B7D0C210055DE4F /* purple@3x.png in Resources */,
 				8CB94F052B59E17A0098BAFD /* basebin.tar in Resources */,
 				04DD0B592B7D19E60055DE4F /* Localizable.strings in Resources */,
-				04DD0B552B7D0C210055DE4F /* blue@2x.png in Resources */,
 				04C246B32B74B65900E17924 /* PkgManagers.plist in Resources */,
 				04DD0B402B7CBD3D0055DE4F /* Themes.plist in Resources */,
 				8CB94F042B59E17A0098BAFD /* basebin.tc in Resources */,
@@ -1614,6 +1574,7 @@
 		8C71982F2ABF0E84003C6658 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon_ElleKit AppIcon_Red AppIcon_Purple AppIcon_Blue";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -1650,6 +1611,7 @@
 		8C7198302ABF0E84003C6658 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon_ElleKit AppIcon_Red AppIcon_Purple AppIcon_Blue";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;

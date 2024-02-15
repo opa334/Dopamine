@@ -36,10 +36,8 @@
     if (_lastKnownTheme != [[DOThemeManager sharedInstance] enabledTheme].key)
     {
         [DOSceneDelegate relaunch];
-        NSString *iconKey = [[DOThemeManager sharedInstance] enabledTheme].key;
-        if ([iconKey isEqualToString:@"default"])
-            iconKey = nil;
-        [[UIApplication sharedApplication] setAlternateIconName:iconKey completionHandler:^(NSError * _Nullable error) {
+        NSString *icon = [[DOThemeManager sharedInstance] enabledTheme].icon;
+        [[UIApplication sharedApplication] setAlternateIconName:icon completionHandler:^(NSError * _Nullable error) {
             if (error)
                 NSLog(@"Error changing app icon: %@", error);
         }];
