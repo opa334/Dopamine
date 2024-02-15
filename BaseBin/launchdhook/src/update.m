@@ -47,7 +47,7 @@ int jbupdate_basebin(const char *basebinTarPath)
 		NSArray *newBasebinContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:tmpBasebinPath error:nil];
 		for (NSString *basebinItem in newBasebinContents) {
 			NSString *newBasebinPath = [tmpBasebinPath stringByAppendingPathComponent:basebinItem];
-			NSString *oldBasebinPath = [NSJBRootPath(@"basebin") stringByAppendingPathComponent:basebinItem];
+			NSString *oldBasebinPath = [NSJBRootPath(@"/basebin") stringByAppendingPathComponent:basebinItem];
 			if ([[NSFileManager defaultManager] fileExistsAtPath:oldBasebinPath]) {
 				[[NSFileManager defaultManager] removeItemAtPath:oldBasebinPath error:nil];
 			}
@@ -56,6 +56,7 @@ int jbupdate_basebin(const char *basebinTarPath)
 		[[NSFileManager defaultManager] removeItemAtPath:tmpExtractionPath error:nil];
 
 		// Update systemhook in fakelib
+		[[NSFileManager defaultManager] removeItemAtPath:NSJBRootPath(@"/basebin/.fakelib/systemhook.dylib")];
 		[[NSFileManager defaultManager] copyItemAtPath:NSJBRootPath(@"/basebin/systemhook.dylib") toPath:NSJBRootPath(@"/basebin/.fakelib/systemhook.dylib") error:nil];
 
 		// Patch basebin plists
