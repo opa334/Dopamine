@@ -73,7 +73,6 @@
 "Credits_Button_Discord" = "Discord";
 "Credits_Button_License" = "الترخيص";
 "Credits_Button_Source_Code" = "شفرة المصدر";
-"Credits" = "Credits"; //TODO
 
 // Logs
 "Initializing Environment" = "جارِ تحسين البيئة";

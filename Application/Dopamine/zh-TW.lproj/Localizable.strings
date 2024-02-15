@@ -73,7 +73,6 @@
 "Credits_Button_Discord" = "Discord";
 "Credits_Button_License" = "授權";
 "Credits_Button_Source_Code" = "原始碼";
-"Credits" = "Credits"; //TODO
 
 // Logs
 "Initializing Environment" = "正在初始化環境";

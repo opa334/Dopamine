@@ -73,7 +73,6 @@
 "Credits_Button_Discord" = "Discord";
 "Credits_Button_License" = "Άδεια χρήσης";
 "Credits_Button_Source_Code" = "Πηγαίος κώδικας";
-"Credits" = "Credits"; //TODO
 
 // Logs
 "Initializing Environment" = "Αρχικοποίηση Περιβάλλοντος";

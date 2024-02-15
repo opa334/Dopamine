@@ -73,7 +73,6 @@
 "Credits_Button_Discord" = "Discord";
 "Credits_Button_License" = "Lisans";
 "Credits_Button_Source_Code" = "Kaynak Kodu";
-"Credits" = "Credits"; //TODO
 
 // Logs
 "Initializing Environment" = "Ortam Başlatılıyor";

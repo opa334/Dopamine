@@ -73,7 +73,6 @@
 "Credits_Button_Discord" = "Discord";
 "Credits_Button_License" = "لائسنس";
 "Credits_Button_Source_Code" = "خصوصی شکریہ";
-"Credits" = "Credits"; //TODO
 
 // Logs
 "Initializing Environment" = "Initializing Environment";

@@ -73,7 +73,6 @@
 "Credits_Button_Discord" = "Discord";
 "Credits_Button_License" = "Licencja";
 "Credits_Button_Source_Code" = "Kod źródłowy";
-"Credits" = "Credits"; //TODO
 
 // Logs
 "Initializing Environment" = "Inicjowanie Środowiska";

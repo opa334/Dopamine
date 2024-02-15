@@ -73,7 +73,6 @@
 "Credits_Button_Discord" = "Discord";
 "Credits_Button_License" = "라이센스";
 "Credits_Button_Source_Code" = "소스코드";
-"Credits" = "Credits"; //TODO
 
 // Logs
 "Initializing Environment" = "환경 초기화 중";

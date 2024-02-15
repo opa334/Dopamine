@@ -73,7 +73,6 @@
 "Credits_Button_Discord" = "Discord";
 "Credits_Button_License" = "Licens";
 "Credits_Button_Source_Code" = "Kildekode";
-"Credits" = "Credits"; //TODO
 
 // Logs
 "Initializing Environment" = "Initialiserer miljø";

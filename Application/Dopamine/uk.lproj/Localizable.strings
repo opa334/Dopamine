@@ -73,7 +73,6 @@
 "Credits_Button_Discord" = "Discord";
 "Credits_Button_License" = "Ліцензія";
 "Credits_Button_Source_Code" = "Вихідний код";
-"Credits" = "Credits"; //TODO
 
 // Logs
 "Initializing Environment" = "Ініціалізація середовища";
