@@ -14,6 +14,7 @@
 #import "DOUpdateViewController.h"
 #import "DOLogCrashViewController.h"
 #import <pthread.h>
+#import <libjailbreak/libjailbreak.h>
 
 @interface DOMainViewController ()
 
@@ -204,11 +205,33 @@
             self.hideHomeIndicator = YES;
         });
 
-        NSError *error = [jailbreaker run];
+        NSError *error;
+        BOOL didRemove = NO;
+        BOOL showLogs = YES;
+        [jailbreaker runWithError:&error didRemoveJailbreak:&didRemove showLogs:&showLogs];
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (error)
+            if (error && showLogs) {
                 [self.navigationController pushViewController:[[DOLogCrashViewController alloc] initWithTitle:[error localizedDescription]] animated:YES];
+            }
+            else if (error && !showLogs) {
+                // Used when there is an error that is explainable in such detail that additional logs are not needed
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Log_Error", nil) message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *rebootAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Button_Reboot", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    exec_cmd_trusted(JBRootPath("/sbin/reboot"), NULL);
+                }];
+                [alertController addAction:rebootAction];
+                [self presentViewController:alertController animated:YES completion:nil];
+            }
+            else if (didRemove) {
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Removed_Jailbreak_Alert_Title", nil) message:NSLocalizedString(@"Removed_Jailbreak_Alert_Message", nil) preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *rebootAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Button_Close", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    exit(0);
+                }];
+                [alertController addAction:rebootAction];
+                [self presentViewController:alertController animated:YES completion:nil];
+            }
             else {
+                // No errors
                 [[DOUIManager sharedInstance] completeJailbreak];
                 [self fadeToBlack: ^{
                     [jailbreaker finalize];
@@ -312,8 +335,6 @@
         completion();
     }];
 }
-
-
 
 #pragma mark - Action Menu Delegate
 

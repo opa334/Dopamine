@@ -29,8 +29,14 @@
 "Title_Changelog" = "Changelog";
 "Changelog_Unavailable_Text" = "Changelog Unavailable";
 
+// Removed Jailbreak Alert
+"Removed_Jailbreak_Alert_Title" = "Removed Jailbreak";
+"Removed_Jailbreak_Alert_Message" = "Successfully removed jailbreak. Rebooting the device is recommended.";
+"Button_Close" = "Close";
+
 // Error View
 "Button_Share" = "Share";
+"Button_Reboot" = "Reboot";
 
 // Settings Toggles
 "Settings_Tweak_Injection" = "Tweak Injection";
@@ -62,6 +68,11 @@
 "Alert_Remove_Jailbreak_Enabled_Body" = "Enabling \"Remove Jailbreak\" will delete all jailbreak-related files on the next jailbreak, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
 "Button_Cancel" = "Cancel";
 "Button_Continue" = "Continue";
+
+// Duplicate Apps Errors
+"Duplicate_Apps_Error_Dopamine_App" = "There are multiple apps with the identifier \"%@\" inside Dopamines application directory (\"%@\"). Cannot continue.";
+"Duplicate_Apps_Error_User_App" = "The apps with the identifiers %@ exist in Dopamines application directory (\"%@\") but are also installed separately on the system. Cannot continue.";
+"Duplicate_Apps_Error_Icon_Cache" = "The app with the identifier \"%@\" exists in the Dopamine application directory (\"%@\") but is also registered in icon cache under a different path (\"%@\"). Cannot continue.";
 
 // Settings Lists
 "Theme" = "Theme";

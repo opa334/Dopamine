@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
     xpc_object_t _systemInfoXdict;
 }
 
-- (NSError *)run;
+- (void)runWithError:(NSError **)errOut didRemoveJailbreak:(BOOL*)didRemove showLogs:(BOOL *)showLogs;
 - (void)finalize;
 
 @end

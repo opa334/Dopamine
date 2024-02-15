@@ -27,6 +27,7 @@
 #import <libjailbreak/jbserver_boomerang.h>
 #import <libjailbreak/signatures.h>
 #import <libjailbreak/jbclient_xpc.h>
+#import <CoreServices/LSApplicationProxy.h>
 #import "spawn.h"
 int posix_spawnattr_set_registered_ports_np(posix_spawnattr_t * __restrict attr, mach_port_t portarray[], uint32_t count);
 
@@ -46,6 +47,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     JBErrorCodeFailedBasebinTrustcache       = -10,
     JBErrorCodeFailedLaunchdInjection        = -11,
     JBErrorCodeFailedInitFakeLib             = -12,
+    JBErrorCodeFailedDuplicateApps           = -13,
 };
 
 @implementation DOJailbreaker
@@ -347,47 +349,108 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     return nil;
 }
 
+- (NSError *)ensureNoDuplicateApps
+{
+    NSMutableSet *dopamineInstalledAppIds = [NSMutableSet new];
+    NSMutableSet *userInstalledAppIds = [NSMutableSet new];
+    
+    NSString *dopamineAppsPath = NSJBRootPath(@"/Applications");
+    NSString *userAppsPath = @"/var/containers/Bundle/Application";
+    
+    for (NSString *dopamineAppName in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:dopamineAppsPath error:nil]) {
+        NSString *infoPlistPath = [[dopamineAppsPath stringByAppendingPathComponent:dopamineAppName] stringByAppendingPathComponent:@"Info.plist"];
+        NSDictionary *infoDictionary = [NSDictionary dictionaryWithContentsOfFile:infoPlistPath];
+        NSString *appId = infoDictionary[@"CFBundleIdentifier"];
+        if (![dopamineInstalledAppIds containsObject:appId]) {
+            [dopamineInstalledAppIds addObject:appId];
+        }
+        else {
+            return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedDuplicateApps userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"Duplicate_Apps_Error_Dopamine_App", nil), appId, dopamineAppsPath]}];
+        }
+    }
+    
+    for (NSString *appUUID in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:userAppsPath error:nil]) {
+        NSString *UUIDPath = [userAppsPath stringByAppendingPathComponent:appUUID];
+        for (NSString *appCandidate in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:UUIDPath error:nil]) {
+            if ([appCandidate.pathExtension isEqualToString:@"app"]) {
+                NSString *appPath = [UUIDPath stringByAppendingPathComponent:appCandidate];
+                NSString *infoPlistPath = [appPath stringByAppendingPathComponent:@"Info.plist"];
+                NSDictionary *infoDictionary = [NSDictionary dictionaryWithContentsOfFile:infoPlistPath];
+                NSString *appId = infoDictionary[@"CFBundleIdentifier"];
+                [userInstalledAppIds addObject:appId];
+            }
+        }
+    }
+    
+    NSMutableSet *duplicateApps = dopamineInstalledAppIds.mutableCopy;
+    [duplicateApps intersectSet:userInstalledAppIds];
+    if (duplicateApps.count) {
+        NSMutableString *duplicateAppsString = [NSMutableString new];
+        [duplicateAppsString appendString:@"["];
+        BOOL isFirst = YES;
+        for (NSString *duplicateApp in duplicateApps) {
+            if (isFirst) isFirst = NO;
+            else [duplicateAppsString appendString:@", "];
+            [duplicateAppsString appendString:duplicateApp];
+        }
+        [duplicateAppsString appendString:@"]"];
+        return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedDuplicateApps userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"Duplicate_Apps_Error_User_App", nil), duplicateAppsString, dopamineAppsPath]}];
+    }
+    
+    for (NSString *dopamineAppId in dopamineInstalledAppIds) {
+        LSApplicationProxy *appProxy = [LSApplicationProxy applicationProxyForIdentifier:dopamineAppId];
+        if (appProxy.installed) {
+            NSString *appProxyPath = [[appProxy.bundleURL.path stringByResolvingSymlinksInPath] stringByStandardizingPath];
+            if (![appProxyPath hasPrefix:dopamineAppsPath]) {
+                return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedDuplicateApps userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"Duplicate_Apps_Error_Icon_Cache", nil), dopamineAppId, dopamineAppsPath, appProxy.bundleURL.path]}];
+            }
+        }
+    }
+    
+    return nil;
+}
+
 - (NSError *)finalizeBootstrapIfNeeded
 {
     return [[DOEnvironmentManager sharedManager] finalizeBootstrap];
 }
 
-- (NSError *)run
+- (void)runWithError:(NSError **)errOut didRemoveJailbreak:(BOOL*)didRemove showLogs:(BOOL *)showLogs
 {
     BOOL removeJailbreakEnabled = [[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"removeJailbreakEnabled" fallback:NO];
     BOOL tweaksEnabled = [[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"tweakInjectionEnabled" fallback:YES];
     BOOL idownloadEnabled = [[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"idownloadEnabled" fallback:NO];
     
-    NSError *err = nil;
-    err = [self gatherSystemInformation];
-    if (err) return err;
-    err = [self doExploitation];
-    if (err) return err;
+    *errOut = [self gatherSystemInformation];
+    if (*errOut) return;
+    *errOut = [self doExploitation];
+    if (*errOut) return;
     [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Building Phys R/W Primitive", nil) debug:NO];
-    err = [self buildPhysRWPrimitive];
-    if (err) return err;
+    *errOut = [self buildPhysRWPrimitive];
+    if (*errOut) return;
     [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Cleaning Up Exploits", nil) debug:NO];
-    err = [self cleanUpExploits];
-    if (err) return err;
+    *errOut = [self cleanUpExploits];
+    if (*errOut) return;
     
     // We will not be able to reset this after elevating privileges, so do it now
     if (removeJailbreakEnabled) [[DOPreferenceManager sharedManager] setPreferenceValue:@NO forKey:@"removeJailbreakEnabled"];
 
     [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Elevating Privileges", nil) debug:NO];
-    err = [self elevatePrivileges];
-    if (err) return err;
+    *errOut = [self elevatePrivileges];
+    if (*errOut) return;
 
     // Now that we are unsandboxed, populate the jailbreak root path
     [[DOEnvironmentManager sharedManager] ensureJailbreakRootExists];
     
     if (removeJailbreakEnabled) {
         [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Removing Jailbreak", nil) debug:NO];
-        err = [[DOEnvironmentManager sharedManager] deleteBootstrap];
-        return nil;
+        *errOut = [[DOEnvironmentManager sharedManager] deleteBootstrap];
+        *didRemove = YES;
+        return;
     }
     
-    err = [[DOEnvironmentManager sharedManager] prepareBootstrap];
-    if (err) return err;
+    *errOut = [[DOEnvironmentManager sharedManager] prepareBootstrap];
+    if (*errOut) return;
     setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/jb/sbin:/var/jb/bin:/var/jb/usr/sbin:/var/jb/usr/bin", 1);
     setenv("TERM", "xterm-256color", 1);
     
@@ -403,22 +466,29 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     }
     
     [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Loading BaseBin TrustCache", nil) debug:NO];
-    err = [self loadBasebinTrustcache];
-    if (err) return err;
+    *errOut = [self loadBasebinTrustcache];
+    if (*errOut) return;
     
     [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Initializing Environment", nil) debug:NO];
-    err = [self injectLaunchdHook];
-    if (err) return err;
+    *errOut = [self injectLaunchdHook];
+    if (*errOut) return;
     
     [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Applying Bind Mount", nil) debug:NO];
-    err = [self createFakeLib];
-    if (err) return err;
+    *errOut = [self createFakeLib];
+    if (*errOut) return;
     
     // Unsandbox iconservicesagent so that app icons can work
     exec_cmd_trusted(JBRootPath("/usr/bin/killall"), "-9", "iconservicesagent", NULL);
     
-    err = [self finalizeBootstrapIfNeeded];
-    if (err) return err;
+    *errOut = [self finalizeBootstrapIfNeeded];
+    if (*errOut) return;
+    
+    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Checking For Duplicate Apps", nil) debug:NO];
+    *errOut = [self ensureNoDuplicateApps];
+    if (*errOut) {
+        *showLogs = NO;
+        return;
+    }
     
     //printf("Starting launch daemons...\n");
     //exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "bootstrap", "system", JBRootPath("/Library/LaunchDaemons"), NULL);
@@ -427,7 +497,6 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     // It's only neccessary when we don't immediately userspace reboot
     
     printf("Done!\n");
-    return nil;
 }
 
 - (void)finalize

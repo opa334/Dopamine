@@ -109,6 +109,7 @@
 		8C56D4CA2B7C102B001C03D3 /* LICENSE_Procursus.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4C72B7C102B001C03D3 /* LICENSE_Procursus.md */; };
 		8C56D4CB2B7C102B001C03D3 /* LICENSE_Zebra.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4C82B7C102B001C03D3 /* LICENSE_Zebra.md */; };
 		8C56D4CD2B7C118B001C03D3 /* LICENSE_kfd.md in Resources */ = {isa = PBXBuildFile; fileRef = 8C56D4CC2B7C118B001C03D3 /* LICENSE_kfd.md */; };
+		8C58E5592B7EAF8000E3ADAA /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C58E5582B7EAF8000E3ADAA /* CoreServices.framework */; };
 		8C71981A2ABF0E82003C6658 /* DOAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7198192ABF0E82003C6658 /* DOAppDelegate.m */; };
 		8C71981D2ABF0E82003C6658 /* DOSceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71981C2ABF0E82003C6658 /* DOSceneDelegate.m */; };
 		8C7198252ABF0E84003C6658 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C7198242ABF0E84003C6658 /* Assets.xcassets */; };
@@ -360,6 +361,7 @@
 		8C56D4C72B7C102B001C03D3 /* LICENSE_Procursus.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_Procursus.md; sourceTree = "<group>"; };
 		8C56D4C82B7C102B001C03D3 /* LICENSE_Zebra.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_Zebra.md; sourceTree = "<group>"; };
 		8C56D4CC2B7C118B001C03D3 /* LICENSE_kfd.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE_kfd.md; sourceTree = "<group>"; };
+		8C58E5582B7EAF8000E3ADAA /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		8C7198152ABF0E82003C6658 /* Dopamine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dopamine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C7198182ABF0E82003C6658 /* DOAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOAppDelegate.h; sourceTree = "<group>"; };
 		8C7198192ABF0E82003C6658 /* DOAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DOAppDelegate.m; sourceTree = "<group>"; };
@@ -423,6 +425,7 @@
 				8CDD08402B4F6D8700A32B61 /* libfragmentzip.a in Frameworks */,
 				8C029F662B4E2E970071DE58 /* libcompression.tbd in Frameworks */,
 				8CDD083F2B4F6D8700A32B61 /* libcurl.a in Frameworks */,
+				8C58E5592B7EAF8000E3ADAA /* CoreServices.framework in Frameworks */,
 				8C4ABEB62B52094100B43C9B /* libjailbreak.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -638,6 +641,7 @@
 		8C029F642B4E2E7D0071DE58 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8C58E5582B7EAF8000E3ADAA /* CoreServices.framework */,
 				042479E42B66B0DD0082581B /* Preferences.framework */,
 				8CDD08372B4F682500A32B61 /* IOKit.framework */,
 				8CDD08352B4F682000A32B61 /* IOSurface.framework */,
