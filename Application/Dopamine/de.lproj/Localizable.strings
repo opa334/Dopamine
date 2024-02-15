@@ -1,0 +1,95 @@
+"Credits_Made_By" = "Von opa334, évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "Jailbreaken";
+"Log_Error" = "Erfolglos";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "Jailbreak";
+"Button_Remove_Jailbreak" = "Jailbreak entfernen";
+"Status_Title_Jailbroken" = "Gejailbreakt";
+"Unsupported" = "Nicht unterstützt";
+
+// Action Menu
+"Menu_Settings_Title" = "Einstellungen";
+"Menu_Restart_SpringBoard_Title" = "SpringBoard neustarten";
+"Menu_Reboot_Userspace_Title" = "Userspace-Neustart";
+"Menu_Credits_Title" = "Über";
+
+// Updating
+"Button_Update" = "Aktualisieren";
+"Button_Update_Available" = "Aktualisierung verfügbar";
+"Button_Update_Environment" = "Umgebung aktualisieren";
+
+// Update View
+"Update_Status_Downloading" = "Lade Aktualisierung herunter...";
+"Update_Status_Subtitle_Please_Wait" = "Bitte warte, bis die Dateien heruntergeladen wurden";
+"Update_Status_Installing" = "Installiere Aktualisierung...";
+"Update_Status_Subtitle_Restart_Soon" = "Das Gerät wird bald neustarten";
+"Title_Changelog" = "Changelog";
+"Changelog_Unavailable_Text" = "Changelog nicht verfügbar";
+
+// Error View
+"Button_Share" = "Share"; //TODO
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "Tweaks laden";
+"Settings_iDownload" = "iDownload (Entwickler-Terminal)";
+"Settings_Verbose_Logs" = "Detaillierte Logs";
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "Jailbreak entfernen";
+"Button_Hide_Jailbreak" = "Jailbreak verstecken";
+"Button_Unhide_Jailbreak" = "Jailbreak wieder anzeigen";
+"Button_Refresh_Jailbreak_Apps" = "Refresh Jailbreak Apps"; //TODO
+"Button_Reinstall_Package_Managers" = "Packet-Manager neuinstallieren";
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"Jailbreak verstecken\" entfernt die Jailbreak Dateien temporär bis zum nächsten Jailbreak";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Jailbreak verstecken\" deaktiviert den Jailbreak teilweise und versucht das Erkennen des Jailbreaks zu erschweren. Es ist allerdings nicht 100% effektiv und verbirgt aktuell nicht alles.";
+"Section_Jailbreak_Settings" = "Jailbreak Settings"; //TODO
+"Section_Actions" = "Actions"; //TODO
+"Section_Customization" = "Customization"; //TODO
+"Section_Exploits" = "Exploits"; //TODO
+
+// Settings Alerts
+"Alert_Tweak_Injection_Toggled_Title" = "Userspace Reboot Required"; //TODO
+"Alert_Tweak_Injection_Toggled_Body" = "Um die Änderungen anzuwenden ist ein Userspace-Neustart erforderlich, soll dieser jetzt durchgeführt werden?";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Reboot Now"; //TODO
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Reboot Later"; //TODO
+"Alert_Remove_Jailbreak_Title" = "Jailbreak entfernen";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Das Entfernen des Jailbreaks wird alle mit dem Jailbreak zusammenhängenden Dateien löschen, alle regulären Apps, Datein und Daten bleiben erhalten. Diese Aktion kann nicht rückgangig gemacht werden, bist du sicher?";
+"Alert_Remove_Jailbreak_Enabled_Body" = "Enabling \"Remove Jailbreak\" will delete all jailbreak-related files on the next jailbreak, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action."; //TODO
+"Button_Cancel" = "Abbrechen";
+"Button_Continue" = "Continue"; //TODO
+
+// Settings Lists
+"Theme" = "Theme"; //TODO
+"Kernel Exploit" = "Kernel Exploit"; //TODO
+"PPL Bypass" = "PPL Bypass"; //TODO
+"PAC Bypass" = "PAC Bypass"; //TODO
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Lizenz";
+"Credits_Button_Source_Code" = "Quellcode";
+"Credits" = "Credits"; //TODO
+
+// Logs
+"Initializing Environment" = "Initialisiere Umgebung";
+"Loading BaseBin TrustCache" = "Loading BaseBin TrustCache"; //TODO
+"Applying Bind Mount" = "Applying Bind Mount"; //TODO
+"Removing Jailbreak" = "Removing Jailbreak"; //TODO
+"Elevating Privileges" = "Elevating Privileges"; //TODO
+"Cleaning Up Exploits" = "Cleaning Up Exploits"; //TODO
+"Building Phys R/W Primitive" = "Building Phys R/W Primitive"; //TODO
+"Rebooting Userspace" = "Rebooting Userspace"; //TODO
+"Patchfinding" = "Finde Patches";
+"Exploiting Kernel (%@)" = "Exploiting Kernel (%@)"; //TODO
+"Bypassing PAC (%@)" = "Bypassing PAC (%@)"; //TODO
+"Bypassing PPL (%@)" = "Bypassing PPL (%@)"; //TODO
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Paket Manager auswählen";
+"Select_Package_Managers_Install_Message" = "Bei Unklarheiten, wähle Sileo aus";
+"Continue" = "Fortsetzen";

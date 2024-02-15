@@ -1,0 +1,95 @@
+"Credits_Made_By" = "Stworzone przez: opa334, évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "Jailbreakowanie";
+"Log_Error" = "Niepowodzenie";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "Jailbreakuj";
+"Button_Remove_Jailbreak" = "Usuń jailbreak";
+"Status_Title_Jailbroken" = "Jailbreak aktywny";
+"Unsupported" = "Niewspierane";
+
+// Action Menu
+"Menu_Settings_Title" = "Ustawienia";
+"Menu_Restart_SpringBoard_Title" = "Restartuj SpringBoard";
+"Menu_Reboot_Userspace_Title" = "Restartuj Userspace";
+"Menu_Credits_Title" = "Podziękowania";
+
+// Updating
+"Button_Update" = "Aktualizuj";
+"Button_Update_Available" = "Dostępna aktualizacja";
+"Button_Update_Environment" = "Update Environment";
+
+// Update View
+"Update_Status_Downloading" = "Pobieranie aktualizacji...";
+"Update_Status_Subtitle_Please_Wait" = "Proszę czekać, aż pliki skończą się pobierać";
+"Update_Status_Installing" = "Instalowanie aktualizacji...";
+"Update_Status_Subtitle_Restart_Soon" = "Urządzenie wkrótce uruchomi się ponownie";
+"Title_Changelog" = "Dziennik zmian";
+"Changelog_Unavailable_Text" = "Dziennik zmian niedostępny";
+
+// Error View
+"Button_Share" = "Share"; //TODO
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "Wstrzykiwanie tweaków";
+"Settings_iDownload" = "iDownload (terminal dla deweloperów)";
+"Settings_Verbose_Logs" = "Logi verbose";
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "Usuń jailbreak";
+"Button_Hide_Jailbreak" = "Ukryj jailbreak";
+"Button_Unhide_Jailbreak" = "Odkryj jailbreak";
+"Button_Refresh_Jailbreak_Apps" = "Refresh Jailbreak Apps"; //TODO
+"Button_Reinstall_Package_Managers" = "Przeinstaluj menedżery pakietów";
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"Ukryj jailbreak\" tymczasowo usuwa wszystkie pliki związane z jailbreakiem (aż do następnego jailbreakowania)";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Ukryj jailbreak\" częściowo wyłącza jailbreak i próbuje utrudnić jego wykrycie. Nie jest to jednak w pełni skuteczne i nie ukrywa wszystkiego.";
+"Section_Jailbreak_Settings" = "Jailbreak Settings"; //TODO
+"Section_Actions" = "Actions"; //TODO
+"Section_Customization" = "Customization"; //TODO
+"Section_Exploits" = "Exploits"; //TODO
+
+// Settings Alerts
+"Alert_Tweak_Injection_Toggled_Title" = "Userspace Reboot Required"; //TODO
+"Alert_Tweak_Injection_Toggled_Body" = "Aby zmiany zostały zastosowane, musisz zrestartować Userspace. Czy chcesz zrestartować urządzenie?";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Reboot Now"; //TODO
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Reboot Later"; //TODO
+"Alert_Remove_Jailbreak_Title" = "Usuń jailbreak";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Usunięcie jailbreak spowoduje usunięcie wszystkich plików związanych z jailbreakiem, ale wszystkie zwykłe aplikacje, pliki i dane zostaną zachowane. Jesteś pewien, że chcesz kontynuować? Tej czynności nie można cofnąć.";
+"Alert_Remove_Jailbreak_Enabled_Body" = "Enabling \"Remove Jailbreak\" will delete all jailbreak-related files on the next jailbreak, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action."; //TODO
+"Button_Cancel" = "Anuluj";
+"Button_Continue" = "Continue"; //TODO
+
+// Settings Lists
+"Theme" = "Theme"; //TODO
+"Kernel Exploit" = "Kernel Exploit"; //TODO
+"PPL Bypass" = "PPL Bypass"; //TODO
+"PAC Bypass" = "PAC Bypass"; //TODO
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Licencja";
+"Credits_Button_Source_Code" = "Kod źródłowy";
+"Credits" = "Credits"; //TODO
+
+// Logs
+"Initializing Environment" = "Inicjowanie Środowiska";
+"Loading BaseBin TrustCache" = "Loading BaseBin TrustCache"; //TODO
+"Applying Bind Mount" = "Applying Bind Mount"; //TODO
+"Removing Jailbreak" = "Removing Jailbreak"; //TODO
+"Elevating Privileges" = "Elevating Privileges"; //TODO
+"Cleaning Up Exploits" = "Cleaning Up Exploits"; //TODO
+"Building Phys R/W Primitive" = "Building Phys R/W Primitive"; //TODO
+"Rebooting Userspace" = "Rebooting Userspace"; //TODO
+"Patchfinding" = "Patchfinding";
+"Exploiting Kernel (%@)" = "Exploiting Kernel (%@)"; //TODO
+"Bypassing PAC (%@)" = "Bypassing PAC (%@)"; //TODO
+"Bypassing PPL (%@)" = "Bypassing PPL (%@)"; //TODO
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Wybierz menedżer(y) pakietów";
+"Select_Package_Managers_Install_Message" = "Jeżeli nie jesteś pewien który wybrać, wybierz Sileo";
+"Continue" = "Kontynuuj";

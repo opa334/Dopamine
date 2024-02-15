@@ -1,0 +1,95 @@
+"Credits_Made_By" = "作者：opa334, évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "越狱中";
+"Log_Error" = "未成功";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "越狱";
+"Button_Remove_Jailbreak" = "移除越狱";
+"Status_Title_Jailbroken" = "已越狱";
+"Unsupported" = "Unsupported"; //TODO
+
+// Action Menu
+"Menu_Settings_Title" = "设置";
+"Menu_Restart_SpringBoard_Title" = "注销";
+"Menu_Reboot_Userspace_Title" = "重启用户空间";
+"Menu_Credits_Title" = "关于";
+
+// Updating
+"Button_Update" = "更新";
+"Button_Update_Available" = "可更新";
+"Button_Update_Environment" = "更新环境";
+
+// Update View
+"Update_Status_Downloading" = "正在下载更新…";
+"Update_Status_Subtitle_Please_Wait" = "请等待完成下载";
+"Update_Status_Installing" = "正在安装更新…";
+"Update_Status_Subtitle_Restart_Soon" = "设备即将重启";
+"Title_Changelog" = "变更日志";
+"Changelog_Unavailable_Text" = "变更日志不可用";
+
+// Error View
+"Button_Share" = "Share"; //TODO
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "插件注入";
+"Settings_iDownload" = "iDownload (开发者终端)";
+"Settings_Verbose_Logs" = "详细日志";
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "移除越狱";
+"Button_Hide_Jailbreak" = "隐藏越狱";
+"Button_Unhide_Jailbreak" = "取消隐藏越狱";
+"Button_Refresh_Jailbreak_Apps" = "Refresh Jailbreak Apps"; //TODO
+"Button_Reinstall_Package_Managers" = "重新安装包管理器";
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "「隐藏越狱」将在下次越狱前临时移除越狱相关的文件。";
+"Hint_Hide_Jailbreak_Jailbroken" = "在已越狱状态下，「隐藏越狱」将部分禁用越狱功能以提升检测越狱的难度。但是，它并非总是有效，也并没有隐藏所有东西。";
+"Section_Jailbreak_Settings" = "Jailbreak Settings"; //TODO
+"Section_Actions" = "Actions"; //TODO
+"Section_Customization" = "Customization"; //TODO
+"Section_Exploits" = "Exploits"; //TODO
+
+// Settings Alerts
+"Alert_Tweak_Injection_Toggled_Title" = "Userspace Reboot Required"; //TODO
+"Alert_Tweak_Injection_Toggled_Body" = "为使变更生效需要重启用户空间，立即执行？";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Reboot Now"; //TODO
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Reboot Later"; //TODO
+"Alert_Remove_Jailbreak_Title" = "移除越狱";
+"Alert_Remove_Jailbreak_Pressed_Body" = "「移除越狱」将移除所有和越狱相关的文件，但将保留普通 App、文件、数据。请注意，此操作无法撤销。确认移除越狱吗？";
+"Alert_Remove_Jailbreak_Enabled_Body" = "Enabling \"Remove Jailbreak\" will delete all jailbreak-related files on the next jailbreak, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action."; //TODO
+"Button_Cancel" = "取消";
+"Button_Continue" = "Continue"; //TODO
+
+// Settings Lists
+"Theme" = "Theme"; //TODO
+"Kernel Exploit" = "Kernel Exploit"; //TODO
+"PPL Bypass" = "PPL Bypass"; //TODO
+"PAC Bypass" = "PAC Bypass"; //TODO
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "许可证";
+"Credits_Button_Source_Code" = "源代码";
+"Credits" = "Credits"; //TODO
+
+// Logs
+"Initializing Environment" = "初始化环境";
+"Loading BaseBin TrustCache" = "Loading BaseBin TrustCache"; //TODO
+"Applying Bind Mount" = "Applying Bind Mount"; //TODO
+"Removing Jailbreak" = "Removing Jailbreak"; //TODO
+"Elevating Privileges" = "Elevating Privileges"; //TODO
+"Cleaning Up Exploits" = "Cleaning Up Exploits"; //TODO
+"Building Phys R/W Primitive" = "Building Phys R/W Primitive"; //TODO
+"Rebooting Userspace" = "Rebooting Userspace"; //TODO
+"Patchfinding" = "Patchfinding";
+"Exploiting Kernel (%@)" = "Exploiting Kernel (%@)"; //TODO
+"Bypassing PAC (%@)" = "Bypassing PAC (%@)"; //TODO
+"Bypassing PPL (%@)" = "Bypassing PPL (%@)"; //TODO
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "选择包管理器（越狱商店）";
+"Select_Package_Managers_Install_Message" = "若你不确定如何选择，请使用 Sileo";
+"Continue" = "继续";

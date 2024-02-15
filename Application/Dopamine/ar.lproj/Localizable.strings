@@ -1,0 +1,95 @@
+"Credits_Made_By" = "صنع بواسطة opa334 و évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "جارِ تفعيل الجيلبريك";
+"Log_Error" = "فشل";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "جيلبريك";
+"Button_Remove_Jailbreak" = "إزالة الجيلبريك";
+"Status_Title_Jailbroken" = "الجيلبريك مفعل";
+"Unsupported" = "Unsupported"; //TODO
+
+// Action Menu
+"Menu_Settings_Title" = "الإعدادات";
+"Menu_Restart_SpringBoard_Title" = "إعادة تشغيل واجهة النظام";
+"Menu_Reboot_Userspace_Title" = "إعادة تشغيل Userspace";
+"Menu_Credits_Title" = "الاعتمادات";
+
+// Updating
+"Button_Update" = "تحديث";
+"Button_Update_Available" = "يتوفر تحديث";
+"Button_Update_Environment" = "تحديث البيئة";
+
+// Update View
+"Update_Status_Downloading" = "جارِ تنزيل التحديث…";
+"Update_Status_Subtitle_Please_Wait" = "يرجى الانتظار لحين الانتهاء من تنزيل الملفات";
+"Update_Status_Installing" = "جارِ تثبيت التحديث…";
+"Update_Status_Subtitle_Restart_Soon" = "سيتم إعادة تشغيل الجهاز خلال لحظات";
+"Title_Changelog" = "سجل التغييرات";
+"Changelog_Unavailable_Text" = "سجل التغييرات غير متاح";
+
+// Error View
+"Button_Share" = "Share"; //TODO
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "وصول الأدوات";
+"Settings_iDownload" = "iDownload (محطة المطور)";
+"Settings_Verbose_Logs" = "السجلات المطولة";
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "إزالة الجيلبريك";
+"Button_Hide_Jailbreak" = "إخفاء الجيلبريك";
+"Button_Unhide_Jailbreak" = "عدم إخفاء الجيلبريك";
+"Button_Refresh_Jailbreak_Apps" = "Refresh Jailbreak Apps"; //TODO
+"Button_Reinstall_Package_Managers" = "إعادة تثبيت مديري الحزم";
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"إخفاء الجيلبريك\" يقوم بإزالة الملفات المتعلقة بالجيلبريك مؤقتًا حتى تفعيل الجيلبريك القادم.";
+"Hint_Hide_Jailbreak_Jailbroken" = "\" إخفاء الجيلبريك\" يعطل الجيلبريك جزئيًا ويجعل كشفه أكثر صعوبة. ومع ذلك، فإن هذه الخاصية ليست فعالة ١٠٠٪؜ ولا تخفي كل شيء.";
+"Section_Jailbreak_Settings" = "Jailbreak Settings"; //TODO
+"Section_Actions" = "Actions"; //TODO
+"Section_Customization" = "Customization"; //TODO
+"Section_Exploits" = "Exploits"; //TODO
+
+// Settings Alerts
+"Alert_Tweak_Injection_Toggled_Title" = "Userspace Reboot Required"; //TODO
+"Alert_Tweak_Injection_Toggled_Body" = "إعادة تشغيل userspace ضرورية لتطبيق التغييرات. هل تريد فعلها الآن؟";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Reboot Now"; //TODO
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Reboot Later"; //TODO
+"Alert_Remove_Jailbreak_Title" = "إزالة الجيلبريك";
+"Alert_Remove_Jailbreak_Pressed_Body" = "ستؤدي إزالة الجيلبريك إلى حذف جميع الملفات المتعلقة به، ولكن سيتم الاحتفاظ بجميع التطبيقات والملفات والبيانات العادية. هل أنت متأكد من أنك تريد الاستمرار؟ لا يمكنك التراجع عن هذا الإجراء.";
+"Alert_Remove_Jailbreak_Enabled_Body" = "Enabling \"Remove Jailbreak\" will delete all jailbreak-related files on the next jailbreak, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action."; //TODO
+"Button_Cancel" = "إلغاء";
+"Button_Continue" = "Continue"; //TODO
+
+// Settings Lists
+"Theme" = "Theme"; //TODO
+"Kernel Exploit" = "Kernel Exploit"; //TODO
+"PPL Bypass" = "PPL Bypass"; //TODO
+"PAC Bypass" = "PAC Bypass"; //TODO
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "الترخيص";
+"Credits_Button_Source_Code" = "شفرة المصدر";
+"Credits" = "Credits"; //TODO
+
+// Logs
+"Initializing Environment" = "جارِ تحسين البيئة";
+"Loading BaseBin TrustCache" = "Loading BaseBin TrustCache"; //TODO
+"Applying Bind Mount" = "Applying Bind Mount"; //TODO
+"Removing Jailbreak" = "Removing Jailbreak"; //TODO
+"Elevating Privileges" = "Elevating Privileges"; //TODO
+"Cleaning Up Exploits" = "Cleaning Up Exploits"; //TODO
+"Building Phys R/W Primitive" = "Building Phys R/W Primitive"; //TODO
+"Rebooting Userspace" = "Rebooting Userspace"; //TODO
+"Patchfinding" = "العثور على التصحيح";
+"Exploiting Kernel (%@)" = "Exploiting Kernel (%@)"; //TODO
+"Bypassing PAC (%@)" = "Bypassing PAC (%@)"; //TODO
+"Bypassing PPL (%@)" = "Bypassing PPL (%@)"; //TODO
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "اختر مدير الحزمة";
+"Select_Package_Managers_Install_Message" = "إذا كنت محتارًا في الاختيار، فاختر Sileo";
+"Continue" = "استمرار";

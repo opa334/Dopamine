@@ -1,0 +1,95 @@
+"Credits_Made_By" = "Жасағандар: opa334, évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "Джейлбрейк жасау";
+"Log_Error" = "Сәтсіз";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "Джейлбрейк";
+"Button_Remove_Jailbreak" = "Джейлбрейкті жою";
+"Status_Title_Jailbroken" = "Джейлбрейк орындалды";
+"Unsupported" = "Unsupported"; //TODO
+
+// Action Menu
+"Menu_Settings_Title" = "Реттеулер";
+"Menu_Restart_SpringBoard_Title" = "SpringBoard қайта іске қосу";
+"Menu_Reboot_Userspace_Title" = "Userspace қайта іске қосу";
+"Menu_Credits_Title" = "Алғыс";
+
+// Updating
+"Button_Update" = "Жаңарту";
+"Button_Update_Available" = "Жаңа жаңарту қол жетімді";
+"Button_Update_Environment" = "Update Environment";
+
+// Update View
+"Update_Status_Downloading" = "Жаңартуды жүктеу...";
+"Update_Status_Subtitle_Please_Wait" = "Файлдар жүктелгенше күтіңіз";
+"Update_Status_Installing" = "Жаңартуды орнату...";
+"Update_Status_Subtitle_Restart_Soon" = "Жақында құрылғы қайта іске қосылады";
+"Title_Changelog" = "Нұсқалар журналы";
+"Changelog_Unavailable_Text" = "Өзгерістер тізімі қол жетімді емес";
+
+// Error View
+"Button_Share" = "Share"; //TODO
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "Твиктерді енгізу";
+"Settings_iDownload" = "iDownload (Әзірлеуші ​​​​терминалы)";
+"Settings_Verbose_Logs" = "Кеңейтілген журналдар";
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "Джейлбрейкті жою";
+"Button_Hide_Jailbreak" = "Джейлбрейкті жасыру";
+"Button_Unhide_Jailbreak" = "Джейлбрейкті жасырмау";
+"Button_Refresh_Jailbreak_Apps" = "Refresh Jailbreak Apps"; //TODO
+"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"Джейлбрейкті жасыру\" келесі джейлбрейкке дейін джейлбрейкпен байланысты файлдарды уақытша жояды";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+"Section_Jailbreak_Settings" = "Jailbreak Settings"; //TODO
+"Section_Actions" = "Actions"; //TODO
+"Section_Customization" = "Customization"; //TODO
+"Section_Exploits" = "Exploits"; //TODO
+
+// Settings Alerts
+"Alert_Tweak_Injection_Toggled_Title" = "Userspace Reboot Required"; //TODO
+"Alert_Tweak_Injection_Toggled_Body" = "A userspace reboot is neccessary to apply the changes. Do you want to do it now?";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Reboot Now"; //TODO
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Reboot Later"; //TODO
+"Alert_Remove_Jailbreak_Title" = "Remove Jailbreak";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+"Alert_Remove_Jailbreak_Enabled_Body" = "Enabling \"Remove Jailbreak\" will delete all jailbreak-related files on the next jailbreak, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action."; //TODO
+"Button_Cancel" = "Болдырмау";
+"Button_Continue" = "Continue"; //TODO
+
+// Settings Lists
+"Theme" = "Theme"; //TODO
+"Kernel Exploit" = "Kernel Exploit"; //TODO
+"PPL Bypass" = "PPL Bypass"; //TODO
+"PAC Bypass" = "PAC Bypass"; //TODO
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Лицензия";
+"Credits_Button_Source_Code" = "Бастапқы код";
+"Credits" = "Credits"; //TODO
+
+// Logs
+"Initializing Environment" = "Ортаны инициализациялау";
+"Loading BaseBin TrustCache" = "Loading BaseBin TrustCache"; //TODO
+"Applying Bind Mount" = "Applying Bind Mount"; //TODO
+"Removing Jailbreak" = "Removing Jailbreak"; //TODO
+"Elevating Privileges" = "Elevating Privileges"; //TODO
+"Cleaning Up Exploits" = "Cleaning Up Exploits"; //TODO
+"Building Phys R/W Primitive" = "Building Phys R/W Primitive"; //TODO
+"Rebooting Userspace" = "Rebooting Userspace"; //TODO
+"Patchfinding" = "Патчтарды іздеу";
+"Exploiting Kernel (%@)" = "Exploiting Kernel (%@)"; //TODO
+"Bypassing PAC (%@)" = "Bypassing PAC (%@)"; //TODO
+"Bypassing PPL (%@)" = "Bypassing PPL (%@)"; //TODO
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Пакет менеджерін таңдаңыз";
+"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+"Continue" = "Continue";

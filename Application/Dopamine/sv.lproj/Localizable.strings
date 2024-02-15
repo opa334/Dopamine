@@ -1,0 +1,95 @@
+"Credits_Made_By" = "Tillverkad av opa334, évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "Jailbreaking";
+"Log_Error" = "Misslyckad";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "Jailbreak";
+"Button_Remove_Jailbreak" = "Ta Bot Jailbreak";
+"Status_Title_Jailbroken" = "Jailbroken";
+"Unsupported" = "Unsupported"; //TODO
+
+// Action Menu
+"Menu_Settings_Title" = "Inställningar";
+"Menu_Restart_SpringBoard_Title" = "Starta om SpringBoard";
+"Menu_Reboot_Userspace_Title" = "Starta om Userspace";
+"Menu_Credits_Title" = "Om";
+
+// Updating
+"Button_Update" = "Updatera";
+"Button_Update_Available" = "Uppdatering tillgänglig";
+"Button_Update_Environment" = "Update Environment";
+
+// Update View
+"Update_Status_Downloading" = "Laddar ned uppdatering...";
+"Update_Status_Subtitle_Please_Wait" = "Vänta medan filer laddas ned";
+"Update_Status_Installing" = "Installerar uppdatering...";
+"Update_Status_Subtitle_Restart_Soon" = "Enheten kommer snart att starta om";
+"Title_Changelog" = "Ändringslogg";
+"Changelog_Unavailable_Text" = "Ändringslogg ej tillgänglig";
+
+// Error View
+"Button_Share" = "Share"; //TODO
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "Tweak Injection";
+"Settings_iDownload" = "iDownload (Terminal för utvecklare)";
+"Settings_Verbose_Logs" = "Omfattande loggar";
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "Ta Bot Jailbreak";
+"Button_Hide_Jailbreak" = "Göm Jailbreak";
+"Button_Unhide_Jailbreak" = "Visa Jailbreak";
+"Button_Refresh_Jailbreak_Apps" = "Refresh Jailbreak Apps"; //TODO
+"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"Göm Jailbreak\" tar tillfälligt bort jailbreak-relaterade filer tills nästa jailbreak";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+"Section_Jailbreak_Settings" = "Jailbreak Settings"; //TODO
+"Section_Actions" = "Actions"; //TODO
+"Section_Customization" = "Customization"; //TODO
+"Section_Exploits" = "Exploits"; //TODO
+
+// Settings Alerts
+"Alert_Tweak_Injection_Toggled_Title" = "Userspace Reboot Required"; //TODO
+"Alert_Tweak_Injection_Toggled_Body" = "A userspace reboot is neccessary to apply the changes. Do you want to do it now?";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Reboot Now"; //TODO
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Reboot Later"; //TODO
+"Alert_Remove_Jailbreak_Title" = "Remove Jailbreak";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+"Alert_Remove_Jailbreak_Enabled_Body" = "Enabling \"Remove Jailbreak\" will delete all jailbreak-related files on the next jailbreak, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action."; //TODO
+"Button_Cancel" = "Avbryt";
+"Button_Continue" = "Continue"; //TODO
+
+// Settings Lists
+"Theme" = "Theme"; //TODO
+"Kernel Exploit" = "Kernel Exploit"; //TODO
+"PPL Bypass" = "PPL Bypass"; //TODO
+"PAC Bypass" = "PAC Bypass"; //TODO
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Licens";
+"Credits_Button_Source_Code" = "Källkod";
+"Credits" = "Credits"; //TODO
+
+// Logs
+"Initializing Environment" = "Initiera miljö";
+"Loading BaseBin TrustCache" = "Loading BaseBin TrustCache"; //TODO
+"Applying Bind Mount" = "Applying Bind Mount"; //TODO
+"Removing Jailbreak" = "Removing Jailbreak"; //TODO
+"Elevating Privileges" = "Elevating Privileges"; //TODO
+"Cleaning Up Exploits" = "Cleaning Up Exploits"; //TODO
+"Building Phys R/W Primitive" = "Building Phys R/W Primitive"; //TODO
+"Rebooting Userspace" = "Rebooting Userspace"; //TODO
+"Patchfinding" = "Patchfinding";
+"Exploiting Kernel (%@)" = "Exploiting Kernel (%@)"; //TODO
+"Bypassing PAC (%@)" = "Bypassing PAC (%@)"; //TODO
+"Bypassing PPL (%@)" = "Bypassing PPL (%@)"; //TODO
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Välj pakethanterare";
+"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+"Continue" = "Continue";
