@@ -6,6 +6,7 @@
 #include <paths.h>
 #include <util.h>
 #include "sandbox.h"
+#include "objc.h"
 #include <libjailbreak/jbclient_xpc.h>
 #include <libjailbreak/codesign.h>
 
@@ -432,6 +433,7 @@ __attribute__((constructor)) static void initializer(void)
 					// Always set CS_VALID in csflag to avoid causing a crash when hooking a c function on arm64
 					enable_csops_fix();
 #endif
+					dopamine_fix_NSTask();
 				}
 			}
 		}
