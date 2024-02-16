@@ -6,9 +6,8 @@
 
 // Jailbreak Button
 "Button_Jailbreak_Title" = "Jailbreak";
-"Button_Remove_Jailbreak" = "Xóa Jailbreak";
 "Status_Title_Jailbroken" = "Đã Jailbreak";
-"Unsupported" = "Unsupported"; //TODO
+/*Unsupported*/
 
 // Action Menu
 "Menu_Settings_Title" = "Cài đặt";
@@ -29,8 +28,14 @@
 "Title_Changelog" = "Log thay đổi";
 "Changelog_Unavailable_Text" = "Không có Log thay đổi";
 
+// Removed Jailbreak Alert
+/*Removed_Jailbreak_Alert_Title*/
+/*Removed_Jailbreak_Alert_Message*/
+/*Button_Close*/
+
 // Error View
-"Button_Share" = "Share"; //TODO
+/*Button_Share*/
+/*Button_Reboot*/
 
 // Settings Toggles
 "Settings_Tweak_Injection" = "Tweak Injection";
@@ -41,33 +46,38 @@
 "Button_Remove_Jailbreak" = "Xóa Jailbreak";
 "Button_Hide_Jailbreak" = "Ẩn Jailbreak";
 "Button_Unhide_Jailbreak" = "Hiện Jailbreak";
-"Button_Refresh_Jailbreak_Apps" = "Refresh Jailbreak Apps"; //TODO
+/*Button_Refresh_Jailbreak_Apps*/
 "Button_Reinstall_Package_Managers" = "Cài đặt lại các trình quản lý gói";
 
 // Settings Hints
 "Hint_Hide_Jailbreak" = "\"Ẩn Jailbreak\" sẽ tạm thời xóa các tệp tin liên quan đến Jailbreak cho đến khi bạn Jailbreak lại";
-"Hint_Hide_Jailbreak_Jailbroken" = "\"Ẩn Jailbreak\” vô hiệu hóa một phần bẻ khóa và nhằm mục đích tránh phát hiện Jailbreak. Tuy nhiên, nó không hoàn toàn hiệu quả và hoàn toàn ẩn jailbreak.";
-"Section_Jailbreak_Settings" = "Jailbreak Settings"; //TODO
-"Section_Actions" = "Actions"; //TODO
-"Section_Customization" = "Customization"; //TODO
-"Section_Exploits" = "Exploits"; //TODO
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Ẩn Jailbreak\" vô hiệu hóa một phần bẻ khóa và nhằm mục đích tránh phát hiện Jailbreak. Tuy nhiên, nó không hoàn toàn hiệu quả và hoàn toàn ẩn jailbreak.";
+/*Section_Jailbreak_Settings*/
+/*Section_Actions*/
+/*Section_Customization*/
+/*Section_Exploits*/
 
 // Settings Alerts
-"Alert_Tweak_Injection_Toggled_Title" = "Userspace Reboot Required"; //TODO
+/*Alert_Tweak_Injection_Toggled_Title*/
 "Alert_Tweak_Injection_Toggled_Body" = "Khởi động lại User là cần thiết để áp dụng các thay đổi. Bạn có muốn làm ngay bây giờ không?";
-"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Reboot Now"; //TODO
-"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Reboot Later"; //TODO
+/*Alert_Tweak_Injection_Toggled_Reboot_Now*/
+/*Alert_Tweak_Injection_Toggled_Reboot_Later*/
 "Alert_Remove_Jailbreak_Title" = "Xoá Jailbreak";
 "Alert_Remove_Jailbreak_Pressed_Body" = "Xóa Jailbreak sẽ xóa tất cả các tệp liên quan đến Jailbreak, tất cả các ứng dụng, tệp và dữ liệu thông thường sẽ được giữ. Bạn có chắc muốn tiếp tục? Hành động này không thể hoàn tác.";
-"Alert_Remove_Jailbreak_Enabled_Body" = "Enabling \"Remove Jailbreak\" will delete all jailbreak-related files on the next jailbreak, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action."; //TODO
+/*Alert_Remove_Jailbreak_Enabled_Body*/
 "Button_Cancel" = "Hủy";
-"Button_Continue" = "Continue"; //TODO
+/*Button_Continue*/
+
+// Duplicate Apps Errors
+/*Duplicate_Apps_Error_Dopamine_App*/
+/*Duplicate_Apps_Error_User_App*/
+/*Duplicate_Apps_Error_Icon_Cache*/
 
 // Settings Lists
-"Theme" = "Theme"; //TODO
-"Kernel Exploit" = "Kernel Exploit"; //TODO
-"PPL Bypass" = "PPL Bypass"; //TODO
-"PAC Bypass" = "PAC Bypass"; //TODO
+/*Theme*/
+/*Kernel Exploit*/
+/*PPL Bypass*/
+/*PAC Bypass*/
 
 // Credits
 "Credits_Button_Discord" = "Discord";
@@ -76,19 +86,20 @@
 
 // Logs
 "Initializing Environment" = "Khởi tạo \"Môi trường\"";
-"Loading BaseBin TrustCache" = "Loading BaseBin TrustCache"; //TODO
-"Applying Bind Mount" = "Applying Bind Mount"; //TODO
-"Removing Jailbreak" = "Removing Jailbreak"; //TODO
-"Elevating Privileges" = "Elevating Privileges"; //TODO
-"Cleaning Up Exploits" = "Cleaning Up Exploits"; //TODO
-"Building Phys R/W Primitive" = "Building Phys R/W Primitive"; //TODO
-"Rebooting Userspace" = "Rebooting Userspace"; //TODO
+/*Loading BaseBin TrustCache*/
+/*Applying Bind Mount*/
+/*Removing Jailbreak*/
+/*Elevating Privileges*/
+/*Cleaning Up Exploits*/
+/*Building Phys R/W Primitive*/
+/*Rebooting Userspace*/
 "Patchfinding" = "Đang tìm bản vá";
-"Exploiting Kernel (%@)" = "Exploiting Kernel (%@)"; //TODO
-"Bypassing PAC (%@)" = "Bypassing PAC (%@)"; //TODO
-"Bypassing PPL (%@)" = "Bypassing PPL (%@)"; //TODO
+/*Exploiting Kernel (%@)*/
+/*Bypassing PAC (%@)*/
+/*Bypassing PPL (%@)*/
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "Chọn trình quản lý gói";
 "Select_Package_Managers_Install_Message" = "Nếu không chắc nên chọn cái nào, hãy chọn Sileo";
 "Continue" = "Tiếp tục";
+

@@ -6,9 +6,8 @@
 
 // Jailbreak Button
 "Button_Jailbreak_Title" = "Jailbreak";
-"Button_Remove_Jailbreak" = "Alisin ang Jailbreak";
 "Status_Title_Jailbroken" = "Jailbroken";
-"Unsupported" = "Unsupported"; //TODO
+/*Unsupported*/
 
 // Action Menu
 "Menu_Settings_Title" = "Opsiyon";
@@ -29,8 +28,14 @@
 "Title_Changelog" = "Changelog";
 "Changelog_Unavailable_Text" = "Ang Changelog ay Hindi pwede ngayon";
 
+// Removed Jailbreak Alert
+/*Removed_Jailbreak_Alert_Title*/
+/*Removed_Jailbreak_Alert_Message*/
+/*Button_Close*/
+
 // Error View
-"Button_Share" = "Share"; //TODO
+/*Button_Share*/
+/*Button_Reboot*/
 
 // Settings Toggles
 "Settings_Tweak_Injection" = "Tweak Injection";
@@ -41,33 +46,38 @@
 "Button_Remove_Jailbreak" = "Alisin ang Jailbreak";
 "Button_Hide_Jailbreak" = "Itago ang jailbreak";
 "Button_Unhide_Jailbreak" = "Hindi na itatago ang Jailbreak";
-"Button_Refresh_Jailbreak_Apps" = "Refresh Jailbreak Apps"; //TODO
+/*Button_Refresh_Jailbreak_Apps*/
 "Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
 
 // Settings Hints
 "Hint_Hide_Jailbreak" = "\"Itago angJailbreak\" mawawala ng hindi permanenteng jailbreak files hanggang i-jailbreak mo ulet ito";
 "Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
-"Section_Jailbreak_Settings" = "Jailbreak Settings"; //TODO
-"Section_Actions" = "Actions"; //TODO
-"Section_Customization" = "Customization"; //TODO
-"Section_Exploits" = "Exploits"; //TODO
+/*Section_Jailbreak_Settings*/
+/*Section_Actions*/
+/*Section_Customization*/
+/*Section_Exploits*/
 
 // Settings Alerts
-"Alert_Tweak_Injection_Toggled_Title" = "Userspace Reboot Required"; //TODO
+/*Alert_Tweak_Injection_Toggled_Title*/
 "Alert_Tweak_Injection_Toggled_Body" = "A userspace reboot is neccessary to apply the changes. Do you want to do it now?";
-"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Reboot Now"; //TODO
-"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Reboot Later"; //TODO
+/*Alert_Tweak_Injection_Toggled_Reboot_Now*/
+/*Alert_Tweak_Injection_Toggled_Reboot_Later*/
 "Alert_Remove_Jailbreak_Title" = "Remove Jailbreak";
 "Alert_Remove_Jailbreak_Pressed_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
-"Alert_Remove_Jailbreak_Enabled_Body" = "Enabling \"Remove Jailbreak\" will delete all jailbreak-related files on the next jailbreak, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action."; //TODO
+/*Alert_Remove_Jailbreak_Enabled_Body*/
 "Button_Cancel" = "hindi ituloy";
-"Button_Continue" = "Continue"; //TODO
+/*Button_Continue*/
+
+// Duplicate Apps Errors
+/*Duplicate_Apps_Error_Dopamine_App*/
+/*Duplicate_Apps_Error_User_App*/
+/*Duplicate_Apps_Error_Icon_Cache*/
 
 // Settings Lists
-"Theme" = "Theme"; //TODO
-"Kernel Exploit" = "Kernel Exploit"; //TODO
-"PPL Bypass" = "PPL Bypass"; //TODO
-"PAC Bypass" = "PAC Bypass"; //TODO
+"Theme" = "Theme";
+"Kernel Exploit" = "Kernel Exploit";
+"PPL Bypass" = "PPL Bypass";
+"PAC Bypass" = "PAC Bypass";
 
 // Credits
 "Credits_Button_Discord" = "Discord";
@@ -76,19 +86,20 @@
 
 // Logs
 "Initializing Environment" = "Nagsisimula ang Environment";
-"Loading BaseBin TrustCache" = "Loading BaseBin TrustCache"; //TODO
-"Applying Bind Mount" = "Applying Bind Mount"; //TODO
-"Removing Jailbreak" = "Removing Jailbreak"; //TODO
-"Elevating Privileges" = "Elevating Privileges"; //TODO
-"Cleaning Up Exploits" = "Cleaning Up Exploits"; //TODO
-"Building Phys R/W Primitive" = "Building Phys R/W Primitive"; //TODO
-"Rebooting Userspace" = "Rebooting Userspace"; //TODO
+/*Loading BaseBin TrustCache*/
+/*Applying Bind Mount*/
+/*Removing Jailbreak*/
+/*Elevating Privileges*/
+/*Cleaning Up Exploits*/
+/*Building Phys R/W Primitive*/
+/*Rebooting Userspace*/
 "Patchfinding" = "Patchfinding";
-"Exploiting Kernel (%@)" = "Exploiting Kernel (%@)"; //TODO
-"Bypassing PAC (%@)" = "Bypassing PAC (%@)"; //TODO
-"Bypassing PPL (%@)" = "Bypassing PPL (%@)"; //TODO
+/*Exploiting Kernel (%@)*/
+/*Bypassing PAC (%@)*/
+/*Bypassing PPL (%@)*/
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "Pumili ng mga Package Manager(s)";
 "Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
 "Continue" = "Continue";
+

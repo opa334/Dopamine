@@ -6,7 +6,6 @@
 
 // Jailbreak Button
 "Button_Jailbreak_Title" = "Jailbreak";
-"Button_Remove_Jailbreak" = "Supprimer le jailbreak";
 "Status_Title_Jailbroken" = "Jailbreaké";
 "Unsupported" = "Non supporté";
 
@@ -29,8 +28,14 @@
 "Title_Changelog" = "Nouveautés";
 "Changelog_Unavailable_Text" = "Impossible de charger les changements";
 
+// Removed Jailbreak Alert
+/*Removed_Jailbreak_Alert_Title*/
+/*Removed_Jailbreak_Alert_Message*/
+/*Button_Close*/
+
 // Error View
 "Button_Share" = "Partager";
+/*Button_Reboot*/
 
 // Settings Toggles
 "Settings_Tweak_Injection" = "Injection de tweaks";
@@ -63,6 +68,11 @@
 "Button_Cancel" = "Annuler";
 "Button_Continue" = "Continuer";
 
+// Duplicate Apps Errors
+/*Duplicate_Apps_Error_Dopamine_App*/
+/*Duplicate_Apps_Error_User_App*/
+/*Duplicate_Apps_Error_Icon_Cache*/
+
 // Settings Lists
 "Theme" = "Thème";
 "Kernel Exploit" = "Exploit du noyau";
@@ -73,7 +83,6 @@
 "Credits_Button_Discord" = "Discord";
 "Credits_Button_License" = "Licenses";
 "Credits_Button_Source_Code" = "Code source";
-"Credits" = "Crédits";
 
 // Logs
 "Initializing Environment" = "Initialisation de l'environnement";
@@ -93,3 +102,4 @@
 "Status_Title_Select_Package_Managers" = "Gestionnaires de paquets";
 "Select_Package_Managers_Install_Message" = "Selectionnez les gestionnaires de paquets à installer, si vous n'êtes pas sûr de votre choix, sélectionnez Sileo";
 "Continue" = "Continuer";
+

@@ -64,7 +64,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (!kernelPath) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedToFindKernel userInfo:@{NSLocalizedDescriptionKey:@"Failed to find kernelcache"}];
     NSLog(@"Kernel at %s", kernelPath.UTF8String);
     
-    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Patchfinding", nil) debug:NO];
+    [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Patchfinding") debug:NO];
     
     int r = xpf_start_with_kernel_path(kernelPath.fileSystemRepresentation);
     if (r == 0) {
@@ -140,7 +140,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"PPL bypass is required but we did not find any"}];
     }
     
-    [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:NSLocalizedString(@"Exploiting Kernel (%@)", nil), kernelExploit.name] debug:NO];
+    [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:DOLocalizedString(@"Exploiting Kernel (%@)"), kernelExploit.name] debug:NO];
     if ([kernelExploit load] != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load kernel exploit: %s", dlerror()]}];
     if ([kernelExploit run] != 0) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to exploit kernel"}];
     
@@ -149,7 +149,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     libjailbreak_IOSurface_primitives_init();
     
     if (pacBypass) {
-        [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:NSLocalizedString(@"Bypassing PAC (%@)", nil), pacBypass.name] debug:NO];
+        [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:DOLocalizedString(@"Bypassing PAC (%@)"), pacBypass.name] debug:NO];
         if ([pacBypass load] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PAC bypass: %s", dlerror()]}];};
         if ([pacBypass run] != 0) {[kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PAC"}];}
         // At this point we presume the PAC bypass has given us stable kcall primitives
@@ -157,7 +157,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     }
 
     if ([[DOEnvironmentManager sharedManager] isPPLBypassRequired]) {
-        [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:NSLocalizedString(@"Bypassing PPL (%@)", nil), pplBypass.name] debug:NO];
+        [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:DOLocalizedString(@"Bypassing PPL (%@)"), pplBypass.name] debug:NO];
         if ([pplBypass load] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedLoadingExploit userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to load PPL bypass: %s", dlerror()]}];};
         if ([pplBypass run] != 0) {[pacBypass cleanup]; [kernelExploit cleanup]; return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedExploitation userInfo:@{NSLocalizedDescriptionKey:@"Failed to bypass PPL"}];}
         // At this point we presume the PPL bypass gave us unrestricted phys write primitives
@@ -379,7 +379,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
                 [dopamineInstalledAppIds addObject:appId];
             }
             else {
-                return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedDuplicateApps userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"Duplicate_Apps_Error_Dopamine_App", nil), appId, dopamineAppsPath]}];
+                return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedDuplicateApps userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:DOLocalizedString(@"Duplicate_Apps_Error_Dopamine_App"), appId, dopamineAppsPath]}];
             }
         }
     }
@@ -411,7 +411,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             [duplicateAppsString appendString:duplicateApp];
         }
         [duplicateAppsString appendString:@"]"];
-        return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedDuplicateApps userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"Duplicate_Apps_Error_User_App", nil), duplicateAppsString, dopamineAppsPath]}];
+        return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedDuplicateApps userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:DOLocalizedString(@"Duplicate_Apps_Error_User_App"), duplicateAppsString, dopamineAppsPath]}];
     }
     
     for (NSString *dopamineAppId in dopamineInstalledAppIds) {
@@ -419,7 +419,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         if (appProxy.installed) {
             NSString *appProxyPath = [[appProxy.bundleURL.path stringByResolvingSymlinksInPath] stringByStandardizingPath];
             if (![appProxyPath hasPrefix:dopamineAppsPath]) {
-                return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedDuplicateApps userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"Duplicate_Apps_Error_Icon_Cache", nil), dopamineAppId, dopamineAppsPath, appProxy.bundleURL.path]}];
+                return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedDuplicateApps userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:DOLocalizedString(@"Duplicate_Apps_Error_Icon_Cache"), dopamineAppId, dopamineAppsPath, appProxy.bundleURL.path]}];
             }
         }
     }
@@ -442,17 +442,17 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (*errOut) return;
     *errOut = [self doExploitation];
     if (*errOut) return;
-    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Building Phys R/W Primitive", nil) debug:NO];
+    [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Building Phys R/W Primitive") debug:NO];
     *errOut = [self buildPhysRWPrimitive];
     if (*errOut) return;
-    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Cleaning Up Exploits", nil) debug:NO];
+    [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Cleaning Up Exploits") debug:NO];
     *errOut = [self cleanUpExploits];
     if (*errOut) return;
     
     // We will not be able to reset this after elevating privileges, so do it now
     if (removeJailbreakEnabled) [[DOPreferenceManager sharedManager] setPreferenceValue:@NO forKey:@"removeJailbreakEnabled"];
 
-    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Elevating Privileges", nil) debug:NO];
+    [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Elevating Privileges") debug:NO];
     *errOut = [self elevatePrivileges];
     if (*errOut) return;
     *errOut = [self showNonDefaultSystemApps];
@@ -462,7 +462,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     [[DOEnvironmentManager sharedManager] ensureJailbreakRootExists];
     
     if (removeJailbreakEnabled) {
-        [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Removing Jailbreak", nil) debug:NO];
+        [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Removing Jailbreak") debug:NO];
         *errOut = [[DOEnvironmentManager sharedManager] deleteBootstrap];
         *didRemove = YES;
         return;
@@ -484,15 +484,15 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         // This file is checked in launchd and determines whether idownloadd gets loaded after a userspace reboot or not
     }
     
-    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Loading BaseBin TrustCache", nil) debug:NO];
+    [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Loading BaseBin TrustCache") debug:NO];
     *errOut = [self loadBasebinTrustcache];
     if (*errOut) return;
     
-    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Initializing Environment", nil) debug:NO];
+    [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Initializing Environment") debug:NO];
     *errOut = [self injectLaunchdHook];
     if (*errOut) return;
     
-    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Applying Bind Mount", nil) debug:NO];
+    [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Applying Bind Mount") debug:NO];
     *errOut = [self createFakeLib];
     if (*errOut) return;
     
@@ -502,7 +502,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     *errOut = [self finalizeBootstrapIfNeeded];
     if (*errOut) return;
     
-    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Checking For Duplicate Apps", nil) debug:NO];
+    [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Checking For Duplicate Apps") debug:NO];
     *errOut = [self ensureNoDuplicateApps];
     if (*errOut) {
         *showLogs = NO;
@@ -520,7 +520,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
 - (void)finalize
 {
-    [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Rebooting Userspace", nil) debug:NO];
+    [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Rebooting Userspace") debug:NO];
     exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "reboot", "userspace", NULL);
 }
 

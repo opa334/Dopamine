@@ -7,6 +7,7 @@
 
 #import "DODownloadViewController.h"
 #import "DOUpdateCircleView.h"
+#import "DOUIManager.h"
 
 @interface DODownloadViewController ()
 
@@ -41,12 +42,12 @@
     stackView.translatesAutoresizingMaskIntoConstraints = NO;
 
     self.titleLabel = [[UILabel alloc] init];
-    self.titleLabel.text = NSLocalizedString(@"Update_Status_Downloading", nil);
+    self.titleLabel.text = DOLocalizedString(@"Update_Status_Downloading");
     self.titleLabel.font = [UIFont systemFontOfSize:24 weight:UIFontWeightMedium];
     self.titleLabel.textColor = [UIColor colorWithWhite:1.0 alpha:1.0];
 
     self.descriptionLabel = [[UILabel alloc] init];
-    self.descriptionLabel.text = NSLocalizedString(@"Update_Status_Subtitle_Please_Wait", nil);
+    self.descriptionLabel.text = DOLocalizedString(@"Update_Status_Subtitle_Please_Wait");
     self.descriptionLabel.font = [UIFont systemFontOfSize:18 weight:UIFontWeightRegular];
     self.descriptionLabel.textColor = [UIColor colorWithWhite:1.0 alpha:0.5];
     self.descriptionLabel.textAlignment = NSTextAlignmentCenter;
@@ -138,8 +139,8 @@
 }
 
 - (void)startBlinking {
-    self.titleLabel.text = NSLocalizedString(@"Update_Status_Installing", nil);
-    self.descriptionLabel.text = NSLocalizedString(@"Update_Status_Subtitle_Restart_Soon", nil);
+    self.titleLabel.text = DOLocalizedString(@"Update_Status_Installing");
+    self.descriptionLabel.text = DOLocalizedString(@"Update_Status_Subtitle_Restart_Soon");
     [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionAutoreverse | UIViewAnimationOptionRepeat | UIViewAnimationOptionAllowUserInteraction animations:^{
         self.circleView.alpha = 0.7;
     } completion:nil];

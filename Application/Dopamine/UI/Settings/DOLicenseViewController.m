@@ -8,6 +8,7 @@
 #import "DOLicenseViewController.h"
 #import "DOPSListController.h"
 #import "DOPSListItemsController.h"
+#import "DOUIManager.h"
 
 @interface DOLicenseViewController ()
 
@@ -26,7 +27,7 @@
     [super viewDidLoad];
     [DOPSListController setupViewControllerStyle:self];
 
-    UIView *header = [DOPSListItemsController makeHeader:NSLocalizedString(@"Credits_Button_License", nil) withTarget:self];
+    UIView *header = [DOPSListItemsController makeHeader:DOLocalizedString(@"Credits_Button_License") withTarget:self];
     header.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:header];
 

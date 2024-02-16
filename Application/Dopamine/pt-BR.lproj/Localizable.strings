@@ -6,9 +6,8 @@
 
 // Jailbreak Button
 "Button_Jailbreak_Title" = "Jailbreak";
-"Button_Remove_Jailbreak" = "Remover o Jailbreak";
 "Status_Title_Jailbroken" = "Jailbreak concluído!";
-"Unsupported" = "Unsupported"; //TODO
+/*Unsupported*/
 
 // Action Menu
 "Menu_Settings_Title" = "Configurações";
@@ -29,8 +28,14 @@
 "Title_Changelog" = "Histórico de mudanças";
 "Changelog_Unavailable_Text" = "Histórico de mudanças indisponível";
 
+// Removed Jailbreak Alert
+/*Removed_Jailbreak_Alert_Title*/
+/*Removed_Jailbreak_Alert_Message*/
+/*Button_Close*/
+
 // Error View
-"Button_Share" = "Share"; //TODO
+/*Button_Share*/
+/*Button_Reboot*/
 
 // Settings Toggles
 "Settings_Tweak_Injection" = "Injeção de Tweaks";
@@ -41,33 +46,38 @@
 "Button_Remove_Jailbreak" = "Remover o Jailbreak";
 "Button_Hide_Jailbreak" = "Ocultar o Jailbreak";
 "Button_Unhide_Jailbreak" = "Deixar de ocultar o Jailbreak";
-"Button_Refresh_Jailbreak_Apps" = "Refresh Jailbreak Apps"; //TODO
+/*Button_Refresh_Jailbreak_Apps*/
 "Button_Reinstall_Package_Managers" = "Reinstalar Gerenciadores de Pacotes";
 
 // Settings Hints
 "Hint_Hide_Jailbreak" = "\"Ocultar o Jailbreak\" remove temporariamente os arquivos do Jailbreak até a próxima execução";
 "Hint_Hide_Jailbreak_Jailbroken" = "\"Ocultar o Jailbreak\" desabilita parcialmente o Jailbreak e tenta deixá-lo mais difícil de ser detectado. Entretando, não é completamente efetivo.";
-"Section_Jailbreak_Settings" = "Jailbreak Settings"; //TODO
-"Section_Actions" = "Actions"; //TODO
-"Section_Customization" = "Customization"; //TODO
-"Section_Exploits" = "Exploits"; //TODO
+/*Section_Jailbreak_Settings*/
+/*Section_Actions*/
+/*Section_Customization*/
+/*Section_Exploits*/
 
 // Settings Alerts
-"Alert_Tweak_Injection_Toggled_Title" = "Userspace Reboot Required"; //TODO
+/*Alert_Tweak_Injection_Toggled_Title*/
 "Alert_Tweak_Injection_Toggled_Body" = "Para que as mudanças sejam aplicadas, é necessário reiniciar o 'Userspace'. Reiniciar agora?";
-"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Reboot Now"; //TODO
-"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Reboot Later"; //TODO
+/*Alert_Tweak_Injection_Toggled_Reboot_Now*/
+/*Alert_Tweak_Injection_Toggled_Reboot_Later*/
 "Alert_Remove_Jailbreak_Title" = "Remover o Jailbreak";
 "Alert_Remove_Jailbreak_Pressed_Body" = "Remover o Jailbreak irá deletar todos arquivos do Jailbreak, porém todos aplicativos, arquivos e informações se manterão. Você tem certeza que deseja continuar? Não será possível reverter isso.";
-"Alert_Remove_Jailbreak_Enabled_Body" = "Enabling \"Remove Jailbreak\" will delete all jailbreak-related files on the next jailbreak, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action."; //TODO
+/*Alert_Remove_Jailbreak_Enabled_Body*/
 "Button_Cancel" = "Cancelar";
-"Button_Continue" = "Continue"; //TODO
+/*Button_Continue*/
+
+// Duplicate Apps Errors
+/*Duplicate_Apps_Error_Dopamine_App*/
+/*Duplicate_Apps_Error_User_App*/
+/*Duplicate_Apps_Error_Icon_Cache*/
 
 // Settings Lists
-"Theme" = "Theme"; //TODO
-"Kernel Exploit" = "Kernel Exploit"; //TODO
-"PPL Bypass" = "PPL Bypass"; //TODO
-"PAC Bypass" = "PAC Bypass"; //TODO
+/*Theme*/
+/*Kernel Exploit*/
+/*PPL Bypass*/
+/*PAC Bypass*/
 
 // Credits
 "Credits_Button_Discord" = "Discord";
@@ -76,19 +86,20 @@
 
 // Logs
 "Initializing Environment" = "Iniciando o Ambiente do Jailbreak";
-"Loading BaseBin TrustCache" = "Loading BaseBin TrustCache"; //TODO
-"Applying Bind Mount" = "Applying Bind Mount"; //TODO
-"Removing Jailbreak" = "Removing Jailbreak"; //TODO
-"Elevating Privileges" = "Elevating Privileges"; //TODO
-"Cleaning Up Exploits" = "Cleaning Up Exploits"; //TODO
-"Building Phys R/W Primitive" = "Building Phys R/W Primitive"; //TODO
-"Rebooting Userspace" = "Rebooting Userspace"; //TODO
+/*Loading BaseBin TrustCache*/
+/*Applying Bind Mount*/
+/*Removing Jailbreak*/
+/*Elevating Privileges*/
+/*Cleaning Up Exploits*/
+/*Building Phys R/W Primitive*/
+/*Rebooting Userspace*/
 "Patchfinding" = "Patchfinding";
-"Exploiting Kernel (%@)" = "Exploiting Kernel (%@)"; //TODO
-"Bypassing PAC (%@)" = "Bypassing PAC (%@)"; //TODO
-"Bypassing PPL (%@)" = "Bypassing PPL (%@)"; //TODO
+/*Exploiting Kernel (%@)*/
+/*Bypassing PAC (%@)*/
+/*Bypassing PPL (%@)*/
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "Escolha o(s) Gerenciador(es) de Pacotes";
 "Select_Package_Managers_Install_Message" = "Se estiver em dúvida, selecione o Sileo";
 "Continue" = "Continuar";
+

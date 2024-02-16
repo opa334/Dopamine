@@ -34,7 +34,7 @@
     [super viewDidLoad];
     [DOPSListController setupViewControllerStyle:self];
 
-    UIView *header = [DOPSListItemsController makeHeader:NSLocalizedString(@"Log_Error", nil) withTarget:self];
+    UIView *header = [DOPSListItemsController makeHeader:DOLocalizedString(@"Log_Error") withTarget:self];
     header.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:header];
 
@@ -45,7 +45,7 @@
         [header.heightAnchor constraintEqualToConstant:70]
     ]];
     
-    DOActionMenuButton *shareButton = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:NSLocalizedString(@"Button_Share", nil) image:[UIImage systemImageNamed:@"square.and.arrow.up" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"share" handler:^(__kindof UIAction * _Nonnull action) {
+    DOActionMenuButton *shareButton = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:DOLocalizedString(@"Button_Share") image:[UIImage systemImageNamed:@"square.and.arrow.up" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"share" handler:^(__kindof UIAction * _Nonnull action) {
         [[DOUIManager sharedInstance] shareLogRecord];
     }] chevron:NO];
     
