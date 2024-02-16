@@ -44,8 +44,7 @@ int reboot3(uint64_t flags, ...);
         _bootstrapNeedsMigration = NO;
         _bootstrapper = [[DOBootstrapper alloc] init];
         if ([self isJailbroken]) {
-            const char *jbRoot = jbclient_get_jbroot();
-            gSystemInfo.jailbreakInfo.rootPath = jbRoot ? strdup(jbRoot) : NULL;
+            gSystemInfo.jailbreakInfo.rootPath = strdup(jbclient_get_jbroot() ?: "");
         }
         else if ([self isInstalledThroughTrollStore]) {
             [self locateJailbreakRoot];
@@ -72,7 +71,7 @@ int reboot3(uint64_t flags, ...);
 
 - (void)locateJailbreakRoot
 {
-    if (!gSystemInfo.jailbreakInfo.rootPath) {
+    if (gSystemInfo.jailbreakInfo.rootPath) {
         NSString *activePrebootPath = [self activePrebootPath];
         
         NSString *randomizedJailbreakPath;
