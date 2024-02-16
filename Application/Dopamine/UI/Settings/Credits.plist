@@ -201,11 +201,11 @@
 					<key>name</key>
 					<string>Clarity</string>
 					<key>link</key>
-					<string>http://github.com/TheRealClarity</string>
+					<string>https://github.com/TheRealClarity</string>
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>dhinakg</string>
+					<string>Dhinak G</string>
 					<key>link</key>
 					<string>https://twitter.com/dhinakg</string>
 				</dict>
@@ -213,19 +213,19 @@
 					<key>name</key>
 					<string>Capt Inc</string>
 					<key>link</key>
-					<string>http://github.com/captinc</string>
+					<string>https://github.com/captinc</string>
 				</dict>
 				<dict>
 					<key>name</key>
 					<string>Sam Bingner</string>
 					<key>link</key>
-					<string>http://twitter.com/sbingner</string>
+					<string>https://github.com/sbingner</string>
 				</dict>
 				<dict>
 					<key>name</key>
 					<string>Procursus</string>
 					<key>link</key>
-					<string>http://github.com/ProcursusTeam</string>
+					<string>https://procursus.social/@team</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -237,13 +237,13 @@
 					<key>name</key>
 					<string>Amy While</string>
 					<key>link</key>
-					<string>https://twitter.com/elihwyma</string>
+					<string>https://github.com/elihwyma</string>
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>kirb</string>
+					<string>Adam Demasi</string>
 					<key>link</key>
-					<string>https://twitter.com/hbkirb</string>
+					<string>https://github.com/kirb</string>
 				</dict>
 			</array>
 		</dict>
