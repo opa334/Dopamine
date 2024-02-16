@@ -68,8 +68,6 @@ jobs:
       - name: Build ipa
         run: |
           set -x
-          sudo security import Exploits/fastPath/arm.pfx -k /Library/Keychains/System.keychain -P password -A
-
           export THEOS=$HOME/theos
           gmake -j$(sysctl -n hw.physicalcpu)
           mv Dopamine/Dopamine.tipa Dopamine.ipa
