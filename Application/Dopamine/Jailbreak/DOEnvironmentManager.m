@@ -326,7 +326,7 @@ int reboot3(uint64_t flags, ...);
 
 - (NSError*)updateEnvironment
 {
-    NSString *newBasebinTarPath = [[NSBundle mainBundle].bundlePath stringByAppendingString:@"basebin.tar"];
+    NSString *newBasebinTarPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"basebin.tar"];
     int result = jbclient_platform_stage_jailbreak_update(newBasebinTarPath.fileSystemRepresentation);
     if (result == 0) {
         [self rebootUserspace];
