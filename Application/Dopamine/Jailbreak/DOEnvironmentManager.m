@@ -71,7 +71,7 @@ int reboot3(uint64_t flags, ...);
 
 - (void)locateJailbreakRoot
 {
-    if (gSystemInfo.jailbreakInfo.rootPath) {
+    if (!gSystemInfo.jailbreakInfo.rootPath) {
         NSString *activePrebootPath = [self activePrebootPath];
         
         NSString *randomizedJailbreakPath;
