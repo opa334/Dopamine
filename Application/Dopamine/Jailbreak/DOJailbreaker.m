@@ -374,11 +374,13 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         NSString *infoPlistPath = [[dopamineAppsPath stringByAppendingPathComponent:dopamineAppName] stringByAppendingPathComponent:@"Info.plist"];
         NSDictionary *infoDictionary = [NSDictionary dictionaryWithContentsOfFile:infoPlistPath];
         NSString *appId = infoDictionary[@"CFBundleIdentifier"];
-        if (![dopamineInstalledAppIds containsObject:appId]) {
-            [dopamineInstalledAppIds addObject:appId];
-        }
-        else {
-            return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedDuplicateApps userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"Duplicate_Apps_Error_Dopamine_App", nil), appId, dopamineAppsPath]}];
+        if (appId) {
+            if (![dopamineInstalledAppIds containsObject:appId]) {
+                [dopamineInstalledAppIds addObject:appId];
+            }
+            else {
+                return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedDuplicateApps userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"Duplicate_Apps_Error_Dopamine_App", nil), appId, dopamineAppsPath]}];
+            }
         }
     }
     
@@ -390,7 +392,9 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
                 NSString *infoPlistPath = [appPath stringByAppendingPathComponent:@"Info.plist"];
                 NSDictionary *infoDictionary = [NSDictionary dictionaryWithContentsOfFile:infoPlistPath];
                 NSString *appId = infoDictionary[@"CFBundleIdentifier"];
-                [userInstalledAppIds addObject:appId];
+                if (appId) {
+                    [userInstalledAppIds addObject:appId];
+                }
             }
         }
     }
