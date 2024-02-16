@@ -8,7 +8,7 @@
 "Button_Jailbreak_Title" = "Jailbreak";
 "Button_Remove_Jailbreak" = "Jailbreak環境を削除";
 "Status_Title_Jailbroken" = "Jailbroken";
-"Unsupported" = "Unsupported"; //TODO
+"Unsupported" = "Unsupported";
 
 // Action Menu
 "Menu_Settings_Title" = "設定";
@@ -30,7 +30,7 @@
 "Changelog_Unavailable_Text" = "更新履歴は利用できません";
 
 // Error View
-"Button_Share" = "Share"; //TODO
+"Button_Share" = "共有";
 
 // Settings Toggles
 "Settings_Tweak_Injection" = "Tweak Injection";
@@ -38,55 +38,55 @@
 "Settings_Verbose_Logs" = "詳細なログ";
 
 // Settings Buttons
-"Button_Remove_Jailbreak" = "Jailbreak環境を削除";
+"Button_Remove_Jailbreak" = "Jailbreak環境の削除";
 "Button_Hide_Jailbreak" = "Jailbreakを隠す";
 "Button_Unhide_Jailbreak" = "Jailbreak環境を戻す";
 "Button_Refresh_Jailbreak_Apps" = "Refresh Jailbreak Apps"; //TODO
-"Button_Reinstall_Package_Managers" = "パッケージマネージャーの再インストール";
+"Button_Reinstall_Package_Managers" = "パッケージマネージャーを再インストール";
 
 // Settings Hints
 "Hint_Hide_Jailbreak" = "\"Jailbreakを隠す\"は、次のjailbreakの実行までjailbreak関連のファイルを一時的に隠します";
 "Hint_Hide_Jailbreak_Jailbroken" = "\"Jailbreakを隠す\"は、jailbreakを部分的に無効にして、jailbreak検出をより困難にすることを目的としています。しかし、この機能ではすべてを完全に隠せるわけではありません。";
-"Section_Jailbreak_Settings" = "Jailbreak Settings"; //TODO
-"Section_Actions" = "Actions"; //TODO
-"Section_Customization" = "Customization"; //TODO
-"Section_Exploits" = "Exploits"; //TODO
+"Section_Jailbreak_Settings" = "Jailbreak Settings";
+"Section_Actions" = "Actions";
+"Section_Customization" = "Customization";
+"Section_Exploits" = "Exploits";
 
 // Settings Alerts
-"Alert_Tweak_Injection_Toggled_Title" = "Userspace Reboot Required"; //TODO
+"Alert_Tweak_Injection_Toggled_Title" = "Userspaceの再起動が必要です";
 "Alert_Tweak_Injection_Toggled_Body" = "この変更を適用するためには、userspaceを再起動する必要があります。今すぐ再起動をしてもよろしいですか？";
-"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Reboot Now"; //TODO
-"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Reboot Later"; //TODO
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "今すぐ再起動";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "後で再起動";
 "Alert_Remove_Jailbreak_Title" = "Jailbreak環境を削除";
 "Alert_Remove_Jailbreak_Pressed_Body" = "Jailbreak環境を削除すると、jailbreak関連のファイルはすべて削除されますが、通常のアプリケーション、ファイル、データはすべて保持されます。本当に続けてもよろしいですか？この操作を元に戻すことはできません。";
-"Alert_Remove_Jailbreak_Enabled_Body" = "Enabling \"Remove Jailbreak\" will delete all jailbreak-related files on the next jailbreak, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action."; //TODO
+"Alert_Remove_Jailbreak_Enabled_Body" = "\"Jailbreak環境を削除\"を有効にすると、次回のjailbreak実行時にjailbreak関連ファイルはすべて削除されますが、通常のアプリ、ファイル、データはすべて保持されます。本当に続けてもよろしいですか？この操作を元に戻すことはできません。";
 "Button_Cancel" = "キャンセル";
-"Button_Continue" = "Continue"; //TODO
+"Button_Continue" = "続ける";
 
 // Settings Lists
-"Theme" = "Theme"; //TODO
-"Kernel Exploit" = "Kernel Exploit"; //TODO
-"PPL Bypass" = "PPL Bypass"; //TODO
-"PAC Bypass" = "PAC Bypass"; //TODO
+"Theme" = "テーマ";
+"Kernel Exploit" = "Kernel Exploit";
+"PPL Bypass" = "PPL Bypass";
+"PAC Bypass" = "PAC Bypass";
 
 // Credits
 "Credits_Button_Discord" = "Discord";
 "Credits_Button_License" = "ライセンス";
 "Credits_Button_Source_Code" = "ソースコード";
 
-// Logs
-"Initializing Environment" = "Jailbreak環境の初期設定中";
-"Loading BaseBin TrustCache" = "Loading BaseBin TrustCache"; //TODO
-"Applying Bind Mount" = "Applying Bind Mount"; //TODO
-"Removing Jailbreak" = "Removing Jailbreak"; //TODO
-"Elevating Privileges" = "Elevating Privileges"; //TODO
-"Cleaning Up Exploits" = "Cleaning Up Exploits"; //TODO
-"Building Phys R/W Primitive" = "Building Phys R/W Primitive"; //TODO
-"Rebooting Userspace" = "Rebooting Userspace"; //TODO
-"Patchfinding" = "Patchfinderを実行中";
-"Exploiting Kernel (%@)" = "Exploiting Kernel (%@)"; //TODO
-"Bypassing PAC (%@)" = "Bypassing PAC (%@)"; //TODO
-"Bypassing PPL (%@)" = "Bypassing PPL (%@)"; //TODO
+// Logs ... Keep this section in English for user support
+"Initializing Environment" = "Initializing Jailbreak Environment";
+"Loading BaseBin TrustCache" = "Loading BaseBin TrustCache";
+"Applying Bind Mount" = "Applying Bind Mount";
+"Removing Jailbreak" = "Removing Jailbreak";
+"Elevating Privileges" = "Elevating Privileges";
+"Cleaning Up Exploits" = "Cleaning Up Exploits";
+"Building Phys R/W Primitive" = "Building Phys R/W Primitive";
+"Rebooting Userspace" = "Rebooting Userspace";
+"Patchfinding" = "Patchfinding";
+"Exploiting Kernel (%@)" = "Exploiting Kernel (%@)";
+"Bypassing PAC (%@)" = "Bypassing PAC (%@)";
+"Bypassing PPL (%@)" = "Bypassing PPL (%@)";
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "パッケージマネージャーを選択";
