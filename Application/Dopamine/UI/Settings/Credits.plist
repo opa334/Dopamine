@@ -229,7 +229,7 @@
 				</dict>
 				<dict>
 					<key>name</key>
-					<string>RootHideDev</string>
+					<string>rootHideDev</string>
 					<key>link</key>
 					<string>https://twitter.com/RootHideDev</string>
 				</dict>
