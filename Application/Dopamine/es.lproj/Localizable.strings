@@ -64,7 +64,7 @@
 "Alert_Tweak_Injection_Toggled_Reboot_Later" = "Reiniciar más tarde";
 "Alert_Remove_Jailbreak_Title" = "Quitar Jailbreak";
 "Alert_Remove_Jailbreak_Pressed_Body" = "Al eliminar jailbreak se borrarán todos los archivos relacionados con jailbreak, pero se conservarán todas las aplicaciones, archivos y datos normales. ¿Estás seguro de que quieres continuar? No puedes deshacer esta acción";
-"Alert_Remove_Jailbreak_Enabled_Body" = "Al activar "Quitar Jailbreak" se eliminarán todos los archivos relacionados con el jailbreak en el próximo jailbreak, pero se conservarán todas las aplicaciones, archivos y datos normales. ¿Estás seguro de que quieres continuar? No puedes deshacer esta acción";
+"Alert_Remove_Jailbreak_Enabled_Body" = "Al activar \"Quitar Jailbreak\" se eliminarán todos los archivos relacionados con el jailbreak en el próximo jailbreak, pero se conservarán todas las aplicaciones, archivos y datos normales. ¿Estás seguro de que quieres continuar? No puedes deshacer esta acción";
 "Button_Cancel" = "Cancelar";
 "Button_Continue" = "Continuar";
 
