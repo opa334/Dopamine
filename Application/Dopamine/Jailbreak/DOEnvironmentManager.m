@@ -251,9 +251,9 @@ int reboot3(uint64_t flags, ...);
     if (ur == 0 && gr == 0) {
         rootBlock();
     }
-
+    
+    if (gr == 0 && orgGroup != 0) setgid(orgGroup);
     if (ur == 0 && orgUser != 0) seteuid(orgUser);
-    if (gr == 0 && orgGroup != 0) setegid(orgGroup);
 }
 
 - (int)runTrollStoreAction:(NSString *)action
