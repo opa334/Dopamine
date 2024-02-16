@@ -153,7 +153,7 @@
     ])];
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        if ([[DOUIManager sharedInstance] shouldUpdateEnvironment])
+        if ([[DOUIManager sharedInstance] environmentUpdateAvailable])
         {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self setupUpdateAvailable:YES];

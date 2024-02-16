@@ -92,7 +92,7 @@
     self.gradientMask.locations = @[@0.0, @0.01, @0.5, @0.87];
     self.changelogSuperview.layer.mask = self.gradientMask;
 
-    BOOL envUpdate = [[DOUIManager sharedInstance] shouldUpdateEnvironment];
+    BOOL envUpdate = [[DOUIManager sharedInstance] environmentUpdateAvailable];
     
     self.button = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:NSLocalizedString(envUpdate ? @"Button_Update_Environment" : @"Button_Update", nil) image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"update" handler:^(__kindof UIAction * _Nonnull action) {
         if (envUpdate)
@@ -102,14 +102,14 @@
             NSError *error = [[DOEnvironmentManager sharedManager] updateEnvironment];
             if (error)
             {
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error updating basebins" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:nil]];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error Updating Basebin" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Button_Close", nil) style:UIAlertActionStyleDefault handler:nil]];
                 [self presentViewController:alert animated:YES completion:nil];
             }
             return;
         }
 
-        if ([[DOUIManager sharedInstance] launchedReleaseNeedsManualUpdate])
+        if ([[DOUIManager sharedInstance] launchedReleaseNeedsManualUpdate] || ![DOEnvironmentManager sharedManager].isInstalledThroughTrollStore)
         {
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/opa334/Dopamine/releases"] options:@{} completionHandler:nil];
             return;

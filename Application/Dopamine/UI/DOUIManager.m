@@ -93,13 +93,13 @@
     return releases;
 }
 
-- (BOOL)shouldUpdateEnvironment
+- (BOOL)environmentUpdateAvailable
 {
     if (![[DOEnvironmentManager sharedManager] jailbrokenVersion])
         return NO;
-    long long latestVersion = [self numericalRepresentationForVersion:[[DOEnvironmentManager sharedManager] jailbrokenVersion]];
+    long long jailbrokenVersion = [self numericalRepresentationForVersion:[[DOEnvironmentManager sharedManager] jailbrokenVersion]];
     long long launchedVersion = [self numericalRepresentationForVersion:[self getLaunchedReleaseTag]];
-    return latestVersion != launchedVersion;
+    return launchedVersion > jailbrokenVersion;
 }
 
 - (bool)launchedReleaseNeedsManualUpdate

@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startLogCapture;
 - (void)shareLogRecord;
 - (BOOL)isUpdateAvailable;
-- (BOOL)shouldUpdateEnvironment;
+- (BOOL)environmentUpdateAvailable;
 - (NSArray *)getLatestReleases;
 - (NSString*)getLaunchedReleaseTag;
 - (NSString*)getLatestReleaseTag;
