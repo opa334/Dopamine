@@ -2,7 +2,7 @@
 
 // Log
 "Status_Title_Jailbreaking" = "Jailbreaking";
-"Log_Error" = "失敗";
+"Log_Error" = "エラー";
 
 // Jailbreak Button
 "Button_Jailbreak_Title" = "Jailbreak";
