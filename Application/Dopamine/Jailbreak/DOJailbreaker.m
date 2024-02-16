@@ -31,6 +31,12 @@
 #import "spawn.h"
 int posix_spawnattr_set_registered_ports_np(posix_spawnattr_t * __restrict attr, mach_port_t portarray[], uint32_t count);
 
+#define kCFPreferencesNoContainer CFSTR("kCFPreferencesNoContainer")
+void _CFPreferencesSetValueWithContainer(CFStringRef key, CFPropertyListRef value, CFStringRef applicationID, CFStringRef userName, CFStringRef hostName, CFStringRef containerPath);
+Boolean _CFPreferencesSynchronizeWithContainer(CFStringRef applicationID, CFStringRef userName, CFStringRef hostName, CFStringRef containerPath);
+CFArrayRef _CFPreferencesCopyKeyListWithContainer(CFStringRef applicationID, CFStringRef userName, CFStringRef hostName, CFStringRef containerPath);
+CFDictionaryRef _CFPreferencesCopyMultipleWithContainer(CFArrayRef keysToFetch, CFStringRef applicationID, CFStringRef userName, CFStringRef hostName, CFStringRef containerPath);
+
 //char *_dirhelper(int a, char *dst, size_t size);
 
 NSString *const JBErrorDomain = @"JBErrorDomain";
@@ -248,6 +254,13 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     return nil;
 }
 
+- (NSError *)showNonDefaultSystemApps
+{
+    _CFPreferencesSetValueWithContainer(CFSTR("SBShowNonDefaultSystemApps"), kCFBooleanTrue, CFSTR("com.apple.springboard"), CFSTR("mobile"), kCFPreferencesAnyHost, kCFPreferencesNoContainer);
+    _CFPreferencesSynchronizeWithContainer(CFSTR("com.apple.springboard"), CFSTR("mobile"), kCFPreferencesAnyHost, kCFPreferencesNoContainer);
+    return nil;
+}
+
 - (NSError *)loadBasebinTrustcache
 {
     trustcache_file_v1 *basebinTcFile = NULL;
@@ -437,6 +450,8 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 
     [[DOUIManager sharedInstance] sendLog:NSLocalizedString(@"Elevating Privileges", nil) debug:NO];
     *errOut = [self elevatePrivileges];
+    if (*errOut) return;
+    *errOut = [self showNonDefaultSystemApps];
     if (*errOut) return;
 
     // Now that we are unsandboxed, populate the jailbreak root path
