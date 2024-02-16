@@ -658,6 +658,8 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (error) return error;
     NSString *path = [[NSString stringWithUTF8String:gSystemInfo.jailbreakInfo.rootPath] stringByDeletingLastPathComponent];
     [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
+    if (error) return error;
+    [[NSFileManager defaultManager] removeItemAtPath:@"/var/jb" error:nil];
     return error;
 }
 
