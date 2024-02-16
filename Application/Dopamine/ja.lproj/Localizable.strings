@@ -31,6 +31,7 @@
 
 // Error View
 "Button_Share" = "共有";
+"Button_Reboot" = "再起動";
 
 // Settings Toggles
 "Settings_Tweak_Injection" = "Tweak Injection";
@@ -41,7 +42,7 @@
 "Button_Remove_Jailbreak" = "Jailbreak環境の削除";
 "Button_Hide_Jailbreak" = "Jailbreakを隠す";
 "Button_Unhide_Jailbreak" = "Jailbreak環境を戻す";
-"Button_Refresh_Jailbreak_Apps" = "Refresh Jailbreak Apps"; //TODO
+"Button_Refresh_Jailbreak_Apps" = "Jailbreakアプリを更新 (UICache)";
 "Button_Reinstall_Package_Managers" = "パッケージマネージャーを再インストール";
 
 // Settings Hints
