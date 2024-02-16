@@ -67,9 +67,7 @@ jobs:
           
       - name: Build ipa
         run: |
-          set -x
-          export THEOS=$HOME/theos
-          gmake -j$(sysctl -n hw.physicalcpu)
+          make
           mv Dopamine/Dopamine.tipa Dopamine.ipa
 
       - name: Release Logs
