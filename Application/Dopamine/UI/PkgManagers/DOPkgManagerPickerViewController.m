@@ -19,7 +19,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     DOPkgManagerPickerView *picker = [[DOPkgManagerPickerView alloc] initWithCallback:^(BOOL success) {
-        [[DOEnvironmentManager sharedManager] reinstallPackageManagers];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[DOEnvironmentManager sharedManager] reinstallPackageManagers];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.navigationController popViewControllerAnimated:YES];
+            });
+        });
     }];
     picker.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:picker];
