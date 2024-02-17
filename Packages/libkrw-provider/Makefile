@@ -11,6 +11,7 @@ sign: $(TARGET)
 
 $(TARGET): $(wildcard src/*.c)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+	install_name_tool -change "@loader_path/libjailbreak.dylib" "@rpath/usr/lib/libjailbreak.dylib" $@
 
 clean:
 	@rm -f $(TARGET)
