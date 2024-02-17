@@ -41,10 +41,10 @@ __attribute__((used)) krw_plugin_initializer_t krw_initializer(krw_handlers_t ha
 	load_primitives_once();
 
 	handlers->kbase = kbase_wrapper;
-    handlers->kread = kreadbuf;
-    handlers->kwrite = kwritebuf_wrapper;
-    handlers->kmalloc = (krw_kmalloc_func_t)(kalloc);
-    handlers->kdealloc = (krw_kdealloc_func_t)(kfree);
+	handlers->kread = kreadbuf;
+	handlers->kwrite = kwritebuf_wrapper;
+	handlers->kmalloc = (krw_kmalloc_func_t)(kalloc);
+	handlers->kdealloc = (krw_kdealloc_func_t)(kfree);
 	return 0;
 }
 
