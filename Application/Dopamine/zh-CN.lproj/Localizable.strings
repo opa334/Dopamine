@@ -11,20 +11,20 @@
 
 // Action Menu
 "Menu_Settings_Title" = "设置";
-"Menu_Restart_SpringBoard_Title" = "注销";
-"Menu_Reboot_Userspace_Title" = "重启用户空间";
+"Menu_Restart_SpringBoard_Title" = "重新启动SpringBoard";
+"Menu_Reboot_Userspace_Title" = "重新启动用户空间";
 "Menu_Credits_Title" = "关于";
 
 // Updating
 "Button_Update" = "更新";
-"Button_Update_Available" = "可更新";
+"Button_Update_Available" = "有更新可用";
 "Button_Update_Environment" = "更新环境";
 
 // Update View
 "Update_Status_Downloading" = "正在下载更新…";
-"Update_Status_Subtitle_Please_Wait" = "请等待完成下载";
+"Update_Status_Subtitle_Please_Wait" = "请等待直至下载完成";
 "Update_Status_Installing" = "正在安装更新…";
-"Update_Status_Subtitle_Restart_Soon" = "设备即将重启";
+"Update_Status_Subtitle_Restart_Soon" = "设备即将重新启动";
 "Title_Changelog" = "更新日志";
 "Changelog_Unavailable_Text" = "更新日志不可用";
 
@@ -35,7 +35,7 @@
 
 // Error View
 "Button_Share" = "分享";
-"Button_Reboot" = "重启";
+"Button_Reboot" = "重新启动";
 
 // Settings Toggles
 "Settings_Tweak_Injection" = "启用插件";
@@ -58,20 +58,20 @@
 "Section_Exploits" = "漏洞利用";
 
 // Settings Alerts
-"Alert_Tweak_Injection_Toggled_Title" = "需要重启用户空间";
-"Alert_Tweak_Injection_Toggled_Body" = "为使变更生效需要重启用户空间，立即执行？";
-"Alert_Tweak_Injection_Toggled_Reboot_Now" = "立刻重启";
-"Alert_Tweak_Injection_Toggled_Reboot_Later" = "稍后重启";
+"Alert_Tweak_Injection_Toggled_Title" = "需要重新启动用户空间";
+"Alert_Tweak_Injection_Toggled_Body" = "需要重新启动用户空间才能应用变更，立即执行？";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "重新启动";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "以后";
 "Alert_Remove_Jailbreak_Title" = "移除越狱";
-"Alert_Remove_Jailbreak_Pressed_Body" = "「移除越狱」将移除所有和越狱相关的文件，但将保留普通 App、文件、数据。请注意，此操作无法撤销。确认移除越狱吗？";
-"Alert_Remove_Jailbreak_Enabled_Body" = "「移除越狱」将在下次越狱时移除所有和越狱相关的文件，但将保留普通 App、文件、数据。请注意，此操作无法撤销。确认移除越狱吗？";
-"Button_Cancel" = "取消";
+"Alert_Remove_Jailbreak_Pressed_Body" = "「移除越狱」将移除所有和越狱相关的文件，但将保留普通 App、文档及数据。请注意，此操作无法撤销。确认移除越狱吗？";
+"Alert_Remove_Jailbreak_Enabled_Body" = "「移除越狱」将在下次越狱时移除所有和越狱相关的文件，但将保留普通 App、文档及数据。请注意，此操作无法撤销。确认移除越狱吗？";
+"Button_Cancel" = "以后";
 "Button_Continue" = "继续";
 
 // Duplicate Apps Errors
-"Duplicate_Apps_Error_Dopamine_App" = "检测到多个标识符为 \"%@\" 的应用在Dopamine的应用目录中 (\"%@\")，无法继续。";
-"Duplicate_Apps_Error_User_App" = "检测到标识符为 %@ 的应用程序存在于 Dopamines 应用目录中 (\"%@\") 但也单独安装在系统上，无法继续。";
-"Duplicate_Apps_Error_Icon_Cache" = "检测到标识符为 \"%@\" 的应用程序存在于 Dopamine 应用程序目录中 (\"%@\") 但也在不同路径 (\"%@\") 下注册了图标缓存，无法继续。";
+"Duplicate_Apps_Error_Dopamine_App" = "检测到多个标识符为 \"%@\" 的应用在 Dopamine 应用目录中 (\"%@\")，无法继续。";
+"Duplicate_Apps_Error_User_App" = "检测到标识符为 %@ 的应用程序存在于 Dopamines 应用目录中 (\"%@\") ，但其已被单独安装在系统上，无法继续。";
+"Duplicate_Apps_Error_Icon_Cache" = "检测到标识符为 \"%@\" 的应用程序存在于 Dopamine 应用程序目录中 (\"%@\")，但其已在不同路径 (\"%@\") 下注册了图标缓存，无法继续。";
 
 // Settings Lists
 "Theme" = "主题";
@@ -86,20 +86,20 @@
 
 // Logs
 "Initializing Environment" = "初始化环境";
-"Loading BaseBin TrustCache" = "加载 BaseBin TrustCache";
-"Applying Bind Mount" = "应用 Bind Mount";
+"Loading BaseBin TrustCache" = "将基础套件加载至信任缓存（TrustCache）";
+"Applying Bind Mount" = "执行绑定挂载";
 "Removing Jailbreak" = "移除越狱";
 "Elevating Privileges" = "提升权限";
 "Cleaning Up Exploits" = "清理环境";
-"Building Phys R/W Primitive" = "构建 Phys R/W Primitive";
-"Rebooting Userspace" = "重启用户空间";
+"Building Phys R/W Primitive" = "构建硬件读写条件";
+"Rebooting Userspace" = "重新启动用户空间";
 "Patchfinding" = "查找地址";
 "Exploiting Kernel (%@)" = "利用内核漏洞 (%@)";
-"Bypassing PAC (%@)" = "绕过 PAC (%@)";
-"Bypassing PPL (%@)" = "绕过 PPL (%@)";
+"Bypassing PAC (%@)" = "正在绕过 PAC (%@)";
+"Bypassing PPL (%@)" = "正在绕过 PPL (%@)";
 
 // Package Manager selection
-"Status_Title_Select_Package_Managers" = "选择包管理器（越狱商店）";
-"Select_Package_Managers_Install_Message" = "若你不确定如何选择，请使用 Sileo";
+"Status_Title_Select_Package_Managers" = "选择包管理器";
+"Select_Package_Managers_Install_Message" = "若不确定如何选择，请使用 Sileo";
 "Continue" = "继续";
 
