@@ -20,7 +20,7 @@ permissions:
   contents: write
 
 env:
-  VERSION: '2.0.2'
+  VERSION: '2.0.4'
  
 jobs:
   build:
@@ -28,28 +28,43 @@ jobs:
     environment: Auto Build And Release
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@main
 
-      - name: Install Procursus
-        uses: wwg135/procursus-action@main
+      - name: Checkout tools repo
+        uses: actions/checkout@main
         with:
-          packages: ldid findutils sed coreutils make
-          
-      - name: Pre theos
-        run: |
-         curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos > theos
-         sed -i '' 's/get_sdks$//g' theos
-         bash theos        
-     
-      - name: Build and Install trustcache
+          repository: opa334/ChOma
+          path: BaseBin/ChOma
+
+      - name: Checkout tools repo
+        uses: actions/checkout@main
+        with:
+          repository: opa334/XPF
+          path: BaseBin/XPF
+
+      - name: Checkout tools repo
+        uses: actions/checkout@main
+        with:
+          repository: opa334/opainject
+          path: BaseBin/opainject
+
+      - name: Bootstrap Procursus
+        uses: w2599/procursus-action@main
+        with:
+          packages: ldid make findutils coreutils xz-utils
+
+      - name: Pre trustcache
         run: |
           set -x
           git clone https://github.com/CRKatri/trustcache
           cd trustcache
           gmake -j$(sysctl -n hw.physicalcpu) OPENSSL=1
           sudo cp trustcache /opt/procursus/bin/
+
+      - name: Pre theos
+        run: |
+         curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos > theos
+         bash theos
           
       - name: Set env
         run: |
@@ -67,8 +82,14 @@ jobs:
           
       - name: Build ipa
         run: |
+          set -x
+          export THEOS=$HOME/theos
+          echo $GITHUB_WORKSPACE
+          cd Application/Dopamine/Resources
+          bash download_bootstraps.sh
+          cd $GITHUB_WORKSPACE
           make
-          mv Dopamine/Dopamine.tipa Dopamine.ipa
+          mv Application/Dopamine.tipa Dopamine.ipa
 
       - name: Release Logs
         run: |
