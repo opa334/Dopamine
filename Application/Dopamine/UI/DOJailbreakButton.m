@@ -146,7 +146,7 @@
 
     UILabel *titleLabel = [[UILabel alloc] init];
     titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    titleLabel.text = NSLocalizedString(@"Status_Title_Jailbreaking", nil);
+    titleLabel.text = DOLocalizedString(@"Status_Title_Jailbreaking");
     titleLabel.textColor = [UIColor whiteColor];
     titleLabel.font = [UIFont systemFontOfSize:18 weight:UIFontWeightRegular];
     titleLabel.textAlignment = NSTextAlignmentCenter;

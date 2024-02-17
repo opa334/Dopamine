@@ -6,7 +6,6 @@
 
 // Jailbreak Button
 "Button_Jailbreak_Title" = "Jailbreak";
-"Button_Remove_Jailbreak" = "Jailbreak環境を削除";
 "Status_Title_Jailbroken" = "Jailbroken";
 "Unsupported" = "Unsupported";
 
@@ -28,6 +27,11 @@
 "Update_Status_Subtitle_Restart_Soon" = "デバイスはすぐに再起動します";
 "Title_Changelog" = "更新履歴";
 "Changelog_Unavailable_Text" = "更新履歴は利用できません";
+
+// Removed Jailbreak Alert
+/*Removed_Jailbreak_Alert_Title*/
+/*Removed_Jailbreak_Alert_Message*/
+/*Button_Close*/
 
 // Error View
 "Button_Share" = "共有";
@@ -64,6 +68,11 @@
 "Button_Cancel" = "キャンセル";
 "Button_Continue" = "続ける";
 
+// Duplicate Apps Errors
+/*Duplicate_Apps_Error_Dopamine_App*/
+/*Duplicate_Apps_Error_User_App*/
+/*Duplicate_Apps_Error_Icon_Cache*/
+
 // Settings Lists
 "Theme" = "テーマ";
 "Kernel Exploit" = "Kernel Exploit";
@@ -75,7 +84,7 @@
 "Credits_Button_License" = "ライセンス";
 "Credits_Button_Source_Code" = "ソースコード";
 
-// Logs ... Keep this section in English for user support
+// Logs
 "Initializing Environment" = "Initializing Jailbreak Environment";
 "Loading BaseBin TrustCache" = "Loading BaseBin TrustCache";
 "Applying Bind Mount" = "Applying Bind Mount";
@@ -93,3 +102,4 @@
 "Status_Title_Select_Package_Managers" = "パッケージマネージャーを選択";
 "Select_Package_Managers_Install_Message" = "どちらを選択するか迷った場合は、Sileoを選択してください";
 "Continue" = "続ける";
+

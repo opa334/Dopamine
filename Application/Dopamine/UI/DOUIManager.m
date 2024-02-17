@@ -292,4 +292,23 @@
     });
 }
 
+- (NSString *)localizedStringForKey:(NSString*)key
+{
+    NSString *candidate = NSLocalizedString(key, nil);
+    if ([candidate isEqualToString:key]) {
+        if (!_fallbackLocalizations) {
+            _fallbackLocalizations = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"en.lproj/Localizable.strings"]];
+        }
+        candidate = _fallbackLocalizations[key];
+        if (!candidate) candidate = key;
+    }
+    return candidate;
+}
+
 @end
+
+
+NSString *DOLocalizedString(NSString *key)
+{
+    return [[DOUIManager sharedInstance] localizedStringForKey:key];
+}

@@ -16,7 +16,7 @@
 #import <dlfcn.h>
 #import <sys/stat.h>
 
-#define LIBKRW_DOPAMINE_BUNDLED_VERSION @"2.0.0"
+#define LIBKRW_DOPAMINE_BUNDLED_VERSION @"2.0.1"
 #define LIBROOT_DOPAMINE_BUNDLED_VERSION @"1.0.1"
 #define BASEBIN_LINK_BUNDLED_VERSION @"1.0.0"
 

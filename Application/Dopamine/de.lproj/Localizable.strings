@@ -6,7 +6,6 @@
 
 // Jailbreak Button
 "Button_Jailbreak_Title" = "Jailbreak";
-"Button_Remove_Jailbreak" = "Jailbreak entfernen";
 "Status_Title_Jailbroken" = "Gejailbreakt";
 "Unsupported" = "Nicht unterstützt";
 
@@ -103,3 +102,4 @@
 "Status_Title_Select_Package_Managers" = "Paket Manager auswählen";
 "Select_Package_Managers_Install_Message" = "Bei Unklarheiten, wähle Sileo aus";
 "Continue" = "Fortsetzen";
+

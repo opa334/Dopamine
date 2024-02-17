@@ -42,7 +42,7 @@
     [super viewDidLoad];
 
     UILabel *title = [[UILabel alloc] init];
-    title.text = NSLocalizedString(@"Title_Changelog", nil);
+    title.text = DOLocalizedString(@"Title_Changelog");
     title.font = [UIFont systemFontOfSize:24 weight:UIFontWeightMedium];
     title.textColor = [UIColor colorWithWhite:1.0 alpha:1.0];
     title.textAlignment = NSTextAlignmentCenter;
@@ -94,7 +94,7 @@
 
     BOOL envUpdate = [[DOUIManager sharedInstance] environmentUpdateAvailable];
     
-    self.button = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:NSLocalizedString(envUpdate ? @"Button_Update_Environment" : @"Button_Update", nil) image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"update" handler:^(__kindof UIAction * _Nonnull action) {
+    self.button = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:DOLocalizedString(envUpdate ? @"Button_Update_Environment" : @"Button_Update") image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"update" handler:^(__kindof UIAction * _Nonnull action) {
         if (envUpdate)
         {
             self.button.enabled = NO;
@@ -103,13 +103,13 @@
             if (error)
             {
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error Updating Basebin" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Button_Close", nil) style:UIAlertActionStyleDefault handler:nil]];
+                [alert addAction:[UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Close") style:UIAlertActionStyleDefault handler:nil]];
                 [self presentViewController:alert animated:YES completion:nil];
             }
             return;
         }
 
-        if ([[DOUIManager sharedInstance] launchedReleaseNeedsManualUpdate] || ![DOEnvironmentManager sharedManager].isInstalledThroughTrollStore)
+        if (![DOEnvironmentManager sharedManager].isJailbroken || [[DOUIManager sharedInstance] launchedReleaseNeedsManualUpdate] || ![DOEnvironmentManager sharedManager].isInstalledThroughTrollStore)
         {
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/opa334/Dopamine/releases"] options:@{} completionHandler:nil];
             return;
@@ -154,7 +154,7 @@
 
     if (releases.count == 0)
     {
-        [changelogText appendAttributedString:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Changelog_Unavailable_Text", nil) attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:18], NSForegroundColorAttributeName : [UIColor whiteColor], NSParagraphStyleAttributeName:paragraphStyle}]];
+        [changelogText appendAttributedString:[[NSAttributedString alloc] initWithString:DOLocalizedString(@"Changelog_Unavailable_Text") attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:18], NSForegroundColorAttributeName : [UIColor whiteColor], NSParagraphStyleAttributeName:paragraphStyle}]];
         dispatch_async(dispatch_get_main_queue(), ^{
             self.changelog.attributedText = changelogText;
         });

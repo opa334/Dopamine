@@ -75,7 +75,7 @@
     //Header
     DOHeaderView *headerView = [[DOHeaderView alloc] initWithImage: [UIImage imageNamed:@"Dopamine"] subtitles: @[
         [DOGlobalAppearance mainSubtitleString:[[DOEnvironmentManager sharedManager] versionSupportString]],
-        [DOGlobalAppearance secondarySubtitleString:NSLocalizedString(@"Credits_Made_By" , nil)],
+        [DOGlobalAppearance secondarySubtitleString:DOLocalizedString(@"Credits_Made_By")],
     ]];
     
     [stackView addArrangedSubview:headerView];
@@ -87,16 +87,16 @@
     
     //Action Menu
     DOActionMenuView *actionView = [[DOActionMenuView alloc] initWithActions:@[
-        [UIAction actionWithTitle:NSLocalizedString(@"Menu_Settings_Title", nil) image:[UIImage systemImageNamed:@"gearshape" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"settings" handler:^(__kindof UIAction * _Nonnull action) {
+        [UIAction actionWithTitle:DOLocalizedString(@"Menu_Settings_Title") image:[UIImage systemImageNamed:@"gearshape" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"settings" handler:^(__kindof UIAction * _Nonnull action) {
             [self.navigationController pushViewController:[[DOSettingsController alloc] init] animated:YES];
         }],
-        [UIAction actionWithTitle:NSLocalizedString(@"Menu_Restart_SpringBoard_Title", nil) image:[UIImage systemImageNamed:@"arrow.clockwise" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"respring" handler:^(__kindof UIAction * _Nonnull action) {
+        [UIAction actionWithTitle:DOLocalizedString(@"Menu_Restart_SpringBoard_Title") image:[UIImage systemImageNamed:@"arrow.clockwise" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"respring" handler:^(__kindof UIAction * _Nonnull action) {
             [[DOEnvironmentManager sharedManager] respring];
         }],
-        [UIAction actionWithTitle:NSLocalizedString(@"Menu_Reboot_Userspace_Title", nil) image:[UIImage systemImageNamed:@"arrow.clockwise.circle" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"reboot-userspace" handler:^(__kindof UIAction * _Nonnull action) {
+        [UIAction actionWithTitle:DOLocalizedString(@"Menu_Reboot_Userspace_Title") image:[UIImage systemImageNamed:@"arrow.clockwise.circle" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"reboot-userspace" handler:^(__kindof UIAction * _Nonnull action) {
             [[DOEnvironmentManager sharedManager] rebootUserspace];
         }],
-        [UIAction actionWithTitle:NSLocalizedString(@"Menu_Credits_Title", nil) image:[UIImage systemImageNamed:@"info.circle" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"credits" handler:^(__kindof UIAction * _Nonnull action) {
+        [UIAction actionWithTitle:DOLocalizedString(@"Menu_Credits_Title") image:[UIImage systemImageNamed:@"info.circle" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"credits" handler:^(__kindof UIAction * _Nonnull action) {
             [self.navigationController pushViewController:[[DOCreditsViewController alloc] init] animated:YES];
         }]
     ] delegate:self];
@@ -174,13 +174,13 @@
     BOOL isSupported = [[DOEnvironmentManager sharedManager] isSupported];
     BOOL removeJailbreakEnabled = [[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"removeJailbreakEnabled" fallback:NO];
 
-    NSString *jailbreakButtonTitle = NSLocalizedString(@"Button_Jailbreak_Title", nil);
+    NSString *jailbreakButtonTitle = DOLocalizedString(@"Button_Jailbreak_Title");
     if (!isSupported)
-        jailbreakButtonTitle = NSLocalizedString(@"Unsupported", nil);
+        jailbreakButtonTitle = DOLocalizedString(@"Unsupported");
     else if (isJailbroken)
-        jailbreakButtonTitle = NSLocalizedString(@"Status_Title_Jailbroken", nil);
+        jailbreakButtonTitle = DOLocalizedString(@"Status_Title_Jailbroken");
     else if (removeJailbreakEnabled)
-        jailbreakButtonTitle = NSLocalizedString(@"Button_Remove_Jailbreak", nil);
+        jailbreakButtonTitle = DOLocalizedString(@"Button_Remove_Jailbreak");
     
     return jailbreakButtonTitle;
 }
@@ -215,16 +215,16 @@
             }
             else if (error && !showLogs) {
                 // Used when there is an error that is explainable in such detail that additional logs are not needed
-                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Log_Error", nil) message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *rebootAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Button_Reboot", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Log_Error") message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *rebootAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Reboot") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                     exec_cmd_trusted(JBRootPath("/sbin/reboot"), NULL);
                 }];
                 [alertController addAction:rebootAction];
                 [self presentViewController:alertController animated:YES completion:nil];
             }
             else if (didRemove) {
-                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Removed_Jailbreak_Alert_Title", nil) message:NSLocalizedString(@"Removed_Jailbreak_Alert_Message", nil) preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *rebootAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Button_Close", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Removed_Jailbreak_Alert_Title") message:DOLocalizedString(@"Removed_Jailbreak_Alert_Message") preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *rebootAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Close") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                     exit(0);
                 }];
                 [alertController addAction:rebootAction];
@@ -247,7 +247,7 @@
     if (self.jailbreakBtn.didExpand)
         return;
 
-    NSString *title = environmentUpdate ? NSLocalizedString(@"Button_Update_Environment", nil) : NSLocalizedString(@"Button_Update_Available", nil);
+    NSString *title = environmentUpdate ? DOLocalizedString(@"Button_Update_Environment") : DOLocalizedString(@"Button_Update_Available");
     
     NSString *releaseFrom = [[DOUIManager sharedInstance] getLaunchedReleaseTag];
     NSString *releaseTo = [[DOUIManager sharedInstance] getLatestReleaseTag];

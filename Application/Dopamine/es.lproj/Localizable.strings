@@ -1,0 +1,104 @@
+"Credits_Made_By" = "por opa334, ElleKit por évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "Jailbreaking";
+"Log_Error" = "Error";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "Jailbreak";
+"Status_Title_Jailbroken" = "Jailbroken";
+"Unsupported" = "No compatible";
+
+// Action Menu
+"Menu_Settings_Title" = "Ajustes";
+"Menu_Restart_SpringBoard_Title" = "Reiniciar SpringBoard";
+"Menu_Reboot_Userspace_Title" = "Reiniciar el Espacio de Usuario";
+"Menu_Credits_Title" = "Créditos";
+
+// Updating
+"Button_Update" = "Actualización";
+"Button_Update_Available" = "Actualización disponible";
+"Button_Update_Environment" = "Actualizar entorno";
+
+// Update View
+"Update_Status_Downloading" = "Descargando actualización...";
+"Update_Status_Subtitle_Please_Wait" = "Espere mientras se descargan los archivos";
+"Update_Status_Installing" = "Instalando actualización...";
+"Update_Status_Subtitle_Restart_Soon" = "El dispositivo se reiniciará pronto";
+"Title_Changelog" = "Lista de cambios";
+"Changelog_Unavailable_Text" = "Lista de cambios no disponible";
+
+// Removed Jailbreak Alert
+"Removed_Jailbreak_Alert_Title" = "Eliminar Jailbreak";
+"Removed_Jailbreak_Alert_Message" = "Eliminado con éxito el jailbreak. Se recomienda reiniciar el dispositivo.";
+"Button_Close" = "Cerrar";
+
+// Error View
+"Button_Share" = "Compartir";
+"Button_Reboot" = "Reiniciar";
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "Inyección de ajustes";
+"Settings_iDownload" = "iDownload (Shell de desarrollador)";
+"Settings_Verbose_Logs" = "Registros detallados";
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "Eliminar Jailbreak";
+"Button_Hide_Jailbreak" = "Ocultar Jailbreak";
+"Button_Unhide_Jailbreak" = "Desocultar Jailbreak";
+"Button_Refresh_Jailbreak_Apps" = "Actualizar aplicaciones Jailbreak";
+"Button_Reinstall_Package_Managers" = "Reinstalar los gestores de paquetes";
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"Ocultar Jailbreak\" elimina temporalmente los archivos relacionados con el jailbreak hasta el próximo rejailbreak";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Ocultar Jailbreak\" desactiva parcialmente el jailbreak y pretende hacer más difícil su detección. Sin embargo, no es del todo eficaz y no lo oculta todo.";
+"Section_Jailbreak_Settings" = "Ajustes de Jailbreak";
+"Section_Actions" = "Acciones";
+"Section_Customization" = "Personalización";
+"Section_Exploits" = "Exploits";
+
+// Settings Alerts
+"Alert_Tweak_Injection_Toggled_Title" = "Es necesario reiniciar el Espacio de Usuario";
+"Alert_Tweak_Injection_Toggled_Body" = "Es necesario reiniciar el Espacio de Usuario para aplicar los cambios. ¿Desea hacerlo ahora?";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Reinicie ahora";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Reiniciar más tarde";
+"Alert_Remove_Jailbreak_Title" = "Quitar Jailbreak";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Al eliminar jailbreak se borrarán todos los archivos relacionados con jailbreak, pero se conservarán todas las aplicaciones, archivos y datos normales. ¿Estás seguro de que quieres continuar? No puedes deshacer esta acción";
+"Alert_Remove_Jailbreak_Enabled_Body" = "Al activar \"Quitar Jailbreak\" se eliminarán todos los archivos relacionados con el jailbreak en el próximo jailbreak, pero se conservarán todas las aplicaciones, archivos y datos normales. ¿Estás seguro de que quieres continuar? No puedes deshacer esta acción";
+"Button_Cancel" = "Cancelar";
+"Button_Continue" = "Continuar";
+
+// Duplicate Apps Errors
+"Duplicate_Apps_Error_Dopamine_App" = "Existen múltiples aplicaciones con el identificador \"%@\" dentro del directorio de aplicaciones Dopamines (\"%@\"). No se puede continuar.";
+"Duplicate_Apps_Error_User_App" = "Las apps con los identificadores %@ existen en el directorio de aplicaciones de Dopamines (\"%@\") pero también están instaladas por separado en el sistema. No se puede continuar";
+"Duplicate_Apps_Error_Icon_Cache" = "La app con el identificador \"%@\" existe en el directorio de aplicaciones de Dopamine (\"%@\") pero también está registrada en la caché de iconos bajo una ruta diferente (\"%@\"). No se puede continuar";
+
+// Settings Lists
+"Theme" = "Tema";
+"Kernel Exploit" = "Kernel Exploit";
+"PPL Bypass" = "PPL Bypass";
+"PAC Bypass" = "PAC Bypass";
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Licencias";
+"Credits_Button_Source_Code" = "Código fuente";
+
+// Logs
+"Initializing Environment" = "Inicializando entorno de Jailbreak";
+"Loading BaseBin TrustCache" = "Cargando BaseBin TrustCache";
+"Applying Bind Mount" = "Aplicando montaje por vínculo";
+"Removing Jailbreak" = "Eliminando Jailbreak";
+"Elevating Privileges" = "Elevando privilegios";
+"Cleaning Up Exploits" = "Limpiando Exploits";
+"Building Phys R/W Primitive" = "Construcción física R/W primitiva";
+"Rebooting Userspace" = "Reiniciando el Espacio de Usuario";
+"Patchfinding" = "Buscando parches";
+"Exploiting Kernel (%@)" = "Explotando Kernel (%@)";
+"Bypassing PAC (%@)" = "Saltando PAC (%@)";
+"Bypassing PPL (%@)" = "Saltando PPL (%@)";
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Seleccione gestor(es) de paquetes";
+"Select_Package_Managers_Install_Message" = "Si no está seguro de cuál seleccionar, seleccione Sileo";
+"Continue" = "Continuar";

@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DOUIManager : NSObject
 {
     DOPreferenceManager *_preferenceManager;
+    NSDictionary *_fallbackLocalizations;
 }
 
 @property (nonatomic, retain) NSObject<DOLogViewProtocol> *logView;
@@ -41,7 +42,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)resetPackageManagers;
 - (void)resetSettings;
 - (void)setPackageManager:(NSString*)key enabled:(BOOL)enabled;
+- (NSString *)localizedStringForKey:(NSString*)key;
 
 @end
+
+NSString *DOLocalizedString(NSString *string);
 
 NS_ASSUME_NONNULL_END
