@@ -521,6 +521,7 @@ int libarchive_unarchive(const char *fileToExtract, const char *extractionPath)
 	flags |= ARCHIVE_EXTRACT_PERM;
 	flags |= ARCHIVE_EXTRACT_ACL;
 	flags |= ARCHIVE_EXTRACT_FFLAGS;
+	flags |= ARCHIVE_EXTRACT_OWNER;
 
 	a = archive_read_new();
 	archive_read_support_format_all(a);
