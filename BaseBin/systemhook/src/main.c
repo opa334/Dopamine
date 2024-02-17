@@ -382,12 +382,6 @@ bool shouldEnableTweaks(void)
 		// System binaries
 		"/usr/libexec/xpcproxy",
 
-		// Protobox on iOS 16
-		// These just crash loop if we try to load tweaks into them
-		"/usr/libexec/logd",
-		"/usr/sbin/notifyd",
-		"/usr/libexec/usermanagerd",
-
 		// Dopamine app itself (jailbreak detection bypass tweaks can break it)
 		"Dopamine.app/Dopamine",
 	};
