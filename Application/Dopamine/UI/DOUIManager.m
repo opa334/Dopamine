@@ -210,11 +210,11 @@
     if (!self.logView)
         return;
     
+    [self.logRecord addObject:log];
+
     BOOL isDebug = self.logView.class == DODebugLogView.class;
     if (debug && !isDebug)
         return;
-    
-    [self.logRecord addObject:log];
     
     if (update) {
         if ([self.logView respondsToSelector:@selector(updateLog:)]) {
