@@ -111,7 +111,7 @@
 
         if (![DOEnvironmentManager sharedManager].isJailbroken || [[DOUIManager sharedInstance] launchedReleaseNeedsManualUpdate] || ![DOEnvironmentManager sharedManager].isInstalledThroughTrollStore)
         {
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/opa334/Dopamine/releases"] options:@{} completionHandler:nil];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/wwg135/Dopamine/releases"] options:@{} completionHandler:nil];
             return;
         }
 

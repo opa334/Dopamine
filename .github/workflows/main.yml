@@ -1,0 +1,114 @@
+name: build_Release
+on:
+  push:
+    branches:
+      - 2.0
+    paths-ignore:
+      - ".gitignore"
+  pull_request:
+    branches:
+      - 2.0
+    paths-ignore:
+      - ".gitignore"
+  workflow_dispatch:
+  
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+env:
+  VERSION: '2.0.4'
+ 
+jobs:
+  build:
+    runs-on: macos-13
+    environment: Auto Build And Release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Checkout tools repo
+        uses: actions/checkout@main
+        with:
+          repository: opa334/ChOma
+          path: BaseBin/ChOma
+
+      - name: Checkout tools repo
+        uses: actions/checkout@main
+        with:
+          repository: opa334/XPF
+          path: BaseBin/XPF
+
+      - name: Checkout tools repo
+        uses: actions/checkout@main
+        with:
+          repository: opa334/opainject
+          path: BaseBin/opainject
+
+      - name: Bootstrap Procursus
+        uses: wwg135/procursus-action@main
+        with:
+          packages: ldid make findutils coreutils xz-utils
+
+      - name: Pre trustcache
+        run: |
+          set -x
+          git clone https://github.com/CRKatri/trustcache
+          cd trustcache
+          gmake -j$(sysctl -n hw.physicalcpu) OPENSSL=1
+          sudo cp trustcache /opt/procursus/bin/
+
+      - name: Pre theos
+        run: |
+         curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos > theos
+         bash theos
+          
+      - name: Set env
+        run: |
+          sT=$(TZ=UTC-8 date +'%S')
+          echo "msT=$(date -j -f "%Y-%m-%d %H:%M:%S" "$(TZ=UTC-8 date +'%Y-%m-%d %H:%M'):${sT}" +%s)" >> $GITHUB_ENV
+          echo "shT=$(TZ=UTC-8 date +'%Y-%m-%d'' ''%H:%M:%S')" >> $GITHUB_ENV
+          echo "logT=$(TZ=UTC-8 date +'%Y年%m月%d %H:%M'):${sT}" >> $GITHUB_ENV
+          
+      - name: Print env
+        run: |
+          echo ${{ env.VERSION }}
+          echo ${{ env.msT }}
+          echo ${{ env.shT }}
+          echo ${{ env.logT }}
+          
+      - name: Build ipa
+        run: |
+          set -x
+          export THEOS=$HOME/theos
+          echo $GITHUB_WORKSPACE
+          cd Application/Dopamine/Resources
+          bash download_bootstraps.sh
+          cd $GITHUB_WORKSPACE
+          make
+          mv Application/Dopamine.tipa Dopamine.ipa
+
+      - name: Release Logs
+        run: |
+          set -x
+          echo -e "更新时间：${{ env.logT }}" >> body.txt
+          echo "" >> ./release.md
+
+          cat body.txt > release.txt
+          echo "" >> release.txt
+          cat ./release.md >> release.txt
+          
+      - name: Release ipa
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ env.VERSION }}
+          tag_name: ${{ env.VERSION }}
+          target_commitish: 2.x
+          body_path: release.txt
+          latest: true
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          files: |
+           *.ipa
