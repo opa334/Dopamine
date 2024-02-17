@@ -45,9 +45,11 @@
         [header.heightAnchor constraintEqualToConstant:70]
     ]];
     
-    DOActionMenuButton *shareButton = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:DOLocalizedString(@"Button_Share") image:[UIImage systemImageNamed:@"square.and.arrow.up" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"share" handler:^(__kindof UIAction * _Nonnull action) {
-        [[DOUIManager sharedInstance] shareLogRecord];
-    }] chevron:NO];
+    __block DOActionMenuButton *shareButton;
+    UIAction *shareAction = [UIAction actionWithTitle:DOLocalizedString(@"Button_Share") image:[UIImage systemImageNamed:@"square.and.arrow.up" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"share" handler:^(__kindof UIAction * _Nonnull action) {
+        [[DOUIManager sharedInstance] shareLogRecordFromView:shareButton];
+    }];
+    shareButton = [DOActionMenuButton buttonWithAction:shareAction chevron:NO];
     
     shareButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:shareButton];
