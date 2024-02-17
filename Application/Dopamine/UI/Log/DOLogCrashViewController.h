@@ -10,6 +10,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DOLogCrashViewController : UIViewController
+{
+    UITextView *_logView;
+}
 
 - (id)initWithTitle:(NSString*)title;
 

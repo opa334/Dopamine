@@ -59,30 +59,42 @@
         [shareButton.heightAnchor constraintEqualToConstant:30],
         [shareButton.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-30]
     ]];
-
     
+    if (@available(iOS 16.0, *)) {
+        _logView = [UITextView textViewUsingTextLayoutManager:false];
+    }
+    else {
+        _logView = [[UITextView alloc] init];
+    }
+    _logView.translatesAutoresizingMaskIntoConstraints = NO;
 
-    UITextView *license = [[UITextView alloc] init];
-    license.translatesAutoresizingMaskIntoConstraints = NO;
-
-    [self.view addSubview:license];
+    [self.view addSubview:_logView];
 
     [NSLayoutConstraint activateConstraints:@[
-        [license.topAnchor constraintEqualToAnchor:header.bottomAnchor constant:-12],
-        [license.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:20],
-        [license.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-20],
-        [license.bottomAnchor constraintEqualToAnchor:shareButton.topAnchor constant:-10]
+        [_logView.topAnchor constraintEqualToAnchor:header.bottomAnchor constant:-12],
+        [_logView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:20],
+        [_logView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-20],
+        [_logView.bottomAnchor constraintEqualToAnchor:shareButton.topAnchor constant:-10]
     ]];
 
-    license.text = [[[DOUIManager sharedInstance] logRecord] componentsJoinedByString:@"\n"];
-    license.editable = NO;
-    license.font = [UIFont systemFontOfSize:14];
-    license.textColor = [UIColor whiteColor];
-    license.backgroundColor = [UIColor clearColor];
+    _logView.text = [[[DOUIManager sharedInstance] logRecord] componentsJoinedByString:@"\n"];
+    _logView.editable = NO;
+    _logView.font = [UIFont systemFontOfSize:14];
+    _logView.textColor = [UIColor whiteColor];
+    _logView.backgroundColor = [UIColor clearColor];
 
 
     [[[DOUIManager sharedInstance] logRecord] insertObject:self.title atIndex:0];
     [[[DOUIManager sharedInstance] logRecord] insertObject:@"----" atIndex:1];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [UIView performWithoutAnimation:^{
+        NSRange range = NSMakeRange(_logView.text.length, 0);
+        [_logView scrollRangeToVisible:range];
+    }];
 }
 
 - (void)dismiss
