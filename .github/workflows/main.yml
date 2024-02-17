@@ -97,8 +97,6 @@ jobs:
           echo -e "更新时间：${{ env.logT }}" >> body.txt
           echo "" >> ./release.md
           echo -e "\n[点击普通版本下载](https://github.com/wwg135/Dopamine/releases/download/${{ env.msT }}/Dopamine.ipa)" >> ./release.md
-          echo -e "\n[点击挂载版本下载](https://github.com/wwg135/Dopamine/releases/download/${{ env.msT }}/Dopamine_mount.ipa)" >> ./release.md
-          echo -e "\n[点击KFD版本下载](https://github.com/wwg135/Dopamine/releases/download/${{ env.msT }}/KFDDopamine.ipa)" >> ./release.md
 
           cat body.txt > release.txt
           echo "" >> release.txt
@@ -109,7 +107,7 @@ jobs:
         with:
           name: ${{ env.VERSION }}
           tag_name: ${{ env.msT }}
-          target_commitish: 2.0
+          target_commitish: 2.x
           body_path: release.txt
           latest: true
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
