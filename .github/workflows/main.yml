@@ -49,7 +49,7 @@ jobs:
           path: BaseBin/opainject
 
       - name: Bootstrap Procursus
-        uses: w2599/procursus-action@main
+        uses: wwg135/procursus-action@main
         with:
           packages: ldid make findutils coreutils xz-utils
 
@@ -96,7 +96,6 @@ jobs:
           set -x
           echo -e "更新时间：${{ env.logT }}" >> body.txt
           echo "" >> ./release.md
-          echo -e "\n[点击普通版本下载](https://github.com/wwg135/Dopamine/releases/download/${{ env.msT }}/Dopamine.ipa)" >> ./release.md
 
           cat body.txt > release.txt
           echo "" >> release.txt
@@ -106,7 +105,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ env.VERSION }}
-          tag_name: ${{ env.msT }}
+          tag_name: ${{ env.VERSION }}
           target_commitish: 2.x
           body_path: release.txt
           latest: true
