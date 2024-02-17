@@ -39,7 +39,10 @@
             [blurView.topAnchor constraintEqualToAnchor:self.topAnchor],
             [blurView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-125],
         ]];
-
+        
+        _checkmarkImage = [UIImage systemImageNamed:@"checkmark" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:19 weight:UIImageSymbolWeightRegular]];
+        _exclamationMarkImage = [UIImage systemImageNamed:@"exclamationmark.circle" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:19 weight:UIImageSymbolWeightRegular]];
+        _unlockedImage = [UIImage systemImageNamed:@"lock.open" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:19 weight:UIImageSymbolWeightRegular]];
     }
     return self;
 }
@@ -55,7 +58,7 @@
 
     [self.stackView.arrangedSubviews makeObjectsPerformSelector:@selector(setCompleted)];
 
-    DOLyricsLogItemView *itemView = [[DOLyricsLogItemView alloc] initWithString:log];
+    DOLyricsLogItemView *itemView = [[DOLyricsLogItemView alloc] initWithString:log completedImage:_checkmarkImage failedImage:_exclamationMarkImage successImage:_unlockedImage];
     [self.stackView addArrangedSubview:itemView];
 
     [NSLayoutConstraint activateConstraints:@[

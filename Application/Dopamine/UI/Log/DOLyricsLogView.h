@@ -14,6 +14,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// They're just called lyrics log view because they remind me of apple music lyrics 🤫
 @interface DOLyricsLogView : UIView<DOLogViewProtocol>
+{
+    UIImage *_checkmarkImage;
+    UIImage *_exclamationMarkImage;
+    UIImage *_unlockedImage;
+}
 
 @property (nonatomic, strong) UIStackView *stackView;
 
