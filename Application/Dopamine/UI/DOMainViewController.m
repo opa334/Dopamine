@@ -214,6 +214,7 @@
         [jailbreaker runWithError:&error didRemoveJailbreak:&didRemove showLogs:&showLogs];
         dispatch_async(dispatch_get_main_queue(), ^{
             if (error && showLogs) {
+                [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:@"Jailbreak failed with error: %@", error] debug:NO];
                 [self.navigationController pushViewController:[[DOLogCrashViewController alloc] initWithTitle:[error localizedDescription]] animated:YES];
             }
             else if (error && !showLogs) {
