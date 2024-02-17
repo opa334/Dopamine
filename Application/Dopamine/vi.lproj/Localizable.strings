@@ -100,5 +100,5 @@
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "Chọn trình quản lý gói";
-"Select_Package_Managers_Install_Message" = "Nếu bạn không biết nên chọn trình quản lý gói nào, hãy chọn Sileo";
+"Select_Package_Managers_Install_Message" = "Nếu bạn không biết nên chọn trình quản lý gói nào, hãy chọn Sileo (sẽ không bao giờ có Cydia cho bạn chọn)";
 "Continue" = "Tiếp tục";
