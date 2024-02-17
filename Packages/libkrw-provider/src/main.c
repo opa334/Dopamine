@@ -40,12 +40,11 @@ __attribute__((used)) krw_plugin_initializer_t krw_initializer(krw_handlers_t ha
 {
 	load_primitives_once();
 
-	if (jbinfo(usesPACBypass)) {
-		handlers->kcall = kcall_wrapper;
-	}
-
-	handlers->physread = physreadbuf_wrapper;
-	handlers->physwrite = physwritebuf_wrapper;
+	handlers->kbase = kbase_wrapper;
+    handlers->kread = kreadbuf;
+    handlers->kwrite = kwritebuf_wrapper;
+    handlers->kmalloc = (krw_kmalloc_func_t)(kalloc);
+    handlers->kdealloc = (krw_kdealloc_func_t)(kfree);
 	return 0;
 }
 
@@ -53,10 +52,11 @@ __attribute__((used)) krw_plugin_initializer_t kcall_initializer(krw_handlers_t 
 {
 	load_primitives_once();
 
-	handlers->kbase = kbase_wrapper;
-    handlers->kread = kreadbuf;
-    handlers->kwrite = kwritebuf_wrapper;
-    handlers->kmalloc = (krw_kmalloc_func_t)(kalloc);
-    handlers->kdealloc = (krw_kdealloc_func_t)(kfree);
+	if (jbinfo(usesPACBypass)) {
+		handlers->kcall = kcall_wrapper;
+	}
+
+	handlers->physread = physreadbuf_wrapper;
+	handlers->physwrite = physwritebuf_wrapper;
 	return 0;
 }
