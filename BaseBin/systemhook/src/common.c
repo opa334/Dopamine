@@ -212,6 +212,7 @@ kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 	// I don't like this but for some processes it seems neccessary
 	const char *processBlacklist[] = {
 		"/System/Library/Frameworks/GSS.framework/Helpers/GSSCred",
+		"/System/Library/PrivateFrameworks/DataAccess.framework/Support/dataaccessd",
 		"/System/Library/PrivateFrameworks/IDSBlastDoorSupport.framework/XPCServices/IDSBlastDoorService.xpc/IDSBlastDoorService",
 		"/System/Library/PrivateFrameworks/MessagesBlastDoorSupport.framework/XPCServices/MessagesBlastDoorService.xpc/MessagesBlastDoorService",
 		"/usr/sbin/wifid"
