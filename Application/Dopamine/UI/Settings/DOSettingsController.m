@@ -432,12 +432,20 @@
         UIAlertController *confirmationAlertController = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Alert_Back_Up_Title") message:DOLocalizedString(@"Alert_Back_Up_Pressed_Body") preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *backupAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Continue") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             [self performBackup];
+            [self showBackupSuccessAlert];
         }];
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Cancel") style:UIAlertActionStyleDefault handler:nil];
         [confirmationAlertController addAction:backupAction];
         [confirmationAlertController addAction:cancelAction];
         [self presentViewController:confirmationAlertController animated:YES completion:nil];
     }
+}
+
+- (void)showBackupSuccessAlert {
+    UIAlertController *successAlertController = [UIAlertController alertControllerWithTitle:@"提示：恭喜你，备份成功！！！" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:nil];
+    [successAlertController addAction:okAction];
+    [self presentViewController:successAlertController animated:YES completion:nil];
 }
 
 - (void)performBackup {
