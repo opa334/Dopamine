@@ -11,8 +11,8 @@
 
 // Action Menu
 "Menu_Settings_Title" = "设置";
-"Menu_Restart_SpringBoard_Title" = "重新启动SpringBoard";
-"Menu_Reboot_Userspace_Title" = "重新启动用户空间";
+"Menu_Restart_SpringBoard_Title" = "注销";
+"Menu_Reboot_Userspace_Title" = "重启用户空间";
 "Menu_Credits_Title" = "关于";
 
 // Updating
@@ -58,8 +58,8 @@
 "Section_Exploits" = "漏洞利用";
 
 // Settings Alerts
-"Alert_Tweak_Injection_Toggled_Title" = "需要重新启动用户空间";
-"Alert_Tweak_Injection_Toggled_Body" = "需要重新启动用户空间才能应用变更，立即执行？";
+"Alert_Tweak_Injection_Toggled_Title" = "需要重启用户空间";
+"Alert_Tweak_Injection_Toggled_Body" = "需要重启用户空间才能应用变更，立即执行？";
 "Alert_Tweak_Injection_Toggled_Reboot_Now" = "重新启动";
 "Alert_Tweak_Injection_Toggled_Reboot_Later" = "以后";
 "Alert_Remove_Jailbreak_Title" = "移除越狱";
@@ -92,7 +92,7 @@
 "Elevating Privileges" = "提升权限";
 "Cleaning Up Exploits" = "清理环境";
 "Building Phys R/W Primitive" = "构建硬件读写条件";
-"Rebooting Userspace" = "重新启动用户空间";
+"Rebooting Userspace" = "重启用户空间";
 "Patchfinding" = "查找地址";
 "Exploiting Kernel (%@)" = "利用内核漏洞 (%@)";
 "Bypassing PAC (%@)" = "正在绕过 PAC (%@)";
