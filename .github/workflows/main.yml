@@ -2,12 +2,12 @@ name: build_Release
 on:
   push:
     branches:
-      - T
+      - 2.0.5
     paths-ignore:
       - ".gitignore"
   pull_request:
     branches:
-      - T
+      - 2.0.5
     paths-ignore:
       - ".gitignore"
   workflow_dispatch:
@@ -20,7 +20,7 @@ permissions:
   contents: write
 
 env:
-  VERSION: '2.0.5'
+  VERSION: '2.0.5.1'
  
 jobs:
   build:
