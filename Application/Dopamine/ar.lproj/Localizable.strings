@@ -7,7 +7,7 @@
 // Jailbreak Button
 "Button_Jailbreak_Title" = "جيلبريك";
 "Status_Title_Jailbroken" = "الجيلبريك مفعل";
-/*Unsupported*/
+"Unsupported" = "غير مدعوم";
 
 // Action Menu
 "Menu_Settings_Title" = "الإعدادات";
@@ -29,16 +29,16 @@
 "Changelog_Unavailable_Text" = "سجل التغييرات غير متاح";
 
 // Removed Jailbreak Alert
-/*Removed_Jailbreak_Alert_Title*/
-/*Removed_Jailbreak_Alert_Message*/
-/*Button_Close*/
+"Removed_Jailbreak_Alert_Title" = "إزالة الجيلبريك";
+"Removed_Jailbreak_Alert_Message" = "تم إزالة الجيلبريك بنجاح. يوصى بإعادة تشغيل الجهاز.";
+"Button_Close" = "إغلاق";
 
 // Error View
-/*Button_Share*/
-/*Button_Reboot*/
+"Button_Share" = "مشاركة";
+"Button_Reboot" = "إبلاغ";
 
 // Settings Toggles
-"Settings_Tweak_Injection" = "وصول الأدوات";
+"Settings_Tweak_Injection" = "تشغيل الأدوات";
 "Settings_iDownload" = "iDownload (محطة المطور)";
 "Settings_Verbose_Logs" = "السجلات المطولة";
 
@@ -46,60 +46,59 @@
 "Button_Remove_Jailbreak" = "إزالة الجيلبريك";
 "Button_Hide_Jailbreak" = "إخفاء الجيلبريك";
 "Button_Unhide_Jailbreak" = "عدم إخفاء الجيلبريك";
-/*Button_Refresh_Jailbreak_Apps*/
+"Button_Refresh_Jailbreak_Apps" = "تحديث تطبيقات الجيلبريك";
 "Button_Reinstall_Package_Managers" = "إعادة تثبيت مديري الحزم";
 
 // Settings Hints
 "Hint_Hide_Jailbreak" = "\"إخفاء الجيلبريك\" يقوم بإزالة الملفات المتعلقة بالجيلبريك مؤقتًا حتى تفعيل الجيلبريك القادم.";
-"Hint_Hide_Jailbreak_Jailbroken" = "\" إخفاء الجيلبريك\" يعطل الجيلبريك جزئيًا ويجعل كشفه أكثر صعوبة. ومع ذلك، فإن هذه الخاصية ليست فعالة ١٠٠٪؜ ولا تخفي كل شيء.";
-/*Section_Jailbreak_Settings*/
-/*Section_Actions*/
-/*Section_Customization*/
-/*Section_Exploits*/
+"Hint_Hide_Jailbreak_Jailbroken" = "\"إخفاء الجيلبريك\" يعطل الجيلبريك جزئيًا ويجعل كشفه أكثر صعوبة. ومع ذلك، فإن هذه الخاصية ليست فعالة ١٠٠٪؜ ولا تخفي كل شيء.";
+"Section_Jailbreak_Settings" = "إعدادات الجيلبريك";
+"Section_Actions" = "الإجراءات";
+"Section_Customization" = "التخصيص";
+"Section_Exploits" = "الثغرات";
 
 // Settings Alerts
-/*Alert_Tweak_Injection_Toggled_Title*/
+"Alert_Tweak_Injection_Toggled_Title" = "يتطلب إعادة تشغيل userspace";
 "Alert_Tweak_Injection_Toggled_Body" = "إعادة تشغيل userspace ضرورية لتطبيق التغييرات. هل تريد فعلها الآن؟";
-/*Alert_Tweak_Injection_Toggled_Reboot_Now*/
-/*Alert_Tweak_Injection_Toggled_Reboot_Later*/
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "إعادة التشغيل الآن";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "إعادة التشغيل لاحقًا";
 "Alert_Remove_Jailbreak_Title" = "إزالة الجيلبريك";
 "Alert_Remove_Jailbreak_Pressed_Body" = "ستؤدي إزالة الجيلبريك إلى حذف جميع الملفات المتعلقة به، ولكن سيتم الاحتفاظ بجميع التطبيقات والملفات والبيانات العادية. هل أنت متأكد من أنك تريد الاستمرار؟ لا يمكنك التراجع عن هذا الإجراء.";
-/*Alert_Remove_Jailbreak_Enabled_Body*/
+"Alert_Remove_Jailbreak_Enabled_Body" = "إن تفعيل \"إزالة الجيلبريك\" سيؤدي إلى إزالة كل الملفات المتعلقة بالجيلبريك عند التفعيل القادم للجيلبريك، ولكن سيتم الاحتفاظ بكل التطبيقات العادية والملفات والبيانات. هل أنت متأكد من أنك تريد الاستمرار؟ لا يمكن التراجع عن هذا الإجراء.";
 "Button_Cancel" = "إلغاء";
-/*Button_Continue*/
+"Button_Continue" = "استمرار";
 
 // Duplicate Apps Errors
-/*Duplicate_Apps_Error_Dopamine_App*/
-/*Duplicate_Apps_Error_User_App*/
-/*Duplicate_Apps_Error_Icon_Cache*/
+"Duplicate_Apps_Error_Dopamine_App" = "توجد عدة تطبيقات تحمل المعرف \"%@\" داخل دليل تطبيق Dopamine (\"%@\"). لا يمكن الاستمرار.";
+"Duplicate_Apps_Error_User_App" = "التطبيقات التي تحمل المعرفات %@ موجودة داخل دليل تطبيق Dopamine (\"%@\") ولكنها مثبتة بشكل منفصل على النظام. لا يمكن الاستمرار.";
+"Duplicate_Apps_Error_Icon_Cache" = "التطبيق الذي يحمل المعرف \"%@\" موجود داخل دليل تطبيق Dopamine (\"%@\") ولكنه مسجل في ذاكرة التخزين المؤقت للأيقونات تحت مسار مختلف (\"%@\"). لا يمكن الاستمرار.";
 
 // Settings Lists
-/*Theme*/
-/*Kernel Exploit*/
-/*PPL Bypass*/
-/*PAC Bypass*/
+"Theme" = "السمة";
+"Kernel Exploit" = "ثغرة الـ Kernel";
+"PPL Bypass" = "تجاوز PPL";
+"PAC Bypass" = "تجاوز PAC";
 
 // Credits
 "Credits_Button_Discord" = "Discord";
-"Credits_Button_License" = "الترخيص";
+"Credits_Button_License" = "التراخيص";
 "Credits_Button_Source_Code" = "شفرة المصدر";
 
 // Logs
-"Initializing Environment" = "جارِ تحسين البيئة";
-/*Loading BaseBin TrustCache*/
-/*Applying Bind Mount*/
-/*Removing Jailbreak*/
-/*Elevating Privileges*/
-/*Cleaning Up Exploits*/
-/*Building Phys R/W Primitive*/
-/*Rebooting Userspace*/
+"Initializing Environment" = "تحسين بيئة الجيلبريك";
+"Loading BaseBin TrustCache" = "تحميل BaseBin TrustCache";
+"Applying Bind Mount" = "تطبيق Bind Mount";
+"Removing Jailbreak" = "إزالة الجيلبريك";
+"Elevating Privileges" = "رفع الامتيازات";
+"Cleaning Up Exploits" = "تحسين أداء الثغرات";
+"Building Phys R/W Primitive" = "بناء فيزيائية ق/ك المبدئية";
+"Rebooting Userspace" = "إعادة تشغيل Userspace";
 "Patchfinding" = "العثور على التصحيح";
-/*Exploiting Kernel (%@)*/
-/*Bypassing PAC (%@)*/
-/*Bypassing PPL (%@)*/
+"Exploiting Kernel (%@)" = "ثغرة الـ Kernel (%@)";
+"Bypassing PAC (%@)" = "تجاوز PAC (%@)";
+"Bypassing PPL (%@)" = "تجاوز PPL (%@)";
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "اختر مدير الحزمة";
 "Select_Package_Managers_Install_Message" = "إذا كنت محتارًا في الاختيار، فاختر Sileo";
 "Continue" = "استمرار";
-
