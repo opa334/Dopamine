@@ -24,6 +24,9 @@
     [button.titleLabel setAdjustsFontSizeToFitWidth:YES];
     [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
 
+    if ([DOGlobalAppearance isRTL])
+        [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
+
     if (chevron)
     {
         UIImage *chevronImage = [UIImage systemImageNamed:@"chevron.right"];

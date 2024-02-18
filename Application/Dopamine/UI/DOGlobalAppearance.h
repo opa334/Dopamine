@@ -28,6 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSAttributedString*)secondarySubtitleString:(NSString*)string;
 + (BOOL)isHomeButtonDevice;
 + (UIColor*)windowColorWithAlpha:(float)alpha;
++ (BOOL)isRTL;
 
 @end
 

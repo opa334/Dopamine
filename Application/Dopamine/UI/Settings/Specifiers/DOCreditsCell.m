@@ -6,6 +6,7 @@
 //
 
 #import "DOCreditsCell.h"
+#import "DOGlobalAppearance.h"
 
 #define CREDITS_CELL_HEIGHT 35
 
@@ -25,9 +26,11 @@
         self.label.font = [UIFont systemFontOfSize:14 weight:UIFontWeightRegular];
         self.label.textColor = [UIColor whiteColor];
         self.label.alpha = 0.65;
+        self.label.textAlignment = NSTextAlignmentLeft;
+
         [self.contentView addSubview:self.label];
         [NSLayoutConstraint activateConstraints:@[
-            [self.label.centerXAnchor constraintEqualToAnchor:self.contentView.centerXAnchor constant:-17],
+            [self.label.centerXAnchor constraintEqualToAnchor:self.contentView.centerXAnchor constant:-17 * ([DOGlobalAppearance isRTL] ? -1 : 1)],
             [self.label.centerYAnchor constraintEqualToAnchor:self.contentView.centerYAnchor],
         ]];
 
