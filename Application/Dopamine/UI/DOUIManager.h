@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 @property (nonatomic, retain) NSObject<DOLogViewProtocol> *logView;
-@property (nonatomic, retain) NSMutableArray<NSString*> *logRecord;
+@property (atomic, retain) NSMutableArray<NSString*> *logRecord;
 
 + (id)sharedInstance;
 
