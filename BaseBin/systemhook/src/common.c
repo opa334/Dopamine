@@ -183,6 +183,37 @@ void enumeratePathString(const char *pathsString, void (^enumBlock)(const char *
 	free(pathsCopy);
 }
 
+// zqbb_flag  unject
+extern xpc_object_t xpc_create_from_plist(const void* buf, size_t len);
+bool unject(const char *str) {
+    struct stat s = {};
+    int fd = open("/var/mobile/zp.unject.plist", O_RDONLY);
+    if (fd < 0)
+        return 0;
+    if (fstat(fd, &s) != 0) {
+        close(fd);
+        return 0;
+    }
+    void *addr = mmap(NULL, s.st_size, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0);
+    if (addr == MAP_FAILED) {
+        close(fd);
+        return 0;
+    }
+    xpc_object_t xplist = xpc_create_from_plist(addr, s.st_size);
+    if (!xplist) {
+        munmap(addr, s.st_size);
+        close(fd);
+        return 0;
+    }
+    bool result = 0;
+    if (xpc_get_type(xplist) == XPC_TYPE_DICTIONARY && xpc_dictionary_get_bool(xplist, str))
+        result = 1;
+    xpc_release(xplist);
+    munmap(addr, s.st_size);
+    close(fd);
+    return result;
+}
+
 typedef enum 
 {
 	kBinaryConfigDontInject = 1 << 0,
@@ -234,6 +265,23 @@ kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 	for (size_t i = 0; i < blacklistCount; i++)
 	{
 		if (!strcmp(processBlacklist[i], path)) return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
+	}
+
+	// if (!strncmp(path, "/Dev", 4)) return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
+
+	if (access("/var/mobile/zp.unject.plist", F_OK) == 0) {
+		if (!strstr(path, "/var/jb") && !strstr(path, "procursus")) {
+			if (access("/var/mobile/.appex", F_OK) < 0) {
+				// unject Plugins
+				if (strstr(path, ".appex/") != NULL) return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
+			}
+			// unject in the blacklist
+			char *exe_name = strrchr(path, '/');
+			if (exe_name != NULL) {
+				exe_name++;
+				if (unject(exe_name)) return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
+			}
+		}
 	}
 
 	return 0;

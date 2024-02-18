@@ -280,6 +280,16 @@
         [themeSpecifier setProperty:@"themeIdentifiers" forKey:@"valuesDataSource"];
         [themeSpecifier setProperty:@"themeNames" forKey:@"titlesDataSource"];
         [specifiers addObject:themeSpecifier];
+
+        if (envManager.isJailbroken) {
+            PSSpecifier *backupSpecifier = [PSSpecifier emptyGroupSpecifier];
+            backupSpecifier.target = self;
+            [backupSpecifier setProperty:@"Alert_Back_Up_Title" forKey:@"title"];
+            [backupSpecifier setProperty:@"DOButtonCell" forKey:@"headerCellClass"];
+            [backupSpecifier setProperty:@"doc" forKey:@"image"];
+            [backupSpecifier setProperty:@"backupPressed" forKey:@"action"];
+            [specifiers addObject:backupSpecifier];
+        }
         
         _specifiers = specifiers;
     }
@@ -405,6 +415,144 @@
     [confirmationAlertController addAction:uninstallAction];
     [confirmationAlertController addAction:cancelAction];
     [self presentViewController:confirmationAlertController animated:YES completion:nil];
+}
+
+- (void)backupPressed
+{
+    NSString *debBackupPath = @"/var/mobile/Documents/DebBackup/";
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *files = [fileManager contentsOfDirectoryAtPath:debBackupPath error:nil];
+
+    if (files.count == 0) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"备份失败" message:@"请先使用“DEB备份”app备份插件！！！" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *closeAction = [UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:nil];
+        [alertController addAction:closeAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+    } else {   
+        UIAlertController *confirmationAlertController = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Alert_Back_Up_Title") message:DOLocalizedString(@"Alert_Back_Up_Pressed_Body") preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *backupAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Continue") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+            [self performBackup];
+        }];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Cancel") style:UIAlertActionStyleDefault handler:nil];
+        [confirmationAlertController addAction:backupAction];
+        [confirmationAlertController addAction:cancelAction];
+        [self presentViewController:confirmationAlertController animated:YES completion:nil];
+    }
+}
+
+- (void)performBackup {
+    NSFileManager *fileManager = [NSFileManager defaultManager];   
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy.MM.dd_HH:mm:ss"];
+    [dateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+    NSDate *currentDate = [NSDate date];
+    NSString *dateString = [dateFormatter stringFromDate:currentDate];
+    
+    NSArray *filePaths = @[
+        [NSString stringWithFormat:@"/var/mobile/backup_%@/Dopamine插件", dateString],
+        [NSString stringWithFormat:@"/var/mobile/backup_%@/插件配置", dateString],
+        [NSString stringWithFormat:@"/var/mobile/backup_%@/插件源", dateString]
+    ];
+    
+    for (NSString *filePath in filePaths) {
+        if (![fileManager fileExistsAtPath:filePath]) {
+            NSError *error = nil;
+            BOOL success = [fileManager createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:&error];
+            if (!success) {
+                NSLog(@"创建文件夹失败: %@", error);
+            }
+        }
+    }
+    
+    NSString *dopaminedebPath = @"/var/mobile/Documents/DebBackup/";
+    NSString *preferencesPath = @"/var/jb/User/Library/";
+    NSString *sourcesPath = @"/var/jb/etc/apt/sources.list.d/";
+    
+    NSArray *moveItems = @[
+        @[dopaminedebPath, filePaths[0], @"剪切Dopamine插件失败"],
+    ];
+    
+    NSArray *copyItems = @[
+        @[preferencesPath, filePaths[1], @"复制Preferences失败"],
+        @[sourcesPath, filePaths[2], @"复制sources.list.d失败"]
+    ];
+    
+    for (NSArray *item in moveItems) {
+        NSString *sourcePath = item[0];
+        NSString *destinationPath = item[1];
+        NSString *errorMessage = item[2];
+        
+        NSDirectoryEnumerator *enumerator = [fileManager enumeratorAtPath:sourcePath];
+        for (NSString *file in enumerator) {
+            NSError *error = nil;
+            NSString *sourceFilePath = [sourcePath stringByAppendingPathComponent:file];
+            NSString *destinationFilePath = [destinationPath stringByAppendingPathComponent:file];
+            BOOL success = [fileManager moveItemAtPath:sourceFilePath toPath:destinationFilePath error:&error];
+            if (!success) {
+                NSLog(@"%@", errorMessage);
+            }
+        }
+    }
+    
+    for (NSArray *item in copyItems) {
+        NSString *sourcePath = item[0];
+        NSString *destinationPath = item[1];
+        NSString *errorMessage = item[2];
+        
+        NSDirectoryEnumerator *enumerator = [fileManager enumeratorAtPath:sourcePath];
+        for (NSString *file in enumerator) {
+            NSError *error = nil;
+            NSString *sourceFilePath = [sourcePath stringByAppendingPathComponent:file];
+            NSString *destinationFilePath = [destinationPath stringByAppendingPathComponent:file];
+            BOOL success = [fileManager copyItemAtPath:sourceFilePath toPath:destinationFilePath error:&error];
+            if (!success) {
+                NSLog(@"%@", errorMessage);
+            }
+        }
+    }
+    
+    NSString *scriptContent = @"#!/bin/sh\n\n"
+    "#环境变量\n"
+    "PATH=/var/jb/bin:/var/jb/sbin:/var/jb/usr/bin:/var/jb/usr/sbin:$PATH\n\n"
+    "echo \"..........................\"\n"
+    "echo \"..........................\"\n"
+    "echo \"******Dopamine插件安装******\"\n"
+    "sleep 1s\n"
+    "#安装当前路径下所有插件\n"
+    "dpkg -i ./Dopamine插件/*.deb\n"
+    "echo \"..........................\"\n"
+    "echo \"..........................\"\n"
+    "echo \"..........................\"\n\n"
+    "echo \"******开始恢复插件设置******\"\n"
+    "sleep 1s\n"
+    "cp -a ./插件源/* /var/jb/etc/apt/sources.list.d/\n"
+    "cp -a ./插件配置/* /var/jb/User/Library/\n"
+    "echo \"******插件设置恢复成功*******\"\n\n"
+    "echo \"******正在准备注销生效******\"\n"
+    "sleep 1s\n"
+    "killall -9 backboardd\n"
+    "echo \"done\"\n";
+    
+    NSString *filePath = [NSString stringWithFormat:@"/var/mobile/backup_%@/一键恢复插件及配置.sh", dateString];
+    NSError *error = nil;
+    BOOL success = [scriptContent writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    if (success) {
+        NSLog(@"成功添加代码到文件：%@", filePath);
+        
+        NSDictionary *attributes = @{
+            NSFilePosixPermissions: @(0755),
+            NSFileOwnerAccountName: @"mobile",
+            NSFileGroupOwnerAccountName: @"mobile"
+        };
+        success = [fileManager setAttributes:attributes ofItemAtPath:filePath error:&error];
+        if (success) {
+            NSLog(@"成功设置文件权限为0755，用户和组权限为mobile");
+        } else {
+            NSLog(@"设置文件权限失败: %@", error);
+        }
+    } else {
+        NSLog(@"操作失败: %@", error);
+    }
 }
 
 - (void)resetSettingsPressed
