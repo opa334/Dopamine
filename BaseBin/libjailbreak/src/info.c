@@ -67,7 +67,7 @@ void jbinfo_initialize_hardcoded_offsets(void)
 
 	// ipc_space
 	gSystemInfo.kernelStruct.ipc_space.table          = 0x20;
-	gSystemInfo.kernelStruct.ipc_space.table_uses_smd = false;
+	gSystemInfo.kernelStruct.ipc_space.table_uses_smr = false;
 
 	// ipc_entry
 	gSystemInfo.kernelStruct.ipc_entry.object      = 0x0;
@@ -178,7 +178,7 @@ void jbinfo_initialize_hardcoded_offsets(void)
 				gSystemInfo.kernelStruct.ipc_port.kobject = 0x48;
 
 				if (strcmp(xnuVersion, "22.0.0") >= 0) { // iOS 16+
-					gSystemInfo.kernelConstant.smdBase = 3;
+					gSystemInfo.kernelConstant.smrBase = 3;
 
 					// proc
 					gSystemInfo.kernelStruct.proc.task    =   0x0; // Removed, task is now at (proc + sizeof(proc))
@@ -223,9 +223,9 @@ void jbinfo_initialize_hardcoded_offsets(void)
 #endif
 
 					if (strcmp(xnuVersion, "22.1.0") >= 0) { // iOS 16.1+
-						gSystemInfo.kernelStruct.ipc_space.table_uses_smd = true;
+						gSystemInfo.kernelStruct.ipc_space.table_uses_smr = true;
 						if (strcmp(xnuVersion, "22.3.0") >= 0) { // iOS 16.3+
-							gSystemInfo.kernelConstant.smdBase = 2;
+							gSystemInfo.kernelConstant.smrBase = 2;
 							if (strcmp(xnuVersion, "22.4.0") >= 0) { // iOS 16.4+
 								// iOS 16.4 beta 1-3 use the old proc_struct, 16.4b4+ use new
 								if (gSystemInfo.kernelStruct.proc.struct_size != 0x538) {
