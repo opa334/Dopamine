@@ -34,7 +34,9 @@
 	</array>
 	<key>com.apple.security.exception.iokit-user-client-class</key>
 	<array>
+		<string>AGXDevice</string>
 		<string>AGXDeviceUserClient</string>
+		<string>IOSurfaceRoot</string>
 		<string>IOSurfaceRootUserClient</string>
 	</array>
 	<key>com.apple.developer.kernel.extended-virtual-addressing</key>
