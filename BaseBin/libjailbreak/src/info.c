@@ -227,9 +227,11 @@ void jbinfo_initialize_hardcoded_offsets(void)
 						if (strcmp(xnuVersion, "22.3.0") >= 0) { // iOS 16.3+
 							gSystemInfo.kernelConstant.smdBase = 2;
 							if (strcmp(xnuVersion, "22.4.0") >= 0) { // iOS 16.4+
-								// proc
-								gSystemInfo.kernelStruct.proc.flag   = 0x454;
-								gSystemInfo.kernelStruct.proc.textvp = 0x548;
+								// iOS 16.4 beta 1-3 use the old proc_struct, 16.4b4+ use new
+								if (gSystemInfo.kernelStruct.proc.struct_size != 0x538) {
+									gSystemInfo.kernelStruct.proc.flag   = 0x454;
+									gSystemInfo.kernelStruct.proc.textvp = 0x548;
+								}
 							}
 						}
 					}
