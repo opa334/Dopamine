@@ -93,7 +93,7 @@
 "Cleaning Up Exploits" = "清理环境";
 "Building Phys R/W Primitive" = "构建硬件读写条件";
 "Rebooting Userspace" = "重启用户空间";
-"Patchfinding" = "补丁查找中";
+"Patchfinding" = "查找地址";
 "Exploiting Kernel (%@)" = "利用内核漏洞 (%@)";
 "Bypassing PAC (%@)" = "绕过指针认证码 (%@)";
 "Bypassing PPL (%@)" = "绕过受保护进程轻型验证 (%@)";

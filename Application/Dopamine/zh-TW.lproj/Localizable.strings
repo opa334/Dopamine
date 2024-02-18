@@ -12,7 +12,7 @@
 // Action Menu
 "Menu_Settings_Title" = "設定";
 "Menu_Restart_SpringBoard_Title" = "重新啟動主畫面";
-"Menu_Reboot_Userspace_Title" = "重新啟動使用者空間";
+"Menu_Reboot_Userspace_Title" = "重啟使用者空間";
 "Menu_Credits_Title" = "致謝";
 
 // Updating
@@ -59,7 +59,7 @@
 
 // Settings Alerts
 /*Alert_Tweak_Injection_Toggled_Title*/
-"Alert_Tweak_Injection_Toggled_Body" = "即將重新啟動使用者空間是否繼續？";
+"Alert_Tweak_Injection_Toggled_Body" = "即將重啟使用者空間是否繼續？";
 /*Alert_Tweak_Injection_Toggled_Reboot_Now*/
 /*Alert_Tweak_Injection_Toggled_Reboot_Later*/
 "Alert_Remove_Jailbreak_Title" = "移除越獄";
