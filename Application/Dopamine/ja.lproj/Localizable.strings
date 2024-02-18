@@ -29,9 +29,9 @@
 "Changelog_Unavailable_Text" = "更新履歴は利用できません";
 
 // Removed Jailbreak Alert
-/*Removed_Jailbreak_Alert_Title*/
-/*Removed_Jailbreak_Alert_Message*/
-/*Button_Close*/
+"Removed_Jailbreak_Alert_Title" = "Jailbreak環境は削除されました";
+"Removed_Jailbreak_Alert_Message" = "Jailbreak環境の削除に成功しました. デバイスの再起動をお勧めします。";
+"Button_Close" = "閉じる";
 
 // Error View
 "Button_Share" = "共有";
@@ -69,9 +69,9 @@
 "Button_Continue" = "続ける";
 
 // Duplicate Apps Errors
-/*Duplicate_Apps_Error_Dopamine_App*/
-/*Duplicate_Apps_Error_User_App*/
-/*Duplicate_Apps_Error_Icon_Cache*/
+"Duplicate_Apps_Error_Dopamine_App" = "バンドルID \"%@\" を持つアプリケーションはDopamine用アプリケーションディレクトリ(\"%@\")内に複数存在しています。この作業を続行できません。";
+"Duplicate_Apps_Error_User_App" = "バンドルID \"%@\" を持つアプリケーションはDopamine用アプリケーションディレクトリ(\"%@\")内に存在しますが、システムにも別々にインストールされています。この作業を続行できません。";
+"Duplicate_Apps_Error_Icon_Cache" = "バンドルID \"%@\" を持つアプリケーションはDopamine用アプリケーションディレクトリ(\"%@\")内に存在しますが、アイコンキャッシュには別のパス(\"%@\")で登録されています。この作業を続行できません。";
 
 // Settings Lists
 "Theme" = "テーマ";
