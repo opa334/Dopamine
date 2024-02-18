@@ -216,7 +216,6 @@ uint64_t kread_ptr(uint64_t va)
 	return UNSIGN_PTR(kread64(va));
 }
 
-// Fuck is an smr ptr??? (I know one thing that it could mean)
 uint64_t kread_smrptr(uint64_t va)
 {
 	uint64_t value = kread_ptr(va);
