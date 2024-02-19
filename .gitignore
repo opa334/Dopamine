@@ -12,5 +12,4 @@ DerivedData/
 Dopamine/Dopamine/bootstrap/tmp/
 .idea
 Tools/fastPathSign/.build_*
-xploits/kfd/kfd.framework/kfd
-BaseBin/opainject
+Exploits/kfd/kfd.framework/kfd
