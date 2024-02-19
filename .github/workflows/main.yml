@@ -16,9 +16,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: write
-
 env:
   VERSION: '2.0.5.1'
  
