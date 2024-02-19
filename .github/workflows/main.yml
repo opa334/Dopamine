@@ -25,7 +25,9 @@ jobs:
     environment: Auto Build And Release
     steps:
       - name: Checkout
-        uses: actions/checkout@main
+        uses: actions/checkout@v3
+        with:
+            submodules: recursive
 
       - name: Install Procursus
         uses: dhinakg/procursus-action@main
