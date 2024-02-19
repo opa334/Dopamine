@@ -38,13 +38,9 @@ jobs:
       - name: Install theos
         run: |
           set -x
-          export BASEDIR="$(pwd)"
-          export THEOS="${BASEDIR}/theos"
-          mkdir -p $THEOS
           curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos >> install-theos.sh
           sed -i '' 's/get_sdks$//g' theos
           bash theos
-          cd $BASEDIR
 
       - name: Install trustcache
         run: |
@@ -78,8 +74,7 @@ jobs:
       - name: Build ipa
         run: |
           set -x
-          export BASEDIR="$(pwd)"
-          export THEOS="${BASEDIR}/theos"
+          export THEOS=$HOME/theos
           gmake -j$(sysctl -n hw.physicalcpu) NIGHTLY=1
           mv Application/Dopamine.tipa Dopamine.ipa
 
