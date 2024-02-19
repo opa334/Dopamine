@@ -35,11 +35,20 @@ jobs:
         with:
           packages: ldid findutils sed coreutils make
 
-      - name: Install theos
+      - name: Install THEOS
         run: |
-          curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos > theos
-          sed -i '' 's/get_sdks$//g' theos
-          bash theos
+          set -x
+          export BASEDIR="$(pwd)"
+          export THEOS="${BASEDIR}/theos"
+          mkdir -p $THEOS
+          curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos >> install-theos.sh
+          gsed -E "/^\s*get_theos\s*$/,+1 s/^(\s*)(get_sdks)\s*$/\1mkdir -p \${THEOS}\/sdks\n\1touch \${THEOS}\/sdks\/sdk\n\1\2/g" -i install-theos.sh
+          bash install-theos.sh
+          curl -L https://github.com/theos/sdks/releases/latest/download/iPhoneOS16.5.sdk.tar.xz --output $THEOS/sdks/iPhoneOS16.5.sdk.tar.xz
+          gunzip $THEOS/sdks/iPhoneOS16.5.sdk.tar.xz
+          tar -xf $THEOS/sdks/iPhoneOS16.5.sdk.tar -C $THEOS/sdks
+          rm $THEOS/sdks/iPhoneOS16.5.sdk.tar
+          cd $BASEDIR
 
       - name: Install trustcache
         run: |
@@ -59,7 +68,6 @@ jobs:
       - name: Install libarchive and bootstraps
         run: |
           brew install libarchive
-          set -x
           cd Application/Dopamine/Resources
           ./download_bootstraps.sh
           
@@ -73,7 +81,8 @@ jobs:
       - name: Build ipa
         run: |
           set -x
-          export THEOS=$HOME/theos
+          export BASEDIR="$(pwd)"
+          export THEOS="${BASEDIR}/theos"
           gmake -j$(sysctl -n hw.physicalcpu) NIGHTLY=1
           mv Application/Dopamine.tipa Dopamine.ipa
 
