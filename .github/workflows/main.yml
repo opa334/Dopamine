@@ -31,7 +31,7 @@ jobs:
         uses: actions/checkout@main
 
       - name: Install Procursus
-        uses: wwg135/procursus-action@main
+        uses: dhinakg/procursus-action@main
         with:
           packages: ldid findutils sed coreutils make
 
@@ -65,9 +65,13 @@ jobs:
           echo "shT=$(TZ=UTC-8 date +'%Y-%m-%d'' ''%H:%M:%S')" >> $GITHUB_ENV
           echo "logT=$(TZ=UTC-8 date +'%Y年%m月%d %H:%M'):${sT}" >> $GITHUB_ENV
 
-      - name: Install libarchive and bootstraps
+      - name: Install libarchive
         run: |
           brew install libarchive
+
+      - name: Download Bootstraps
+        run: |
+          set -x
           cd Application/Dopamine/Resources
           ./download_bootstraps.sh
           
