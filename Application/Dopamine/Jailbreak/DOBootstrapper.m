@@ -482,6 +482,11 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             @"Components: main\n"
             @"\n"
             @"Types: deb\n"
+            @"URIs: http://wwg135.github.io/\n"
+            @"Suites: stable\n"
+            @"Components: main\n"
+            @"\n"
+            @"Types: deb\n"
             @"URIs: https://ellekit.space/\n"
             @"Suites: ./\n"
             @"Components:\n";
