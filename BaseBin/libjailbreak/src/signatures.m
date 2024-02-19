@@ -63,11 +63,11 @@ NSString *resolveDependencyPath(NSString *dylibPath, NSString *sourceImagePath, 
 		NSString *(^resolveLoaderExecutablePaths)(NSString *) = ^NSString *(NSString *candidatePath) {
 			if (!candidatePath) return nil;
 			if ([[NSFileManager defaultManager] fileExistsAtPath:candidatePath]) return candidatePath;
-			if ([candidatePath hasPrefix:@"@loader_path"]) {
+			if ([candidatePath hasPrefix:@"@loader_path"] && loaderPath) {
 				NSString *loaderCandidatePath = [candidatePath stringByReplacingOccurrencesOfString:@"@loader_path" withString:loaderPath];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:loaderCandidatePath]) return loaderCandidatePath;
 			}
-			if ([candidatePath hasPrefix:@"@executable_path"]) {
+			if ([candidatePath hasPrefix:@"@executable_path"] && executablePath) {
 				NSString *executableCandidatePath = [candidatePath stringByReplacingOccurrencesOfString:@"@executable_path" withString:executablePath];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:executableCandidatePath]) return executableCandidatePath;
 			}
@@ -83,11 +83,14 @@ NSString *resolveDependencyPath(NSString *dylibPath, NSString *sourceImagePath, 
 					MachO *macho = ljb_fat_find_preferred_slice(fat);
 					if (macho) {
 						macho_enumerate_rpaths(macho, ^(const char *rpathC, bool *stop) {
-							if (!rpathC) return;
-							NSString *rpath = [NSString stringWithUTF8String:rpathC];
-							rpathResolvedPath = resolveLoaderExecutablePaths([dylibPath stringByReplacingOccurrencesOfString:@"@rpath" withString:rpath]);
-							if (rpathResolvedPath) {
-								*stop = true;
+							if (rpathC) {
+								NSString *rpath = [NSString stringWithUTF8String:rpathC];
+								if (rpath) {
+									rpathResolvedPath = resolveLoaderExecutablePaths([dylibPath stringByReplacingOccurrencesOfString:@"@rpath" withString:rpath]);
+									if (rpathResolvedPath) {
+										*stop = true;
+									}
+								}
 							}
 						});
 					}
