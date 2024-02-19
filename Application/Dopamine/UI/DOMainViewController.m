@@ -269,7 +269,7 @@
     [NSLayoutConstraint activateConstraints:@[
         [self.updateButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
         [self.updateButton.heightAnchor constraintEqualToConstant:30],
-        [self.updateButton.bottomAnchor constraintEqualToAnchor:self.jailbreakBtn.topAnchor constant:-20]
+        [self.updateButton.bottomAnchor constraintEqualToAnchor:self.jailbreakBtn.topAnchor constant:[DOGlobalAppearance isHomeButtonDevice] ? -10 : -20]
     ]];
 
     [self.updateButton setTransform:CGAffineTransformMakeTranslation(0, 25)];

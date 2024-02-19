@@ -41,7 +41,9 @@
     self.buttonsView.axis = UILayoutConstraintAxisVertical;
     self.buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
 
-    BOOL isHomeButtonDevice = [DOGlobalAppearance isHomeButtonDevice];
+    int button_height = [DOGlobalAppearance isHomeButtonDevice] ? UI_ACTION_HEIGHT_HOME_BTN : UI_ACTION_HEIGHT;
+    if ([DOGlobalAppearance isSmallDevice])
+        button_height = UI_ACTION_HEIGHT_TINY;
 
     [self.actions enumerateObjectsUsingBlock:^(UIAction *action, NSUInteger idx, BOOL *stop) {
         DOActionMenuButton *button = [DOActionMenuButton buttonWithAction:action chevron:[self.delegate actionMenuShowsChevronForAction:action]];
@@ -49,19 +51,22 @@
         [button setBottomSeparator:idx != self.actions.count - 1];
         [self.buttonsView addArrangedSubview:button];
         [NSLayoutConstraint activateConstraints:@[
-            [button.heightAnchor constraintEqualToConstant:isHomeButtonDevice ? UI_ACTION_HEIGHT_HOME_BTN : UI_ACTION_HEIGHT],
+            [button.heightAnchor constraintEqualToConstant:button_height],
             [button.widthAnchor constraintEqualToAnchor:self.buttonsView.widthAnchor]
         ]];
     }];
 
     [self addSubview:self.buttonsView];
 
+    int inner_padding = [DOGlobalAppearance isSmallDevice] ? UI_INNER_PADDING_TINY : UI_INNER_PADDING;
+
     [NSLayoutConstraint activateConstraints:@[
-        [self.buttonsView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:UI_INNER_PADDING],
-        [self.buttonsView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-UI_INNER_PADDING],
+        [self.buttonsView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:inner_padding],
+        [self.buttonsView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-inner_padding],
         [self.buttonsView.topAnchor constraintEqualToAnchor:self.topAnchor constant:UI_INNER_TOP_PADDING],
         [self.buttonsView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-UI_INNER_TOP_PADDING],
     ]];
+
 }
 
 - (void)hide

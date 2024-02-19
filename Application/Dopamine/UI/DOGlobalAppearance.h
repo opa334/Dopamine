@@ -15,9 +15,13 @@ NS_ASSUME_NONNULL_BEGIN
 #define UI_PADDING 30
 //Action Menu
 #define UI_INNER_PADDING 20
+#define UI_INNER_PADDING_TINY 10
 #define UI_INNER_TOP_PADDING 5
 #define UI_ACTION_HEIGHT 73
 #define UI_ACTION_HEIGHT_HOME_BTN 65
+#define UI_ACTION_HEIGHT_TINY 52
+
+#define SE_PHONE_SIZE_CONST 568
 
 @interface DOGlobalAppearance : NSObject
 
@@ -29,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (BOOL)isHomeButtonDevice;
 + (UIColor*)windowColorWithAlpha:(float)alpha;
 + (BOOL)isRTL;
++ (BOOL)isSmallDevice;
 
 @end
 
