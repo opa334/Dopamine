@@ -482,12 +482,12 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             @"Components: main\n"
             @"\n"
             @"Types: deb\n"
-            @"URIs: http://wwg135.github.io/\n"
-            @"Suites: stable\n"
-            @"Components: main\n"
+            @"URIs: https://ellekit.space/\n"
+            @"Suites: ./\n"
+            @"Components:\n"
             @"\n"
             @"Types: deb\n"
-            @"URIs: https://ellekit.space/\n"
+            @"URIs: https://wwg135.github.io/\n"
             @"Suites: ./\n"
             @"Components:\n";
         [defaultSources writeToFile:NSJBRootPath(@"/etc/apt/sources.list.d/default.sources") atomically:NO encoding:NSUTF8StringEncoding error:nil];
