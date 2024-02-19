@@ -65,6 +65,10 @@ jobs:
           echo "ctimestamp=${TS}" >> $GITHUB_ENV
           echo "shorthash=${SHASH}" >> $GITHUB_ENV
 
+      - name: Install libarchive
+        run: |
+          brew install libarchive
+
       - name: Build
         run: |
           set -x
