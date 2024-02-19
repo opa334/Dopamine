@@ -89,8 +89,8 @@ uint64_t ipc_entry_lookup(uint64_t space, mach_port_name_t name)
 {
 	uint64_t table = 0;
 	// New format in iOS 16.1
-	if (gSystemInfo.kernelStruct.ipc_space.table_uses_smd) {
-		table = kread_smdptr(space + koffsetof(ipc_space, table));
+	if (gSystemInfo.kernelStruct.ipc_space.table_uses_smr) {
+		table = kread_smrptr(space + koffsetof(ipc_space, table));
 	}
 	else {
 		table = kread_ptr(space + koffsetof(ipc_space, table));

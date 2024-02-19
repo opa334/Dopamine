@@ -25,17 +25,17 @@
 "Update_Status_Subtitle_Please_Wait" = "Пожалуйста подождите, пока файлы будут загружены";
 "Update_Status_Installing" = "Установка обновления...";
 "Update_Status_Subtitle_Restart_Soon" = "Устройство скоро перезагрузится";
-"Title_Changelog" = "Список изменении";
+"Title_Changelog" = "Список изменений";
 "Changelog_Unavailable_Text" = "Список изменений недоступен";
 
 // Removed Jailbreak Alert
 /*Removed_Jailbreak_Alert_Title*/
 /*Removed_Jailbreak_Alert_Message*/
-/*Button_Close*/
+"Button_Close" = "Закрыть";
 
 // Error View
-/*Button_Share*/
-/*Button_Reboot*/
+"Button_Share" = "Поделиться";
+"Button_Reboot" = "Перезагрузить";
 
 // Settings Toggles
 "Settings_Tweak_Injection" = "Внедрение твиков";
@@ -46,16 +46,16 @@
 "Button_Remove_Jailbreak" = "Удалить джейлбрейк";
 "Button_Hide_Jailbreak" = "Скрыть джейлбрейк";
 "Button_Unhide_Jailbreak" = "Отобразить джейлбрейк";
-/*Button_Refresh_Jailbreak_Apps*/
+"Button_Refresh_Jailbreak_Apps" = "Освежить приложения джейлбрейка";
 "Button_Reinstall_Package_Managers" = "Переустановить менеджеры пакетов";
 
 // Settings Hints
 "Hint_Hide_Jailbreak" = "\"Скрыть джейлбрейк\" временно удаляет файлы, связанные с джейлбрейком, до следующего джейлбрейка";
 "Hint_Hide_Jailbreak_Jailbroken" = "\"Скрыть джейлбрейк\" частично отключает джейлбрейк и стремится сделать обнаружение более сложным. Однако это не совсем эффективно и скрывает не всё.";
-/*Section_Jailbreak_Settings*/
-/*Section_Actions*/
-/*Section_Customization*/
-/*Section_Exploits*/
+"Section_Jailbreak_Settings" = "Настройки джейлбрейка";
+"Section_Actions" = "Действия";
+"Section_Customization" = "Кастомизация";
+"Section_Exploits" = "Эксплоиты";
 
 // Settings Alerts
 /*Alert_Tweak_Injection_Toggled_Title*/
@@ -66,7 +66,7 @@
 "Alert_Remove_Jailbreak_Pressed_Body" = "Удаление джейлбрейка приведет к удалению всех файлов, связанных с джейлбрейком, но все обычные приложения, файлы и данные будут сохранены. Вы уверены, что хотите продолжить? Вы не сможете отменить это действие.";
 /*Alert_Remove_Jailbreak_Enabled_Body*/
 "Button_Cancel" = "Отмена";
-/*Button_Continue*/
+"Button_Continue" = "Продолжить";
 
 // Duplicate Apps Errors
 /*Duplicate_Apps_Error_Dopamine_App*/
@@ -74,10 +74,10 @@
 /*Duplicate_Apps_Error_Icon_Cache*/
 
 // Settings Lists
-/*Theme*/
-/*Kernel Exploit*/
-/*PPL Bypass*/
-/*PAC Bypass*/
+"Theme" = "Темы";
+"Kernel Exploit" = "Эксплоит Ядра";
+"PPL Bypass" = "Обход PPL";
+"PAC Bypass" = "Обход PAC";
 
 // Credits
 "Credits_Button_Discord" = "Discord";
@@ -86,17 +86,17 @@
 
 // Logs
 "Initializing Environment" = "Инициализация переменной среды";
-/*Loading BaseBin TrustCache*/
+"Loading BaseBin TrustCache" = "Загружаем BaseBin TrustCache";
 /*Applying Bind Mount*/
-/*Removing Jailbreak*/
-/*Elevating Privileges*/
-/*Cleaning Up Exploits*/
-/*Building Phys R/W Primitive*/
-/*Rebooting Userspace*/
+"Removing Jailbreak" = "Удаляем джейлбрейк";
+"Elevating Privileges" = "Повышаем права";
+"Cleaning Up Exploits" = "Очищаем Эксплоиты";
+"Building Phys R/W Primitive" = "Создаем R/W примитивы";
+"Rebooting Userspace" = "Перезагружаем Userspace";
 "Patchfinding" = "Поиск патчей";
-/*Exploiting Kernel (%@)*/
-/*Bypassing PAC (%@)*/
-/*Bypassing PPL (%@)*/
+"Exploiting Kernel (%@)" = "Эксплуатируем ядро";
+"Bypassing PAC (%@)" = "Обходим PAC";
+"Bypassing PPL (%@)" = "Обходим PPL";
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "Выберите менеджер(ы) пакетов";

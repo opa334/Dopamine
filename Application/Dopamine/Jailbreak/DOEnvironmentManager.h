@@ -20,6 +20,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) NSData *bootManifestHash;
 
+- (NSString *)appVersion;
+- (NSString *)appVersionDisplayString;
+- (NSString *)nightlyHash;
+
 - (BOOL)isInstalledThroughTrollStore;
 - (BOOL)isJailbroken;
 - (BOOL)isBootstrapped;

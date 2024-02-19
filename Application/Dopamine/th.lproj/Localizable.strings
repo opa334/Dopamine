@@ -39,7 +39,7 @@
 
 // Settings Toggles
 "Settings_Tweak_Injection" = "Tweak Injection";
-"Settings_iDownload" = "iDownload (Shell ผู้พัฒนา)";
+"Settings_iDownload" = "iDownload (Developer Shell)";
 "Settings_Verbose_Logs" = "Verbose Logs";
 
 // Settings Buttons
@@ -69,9 +69,9 @@
 "Button_Continue" = "ดำเนินการต่อ";
 
 // Duplicate Apps Errors
-"Duplicate_Apps_Error_Dopamine_App" = "มีหลายแอปพลิเคชั่นที่มี identifier \"%@\" ในไดเร็กทอรี่ของแอปพลิเคชั่นของ Dopamine (\"%@\") ทำให้ไม่สามารถดำเนินการต่อได้";
-"Duplicate_Apps_Error_User_App" = "แอปพลิเคชั่นที่มี identifiers %@ มีในไดเร็กทอรี่ของแอปพลิเคชั่นของ Dopamine (\"%@\") และถูกติดตั้งแยกไว้ที่อื่นในระบบด้วย ทำให้ไม่สามารถดำเนินการต่อได้";
-"Duplicate_Apps_Error_Icon_Cache" = "แอปพลิเคชั่นที่มี identifiers \"%@\" มีในไดเร็กทอรี่ของแอปพลิเคชั่นของ Dopamine (\"%@\") แต่ถูก register ไว้ใน icon cache ด้วย path ที่แตกต่างกัน (\"%@\") ทำให้ไม่สามารถดำเนินการต่อได้";
+"Duplicate_Apps_Error_Dopamine_App" = "มีหลายแอปพลิเคชั่นที่มี identifier \"%@\" ในโฟลเดอร์แอปพลิเคชั่นของ Dopamine (\"%@\") ทำให้ไม่สามารถดำเนินการต่อได้";
+"Duplicate_Apps_Error_User_App" = "แอปพลิเคชั่นที่มี identifiers %@ อยู่ในโฟล์เดอร์แอปพลิเคชั่นของ Dopamine (\"%@\") และถูกติดตั้งแยกไว้ที่อื่นในระบบด้วย ทำให้ไม่สามารถดำเนินการต่อได้";
+"Duplicate_Apps_Error_Icon_Cache" = "แอปพลิเคชั่นที่มี identifiers \"%@\" อยู่ในโฟล์เดอร์แอปพลิเคชั่นของ Dopamine (\"%@\") แต่ถูก register ไว้ใน icon cache ด้วย path ที่แตกต่างกัน (\"%@\") ทำให้ไม่สามารถดำเนินการต่อได้";
 
 // Settings Lists
 "Theme" = "ธีม";
