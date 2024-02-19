@@ -53,6 +53,31 @@ int reboot3(uint64_t flags, ...);
     return self;
 }
 
+- (NSString *)nightlyHash
+{
+#ifdef NIGHTLY
+    return [NSString stringWithUTF8String:COMMIT_HASH];
+#else
+    return nil;
+#endif
+}
+
+- (NSString *)appVersion
+{
+    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+}
+
+- (NSString *)appVersionDisplayString
+{
+    NSString *nightlyHash = [self nightlyHash];
+    if (nightlyHash) {
+        return [NSString stringWithFormat:@"%@~%@", self.appVersion, [nightlyHash substringToIndex:6]];
+    }
+    else {
+        return [self appVersion];
+    }
+}
+
 - (NSData *)bootManifestHash
 {
     if (!_bootManifestHash) {
@@ -538,5 +563,6 @@ int reboot3(uint64_t flags, ...);
     }];
     return error;
 }
+
 
 @end

@@ -1,3 +1,9 @@
+export NIGHTLY ?= 0
+
+ifeq ($(NIGHTLY), 1)
+export COMMIT_HASH = $(shell git rev-parse HEAD)
+endif
+
 all:
 	@$(MAKE) -C BaseBin
 	@$(MAKE) -C Packages

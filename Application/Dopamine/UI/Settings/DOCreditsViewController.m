@@ -8,6 +8,7 @@
 #import "DOCreditsViewController.h"
 #import "DOLicenseViewController.h"
 #import "DOUIManager.h"
+#import "DOEnvironmentManager.h"
 #import <Preferences/PSSpecifier.h>
 
 @interface DOCreditsViewController ()
@@ -27,7 +28,7 @@
         _specifiers = [self loadSpecifiersFromPlistName:@"Credits" target:self];
 
         PSSpecifier *headerSpecifier = _specifiers[0];
-        [headerSpecifier setProperty:[NSString stringWithFormat:@"Dopamine %@ - %@", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], DOLocalizedString(@"Menu_Credits_Title")] forKey:@"title"];
+        [headerSpecifier setProperty:[NSString stringWithFormat:@"Dopamine %@ - %@", [DOEnvironmentManager sharedManager].appVersionDisplayString, DOLocalizedString(@"Menu_Credits_Title")] forKey:@"title"];
     }
     return _specifiers;
 }

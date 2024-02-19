@@ -15,8 +15,13 @@ Dopamine.ipa: build/Build/Products/Debug-iphoneos/Dopamine.app
 	rm -rf Dopamine.tipa
 	cp Dopamine.ipa Dopamine.tipa
 
+ifeq ($(NIGHTLY), 1)
+build/Build/Products/Debug-iphoneos/Dopamine.app: FORCE
+	xcodebuild -scheme Dopamine -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO GCC_PREPROCESSOR_DEFINITIONS='NIGHTLY=1 COMMIT_HASH=\"$(COMMIT_HASH)\"'
+else
 build/Build/Products/Debug-iphoneos/Dopamine.app: FORCE
 	xcodebuild -scheme Dopamine -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+endif
 
 clean:
 	rm -rf build Payload Dopamine.ipa Dopamine.tipa
