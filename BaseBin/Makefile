@@ -7,58 +7,60 @@
 #choma:
 #	$(MAKE) -C ChOma TARGET=ios DISABLE_SIGNING=1 DYLIB_LDFLAGS="-install_name @loader_path/libchoma.dylib" $@
 
-all: .build .include ChOma XPF opainject libjailbreak systemhook forkfix launchdhook boomerang jbctl idownloadd watchdoghook rootlesshooks basebin.tc basebin.tar
+all: basebin.tar
 
-ChOma:
+subprojects: ChOma XPF opainject libjailbreak systemhook forkfix launchdhook boomerang jbctl idownloadd watchdoghook rootlesshooks
+
+ChOma: .build .include
 	@$(MAKE) -C ChOma TARGET=ios DISABLE_SIGNING=1 DISABLE_TESTS=1 DYLIB_LDFLAGS="-install_name @loader_path/libchoma.dylib"
 	@cp ChOma/output/ios/lib/libchoma.dylib .build
 	@cp -r ChOma/output/ios/include/choma .include
 
-XPF:
+XPF: .build .include ChOma
 	@$(MAKE) -C XPF libxpf.dylib CHOMA_DYLIB_PATH="../.build"
 	@cp XPF/libxpf.dylib .build
 	@mkdir -p .include/xpf
 	@cp XPF/src/xpf.h .include/xpf
 
-opainject:
+opainject: .build .include
 	$(MAKE) -C opainject FINALPACKAGE=1
 	@cp opainject/.theos/obj/opainject .build
 
-libjailbreak:
+libjailbreak: .build .include ChOma
 	$(MAKE) -C libjailbreak
 	@cp libjailbreak/libjailbreak.dylib .build
 	@mkdir -p .include/libjailbreak
 	@cp libjailbreak/src/*.h .include/libjailbreak
 
-systemhook:
+systemhook: .build .include libjailbreak
 	$(MAKE) -C systemhook
 	@cp systemhook/systemhook.dylib .build
 
-forkfix:
+forkfix: .build .include libjailbreak
 	$(MAKE) -C forkfix
 	@cp forkfix/forkfix.dylib .build
 
-launchdhook:
+launchdhook: .build .include libjailbreak
 	$(MAKE) -C launchdhook
 	@cp launchdhook/launchdhook.dylib .build
 
-boomerang:
+boomerang: .build .include libjailbreak
 	$(MAKE) -C boomerang
 	@cp boomerang/boomerang .build
 
-jbctl:
+jbctl: .build .include libjailbreak
 	$(MAKE) -C jbctl
 	@cp jbctl/jbctl .build
 
-idownloadd:
+idownloadd: .build .include libjailbreak
 	$(MAKE) -C idownloadd
 	@cp idownloadd/idownloadd .build
 
-watchdoghook:
+watchdoghook: .build .include libjailbreak
 	$(MAKE) -C watchdoghook
 	@cp watchdoghook/watchdoghook.dylib .build
 
-rootlesshooks:
+rootlesshooks: .build .include 
 	$(MAKE) -C rootlesshooks
 	@cp rootlesshooks/.theos/obj/rootlesshooks.dylib .build
 
@@ -73,11 +75,11 @@ rootlesshooks:
 	mkdir -p .include
 	cp -r _external/include/* .include
 
-basebin.tc:
+basebin.tc: subprojects
 	trustcache create .build/basebin.tc .build
 	cp .build/basebin.tc basebin.tc
 
-basebin.tar:
+basebin.tar: basebin.tc
 	@DYLD_FALLBACK_LIBRARY_PATH="." ./tar --transform "s/^.build/basebin/" -cvf "basebin.tar" ".build" --owner=0 --group=0
 
 clean:
