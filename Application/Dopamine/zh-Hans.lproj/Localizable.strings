@@ -102,3 +102,8 @@
 "Status_Title_Select_Package_Managers" = "选择包管理器";
 "Select_Package_Managers_Install_Message" = "若不确定如何选择，请使用 Sileo";
 "Continue" = "继续";
+
+"Menu_Reboot_Title" = "重启";
+"Settings" = "设置";
+"Alert_Back_Up_Title" = "一键备份";
+"Alert_Back_Up_Pressed_Body" = "说明：1.请先使用“DEB备份”app一键备份插件；\n2.再点击这里的一键备份，确定即可; \n3.清除越狱后，重新越狱进去Filza文件管理器：/var/mobile/backup+日期时间/，点击“一键恢复插件及配置.sh”运行即可";
