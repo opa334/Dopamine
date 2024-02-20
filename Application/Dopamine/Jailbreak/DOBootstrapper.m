@@ -230,15 +230,17 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     return NO;
 }
 
-- (BOOL)createSymlinkAtPath:(NSString *)path toPath:(NSString *)destinationPath createIntermediateDirectories:(BOOL)createIntermediate
+- (NSError *)createSymlinkAtPath:(NSString *)path toPath:(NSString *)destinationPath createIntermediateDirectories:(BOOL)createIntermediate
 {
+    NSError *error;
     NSString *parentPath = [path stringByDeletingLastPathComponent];
     if (![[NSFileManager defaultManager] fileExistsAtPath:parentPath]) {
-        if (!createIntermediate) return NO;
-        if (![[NSFileManager defaultManager] createDirectoryAtPath:parentPath withIntermediateDirectories:YES attributes:nil error:nil]) return NO;
+        if (!createIntermediate) return [NSError errorWithDomain:bootstrapErrorDomain code:-1 userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed create %@->%@ symlink: Parent dir does not exists", path, destinationPath]}];
+        if (![[NSFileManager defaultManager] createDirectoryAtPath:parentPath withIntermediateDirectories:YES attributes:nil error:&error]) return error;
     }
     
-    return [[NSFileManager defaultManager] createSymbolicLinkAtPath:path withDestinationPath:destinationPath error:nil];
+    [[NSFileManager defaultManager] createSymbolicLinkAtPath:path withDestinationPath:destinationPath error:&error];
+    return error;
 }
 
 - (BOOL)isPrivatePrebootMountedWritable
@@ -444,7 +446,11 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     
     NSString *basebinPath = NSJBRootPath(@"/basebin");
     NSString *installedPath = NSJBRootPath(@"/.installed_dopamine");
-    [self createSymlinkAtPath:@"/var/jb" toPath:NSJBRootPath(@"/") createIntermediateDirectories:YES];
+    error = [self createSymlinkAtPath:@"/var/jb" toPath:NSJBRootPath(@"/") createIntermediateDirectories:YES];
+    if (error) {
+        completion(error);
+        return;
+    }
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:basebinPath]) {
         if (![[NSFileManager defaultManager] removeItemAtPath:basebinPath error:&error]) {
