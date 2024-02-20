@@ -66,15 +66,13 @@ int posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
 			if (stagedJailbreakUpdate) {
 				int r = jbupdate_basebin(stagedJailbreakUpdate);
 				unsetenv("STAGED_JAILBREAK_UPDATE");
-
-				// Update envp to reflect our changes
-				// setenv / unsetenv can sometimes cause environ to get reallocated
-				// In that case envp may point to garbage or be empty
-				envp = environ;
 			}
 
+			// Always use environ instead of envp, as boomerang_stashPrimitives calls setenv
+			// setenv / unsetenv can sometimes cause environ to get reallocated
+			// In that case envp may point to garbage or be empty
 			// Say goodbye to this process
-			return posix_spawn_orig_wrapper(pid, path, file_actions, attrp, argv, envp);
+			return posix_spawn_orig_wrapper(pid, path, file_actions, attrp, argv, environ);
 		}
 	}
 
