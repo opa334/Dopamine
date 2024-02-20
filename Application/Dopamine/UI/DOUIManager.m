@@ -38,7 +38,10 @@
     
     NSString *latestVersion = releases[0][@"tag_name"];
     NSString *currentVersion = [self getLaunchedReleaseTag];
-    return [self numericalRepresentationForVersion:latestVersion] > [self numericalRepresentationForVersion:currentVersion];
+    
+    long long latestNumericalRepresentation = [self numericalRepresentationForVersion:latestVersion];
+    long long currentNumericalRepresentation = [self numericalRepresentationForVersion:currentVersion];
+    return latestNumericalRepresentation > currentNumericalRepresentation;
 }
 
 - (long long)numericalRepresentationForVersion:(NSString*)version {
