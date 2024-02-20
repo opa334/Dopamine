@@ -90,5 +90,23 @@
 		<key>titleShadow</key>
 		<false/>
 	</dict>
+	<dict>
+		<key>key</key>
+		<string>yellow</string>
+		<key>icon</key>
+		<string>AppIcon_ElleKit</string>
+		<key>name</key>
+		<string>Yellow</string>
+		<key>image</key>
+		<string>Background_Yellow.jpg</string>
+		<key>actionMenuColor</key>
+		<string>3F610C71</string>
+		<key>windowColor</key>
+		<string>6009040A</string>
+		<key>blur</key>
+		<integer>18</integer>
+		<key>titleShadow</key>
+		<true/>
+	</dict>
 </array>
 </plist>
