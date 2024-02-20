@@ -44,13 +44,11 @@
 - (long long)numericalRepresentationForVersion:(NSString*)version {
     long long numericalRepresentation = 0;
 
-    NSArray *components = [version componentsSeparatedByCharactersInSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]];
-    while (components.count < 3)
-        components = [components arrayByAddingObject:@"0"];
-
-    numericalRepresentation |= [components[0] integerValue] << 16;
-    numericalRepresentation |= [components[1] integerValue] << 8;
-    numericalRepresentation |= [components[2] integerValue];
+    NSArray *components = [version componentsSeparatedByString:@"."];
+    for (NSInteger i = 0; i < components.count; i++) {
+        numericalRepresentation *= 1000;
+        numericalRepresentation += [components[i] integerValue];
+    }
     return numericalRepresentation;
 }
 
