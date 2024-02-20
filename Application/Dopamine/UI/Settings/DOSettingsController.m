@@ -299,14 +299,6 @@
             [specifiers addObject:unmountSpecifier];
         }
 
-			PSSpecifier *rebootSpecifier = [PSSpecifier emptyGroupSpecifier];
-            rebootSpecifier.target = self;
-            [rebootSpecifier setProperty:@"Button_Reboot" forKey:@"title"];
-            [rebootSpecifier setProperty:@"DOButtonCell" forKey:@"headerCellClass"];
-            [rebootSpecifier setProperty:@"arrow.triangle.2.circlepath" forKey:@"image"];
-            [rebootSpecifier setProperty:@"rebootPressed" forKey:@"action"];
-            [specifiers addObject:rebootSpecifier];
-
         if (envManager.isJailbroken) {
             PSSpecifier *backupSpecifier = [PSSpecifier emptyGroupSpecifier];
             backupSpecifier.target = self;
@@ -677,11 +669,6 @@
     [[DOUIManager sharedInstance] resetSettings];
     [self.navigationController popToRootViewControllerAnimated:YES];
     [self reloadSpecifiers];
-}
-
-- (void)rebootPressed
-{
-	exec_cmd_root(JBRootPath("/sbin/reboot"), NULL);
 }
 
 @end
