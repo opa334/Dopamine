@@ -521,7 +521,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 - (void)finalize
 {
     [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Rebooting Userspace") debug:NO];
-    exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "reboot", "userspace", NULL);
+    [[DOEnvironmentManager sharedManager] rebootUserspace];
 }
 
 @end
