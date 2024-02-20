@@ -20,7 +20,8 @@ permissions:
   contents: write
 
 env:
-  VERSION: '2.0.5'
+  VERSION: '2.0.5.1'
+  BUNDLEID: 'com.wwg135.Dopamine'
  
 jobs:
   build:
@@ -65,7 +66,18 @@ jobs:
         run: |
          curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos > theos
          bash theos
+
+      - name: Pre Bundleid
+        run: |
+          sed -i '' "s/com.opa334.Dopamine/${{ env.BUNDLEID }}/g" ./Application/Dopamine/Jailbreak/DOPreferenceManager.m
+          sed -i '' "s/com.opa334.Dopamine/${{ env.BUNDLEID }}/g" ./Application/Dopamine.xcodeproj/project.pbxproj
+          sed -i '' "s/com.opa334.Dopamine/${{ env.BUNDLEID }}/g" ./BaseBin/jbctl/src/main.m
           
+      - name: Pre Version
+        run: |
+          echo "${{ env.VERSION }}" >./BaseBin/_external/basebin/.version
+          sed -i '' 's/MARKETING_VERSION = .*;/MARKETING_VERSION = ${{ env.VERSION }};/g' ./Application/Dopamine.xcodeproj/project.pbxproj
+
       - name: Set env
         run: |
           sT=$(TZ=UTC-8 date +'%S')
