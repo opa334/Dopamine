@@ -11,8 +11,8 @@
 
 // Action Menu
 "Menu_Settings_Title" = "设置";
-"Menu_Restart_SpringBoard_Title" = "重新启动SpringBoard";
-"Menu_Reboot_Userspace_Title" = "重新启动用户空间";
+"Menu_Restart_SpringBoard_Title" = "注销";
+"Menu_Reboot_Userspace_Title" = "重启用户空间";
 "Menu_Credits_Title" = "关于";
 
 // Updating
@@ -23,7 +23,7 @@
 // Update View
 "Update_Status_Downloading" = "正在下载更新…";
 "Update_Status_Subtitle_Please_Wait" = "请等待直至下载完成";
-"Update_Status_Installing" = "正在安装更新…";
+"Update_Status_Installing" = "正在安装更新...";
 "Update_Status_Subtitle_Restart_Soon" = "设备即将重新启动";
 "Title_Changelog" = "更新日志";
 "Changelog_Unavailable_Text" = "更新日志不可用";
@@ -58,15 +58,15 @@
 "Section_Exploits" = "漏洞利用";
 
 // Settings Alerts
-"Alert_Tweak_Injection_Toggled_Title" = "需要重新启动用户空间";
-"Alert_Tweak_Injection_Toggled_Body" = "需要重新启动用户空间才能应用变更，立即执行？";
+"Alert_Tweak_Injection_Toggled_Title" = "需要重启用户空间";
+"Alert_Tweak_Injection_Toggled_Body" = "需要重启用户空间才能应用生效，立即执行？";
 "Alert_Tweak_Injection_Toggled_Reboot_Now" = "重新启动";
-"Alert_Tweak_Injection_Toggled_Reboot_Later" = "以后";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "取消";
 "Alert_Remove_Jailbreak_Title" = "移除越狱";
 "Alert_Remove_Jailbreak_Pressed_Body" = "「移除越狱」将移除所有和越狱相关的文件，但将保留普通 App、文档及数据。请注意，此操作无法撤销。确认移除越狱吗？";
 "Alert_Remove_Jailbreak_Enabled_Body" = "「移除越狱」将在下次越狱时移除所有和越狱相关的文件，但将保留普通 App、文档及数据。请注意，此操作无法撤销。确认移除越狱吗？";
-"Button_Cancel" = "以后";
-"Button_Continue" = "继续";
+"Button_Cancel" = "取消";
+"Button_Continue" = "确定";
 
 // Duplicate Apps Errors
 "Duplicate_Apps_Error_Dopamine_App" = "检测到多个标识符为 \"%@\" 的应用在 Dopamine 应用目录中 (\"%@\")，无法继续。";
@@ -86,17 +86,17 @@
 
 // Logs
 "Initializing Environment" = "初始化环境";
-"Loading BaseBin TrustCache" = "将基础套件加载至信任缓存（TrustCache）";
+"Loading BaseBin TrustCache" = "加载基本文件系统信任缓存";
 "Applying Bind Mount" = "执行绑定挂载";
 "Removing Jailbreak" = "移除越狱";
 "Elevating Privileges" = "提升权限";
 "Cleaning Up Exploits" = "清理环境";
 "Building Phys R/W Primitive" = "构建硬件读写条件";
-"Rebooting Userspace" = "重新启动用户空间";
-"Patchfinding" = "查找地址";
+"Rebooting Userspace" = "重启用户空间";
+"Patchfinding" = "补丁查找中...";
 "Exploiting Kernel (%@)" = "利用内核漏洞 (%@)";
-"Bypassing PAC (%@)" = "正在绕过 PAC (%@)";
-"Bypassing PPL (%@)" = "正在绕过 PPL (%@)";
+"Bypassing PAC (%@)" = "绕过指针认证码 (%@)";
+"Bypassing PPL (%@)" = "绕过受保护进程轻型验证 (%@)";
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "选择包管理器";
@@ -107,3 +107,9 @@
 "Settings" = "设置";
 "Alert_Back_Up_Title" = "一键备份";
 "Alert_Back_Up_Pressed_Body" = "说明：1.请先使用“DEB备份”app一键备份插件；\n2.再点击这里的一键备份，确定即可; \n3.清除越狱后，重新越狱进去Filza文件管理器：/var/mobile/backup+日期时间/，点击“一键恢复插件及配置.sh”运行即可";
+
+// mount 
+"Input_Mmount_Title" = "新增挂载";
+"Input_Unmount_Title" = "取消挂载";
+"Input_Mount_Title" = "输入原始路径";
+"Button_Mount" = "确定";
