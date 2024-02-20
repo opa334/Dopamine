@@ -1,5 +1,5 @@
 
-#import "PSViewController.h"
+#import <Preferences/PSViewController.h>
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
