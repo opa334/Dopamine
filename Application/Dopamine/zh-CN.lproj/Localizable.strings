@@ -75,7 +75,7 @@
 
 // Settings Lists
 "Theme" = "主题";
-"Kernel Exploit" = "内核利用";
+"Kernel Exploit" = "内核漏洞";
 "PPL Bypass" = "PPL 绕过";
 "PAC Bypass" = "PAC 绕过";
 
