@@ -109,6 +109,7 @@
 "Alert_Back_Up_Pressed_Body" = "说明：1.请先使用“DEB备份”app一键备份插件；\n2.再点击这里的一键备份，确定即可; \n3.清除越狱后，重新越狱进去Filza文件管理器：/var/mobile/backup+日期时间/，点击“一键恢复插件及配置.sh”运行即可";
 "Settings_newfunction" = "额外功能";
 "Alert_Reboot_Title" = "确定重启设备吗？";
+"Settings_checkforupdates" = "检查更新";
 
 // mount 
 "Input_Mmount_Title" = "新增挂载";

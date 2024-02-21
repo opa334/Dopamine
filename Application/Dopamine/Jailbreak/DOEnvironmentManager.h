@@ -51,6 +51,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setTweakInjectionEnabled:(BOOL)enabled;
 - (BOOL)isIDownloadEnabled;
 - (void)setIDownloadEnabled:(BOOL)enabled;
+- (BOOL)checkforupdatesEnabled;
+- (void)setCheckforupdatesEnabled:(BOOL)enabled;
 - (BOOL)newfunctionEnabled;
 - (void)setNewfunctionEnabled:(BOOL)enabled;
 - (BOOL)isJailbreakHidden;
