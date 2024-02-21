@@ -7,6 +7,7 @@
 
 #import "DOLyricsLogView.h"
 #import "DOProgressiveBlurView.h"
+#import "DOGlobalAppearance.h"
 
 #define LOG_HEIGHT 40
 
@@ -23,7 +24,7 @@
         [self addSubview:self.stackView];
 
         [NSLayoutConstraint activateConstraints:@[
-            [self.stackView.topAnchor constraintEqualToAnchor:self.bottomAnchor constant:-80],
+            [self.stackView.topAnchor constraintEqualToAnchor:self.bottomAnchor constant:[DOGlobalAppearance isHomeButtonDevice] ? -50 : -80],
             [self.stackView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:25],
             [self.stackView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-25],
         ]];

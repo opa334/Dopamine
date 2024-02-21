@@ -77,24 +77,20 @@
         [_logView.bottomAnchor constraintEqualToAnchor:shareButton.topAnchor constant:-10]
     ]];
 
-    _logView.text = [[[DOUIManager sharedInstance] logRecord] componentsJoinedByString:@"\n"];
+    NSArray *reverseLog = [[[DOUIManager sharedInstance] logRecord] reverseObjectEnumerator].allObjects;
+    _logView.text = [reverseLog componentsJoinedByString:@"\n"];
     _logView.editable = NO;
     _logView.font = [UIFont systemFontOfSize:14];
     _logView.textColor = [UIColor whiteColor];
     _logView.backgroundColor = [UIColor clearColor];
-
-
-    [[[DOUIManager sharedInstance] logRecord] insertObject:self.title atIndex:0];
-    [[[DOUIManager sharedInstance] logRecord] insertObject:@"----" atIndex:1];
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
-    [UIView performWithoutAnimation:^{
-        NSRange range = NSMakeRange(_logView.text.length, 0);
-        [_logView scrollRangeToVisible:range];
-    }];
+    [super viewWillDisappear:animated];
+    [[UIApplication sharedApplication] performSelector:@selector(suspend)];
+    [NSThread sleepForTimeInterval:0.3];
+    exit(0);
 }
 
 - (void)dismiss
