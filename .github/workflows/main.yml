@@ -1,53 +1,60 @@
-name: "Dopamine: build and upload"
-
+name: build_Release
 on:
   push:
     branches:
-      - 2.x
+      - 2.0.5
+    paths-ignore:
+      - ".gitignore"
+  pull_request:
+    branches:
+      - 2.0.5
     paths-ignore:
       - ".gitignore"
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 1 1 *'
-    - cron: '0 0 1 4 *'
-    - cron: '0 0 30 6 *'
-    - cron: '0 0 28 9 *'
-    - cron: '0 0 27 12 *'
-
+  
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write
+
+env:
+  VERSION: '2.0.5.3'
+  BUNDLEID: 'com.wwg135.Dopamine'
+ 
 jobs:
   build:
     runs-on: macos-13
+    environment: Auto Build And Release
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@main
+
+      - name: Checkout tools repo
+        uses: actions/checkout@main
         with:
-            submodules: recursive
+          repository: opa334/ChOma
+          path: BaseBin/ChOma
 
-      - name: Install Procursus
-        uses: dhinakg/procursus-action@main
+      - name: Checkout tools repo
+        uses: actions/checkout@main
         with:
-          packages: ldid findutils sed coreutils make
+          repository: opa334/XPF
+          path: BaseBin/XPF
 
-      - name: Install THEOS
-        run: |
-          set -x
-          export BASEDIR="$(pwd)"
-          export THEOS="${BASEDIR}/theos"
-          mkdir -p $THEOS
-          curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos >> install-theos.sh
-          gsed -E "/^\s*get_theos\s*$/,+1 s/^(\s*)(get_sdks)\s*$/\1mkdir -p \${THEOS}\/sdks\n\1touch \${THEOS}\/sdks\/sdk\n\1\2/g" -i install-theos.sh
-          bash install-theos.sh
-          curl -L https://github.com/theos/sdks/releases/latest/download/iPhoneOS16.5.sdk.tar.xz --output $THEOS/sdks/iPhoneOS16.5.sdk.tar.xz
-          gunzip $THEOS/sdks/iPhoneOS16.5.sdk.tar.xz
-          tar -xf $THEOS/sdks/iPhoneOS16.5.sdk.tar -C $THEOS/sdks
-          rm $THEOS/sdks/iPhoneOS16.5.sdk.tar
-          cd $BASEDIR
+      - name: Checkout tools repo
+        uses: actions/checkout@main
+        with:
+          repository: opa334/opainject
+          path: BaseBin/opainject
 
-      - name: Build and Install trustcache
+      - name: Bootstrap Procursus
+        uses: wwg135/procursus-action@main
+        with:
+          packages: ldid make findutils coreutils xz-utils
+
+      - name: Pre trustcache
         run: |
           set -x
           git clone https://github.com/CRKatri/trustcache
@@ -55,37 +62,64 @@ jobs:
           gmake -j$(sysctl -n hw.physicalcpu) OPENSSL=1
           sudo cp trustcache /opt/procursus/bin/
 
-      - name: Set Environment Variables
+      - name: Pre theos
+        run: |
+         curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos > theos
+         bash theos
+
+      - name: Pre Bundleid
+        run: |
+          sed -i '' "s/com.opa334.Dopamine/${{ env.BUNDLEID }}/g" ./Application/Dopamine/Jailbreak/DOPreferenceManager.m
+          sed -i '' "s/com.opa334.Dopamine/${{ env.BUNDLEID }}/g" ./Application/Dopamine.xcodeproj/project.pbxproj
+          sed -i '' "s/com.opa334.Dopamine/${{ env.BUNDLEID }}/g" ./BaseBin/jbctl/src/main.m
+          
+      - name: Pre Version
+        run: |
+          echo "${{ env.VERSION }}" >./BaseBin/_external/basebin/.version
+          sed -i '' 's/MARKETING_VERSION = .*;/MARKETING_VERSION = ${{ env.VERSION }};/g' ./Application/Dopamine.xcodeproj/project.pbxproj
+
+      - name: Set env
+        run: |
+          sT=$(TZ=UTC-8 date +'%S')
+          echo "msT=$(date -j -f "%Y-%m-%d %H:%M:%S" "$(TZ=UTC-8 date +'%Y-%m-%d %H:%M'):${sT}" +%s)" >> $GITHUB_ENV
+          echo "shT=$(TZ=UTC-8 date +'%Y-%m-%d'' ''%H:%M:%S')" >> $GITHUB_ENV
+          echo "logT=$(TZ=UTC-8 date +'%Y年%m月%d %H:%M'):${sT}" >> $GITHUB_ENV
+          
+      - name: Print env
+        run: |
+          echo ${{ env.VERSION }}
+          echo ${{ env.msT }}
+          echo ${{ env.shT }}
+          echo ${{ env.logT }}
+          
+      - name: Build ipa
         run: |
           set -x
-          T2=$(TZ=UTC-2 date +'%Y%m%d_%H%M%S')
-          TS=$(date -j -f "%Y%m%d_%H%M%S" "${T2}" +%s)
-          SHASH=$(git rev-parse --short HEAD)
-          echo "ctime=${T2}" >> $GITHUB_ENV
-          echo "ctimestamp=${TS}" >> $GITHUB_ENV
-          echo "shorthash=${SHASH}" >> $GITHUB_ENV
+          export THEOS=$HOME/theos
+          echo $GITHUB_WORKSPACE
+          cd Application/Dopamine/Resources
+          bash download_bootstraps.sh
+          cd $GITHUB_WORKSPACE
+          make
+          mv Application/Dopamine.tipa Dopamine.ipa
 
-      - name: Install libarchive
-        run: |
-          brew install libarchive
-
-      - name: Download Bootstraps
-        run: |
-            set -x
-            cd Application/Dopamine/Resources
-            ./download_bootstraps.sh
-
-      - name: Build
+      - name: Release Logs
         run: |
           set -x
-          export BASEDIR="$(pwd)"
-          export THEOS="${BASEDIR}/theos"
-          gmake -j$(sysctl -n hw.physicalcpu) NIGHTLY=1
-
-      - name: Upload Artifact
-        id: dopamine-latest-upload
-        uses: actions/upload-artifact@v3
+          echo -e "更新时间：${{ env.logT }}" >> body.txt
+          echo "" >> ./release.md
+          cat body.txt > release.txt
+          echo "" >> release.txt
+          cat ./release.md >> release.txt
+          
+      - name: Release ipa
+        uses: softprops/action-gh-release@v1
         with:
-          name: Dopamine
-          path: |
-            ${{ github.workspace }}/Application/Dopamine.ipa
+          name: ${{ env.VERSION }}
+          tag_name: ${{ env.VERSION }}
+          target_commitish: 2.x
+          body_path: release.txt
+          latest: true
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          files: |
+           *.ipa

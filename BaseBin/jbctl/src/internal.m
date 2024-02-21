@@ -8,6 +8,30 @@
 
 SInt32 CFUserNotificationDisplayAlert(CFTimeInterval timeout, CFOptionFlags flags, CFURLRef iconURL, CFURLRef soundURL, CFURLRef localizationURL, CFStringRef alertHeader, CFStringRef alertMessage, CFStringRef defaultButtonTitle, CFStringRef alternateButtonTitle, CFStringRef otherButtonTitle, CFOptionFlags *responseFlags) API_AVAILABLE(ios(3.0));
 
+void initMountPath(NSString *mountPath)
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    bool new = NO;
+
+    if([fileManager fileExistsAtPath:mountPath]){
+        NSString *newPath = NSJBRootPath(mountPath); 
+
+        if (![fileManager fileExistsAtPath:newPath]) {
+            [fileManager createDirectoryAtPath:newPath withIntermediateDirectories:YES attributes:nil error:nil];
+            new = YES;
+        } else if([fileManager contentsOfDirectoryAtPath:newPath error:nil].count == 0){
+            new = YES;
+        }
+
+        if(new){
+            NSString *tmpPath = [NSString stringWithFormat:@"%@_tmp", newPath];
+            [fileManager copyItemAtPath:mountPath toPath:tmpPath error:nil];
+            [fileManager removeItemAtPath:newPath error:nil];
+            [fileManager moveItemAtPath:tmpPath toPath:newPath error:nil];
+        }
+    }
+}
+
 int jbctl_handle_internal(const char *command, int argc, char* argv[])
 {
 	if (!strcmp(command, "launchd_stash_port")) {
@@ -111,6 +135,41 @@ int jbctl_handle_internal(const char *command, int argc, char* argv[])
 			return r;
 		}
 		return -1;
+	}
+ 	else if (!strcmp(command, "mount")) {
+		int ret = 11;
+		// Here we fake a mount
+		printf("Getting kernel ucred...\n");
+		uint64_t orgUcred = 0;
+		if (jbclient_root_steal_ucred(0, &orgUcred) == 0) {
+			// Here we steal the kernel ucred
+			// This allows us to mount to paths that would otherwise be restricted by sandbox
+			printf("Applying mount %s...\n",argv[1]);
+			initMountPath([NSString stringWithUTF8String:argv[1]]);
+			ret = mount("bindfs", argv[1], MNT_RDONLY, (void *)JBRootPath(argv[1]));
+			printf("ret = %d\n",ret);
+			// revert
+			printf("Dropping kernel ucred...\n");
+			jbclient_root_steal_ucred(orgUcred, NULL);
+		}
+		return ret;
+	}
+	else if (!strcmp(command, "unmount")) {
+		int ret = 12;
+		// Here we fake a mount
+		printf("Getting kernel ucred...\n");
+		uint64_t orgUcred = 0;
+		if (jbclient_root_steal_ucred(0, &orgUcred) == 0) {
+			// Here we steal the kernel ucred
+			// This allows us to mount to paths that would otherwise be restricted by sandbox
+			printf("Applying unmount %s\n",argv[1]);
+			ret = unmount(argv[1], MNT_FORCE);
+			printf("ret = %d\n",ret);
+			// revert
+			printf("Dropping kernel ucred...\n");
+			jbclient_root_steal_ucred(orgUcred, NULL);
+		}
+		return ret;
 	}
 	return -1;
 }

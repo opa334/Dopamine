@@ -356,7 +356,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     if (r != 0) {
         return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedInitFakeLib userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Mounting fakelib failed with error: %d", r]}];
     }
-    
+    fake_mount();
     // Now that fakelib is up, we want to make systemhook inject into any binary we spawn
     setenv("DYLD_INSERT_LIBRARIES", "/usr/lib/systemhook.dylib", 1);
     return nil;
@@ -522,6 +522,31 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 {
     [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Rebooting Userspace") debug:NO];
     [[DOEnvironmentManager sharedManager] rebootUserspace];
+}
+
+void fake_mount() // zqbb_flag
+{
+
+// BOOL mountEnabled = [[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"mountEnabled" fallback:YES];
+// if (mountEnabled) {
+NSString *filePath = @"/var/mobile/newFakePath.plist";
+
+if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+    
+    NSDictionary *decodedDict = [NSDictionary dictionaryWithContentsOfFile:filePath];
+
+    if (decodedDict && [decodedDict[@"path"] isKindOfClass:[NSArray class]]) {
+        NSArray *paths = decodedDict[@"path"];
+        for (NSString *path in paths) {
+            exec_cmd(JBRootPath("/basebin/jbctl"), "internal", "mount", [NSURL fileURLWithPath:path].fileSystemRepresentation, NULL);
+        }
+    }
+}
+
+
+
+// }
+    
 }
 
 @end

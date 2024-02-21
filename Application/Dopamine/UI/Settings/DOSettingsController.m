@@ -20,6 +20,10 @@
 
 @interface DOSettingsController ()
 
+@property (strong, nonatomic) PSSpecifier *mountSpecifier;
+@property (strong, nonatomic) PSSpecifier *unmountSpecifier;
+@property (strong, nonatomic) PSSpecifier *backupSpecifier;
+
 @end
 
 @implementation DOSettingsController
@@ -132,9 +136,9 @@
         
         PSSpecifier *headerSpecifier = [PSSpecifier emptyGroupSpecifier];
         [headerSpecifier setProperty:@"DOHeaderCell" forKey:@"headerCellClass"];
-        [headerSpecifier setProperty:[NSString stringWithFormat:@"Settings"] forKey:@"title"];
+        [headerSpecifier setProperty:[NSString stringWithFormat:DOLocalizedString(@"Settings")] forKey:@"title"];
         [specifiers addObject:headerSpecifier];
-        
+
         if (!envManager.isJailbroken) {
             PSSpecifier *exploitGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
             exploitGroupSpecifier.name = DOLocalizedString(@"Section_Exploits");
@@ -199,7 +203,21 @@
         [idownloadSpecifier setProperty:@"idownloadEnabled" forKey:@"key"];
         [idownloadSpecifier setProperty:@NO forKey:@"default"];
         [specifiers addObject:idownloadSpecifier];
-        
+
+ 	PSSpecifier *checkforupdatesSpecifier = [PSSpecifier preferenceSpecifierNamed:DOLocalizedString(@"Settings_checkforupdates") target:self set:@selector(setCheckforupdatesEnabled:specifier:) get:@selector(readCheckforupdatesEnabled:) detail:nil cell:PSSwitchCell edit:nil];
+        [checkforupdatesSpecifier setProperty:@YES forKey:@"enabled"];
+        [checkforupdatesSpecifier setProperty:@"checkforupdatesEnabled" forKey:@"key"];
+        [checkforupdatesSpecifier setProperty:@NO forKey:@"default"];
+        [specifiers addObject:checkforupdatesSpecifier];
+	    
+        if (envManager.isJailbroken) {
+  	    PSSpecifier *newfunctionSpecifier = [PSSpecifier preferenceSpecifierNamed:DOLocalizedString(@"Settings_newfunction") target:self set:@selector(setNewfunctionEnabled:specifier:) get:@selector(readNewfunctionEnabled:) detail:nil cell:PSSwitchCell edit:nil];
+            [newfunctionSpecifier setProperty:@YES forKey:@"enabled"];
+            [newfunctionSpecifier setProperty:@"newfunctionEnabled" forKey:@"key"];
+            [newfunctionSpecifier setProperty:@NO forKey:@"default"];
+            [specifiers addObject:newfunctionSpecifier];
+	}
+ 
         if (!envManager.isJailbroken && !envManager.isInstalledThroughTrollStore) {
             PSSpecifier *removeJailbreakSwitchSpecifier = [PSSpecifier preferenceSpecifierNamed:DOLocalizedString(@"Button_Remove_Jailbreak") target:self set:@selector(setRemoveJailbreakEnabled:specifier:) get:defGetter detail:nil cell:PSSwitchCell edit:nil];
             [removeJailbreakSwitchSpecifier setProperty:@YES forKey:@"enabled"];
@@ -280,6 +298,33 @@
         [themeSpecifier setProperty:@"themeIdentifiers" forKey:@"valuesDataSource"];
         [themeSpecifier setProperty:@"themeNames" forKey:@"titlesDataSource"];
         [specifiers addObject:themeSpecifier];
+
+	BOOL newFunctionEnabled = [[DOEnvironmentManager sharedManager] newfunctionEnabled];
+        if (newFunctionEnabled && envManager.isJailbroken) {
+            PSSpecifier *mountSpecifier = [PSSpecifier emptyGroupSpecifier];
+            mountSpecifier.target = self;
+            [mountSpecifier setProperty:@"Input_Mmount_Title" forKey:@"title"];
+            [mountSpecifier setProperty:@"DOButtonCell" forKey:@"headerCellClass"];
+            [mountSpecifier setProperty:@"doc" forKey:@"image"];
+            [mountSpecifier setProperty:@"mountPressed" forKey:@"action"];
+            [specifiers addObject:mountSpecifier];
+
+            PSSpecifier *unmountSpecifier = [PSSpecifier emptyGroupSpecifier];
+            unmountSpecifier.target = self;
+            [unmountSpecifier setProperty:@"Input_Unmount_Title" forKey:@"title"];
+            [unmountSpecifier setProperty:@"DOButtonCell" forKey:@"headerCellClass"];
+            [unmountSpecifier setProperty:@"trash" forKey:@"image"];
+            [unmountSpecifier setProperty:@"unmountPressed" forKey:@"action"];
+            [specifiers addObject:unmountSpecifier];
+
+            PSSpecifier *backupSpecifier = [PSSpecifier emptyGroupSpecifier];
+            backupSpecifier.target = self;
+            [backupSpecifier setProperty:@"Alert_Back_Up_Title" forKey:@"title"];
+            [backupSpecifier setProperty:@"DOButtonCell" forKey:@"headerCellClass"];
+            [backupSpecifier setProperty:@"doc" forKey:@"image"];
+            [backupSpecifier setProperty:@"backupPressed" forKey:@"action"];
+            [specifiers addObject:backupSpecifier];
+        }
         
         _specifiers = specifiers;
     }
@@ -319,6 +364,44 @@
     DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
     if (envManager.isJailbroken) {
         [[DOEnvironmentManager sharedManager] setIDownloadEnabled:((NSNumber *)value).boolValue];
+    }
+}
+
+- (id)readCheckforupdatesEnabled:(PSSpecifier *)specifier
+{
+    DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
+    if (envManager.isJailbroken) {
+    	return @([DOEnvironmentManager sharedManager].checkforupdatesEnabled);
+    }
+    return [self readPreferenceValue:specifier];
+}
+
+- (void)setCheckforupdatesEnabled:(id)value specifier:(PSSpecifier *)specifier
+{
+    [self setPreferenceValue:value specifier:specifier];
+    DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
+    if (envManager.isJailbroken) {
+    	[[DOEnvironmentManager sharedManager] setCheckforupdatesEnabled:((NSNumber *)value).boolValue];
+    	[self reloadSpecifier:specifier];
+    }
+}
+
+- (id)readNewfunctionEnabled:(PSSpecifier *)specifier
+{
+    DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
+    if (envManager.isJailbroken) {
+        return @([DOEnvironmentManager sharedManager].newfunctionEnabled);
+    }
+    return [self readPreferenceValue:specifier];
+}
+
+- (void)setNewfunctionEnabled:(id)value specifier:(PSSpecifier *)specifier
+{
+    [self setPreferenceValue:value specifier:specifier];
+    DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
+    if (envManager.isJailbroken) {
+        [[DOEnvironmentManager sharedManager] setNewfunctionEnabled:((NSNumber *)value).boolValue];
+	[self reloadSpecifier:specifier];
     }
 }
 
@@ -407,12 +490,240 @@
     [self presentViewController:confirmationAlertController animated:YES completion:nil];
 }
 
+- (void)mountPressed
+{
+    UIAlertController *inputAlertController = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Input_Mmount_Title") message:DOLocalizedString(@"Input_Mount_Title") preferredStyle:UIAlertControllerStyleAlert];
+
+    [inputAlertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = DOLocalizedString(@"Input_Mount_Title");
+    }];
+    
+    UIAlertAction *mountAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Mount") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {        // 获取用户输入的Jailbreak路径
+        UITextField *inputTextField = inputAlertController.textFields.firstObject;
+        NSString *mountPath = inputTextField.text;
+        
+        if (mountPath.length > 1) {
+            NSString *plistFilePath = @"/var/mobile/newFakePath.plist";
+            NSMutableDictionary *plistDictionary = [NSMutableDictionary dictionaryWithContentsOfFile:plistFilePath];
+            if (!plistDictionary) {
+                plistDictionary = [NSMutableDictionary dictionary];
+            }
+            NSMutableArray *pathArray = plistDictionary[@"path"];
+            if (!pathArray) {
+                pathArray = [NSMutableArray array];
+            }
+            if (![pathArray containsObject:mountPath]) {
+			          [pathArray addObject:mountPath];
+								[plistDictionary setObject:pathArray forKey:@"path"];
+						 
+                [plistDictionary writeToFile:plistFilePath atomically:YES];
+            } 
+
+            exec_cmd_root(JBRootPath("/basebin/jbctl"), "internal", "mount", [NSURL fileURLWithPath:mountPath].fileSystemRepresentation, NULL);
+
+        }
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Cancel") style:UIAlertActionStyleDefault handler:nil];
+
+    [inputAlertController addAction:mountAction];
+    [inputAlertController addAction:cancelAction];
+    
+    [self presentViewController:inputAlertController animated:YES completion:nil];
+}
+
+- (void)unmountPressed
+{
+    UIAlertController *inputAlertController = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Input_Mount_Title") message:DOLocalizedString(@"Input_Mount_Title") preferredStyle:UIAlertControllerStyleAlert];
+    
+    [inputAlertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = DOLocalizedString(@"Input_Mount_Title");
+    }];
+    
+    UIAlertAction *mountAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Mount") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+
+        UITextField *inputTextField = inputAlertController.textFields.firstObject;
+        NSString *mountPath = inputTextField.text;
+        
+	
+        if (mountPath.length > 1) {
+            exec_cmd_root(JBRootPath("/usr/bin/rm"), "-rf", JBRootPath([NSURL fileURLWithPath:mountPath].fileSystemRepresentation), NULL);
+            exec_cmd_root(JBRootPath("/basebin/jbctl"), "internal", "unmount", [NSURL fileURLWithPath:mountPath].fileSystemRepresentation, NULL);
+
+            NSString *plistPath = @"/var/mobile/newFakePath.plist";
+            NSMutableDictionary *plist = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
+            NSMutableArray *paths = plist[@"path"];
+        
+            for (NSInteger index = 0; index < paths.count; index++) {
+                NSString *path = paths[index];
+                if ([path isEqualToString:mountPath]) {
+                    [paths removeObjectAtIndex:index];
+                    plist[@"path"] = paths;
+                    [plist writeToFile:plistPath atomically:YES];
+                }
+            }
+        }
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Cancel") style:UIAlertActionStyleDefault handler:nil];
+    
+    [inputAlertController addAction:mountAction];
+    [inputAlertController addAction:cancelAction];
+    
+    [self presentViewController:inputAlertController animated:YES completion:nil];
+}
+
+- (void)backupPressed
+{
+    NSString *debBackupPath = @"/var/mobile/Documents/DebBackup/";
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *files = [fileManager contentsOfDirectoryAtPath:debBackupPath error:nil];
+
+    if (files.count == 0) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"备份失败" message:@"请先使用“DEB备份”app备份插件！！！" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *closeAction = [UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:nil];
+        [alertController addAction:closeAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+    } else {   
+        UIAlertController *confirmationAlertController = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Alert_Back_Up_Title") message:DOLocalizedString(@"Alert_Back_Up_Pressed_Body") preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *backupAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Continue") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+            [self performBackup];
+            [self showBackupSuccessAlert];
+        }];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Cancel") style:UIAlertActionStyleDefault handler:nil];
+        [confirmationAlertController addAction:backupAction];
+        [confirmationAlertController addAction:cancelAction];
+        [self presentViewController:confirmationAlertController animated:YES completion:nil];
+    }
+}
+
+- (void)showBackupSuccessAlert {
+    UIAlertController *successAlertController = [UIAlertController alertControllerWithTitle:@"提示：恭喜你，备份成功！！！" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:nil];
+    [successAlertController addAction:okAction];
+    [self presentViewController:successAlertController animated:YES completion:nil];
+}
+
+- (void)performBackup {
+    NSFileManager *fileManager = [NSFileManager defaultManager];   
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy.MM.dd_HH:mm:ss"];
+    [dateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+    NSDate *currentDate = [NSDate date];
+    NSString *dateString = [dateFormatter stringFromDate:currentDate];
+    
+    NSArray *filePaths = @[
+        [NSString stringWithFormat:@"/var/mobile/backup_%@/Dopamine插件", dateString],
+        [NSString stringWithFormat:@"/var/mobile/backup_%@/插件配置", dateString],
+        [NSString stringWithFormat:@"/var/mobile/backup_%@/插件源", dateString]
+    ];
+    
+    for (NSString *filePath in filePaths) {
+        if (![fileManager fileExistsAtPath:filePath]) {
+            NSError *error = nil;
+            BOOL success = [fileManager createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:&error];
+            if (!success) {
+                NSLog(@"创建文件夹失败: %@", error);
+            }
+        }
+    }
+    
+    NSString *dopaminedebPath = @"/var/mobile/Documents/DebBackup/";
+    NSString *preferencesPath = @"/var/jb/User/Library/";
+    NSString *sourcesPath = @"/var/jb/etc/apt/sources.list.d/";
+    
+    NSArray *moveItems = @[
+        @[dopaminedebPath, filePaths[0], @"剪切Dopamine插件失败"],
+    ];
+    
+    NSArray *copyItems = @[
+        @[preferencesPath, filePaths[1], @"复制Preferences失败"],
+        @[sourcesPath, filePaths[2], @"复制sources.list.d失败"]
+    ];
+    
+    for (NSArray *item in moveItems) {
+        NSString *sourcePath = item[0];
+        NSString *destinationPath = item[1];
+        NSString *errorMessage = item[2];
+        
+        NSDirectoryEnumerator *enumerator = [fileManager enumeratorAtPath:sourcePath];
+        for (NSString *file in enumerator) {
+            NSError *error = nil;
+            NSString *sourceFilePath = [sourcePath stringByAppendingPathComponent:file];
+            NSString *destinationFilePath = [destinationPath stringByAppendingPathComponent:file];
+            BOOL success = [fileManager moveItemAtPath:sourceFilePath toPath:destinationFilePath error:&error];
+            if (!success) {
+                NSLog(@"%@", errorMessage);
+            }
+        }
+    }
+    
+    for (NSArray *item in copyItems) {
+        NSString *sourcePath = item[0];
+        NSString *destinationPath = item[1];
+        NSString *errorMessage = item[2];
+        
+        NSDirectoryEnumerator *enumerator = [fileManager enumeratorAtPath:sourcePath];
+        for (NSString *file in enumerator) {
+            NSError *error = nil;
+            NSString *sourceFilePath = [sourcePath stringByAppendingPathComponent:file];
+            NSString *destinationFilePath = [destinationPath stringByAppendingPathComponent:file];
+            BOOL success = [fileManager copyItemAtPath:sourceFilePath toPath:destinationFilePath error:&error];
+            if (!success) {
+                NSLog(@"%@", errorMessage);
+            }
+        }
+    }
+    
+    NSString *scriptContent = @"#!/bin/sh\n\n"
+    "#环境变量\n"
+    "PATH=/var/jb/bin:/var/jb/sbin:/var/jb/usr/bin:/var/jb/usr/sbin:$PATH\n\n"
+    "echo \"..........................\"\n"
+    "echo \"..........................\"\n"
+    "echo \"******Dopamine插件安装******\"\n"
+    "sleep 1s\n"
+    "#安装当前路径下所有插件\n"
+    "dpkg -i ./Dopamine插件/*.deb\n"
+    "echo \"..........................\"\n"
+    "echo \"..........................\"\n"
+    "echo \"..........................\"\n\n"
+    "echo \"******开始恢复插件设置******\"\n"
+    "sleep 1s\n"
+    "cp -a ./插件源/* /var/jb/etc/apt/sources.list.d/\n"
+    "cp -a ./插件配置/* /var/jb/User/Library/\n"
+    "echo \"******插件设置恢复成功*******\"\n\n"
+    "echo \"******正在准备注销生效******\"\n"
+    "sleep 1s\n"
+    "killall -9 backboardd\n"
+    "echo \"done\"\n";
+    
+    NSString *filePath = [NSString stringWithFormat:@"/var/mobile/backup_%@/一键恢复插件及配置.sh", dateString];
+    NSError *error = nil;
+    BOOL success = [scriptContent writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    if (success) {
+        NSLog(@"成功添加代码到文件：%@", filePath);
+        
+        NSDictionary *attributes = @{
+            NSFilePosixPermissions: @(0755),
+            NSFileOwnerAccountName: @"mobile",
+            NSFileGroupOwnerAccountName: @"mobile"
+        };
+        success = [fileManager setAttributes:attributes ofItemAtPath:filePath error:&error];
+        if (success) {
+            NSLog(@"成功设置文件权限为0755，用户和组权限为mobile");
+        } else {
+            NSLog(@"设置文件权限失败: %@", error);
+        }
+    } else {
+        NSLog(@"操作失败: %@", error);
+    }
+}
+
 - (void)resetSettingsPressed
 {
     [[DOUIManager sharedInstance] resetSettings];
     [self.navigationController popToRootViewControllerAnimated:YES];
     [self reloadSpecifiers];
 }
-
 
 @end
