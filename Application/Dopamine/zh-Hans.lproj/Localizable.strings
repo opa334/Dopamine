@@ -39,7 +39,7 @@
 
 // Settings Toggles
 "Settings_Tweak_Injection" = "插件注入";
-"Settings_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload (开发者终端)";
 "Settings_Verbose_Logs" = "详细日志";
 
 // Settings Buttons
@@ -58,13 +58,13 @@
 "Section_Exploits" = "漏洞利用";
 
 // Settings Alerts
-"Alert_Tweak_Injection_Toggled_Title" = "需要重新启动用户空间";
-"Alert_Tweak_Injection_Toggled_Body" = "需要重新启动用户空间才能应用更改，你现在要重启吗？";
+"Alert_Tweak_Injection_Toggled_Title" = "需要重启用户空间";
+"Alert_Tweak_Injection_Toggled_Body" = "需要重启用户空间才能应用更改，你现在要重启吗？";
 "Alert_Tweak_Injection_Toggled_Reboot_Now" = "立即重启";
 "Alert_Tweak_Injection_Toggled_Reboot_Later" = "稍后重启";
 "Alert_Remove_Jailbreak_Title" = "移除越狱";
-"Alert_Remove_Jailbreak_Pressed_Body" = "“移除越狱”将移除所有和越狱相关的文件，AppStore 安装的 App、文档及数据将会保留。请注意，此操作无法撤销。确认要移除越狱吗？";
-"Alert_Remove_Jailbreak_Enabled_Body" = "“移除越狱”将在下次越狱时移除所有和越狱相关的文件，AppStore 安装的 App、文档及数据将会保留。请注意，此操作无法撤销。确认要移除越狱吗？";
+"Alert_Remove_Jailbreak_Pressed_Body" = "“移除越狱”将移除所有和越狱相关的文件，普通的 App、文档及数据不会收到影响，将会保留。请注意，此操作无法撤销。确认要移除越狱吗？";
+"Alert_Remove_Jailbreak_Enabled_Body" = "“移除越狱”将在下次越狱时移除所有和越狱相关的文件，普通的 App、文档及数据不会收到影响，将会保留。请注意，此操作无法撤销。确认要移除越狱吗？";
 "Button_Cancel" = "取消";
 "Button_Continue" = "继续";
 
