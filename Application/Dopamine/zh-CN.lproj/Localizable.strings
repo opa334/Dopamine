@@ -63,8 +63,8 @@
 "Alert_Tweak_Injection_Toggled_Reboot_Now" = "立即重启";
 "Alert_Tweak_Injection_Toggled_Reboot_Later" = "稍后重启";
 "Alert_Remove_Jailbreak_Title" = "移除越狱";
-"Alert_Remove_Jailbreak_Pressed_Body" = "“移除越狱”将移除所有和越狱相关的文件，不过常规的 App、文档及数据不会受到影响，将会保留。请注意，此操作无法撤销。确认要移除越狱吗？";
-"Alert_Remove_Jailbreak_Enabled_Body" = "“移除越狱”将在下次越狱时移除所有和越狱相关的文件，不过常规的 App、文档及数据不会受到影响，将会保留。请注意，此操作无法撤销。确认要移除越狱吗？";
+"Alert_Remove_Jailbreak_Pressed_Body" = "“移除越狱”将移除所有和越狱相关的文件，而常规的 App、文档及数据不会受到任何影响。请注意，此操作无法撤销。确认要移除越狱吗？";
+"Alert_Remove_Jailbreak_Enabled_Body" = "“移除越狱”将在下次越狱时移除所有和越狱相关的文件，而常规的 App、文档及数据不会受到任何影响。请注意，此操作无法撤销。确认要移除越狱吗？";
 "Button_Cancel" = "取消";
 "Button_Continue" = "继续";
 
