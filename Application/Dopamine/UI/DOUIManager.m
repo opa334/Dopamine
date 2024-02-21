@@ -26,6 +26,7 @@
     if (self = [super init]){
         _preferenceManager = [DOPreferenceManager sharedManager];
         _logRecord = [NSMutableArray new];
+        _logLock = [NSLock new];
     }
     return self;
 }
@@ -209,12 +210,17 @@
 {
     if (!self.logView || !log)
         return;
-    
+
+    [_logLock lock];
+
     [self.logRecord addObject:log];
 
     BOOL isDebug = self.logView.class == DODebugLogView.class;
-    if (debug && !isDebug)
+    if (debug && !isDebug) {
+        [_logLock unlock];
         return;
+    }
+        
     
     if (update) {
         if ([self.logView respondsToSelector:@selector(updateLog:)]) {
@@ -224,6 +230,7 @@
     else {
         [self.logView showLog:log];
     }
+    [_logLock unlock];
 }
 
 - (void)sendLog:(NSString*)log debug:(BOOL)debug
@@ -273,6 +280,9 @@
 
         while ((bytes_read = read(stdout_pipe[0], buffer, sizeof(buffer) - 1)) > 0) {
             @autoreleasepool {
+                // Tee: Write back to the original standard output
+                write(stdout_orig[1], buffer, bytes_read);
+
                 buffer[bytes_read] = '\0'; // Null terminate to handle as string
                 for (int i = 0; i < bytes_read; ++i) {
                     if (buffer[i] == '\n') {
@@ -286,8 +296,6 @@
                         }
                     }
                 }
-                // Tee: Write back to the original standard output
-                write(stdout_orig[1], buffer, bytes_read);
             }
         }
         close(stdout_pipe[0]);
