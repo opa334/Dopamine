@@ -38,20 +38,20 @@
     
     NSString *latestVersion = releases[0][@"tag_name"];
     NSString *currentVersion = [self getLaunchedReleaseTag];
-    
-    long long latestNumericalRepresentation = [self numericalRepresentationForVersion:latestVersion];
-    long long currentNumericalRepresentation = [self numericalRepresentationForVersion:currentVersion];
-    return latestNumericalRepresentation > currentNumericalRepresentation;
+    return [self numericalRepresentationForVersion:latestVersion] > [self numericalRepresentationForVersion:currentVersion];
 }
 
 - (long long)numericalRepresentationForVersion:(NSString*)version {
     long long numericalRepresentation = 0;
 
-    NSArray *components = [version componentsSeparatedByString:@"."];
-    for (NSInteger i = 0; i < components.count; i++) {
-        numericalRepresentation *= 1000;
-        numericalRepresentation += [components[i] integerValue];
-    }
+    NSArray *components = [version componentsSeparatedByCharactersInSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]];
+    while (components.count < 4)
+        components = [components arrayByAddingObject:@"0"];
+
+    numericalRepresentation |= [components[0] integerValue] << 24;
+    numericalRepresentation |= [components[1] integerValue] << 16;
+    numericalRepresentation |= [components[2] integerValue] << 8;
+    numericalRepresentation |= [components[3] integerValue];
     return numericalRepresentation;
 }
 

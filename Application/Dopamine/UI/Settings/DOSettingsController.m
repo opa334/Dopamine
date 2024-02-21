@@ -20,6 +20,10 @@
 
 @interface DOSettingsController ()
 
+@property (strong, nonatomic) PSSpecifier *mountSpecifier;
+@property (strong, nonatomic) PSSpecifier *unmountSpecifier;
+@property (strong, nonatomic) PSSpecifier *backupSpecifier;
+
 @end
 
 @implementation DOSettingsController
@@ -134,7 +138,7 @@
         [headerSpecifier setProperty:@"DOHeaderCell" forKey:@"headerCellClass"];
         [headerSpecifier setProperty:[NSString stringWithFormat:DOLocalizedString(@"Settings")] forKey:@"title"];
         [specifiers addObject:headerSpecifier];
-        
+
         if (!envManager.isJailbroken) {
             PSSpecifier *exploitGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
             exploitGroupSpecifier.name = DOLocalizedString(@"Section_Exploits");
@@ -199,7 +203,15 @@
         [idownloadSpecifier setProperty:@"idownloadEnabled" forKey:@"key"];
         [idownloadSpecifier setProperty:@NO forKey:@"default"];
         [specifiers addObject:idownloadSpecifier];
-        
+	
+        if (envManager.isJailbroken) {
+  	    PSSpecifier *newfunctionSpecifier = [PSSpecifier preferenceSpecifierNamed:DOLocalizedString(@"Settings_newfunction") target:self set:@selector(setNewfunctionEnabled:specifier:) get:@selector(readNewfunctionEnabled:) detail:nil cell:PSSwitchCell edit:nil];
+            [newfunctionSpecifier setProperty:@YES forKey:@"enabled"];
+            [newfunctionSpecifier setProperty:@"newfunctionEnabled" forKey:@"key"];
+            [newfunctionSpecifier setProperty:@NO forKey:@"default"];
+            [specifiers addObject:newfunctionSpecifier];
+	}
+ 
         if (!envManager.isJailbroken && !envManager.isInstalledThroughTrollStore) {
             PSSpecifier *removeJailbreakSwitchSpecifier = [PSSpecifier preferenceSpecifierNamed:DOLocalizedString(@"Button_Remove_Jailbreak") target:self set:@selector(setRemoveJailbreakEnabled:specifier:) get:defGetter detail:nil cell:PSSwitchCell edit:nil];
             [removeJailbreakSwitchSpecifier setProperty:@YES forKey:@"enabled"];
@@ -281,7 +293,8 @@
         [themeSpecifier setProperty:@"themeNames" forKey:@"titlesDataSource"];
         [specifiers addObject:themeSpecifier];
 
-        if (envManager.isJailbroken) {
+	BOOL newFunctionEnabled = [[DOEnvironmentManager sharedManager] newfunctionEnabled];
+        if (newFunctionEnabled && envManager.isJailbroken) {
             PSSpecifier *mountSpecifier = [PSSpecifier emptyGroupSpecifier];
             mountSpecifier.target = self;
             [mountSpecifier setProperty:@"Input_Mmount_Title" forKey:@"title"];
@@ -297,9 +310,7 @@
             [unmountSpecifier setProperty:@"trash" forKey:@"image"];
             [unmountSpecifier setProperty:@"unmountPressed" forKey:@"action"];
             [specifiers addObject:unmountSpecifier];
-        }
 
-        if (envManager.isJailbroken) {
             PSSpecifier *backupSpecifier = [PSSpecifier emptyGroupSpecifier];
             backupSpecifier.target = self;
             [backupSpecifier setProperty:@"Alert_Back_Up_Title" forKey:@"title"];
@@ -347,6 +358,25 @@
     DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
     if (envManager.isJailbroken) {
         [[DOEnvironmentManager sharedManager] setIDownloadEnabled:((NSNumber *)value).boolValue];
+    }
+}
+
+- (id)readNewfunctionEnabled:(PSSpecifier *)specifier
+{
+    DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
+    if (envManager.isJailbroken) {
+        return @([DOEnvironmentManager sharedManager].newfunctionEnabled);
+    }
+    return [self readPreferenceValue:specifier];
+}
+
+- (void)setNewfunctionEnabled:(id)value specifier:(PSSpecifier *)specifier
+{
+    [self setPreferenceValue:value specifier:specifier];
+    DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
+    if (envManager.isJailbroken) {
+        [[DOEnvironmentManager sharedManager] setNewfunctionEnabled:((NSNumber *)value).boolValue];
+	[self reloadSpecifier:specifier];
     }
 }
 
