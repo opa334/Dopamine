@@ -1,13 +1,13 @@
-"Credits_Made_By" = "開發者：opa334，évelyne";
+"Credits_Made_By" = "由opa334開發，ElleKit由évelyne開發";
 
 // Log
-"Status_Title_Jailbreaking" = "越獄中";
-"Log_Error" = "失敗";
+"Status_Title_Jailbreaking" = "正在越獄";
+"Log_Error" = "錯誤";
 
 // Jailbreak Button
 "Button_Jailbreak_Title" = "越獄";
 "Status_Title_Jailbroken" = "已越獄";
-/*Unsupported*/
+"Unsupported" = "不支援";
 
 // Action Menu
 "Menu_Settings_Title" = "設定";
@@ -18,7 +18,7 @@
 // Updating
 "Button_Update" = "更新";
 "Button_Update_Available" = "可用更新";
-"Button_Update_Environment" = "更新環境";
+"Button_Update_Environment" = "環境更新";
 
 // Update View
 "Update_Status_Downloading" = "正在下載更新……";
@@ -29,16 +29,16 @@
 "Changelog_Unavailable_Text" = "無法存取版本日誌";
 
 // Removed Jailbreak Alert
-/*Removed_Jailbreak_Alert_Title*/
-/*Removed_Jailbreak_Alert_Message*/
-/*Button_Close*/
+"Removed_Jailbreak_Alert_Title" = "移除越獄";
+"Removed_Jailbreak_Alert_Message" = "移除越獄成功。 建議將設備重開機。";
+"Button_Close" = "關閉";
 
 // Error View
-"Button_Share" = "Share";
-/*Button_Reboot*/
+"Button_Share" = "分享";
+"Button_Reboot" = "重新開機";
 
 // Settings Toggles
-"Settings_Tweak_Injection" = "載入插件";
+"Settings_Tweak_Injection" = "載入插體";
 "Settings_iDownload" = "iDownload (開發者终端)";
 "Settings_Verbose_Logs" = "詳細日誌";
 
@@ -46,38 +46,37 @@
 "Button_Remove_Jailbreak" = "移除越獄";
 "Button_Hide_Jailbreak" = "隱藏越獄";
 "Button_Unhide_Jailbreak" = "顯示越獄";
-/*Button_Refresh_Jailbreak_Apps*/
+"Button_Refresh_Jailbreak_Apps" = "重新整理越獄Apps";
 "Button_Reinstall_Package_Managers" = "重新安裝套件管理器";
 
 // Settings Hints
-"Hint_Hide_Jailbreak" = "在下次越獄前移除越獄檔案";
-"Hint_Hide_Jailbreak_Jailbroken" = "在越獄狀態時，\"隱藏越獄\" 選項會停用某些越獄功能來繞過越獄偵測。不過此功能不一定能成功發揮躲避偵測的效果。";
-/*Section_Jailbreak_Settings*/
-/*Section_Actions*/
-/*Section_Customization*/
-/*Section_Exploits*/
+"Hint_Hide_Jailbreak" = "\"隱藏越獄\"將在下次越獄時暫時移除越獄檔案";
+"Hint_Hide_Jailbreak_Jailbroken" = "在越獄狀態下，\"隱藏越獄\" 選項會停用部分越獄功能來躲避越獄偵測。但不保證一定能成功躲避偵測。";
+"Section_Jailbreak_Settings" = "越獄設定";
+"Section_Actions" = "動作";
+"Section_Customization" = "客製化";
+"Section_Exploits" = "選擇漏洞";
 
 // Settings Alerts
-/*Alert_Tweak_Injection_Toggled_Title*/
-"Alert_Tweak_Injection_Toggled_Body" = "即將重新啟動使用者空間是否繼續？";
-/*Alert_Tweak_Injection_Toggled_Reboot_Now*/
-/*Alert_Tweak_Injection_Toggled_Reboot_Later*/
+"Alert_Tweak_Injection_Toggled_Title" = "需要重新啟動使用者空間";
+"Alert_Tweak_Injection_Toggled_Body" = "必需重新啟動使用者空間才能套用更變。 要現在進行嗎?";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "現在重新啟動";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "稍後重新啟動";
 "Alert_Remove_Jailbreak_Title" = "移除越獄";
-"Alert_Remove_Jailbreak_Pressed_Body" = "移除越獄將移除所有和越獄相關的檔案，但將保留普通 App、檔案、資料。請注意，此動作無法復原。確定清除越獄嗎？";
-/*Alert_Remove_Jailbreak_Enabled_Body*/
+"Alert_Remove_Jailbreak_Pressed_Body" = "移除越獄將移除所有和越獄相關的檔案，但將保留普通 App、檔案、資料。請注意，移除的檔案無法復原。確定移除越獄嗎？";
 "Button_Cancel" = "取消";
-"Button_Continue" = "Continue";
+"Button_Continue" = "繼續";
 
 // Duplicate Apps Errors
-/*Duplicate_Apps_Error_Dopamine_App*/
-/*Duplicate_Apps_Error_User_App*/
-/*Duplicate_Apps_Error_Icon_Cache*/
+"Duplicate_Apps_Error_Dopamine_App" = "Dopamines 應用程式目錄 (\"%@\") 內有多個識別碼為 \"%@\" 的應用程式。無法繼續。";
+"Duplicate_Apps_Error_User_App" = "標識碼為 %@ 的應用程式存在於 Dopamines 應用程式目錄 (\"%@\") 中，但也單獨安裝在系統上。無法繼續。";
+"Duplicate_Apps_Error_Icon_Cache" = "標識碼為 \"%@\" 的應用程式存在於 Dopamine 應用程式目錄 (\"%@\") 中，但也在不同路徑 (\"%@\") 下的圖示快取中註冊。無法繼續。";
 
 // Settings Lists
-/*Theme*/
-/*Kernel Exploit*/
-/*PPL Bypass*/
-/*PAC Bypass*/
+"Theme" = "主題";
+"Kernel Exploit" = "核心漏洞";
+"PPL Bypass" = "繞過 PPL";
+"PAC Bypass" = "繞過 PAC";
 
 // Credits
 "Credits_Button_Discord" = "Discord";
@@ -86,17 +85,17 @@
 
 // Logs
 "Initializing Environment" = "正在初始化環境";
-/*Loading BaseBin TrustCache*/
-/*Applying Bind Mount*/
-/*Removing Jailbreak*/
-/*Elevating Privileges*/
-/*Cleaning Up Exploits*/
-/*Building Phys R/W Primitive*/
-/*Rebooting Userspace*/
+"Loading BaseBin TrustCache" = "正在載入 BaseBin TrustCache";
+"Applying Bind Mount" = "正在套用 Bind Mount";
+"Removing Jailbreak" = "正在移除越獄";
+"Elevating Privileges" = "正在提升權限";
+"Cleaning Up Exploits" = "正在為利用漏洞善後";
+"Building Phys R/W Primitive" = "正在建立 Phys R/W Primitive";
+"Rebooting Userspace" = "正在重新啟動使用者空間";
 "Patchfinding" = "正在尋找修正檔";
-/*Exploiting Kernel (%@)*/
-/*Bypassing PAC (%@)*/
-/*Bypassing PPL (%@)*/
+"Exploiting Kernel (%@)" = "正在利用核心漏洞 (%@)";
+"Bypassing PAC (%@)" = "正在繞過 PAC 防護 (%@)";
+"Bypassing PPL (%@)" = "正在繞過 PPL 防護 (%@)";
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "選擇套件管理器";
