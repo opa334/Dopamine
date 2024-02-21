@@ -35,6 +35,18 @@ __attribute__((constructor)) static void initializer(void)
 	bool firstLoad = false;
 	if (getenv("DOPAMINE_INITIALIZED") != 0) {
 		// If Dopamine was initialized before, we assume we're coming from a userspace reboot
+
+		// Stock bug: These prefs wipe themselves after a reboot (they contain a boot time and this is matched when they're loaded)
+		// But on userspace reboots, they apparently do not get wiped as boot time doesn't change
+		// We could try to change the boot time ourselves, but I'm worried of potential side effects
+		// So we just wipe the offending preferences ourselves
+		// In practice this fixes nano launch daemons not being loaded after the userspace reboot, resulting in certain apple watch features breaking
+		if (!access("/var/mobile/Library/Preferences/com.apple.NanoRegistry.NRRootCommander.volatile.plist", W_OK)) {
+			remove("/var/mobile/Library/Preferences/com.apple.NanoRegistry.NRRootCommander.volatile.plist");
+		}
+		if (!access("/var/mobile/Library/Preferences/com.apple.NanoRegistry.NRLaunchNotificationController.volatile.plist", W_OK)) {
+			remove("/var/mobile/Library/Preferences/com.apple.NanoRegistry.NRLaunchNotificationController.volatile.plist");
+		}
 	}
 	else {
 		// Here we should have been injected into a live launchd on the fly
