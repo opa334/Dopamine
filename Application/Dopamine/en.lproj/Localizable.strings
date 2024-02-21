@@ -102,3 +102,5 @@
 "Status_Title_Select_Package_Managers" = "Select Package Manager(s)";
 "Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
 "Continue" = "Continue";
+
+"System_Uptime_Format" = "uptime: %ddays %dh %dm %ds";

@@ -116,3 +116,4 @@
 "Input_Unmount_Title" = "取消挂载";
 "Input_Mount_Title" = "输入原始路径";
 "Button_Mount" = "确定";
+"System_Uptime_Format" = "系统已运行: %d天 %d时 %d分 %d秒";

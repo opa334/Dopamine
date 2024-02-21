@@ -209,7 +209,7 @@
 
 - (void)sendLog:(NSString*)log debug:(BOOL)debug update:(BOOL)update
 {
-    if (!self.logView)
+    if (!self.logView || !log)
         return;
     
     [self.logRecord addObject:log];
@@ -280,7 +280,7 @@
                     if (buffer[i] == '\n') {
                         line[line_index] = '\0';
                         NSString *str = [NSString stringWithUTF8String:line];
-                        [[DOUIManager sharedInstance] sendLog:str debug:YES];
+                        [self sendLog:str debug:YES];
                         line_index = 0;
                     } else {
                         if (line_index < sizeof(line) - 1) {
