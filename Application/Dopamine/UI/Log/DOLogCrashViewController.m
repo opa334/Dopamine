@@ -45,9 +45,11 @@
         [header.heightAnchor constraintEqualToConstant:70]
     ]];
     
-    DOActionMenuButton *shareButton = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:DOLocalizedString(@"Button_Share") image:[UIImage systemImageNamed:@"square.and.arrow.up" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"share" handler:^(__kindof UIAction * _Nonnull action) {
-        [[DOUIManager sharedInstance] shareLogRecord];
-    }] chevron:NO];
+    __block DOActionMenuButton *shareButton;
+    UIAction *shareAction = [UIAction actionWithTitle:DOLocalizedString(@"Button_Share") image:[UIImage systemImageNamed:@"square.and.arrow.up" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"share" handler:^(__kindof UIAction * _Nonnull action) {
+        [[DOUIManager sharedInstance] shareLogRecordFromView:shareButton];
+    }];
+    shareButton = [DOActionMenuButton buttonWithAction:shareAction chevron:NO];
     
     shareButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:shareButton];
@@ -57,30 +59,38 @@
         [shareButton.heightAnchor constraintEqualToConstant:30],
         [shareButton.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-30]
     ]];
-
     
+    if (@available(iOS 16.0, *)) {
+        _logView = [UITextView textViewUsingTextLayoutManager:false];
+    }
+    else {
+        _logView = [[UITextView alloc] init];
+    }
+    _logView.translatesAutoresizingMaskIntoConstraints = NO;
 
-    UITextView *license = [[UITextView alloc] init];
-    license.translatesAutoresizingMaskIntoConstraints = NO;
-
-    [self.view addSubview:license];
+    [self.view addSubview:_logView];
 
     [NSLayoutConstraint activateConstraints:@[
-        [license.topAnchor constraintEqualToAnchor:header.bottomAnchor constant:-12],
-        [license.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:20],
-        [license.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-20],
-        [license.bottomAnchor constraintEqualToAnchor:shareButton.topAnchor constant:-10]
+        [_logView.topAnchor constraintEqualToAnchor:header.bottomAnchor constant:-12],
+        [_logView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:20],
+        [_logView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-20],
+        [_logView.bottomAnchor constraintEqualToAnchor:shareButton.topAnchor constant:-10]
     ]];
 
-    license.text = [[[DOUIManager sharedInstance] logRecord] componentsJoinedByString:@"\n"];
-    license.editable = NO;
-    license.font = [UIFont systemFontOfSize:14];
-    license.textColor = [UIColor whiteColor];
-    license.backgroundColor = [UIColor clearColor];
+    NSArray *reverseLog = [[[DOUIManager sharedInstance] logRecord] reverseObjectEnumerator].allObjects;
+    _logView.text = [reverseLog componentsJoinedByString:@"\n"];
+    _logView.editable = NO;
+    _logView.font = [UIFont systemFontOfSize:14];
+    _logView.textColor = [UIColor whiteColor];
+    _logView.backgroundColor = [UIColor clearColor];
+}
 
-
-    [[[DOUIManager sharedInstance] logRecord] insertObject:self.title atIndex:0];
-    [[[DOUIManager sharedInstance] logRecord] insertObject:@"----" atIndex:1];
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [[UIApplication sharedApplication] performSelector:@selector(suspend)];
+    [NSThread sleepForTimeInterval:0.3];
+    exit(0);
 }
 
 - (void)dismiss

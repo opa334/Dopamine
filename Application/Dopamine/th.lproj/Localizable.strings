@@ -1,0 +1,104 @@
+"Credits_Made_By" = "by opa334, ElleKit by évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "กำลังเจลเบรค";
+"Log_Error" = "Error";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "เจลเบรค";
+"Status_Title_Jailbroken" = "เจลเบรคแล้ว;
+"Unsupported" = "ไม่รองรับ";
+
+// Action Menu
+"Menu_Settings_Title" = "ตั้งค่า";
+"Menu_Restart_SpringBoard_Title" = "รีสตาร์ท SpringBoard";
+"Menu_Reboot_Userspace_Title" = "รีบูต Userspace";
+"Menu_Credits_Title" = "Credits";
+
+// Updating
+"Button_Update" = "อัปเดต";
+"Button_Update_Available" = "มีอัปเดตใหม่";
+"Button_Update_Environment" = "อัปเดต Environment";
+
+// Update View
+"Update_Status_Downloading" = "กำลังดาวน์โหลดอัปเดต...";
+"Update_Status_Subtitle_Please_Wait" = "กรุณารอไฟล์อัปเดตโหลดเสร็จ";
+"Update_Status_Installing" = "กำลังติดตั้งอัปเดต";
+"Update_Status_Subtitle_Restart_Soon" = "อุปกรณ์กำลังจะรีสตาร์ทในเร็วๆนี้";
+"Title_Changelog" = "Changelog";
+"Changelog_Unavailable_Text" = "ไม่มี Changelog";
+
+// Removed Jailbreak Alert
+"Removed_Jailbreak_Alert_Title" = "เจลเบรคได้ถูกลบออกแล้ว";
+"Removed_Jailbreak_Alert_Message" = "เจลเบรคได้ถูกลบออกแล้ว แนะนำให้รีบูตอุปกรณ์";
+"Button_Close" = "ปิด";
+
+// Error View
+"Button_Share" = "แชร์";
+"Button_Reboot" = "รีบูต";
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "Tweak Injection";
+"Settings_iDownload" = "iDownload (Developer Shell)";
+"Settings_Verbose_Logs" = "Verbose Logs";
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "ลบเจลเบรค";
+"Button_Hide_Jailbreak" = "ซ่อนเจลเบรค";
+"Button_Unhide_Jailbreak" = "เลิกซ่อนเจลเบรค";
+"Button_Refresh_Jailbreak_Apps" = "รีเฟรช Jailbreak Apps";
+"Button_Reinstall_Package_Managers" = "ติดตั้ง Package Managers ใหม่";
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"ซ่อนเจลเบรค\" ซ่อนไฟล์ที่เกี่ยวกับเจลเบรคต่างๆจนกว่าจะทำการเจลเบรคใหม่";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"ซ่อนเจลเบรค\" ปิดการทำงานของเจลเบรคบางส่วนเพื่อทำให้การตรวจจับยากขึ้น แต่อาจจะมีประสิทธิภาพไม่เต็มที่";
+"Section_Jailbreak_Settings" = "ตั้งค่าเจลเบรค";
+"Section_Actions" = "Actions";
+"Section_Customization" = "การปรับแต่ง";
+"Section_Exploits" = "Exploits";
+
+// Settings Alerts
+"Alert_Tweak_Injection_Toggled_Title" = "จำเป็นต้องรีบูต Userspace";
+"Alert_Tweak_Injection_Toggled_Body" = "จำเป็นต้องรีบูต Userspace เพื่อใช้การเปลี่ยนแปลง ต้องการรีบูตตอนนี้หรือไม่";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "รีบูตตอนนี้";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "รีบูตภายหลัง";
+"Alert_Remove_Jailbreak_Title" = "ลบเจลเบรค";
+"Alert_Remove_Jailbreak_Pressed_Body" = "การลบเจลเบรคจะลบไฟล์ที่เกี่ยวข้องกับเจลเบรคเท่านั้น แอปพลิเคชั่น ไฟล์ และ ข้อมูลต่างๆที่ไม่เกี่ยวข้องกับเจลเบรคจะถูกเก็บไว้ ต้องการที่จะดำเนินการต่อหรือไม่ การกระทำนี้จะไม่สามารถย้อนกลับได้";
+"Alert_Remove_Jailbreak_Enabled_Body" = "การเปิดใช้งาน \"ลบเจลเบรค\" จะลบไฟล์ที่เกี่ยวข้องกับเจลเบรคเท่านั้น แอปพลิเคชั่น ไฟล์ และ ข้อมูลต่างๆที่ไม่เกี่ยวข้องกับเจลเบรคจะถูกเก็บไว้ ต้องการที่จะดำเนินการต่อหรือไม่ การกระทำนี้จะไม่สามารถย้อนกลับได้";
+"Button_Cancel" = "ยกเลิก";
+"Button_Continue" = "ดำเนินการต่อ";
+
+// Duplicate Apps Errors
+"Duplicate_Apps_Error_Dopamine_App" = "มีหลายแอปพลิเคชั่นที่มี identifier \"%@\" ในโฟลเดอร์แอปพลิเคชั่นของ Dopamine (\"%@\") ทำให้ไม่สามารถดำเนินการต่อได้";
+"Duplicate_Apps_Error_User_App" = "แอปพลิเคชั่นที่มี identifiers %@ อยู่ในโฟล์เดอร์แอปพลิเคชั่นของ Dopamine (\"%@\") และถูกติดตั้งแยกไว้ที่อื่นในระบบด้วย ทำให้ไม่สามารถดำเนินการต่อได้";
+"Duplicate_Apps_Error_Icon_Cache" = "แอปพลิเคชั่นที่มี identifiers \"%@\" อยู่ในโฟล์เดอร์แอปพลิเคชั่นของ Dopamine (\"%@\") แต่ถูก register ไว้ใน icon cache ด้วย path ที่แตกต่างกัน (\"%@\") ทำให้ไม่สามารถดำเนินการต่อได้";
+
+// Settings Lists
+"Theme" = "ธีม";
+"Kernel Exploit" = "Kernel Exploit";
+"PPL Bypass" = "PPL Bypass";
+"PAC Bypass" = "PAC Bypass";
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Licenses";
+"Credits_Button_Source_Code" = "Source Code";
+
+// Logs
+"Initializing Environment" = "Initializing Jailbreak Environment";
+"Loading BaseBin TrustCache" = "Loading BaseBin TrustCache";
+"Applying Bind Mount" = "Applying Bind Mount";
+"Removing Jailbreak" = "Removing Jailbreak";
+"Elevating Privileges" = "Elevating Privileges";
+"Cleaning Up Exploits" = "Cleaning Up Exploits";
+"Building Phys R/W Primitive" = "Building Phys R/W Primitive";
+"Rebooting Userspace" = "Rebooting Userspace";
+"Patchfinding" = "Patchfinding";
+"Exploiting Kernel (%@)" = "Exploiting Kernel (%@)";
+"Bypassing PAC (%@)" = "Bypassing PAC (%@)";
+"Bypassing PPL (%@)" = "Bypassing PPL (%@)";
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "เลือก Package Manager(s) ที่ต้องการ";
+"Select_Package_Managers_Install_Message" = "ถ้าไม่แน่ใจว่าจะเลือกอันไหน ให้เลือก Sileo";
+"Continue" = "ดำเนินการต่อ";

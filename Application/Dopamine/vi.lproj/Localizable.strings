@@ -7,7 +7,7 @@
 // Jailbreak Button
 "Button_Jailbreak_Title" = "Jailbreak";
 "Status_Title_Jailbroken" = "Đã Jailbreak";
-/*Unsupported*/
+"Unsupported" = "Không hỗ trợ";
 
 // Action Menu
 "Menu_Settings_Title" = "Cài đặt";
@@ -18,66 +18,66 @@
 // Updating
 "Button_Update" = "Cập nhật";
 "Button_Update_Available" = "Có bản cập nhật mới";
-"Button_Update_Environment" = "Cập nhật \"Môi trường\"";
+"Button_Update_Environment" = "Cập nhật môi trường Jailbreak";
 
 // Update View
 "Update_Status_Downloading" = "Đang tải bản cập nhật...";
-"Update_Status_Subtitle_Please_Wait" = "Vui lòng chờ để tệp tin tải xuống";
+"Update_Status_Subtitle_Please_Wait" = "Đang tải xuống các tệp thiết yếu, xin hãy kiên nhẫn";
 "Update_Status_Installing" = "Đang cài bản cập nhật...";
 "Update_Status_Subtitle_Restart_Soon" = "Thiết bị sẽ khởi động lại";
-"Title_Changelog" = "Log thay đổi";
-"Changelog_Unavailable_Text" = "Không có Log thay đổi";
+"Title_Changelog" = "Nhật ký sửa đổi";
+"Changelog_Unavailable_Text" = "Không có nhật ký sửa đổi";
 
 // Removed Jailbreak Alert
-/*Removed_Jailbreak_Alert_Title*/
-/*Removed_Jailbreak_Alert_Message*/
-/*Button_Close*/
+"Removed_Jailbreak_Alert_Title" = "Đã gỡ Jailbreak";
+"Removed_Jailbreak_Alert_Message" = "Gỡ bỏ Jailbreak thành công. Bạn nên khởi động lại thiết bị.";
+"Button_Close" = "Đóng";
 
 // Error View
-/*Button_Share*/
-/*Button_Reboot*/
+"Button_Share" = "Chia sẻ lỗi";
+"Button_Reboot" = "Khởi động lại";
 
 // Settings Toggles
-"Settings_Tweak_Injection" = "Tweak Injection";
+"Settings_Tweak_Injection" = "Cho phép chạy Tweak";
 "Settings_iDownload" = "iDownload (nhà phát triển)";
-"Settings_Verbose_Logs" = "Log Verbose";
+"Settings_Verbose_Logs" = "Hiện Log dạng phức tạp";
 
 // Settings Buttons
-"Button_Remove_Jailbreak" = "Xóa Jailbreak";
+"Button_Remove_Jailbreak" = "Gỡ Jailbreak";
 "Button_Hide_Jailbreak" = "Ẩn Jailbreak";
-"Button_Unhide_Jailbreak" = "Hiện Jailbreak";
-/*Button_Refresh_Jailbreak_Apps*/
-"Button_Reinstall_Package_Managers" = "Cài đặt lại các trình quản lý gói";
+"Button_Unhide_Jailbreak" = "Bỏ ẩn Jailbreak";
+"Button_Refresh_Jailbreak_Apps" = "Làm mới các app Jailbreak";
+"Button_Reinstall_Package_Managers" = "Cài lại các trình quản lý gói";
 
 // Settings Hints
-"Hint_Hide_Jailbreak" = "\"Ẩn Jailbreak\" sẽ tạm thời xóa các tệp tin liên quan đến Jailbreak cho đến khi bạn Jailbreak lại";
-"Hint_Hide_Jailbreak_Jailbroken" = "\"Ẩn Jailbreak\" vô hiệu hóa một phần bẻ khóa và nhằm mục đích tránh phát hiện Jailbreak. Tuy nhiên, nó không hoàn toàn hiệu quả và hoàn toàn ẩn jailbreak.";
-/*Section_Jailbreak_Settings*/
-/*Section_Actions*/
-/*Section_Customization*/
-/*Section_Exploits*/
+"Hint_Hide_Jailbreak" = "Tùy chọn \"Ẩn Jailbreak\" sẽ tạm thời xóa các tệp liên quan đến jailbreak và khôi phục lại các tệp này khi bạn jailbreak vào lần tới.";
+"Hint_Hide_Jailbreak_Jailbroken" = "Tùy chọn \"Ẩn Jailbreak\" sẽ tắt một số chức năng đặc biệt nhằm tránh phát hiện jailbreak trong các ứng dụng. Tuy nhiên, tính năng này không phải là hoàn hảo và không thể hoàn toàn ẩn jailbreak khỏi mọi ứng dụng.";
+"Section_Jailbreak_Settings" = "Thiết đặt Jailbreak";
+"Section_Actions" = "Tác vụ";
+"Section_Customization" = "Tùy biến";
+"Section_Exploits" = "Khai thác";
 
 // Settings Alerts
-/*Alert_Tweak_Injection_Toggled_Title*/
-"Alert_Tweak_Injection_Toggled_Body" = "Khởi động lại User là cần thiết để áp dụng các thay đổi. Bạn có muốn làm ngay bây giờ không?";
-/*Alert_Tweak_Injection_Toggled_Reboot_Now*/
-/*Alert_Tweak_Injection_Toggled_Reboot_Later*/
-"Alert_Remove_Jailbreak_Title" = "Xoá Jailbreak";
-"Alert_Remove_Jailbreak_Pressed_Body" = "Xóa Jailbreak sẽ xóa tất cả các tệp liên quan đến Jailbreak, tất cả các ứng dụng, tệp và dữ liệu thông thường sẽ được giữ. Bạn có chắc muốn tiếp tục? Hành động này không thể hoàn tác.";
-/*Alert_Remove_Jailbreak_Enabled_Body*/
-"Button_Cancel" = "Hủy";
-/*Button_Continue*/
+"Alert_Tweak_Injection_Toggled_Title" = "Khởi động lại Userspace";
+"Alert_Tweak_Injection_Toggled_Body" = "Cần khởi động lại Userspace để áp dụng các thay đổi. Bạn muốn khởi động lại ngay bây giờ hay để sau?";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Khởi động lại ngay";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Để sau";
+"Alert_Remove_Jailbreak_Title" = "Gỡ bỏ Jailbreak";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Việc gỡ bỏ jailbreak sẽ xóa toàn bộ các tệp liên quan đến jailbreak. Các ứng dụng, tệp và dữ liệu thông thường sẽ vẫn được giữ nguyên. Bạn sẽ không thể hoàn tác việc gỡ jailbreak sau khi nhấn \"Tiếp tục\".";
+"Alert_Remove_Jailbreak_Enabled_Body" = "Tùy chọn \"Gỡ Jailbreak\" sẽ xóa toàn bộ các tệp liên quan đến jailbreak khi bạn thực hiện jailbreak vào lần tới. Các ứng dụng, tệp và dữ liệu thông thường sẽ vẫn được giữ nguyên. Bạn sẽ không thể hoàn tác việc gỡ jailbreak sau khi nhấn \"Tiếp tục\".";
+"Button_Cancel" = "Hủy bỏ";
+"Button_Continue" = "Tiếp tục";
 
 // Duplicate Apps Errors
-/*Duplicate_Apps_Error_Dopamine_App*/
-/*Duplicate_Apps_Error_User_App*/
-/*Duplicate_Apps_Error_Icon_Cache*/
+"Duplicate_Apps_Error_Dopamine_App" = "Có nhiều ứng dụng với tên định danh \"%@\" trùng nhau trong thư mục ứng dụng của Dopamine (\"%@\"). Không thể tiếp tục.";
+"Duplicate_Apps_Error_User_App" = "Các ứng dụng với tên định danh \"%@\" đã tồn tại trong thư mục ứng dụng của Dopamine (\"%@\"), nhưng đồng thời cũng được cài đặt tách biệt trên hệ thống. Không thể tiếp tục.";
+"Duplicate_Apps_Error_Icon_Cache" = "Ứng dụng với tên định danh \"%@\" đã tồn tại trong thư mục ứng dụng của Dopamine (\"%@\"), nhưng lại được ghi bên trong icon cache với một tên đường dẫn khác (\"%@\"). Không thể tiếp tục.";
 
 // Settings Lists
-/*Theme*/
-/*Kernel Exploit*/
-/*PPL Bypass*/
-/*PAC Bypass*/
+"Theme" = "Chủ đề";
+"Kernel Exploit" = "Lỗ hổng Kernel";
+"PPL Bypass" = "Lỗ hổng PPL";
+"PAC Bypass" = "Lỗ hổng PAC";
 
 // Credits
 "Credits_Button_Discord" = "Discord";
@@ -85,21 +85,20 @@
 "Credits_Button_Source_Code" = "Mã nguồn";
 
 // Logs
-"Initializing Environment" = "Khởi tạo \"Môi trường\"";
-/*Loading BaseBin TrustCache*/
-/*Applying Bind Mount*/
-/*Removing Jailbreak*/
-/*Elevating Privileges*/
-/*Cleaning Up Exploits*/
-/*Building Phys R/W Primitive*/
-/*Rebooting Userspace*/
-"Patchfinding" = "Đang tìm bản vá";
-/*Exploiting Kernel (%@)*/
-/*Bypassing PAC (%@)*/
-/*Bypassing PPL (%@)*/
+"Initializing Environment" = "Đang khởi tạo môi trường Jailbreak";
+"Loading BaseBin TrustCache" = "Đang tải TrustCache BaseBin";
+"Applying Bind Mount" = "Đang gắn Bind Mount";
+"Removing Jailbreak" = "Đang gỡ bỏ Jailbreak";
+"Elevating Privileges" = "Đang lấy quyền truy cập nâng cao";
+"Cleaning Up Exploits" = "Đang dọn dẹp khai thác";
+"Building Phys R/W Primitive" = "Đang dựng Phys R/W Primitive";
+"Rebooting Userspace" = "Đang khởi động lại Userspace";
+"Patchfinding" = "Đang chạy Patchfinding";
+"Exploiting Kernel (%@)" = "Đang khai thác lỗ hổng Kernel (%@)";
+"Bypassing PAC (%@)" = "Đang khai thác lỗ hổng PAC (%@)";
+"Bypassing PPL (%@)" = "Đang khai thác lỗ hổng PPL (%@)";
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "Chọn trình quản lý gói";
-"Select_Package_Managers_Install_Message" = "Nếu không chắc nên chọn cái nào, hãy chọn Sileo";
+"Select_Package_Managers_Install_Message" = "Nếu bạn không biết nên chọn trình quản lý gói nào, hãy chọn Sileo (sẽ không bao giờ có Cydia cho bạn chọn)";
 "Continue" = "Tiếp tục";
-

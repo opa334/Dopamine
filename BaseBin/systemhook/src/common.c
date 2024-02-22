@@ -203,6 +203,20 @@ kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 						// Skip ReportMemoryException too as it might need to execute while jailbreakd is in a crashed state
 						return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
 					}
+					else if (!strcmp(argv[1], "com.apple.logd")   ||
+							 !strcmp(argv[1], "com.apple.notifyd") ||
+							 !strcmp(argv[1], "com.apple.mobile.usermanagerd")) {
+						// These seem to be problematic on iOS 16+ (dyld gets stuck in a weird way)
+						if (__builtin_available(iOS 16.0, *)) {
+							return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
+						}
+					}
+					else if (stringStartsWith(argv[1], "com.apple.WebKit.WebContent")) {
+						// The most sandboxed process on the system, we can't support it on iOS 16+ for now
+						if (__builtin_available(iOS 16.0, *)) {
+							return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
+						}
+					}
 				}
 			}
 		}
@@ -212,22 +226,14 @@ kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 	// I don't like this but for some processes it seems neccessary
 	const char *processBlacklist[] = {
 		"/System/Library/Frameworks/GSS.framework/Helpers/GSSCred",
+		"/System/Library/PrivateFrameworks/DataAccess.framework/Support/dataaccessd",
 		"/System/Library/PrivateFrameworks/IDSBlastDoorSupport.framework/XPCServices/IDSBlastDoorService.xpc/IDSBlastDoorService",
-		"/System/Library/PrivateFrameworks/MessagesBlastDoorSupport.framework/XPCServices/MessagesBlastDoorService.xpc/MessagesBlastDoorService",
-		"/usr/sbin/wifid"
+		"/System/Library/PrivateFrameworks/MessagesBlastDoorSupport.framework/XPCServices/MessagesBlastDoorService.xpc/MessagesBlastDoorService"
 	};
 	size_t blacklistCount = sizeof(processBlacklist) / sizeof(processBlacklist[0]);
 	for (size_t i = 0; i < blacklistCount; i++)
 	{
 		if (!strcmp(processBlacklist[i], path)) return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
-	}
-
-	if (__builtin_available(iOS 16.0, *)) {
-		// The only process that can't XPC to launchd on iOS 16+ (reaason: lanuch constraint bullshit)
-		// TODO: Properly fix and reenable injection
-		if (strcmp(path, "/System/Library/Frameworks/WebKit.framework/XPCServices/com.apple.WebKit.WebContent.xpc/com.apple.WebKit.WebContent") == 0) {
-			return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
-		} 
 	}
 
 	return 0;

@@ -21,7 +21,7 @@ struct system_info {
 		uint64_t pointer_mask;
 		uint64_t T1SZ_BOOT;
 		uint64_t ARM_TT_L1_INDEX_MASK;
-		uint64_t smdBase;
+		uint64_t smrBase;
 		uint64_t PT_INDEX_MAX;
 		uint64_t nsysent;
 		uint64_t mach_trap_count;
@@ -145,7 +145,7 @@ struct system_info {
 
 		struct {
 			uint32_t table;
-			bool table_uses_smd;
+			bool table_uses_smr;
 		} ipc_space;
 
 		struct {
@@ -219,7 +219,7 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelConstant.pointer_mask); \
     iterator(ctx, kernelConstant.T1SZ_BOOT); \
     iterator(ctx, kernelConstant.ARM_TT_L1_INDEX_MASK); \
-    iterator(ctx, kernelConstant.smdBase); \
+    iterator(ctx, kernelConstant.smrBase); \
     iterator(ctx, kernelConstant.PT_INDEX_MAX); \
     iterator(ctx, kernelConstant.nsysent); \
     iterator(ctx, kernelConstant.mach_trap_count);
@@ -323,7 +323,7 @@ extern struct system_info gSystemInfo;
     iterator(ctx, kernelStruct.thread.machine_contextData); \
 	\
     iterator(ctx, kernelStruct.ipc_space.table); \
-    iterator(ctx, kernelStruct.ipc_space.table_uses_smd); \
+    iterator(ctx, kernelStruct.ipc_space.table_uses_smr); \
 	\
     iterator(ctx, kernelStruct.ipc_entry.object); \
     iterator(ctx, kernelStruct.ipc_entry.struct_size); \

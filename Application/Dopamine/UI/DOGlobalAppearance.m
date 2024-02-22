@@ -99,4 +99,15 @@
    return [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && [[UIApplication sharedApplication] keyWindow].safeAreaInsets.bottom == 0;
 }
 
++ (BOOL)isRTL
+{
+    return [UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft;
+}
+
++ (BOOL)isSmallDevice
+{
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    return window.frame.size.height < SE_PHONE_SIZE_CONST + 50;
+}
+
 @end

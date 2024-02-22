@@ -109,7 +109,7 @@
         return orig;
     
     orig.size.width = fmin(orig.size.width - UI_MODAL_PADDING * 2, UI_IPAD_MAX_WIDTH);
-    orig.size.height *= 0.7;
+    orig.size.height *= [DOGlobalAppearance isSmallDevice] ? 0.8 : 0.7;
     orig.origin.x = (self.view.frame.size.width - orig.size.width) / 2;
     orig.origin.y = (self.view.frame.size.height - orig.size.height) / 2;
 

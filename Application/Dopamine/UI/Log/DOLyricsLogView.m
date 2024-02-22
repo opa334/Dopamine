@@ -7,6 +7,7 @@
 
 #import "DOLyricsLogView.h"
 #import "DOProgressiveBlurView.h"
+#import "DOGlobalAppearance.h"
 
 #define LOG_HEIGHT 40
 
@@ -23,7 +24,7 @@
         [self addSubview:self.stackView];
 
         [NSLayoutConstraint activateConstraints:@[
-            [self.stackView.topAnchor constraintEqualToAnchor:self.bottomAnchor constant:-80],
+            [self.stackView.topAnchor constraintEqualToAnchor:self.bottomAnchor constant:[DOGlobalAppearance isHomeButtonDevice] ? -50 : -80],
             [self.stackView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:25],
             [self.stackView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-25],
         ]];
@@ -39,7 +40,10 @@
             [blurView.topAnchor constraintEqualToAnchor:self.topAnchor],
             [blurView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-125],
         ]];
-
+        
+        _checkmarkImage = [UIImage systemImageNamed:@"checkmark" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:19 weight:UIImageSymbolWeightRegular]];
+        _exclamationMarkImage = [UIImage systemImageNamed:@"exclamationmark.circle" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:19 weight:UIImageSymbolWeightRegular]];
+        _unlockedImage = [UIImage systemImageNamed:@"lock.open" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:19 weight:UIImageSymbolWeightRegular]];
     }
     return self;
 }
@@ -55,7 +59,7 @@
 
     [self.stackView.arrangedSubviews makeObjectsPerformSelector:@selector(setCompleted)];
 
-    DOLyricsLogItemView *itemView = [[DOLyricsLogItemView alloc] initWithString:log];
+    DOLyricsLogItemView *itemView = [[DOLyricsLogItemView alloc] initWithString:log completedImage:_checkmarkImage failedImage:_exclamationMarkImage successImage:_unlockedImage];
     [self.stackView addArrangedSubview:itemView];
 
     [NSLayoutConstraint activateConstraints:@[

@@ -16,10 +16,11 @@ NS_ASSUME_NONNULL_BEGIN
 {
     DOPreferenceManager *_preferenceManager;
     NSDictionary *_fallbackLocalizations;
+    NSLock *_logLock;
 }
 
 @property (nonatomic, retain) NSObject<DOLogViewProtocol> *logView;
-@property (nonatomic, retain) NSMutableArray<NSString*> *logRecord;
+@property (atomic, retain) NSMutableArray<NSString*> *logRecord;
 
 + (id)sharedInstance;
 
@@ -28,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)sendLog:(NSString*)log debug:(BOOL)debug;
 - (void)completeJailbreak;
 - (void)startLogCapture;
-- (void)shareLogRecord;
+- (void)shareLogRecordFromView:(UIView *)sourceView;
 - (BOOL)isUpdateAvailable;
 - (BOOL)environmentUpdateAvailable;
 - (NSArray *)getLatestReleases;

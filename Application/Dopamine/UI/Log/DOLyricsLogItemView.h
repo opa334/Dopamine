@@ -17,7 +17,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BOOL completed;
 @property (nonatomic) UIImpactFeedbackGenerator *feedbackGenerator;
 
-- (id)initWithString:(NSString *)string;
+@property (nonatomic) UIImage *completedImage;
+@property (nonatomic) UIImage *failedImage;
+@property (nonatomic) UIImage *successImage;
+
+- (id)initWithString:(NSString *)string completedImage:(UIImage *)completedImage failedImage:(UIImage *)failedImage successImage:(UIImage *)successImage;
 - (void)setCompleted;
 - (void)setFailed;
 - (void)setSuccess;

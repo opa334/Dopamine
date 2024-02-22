@@ -157,7 +157,7 @@ void jbupdate_update_system_info(void)
 		xpc_dictionary_set_uint64(systemInfoXdict, "kernelConstant.physBase", kconstant(physBase));
 		xpc_dictionary_set_uint64(systemInfoXdict, "kernelConstant.physSize", kconstant(physSize));
 		xpc_dictionary_set_uint64(systemInfoXdict, "kernelConstant.cpuTTEP", kconstant(cpuTTEP));
-		xpc_dictionary_set_bool(systemInfoXdict, "jailbreakInfo.usesPACBypass", jbinfo(usesPACBypass));
+		xpc_dictionary_set_uint64(systemInfoXdict, "jailbreakInfo.usesPACBypass", jbinfo(usesPACBypass));
 		xpc_dictionary_set_string(systemInfoXdict, "jailbreakInfo.rootPath", jbinfo(rootPath));
 
 		// Rebuild gSystemInfo

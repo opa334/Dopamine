@@ -16,7 +16,7 @@
 #import <dlfcn.h>
 #import <sys/stat.h>
 
-#define LIBKRW_DOPAMINE_BUNDLED_VERSION @"2.0.0"
+#define LIBKRW_DOPAMINE_BUNDLED_VERSION @"2.0.1"
 #define LIBROOT_DOPAMINE_BUNDLED_VERSION @"1.0.1"
 #define BASEBIN_LINK_BUNDLED_VERSION @"1.0.0"
 
@@ -230,15 +230,17 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     return NO;
 }
 
-- (BOOL)createSymlinkAtPath:(NSString *)path toPath:(NSString *)destinationPath createIntermediateDirectories:(BOOL)createIntermediate
+- (NSError *)createSymlinkAtPath:(NSString *)path toPath:(NSString *)destinationPath createIntermediateDirectories:(BOOL)createIntermediate
 {
+    NSError *error;
     NSString *parentPath = [path stringByDeletingLastPathComponent];
     if (![[NSFileManager defaultManager] fileExistsAtPath:parentPath]) {
-        if (!createIntermediate) return NO;
-        if (![[NSFileManager defaultManager] createDirectoryAtPath:parentPath withIntermediateDirectories:YES attributes:nil error:nil]) return NO;
+        if (!createIntermediate) return [NSError errorWithDomain:bootstrapErrorDomain code:-1 userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed create %@->%@ symlink: Parent dir does not exists", path, destinationPath]}];
+        if (![[NSFileManager defaultManager] createDirectoryAtPath:parentPath withIntermediateDirectories:YES attributes:nil error:&error]) return error;
     }
     
-    return [[NSFileManager defaultManager] createSymbolicLinkAtPath:path withDestinationPath:destinationPath error:nil];
+    [[NSFileManager defaultManager] createSymbolicLinkAtPath:path withDestinationPath:destinationPath error:&error];
+    return error;
 }
 
 - (BOOL)isPrivatePrebootMountedWritable
@@ -444,7 +446,11 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     
     NSString *basebinPath = NSJBRootPath(@"/basebin");
     NSString *installedPath = NSJBRootPath(@"/.installed_dopamine");
-    [self createSymlinkAtPath:@"/var/jb" toPath:NSJBRootPath(@"/") createIntermediateDirectories:YES];
+    error = [self createSymlinkAtPath:@"/var/jb" toPath:NSJBRootPath(@"/") createIntermediateDirectories:YES];
+    if (error) {
+        completion(error);
+        return;
+    }
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:basebinPath]) {
         if (![[NSFileManager defaultManager] removeItemAtPath:basebinPath error:&error]) {
@@ -497,6 +503,20 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             [[NSFileManager defaultManager] createDirectoryAtPath:mobilePreferencesPath withIntermediateDirectories:YES attributes:attributes error:nil];
         }
         
+        // Dopamine 2.0 - 2.0.4 would bootstrap with wrong permissions
+        // Try to detect and fix it
+        NSString *mobilePath = NSJBRootPath(@"/var/mobile");
+        struct stat s;
+        stat(mobilePath.fileSystemRepresentation, &s);
+        if (s.st_uid != 501 || s.st_gid != 501) {
+            chown(mobilePath.fileSystemRepresentation, 501, 501);
+            NSURL *mobileURL = [NSURL fileURLWithPath:mobilePath];
+            NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtURL:mobileURL includingPropertiesForKeys:nil options:0 errorHandler:nil];
+            for (NSURL *fileURL in enumerator) {
+                chown(fileURL.fileSystemRepresentation, 501, 501);
+            }
+        }
+
         completion(nil);
     };
     

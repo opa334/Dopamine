@@ -9,7 +9,7 @@
 
 @implementation DOLyricsLogItemView
 
-- (id)initWithString:(NSString *)string {
+- (id)initWithString:(NSString *)string completedImage:(UIImage *)completedImage failedImage:(UIImage *)failedImage successImage:(UIImage *)successImage {
     if (self = [super init]) {
         self.translatesAutoresizingMaskIntoConstraints = NO;
         self.alpha = 0.9;
@@ -40,27 +40,29 @@
         self.transform = CGAffineTransformMakeTranslation(0, 8);
         self.feedbackGenerator = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleLight];
         self.alpha = 0;
+        
+        self.completedImage = completedImage;
+        self.failedImage = failedImage;
+        self.successImage = successImage;
     }
     return self;
 }
 
-- (void)completeWithSymbol: (NSString*)name
+- (void)completeWithImage:(UIImage *)image
 {
     if (self.completed) return;
     self.completed = YES;
+    
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
 
-    UIImage *checkmarkImage = [UIImage systemImageNamed:name];
-    checkmarkImage = [checkmarkImage imageWithConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:19 weight:UIImageSymbolWeightRegular]];
-    UIImageView *checkView = [[UIImageView alloc] initWithImage:checkmarkImage];
+    imageView.translatesAutoresizingMaskIntoConstraints = NO;
+    imageView.tintColor = [UIColor whiteColor];
+    imageView.alpha = 0;
 
-    checkView.translatesAutoresizingMaskIntoConstraints = NO;
-    checkView.tintColor = [UIColor whiteColor];
-    checkView.alpha = 0;
-
-    [self addSubview:checkView];
+    [self addSubview:imageView];
     [NSLayoutConstraint activateConstraints:@[
-        [checkView.centerYAnchor constraintEqualToAnchor:self.loadingIndicator.centerYAnchor],
-        [checkView.centerXAnchor constraintEqualToAnchor:self.loadingIndicator.centerXAnchor],
+        [imageView.centerYAnchor constraintEqualToAnchor:self.loadingIndicator.centerYAnchor],
+        [imageView.centerXAnchor constraintEqualToAnchor:self.loadingIndicator.centerXAnchor],
     ]];
 
     self.label.font = [UIFont systemFontOfSize:18];
@@ -68,7 +70,7 @@
     [UIView animateWithDuration:0.2 animations:^{
         self.alpha = 0.5;
         self.loadingIndicator.alpha = 0;
-        checkView.alpha = 1;
+        imageView.alpha = 1;
         self.transform = CGAffineTransformMakeTranslation(0, 0);
     }];
 
@@ -76,15 +78,15 @@
 }
 
 - (void)setCompleted {
-    [self completeWithSymbol: @"checkmark"];
+    [self completeWithImage:self.completedImage];
 }
 
 - (void)setFailed {
-    [self completeWithSymbol: @"exclamationmark.circle"];
+    [self completeWithImage:self.failedImage];
 }
 
 - (void)setSuccess {
-    [self completeWithSymbol: @"lock.open"];
+    [self completeWithImage:self.successImage];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [self.feedbackGenerator impactOccurredWithIntensity:1];
     });
