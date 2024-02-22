@@ -461,7 +461,10 @@ int reboot3(uint64_t flags, ...);
 {
     if ([self isInstalledThroughTrollStore]) {
         NSString *kernelcachePath = [[self activePrebootPath] stringByAppendingPathComponent:@"System/Library/Caches/com.apple.kernelcaches/kernelcache"];
-        return kernelcachePath;
+        if ([[NSFileManager defaultManager] fileExistsAtPath:kernelcachePath]) {
+            return kernelcachePath;
+        }
+        return @"/System/Library/Caches/com.apple.kernelcaches/kernelcache";
     }
     else {
         NSString *kernelInApp = [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"kernelcache"];
