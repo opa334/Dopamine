@@ -176,4 +176,9 @@ void jbupdate_finalize_stage1(const char *prevVersion, const char *newVersion)
 void jbupdate_finalize_stage2(const char *prevVersion, const char *newVersion)
 {
 	jbupdate_update_system_info();
+
+	// Legacy, this file is no longer used
+	if (!access(JBRootPath("/basebin/.idownloadd_enabled"), F_OK)) {
+		remove(JBRootPath("/basebin/.idownloadd_enabled"));
+	}
 }

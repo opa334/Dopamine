@@ -395,25 +395,69 @@ int reboot3(uint64_t flags, ...);
 
 - (BOOL)isIDownloadEnabled
 {
-    return [[NSFileManager defaultManager] fileExistsAtPath:NSJBRootPath(@"/basebin/.idownloadd_enabled")];
+    __block BOOL isEnabled = NO;
+    [self runAsRoot:^{
+        [self runUnsandboxed:^{
+            NSDictionary *disabledDict = [NSDictionary dictionaryWithContentsOfFile:@"/var/db/com.apple.xpc.launchd/disabled.plist"];
+            NSNumber *idownloaddDisabledNum = disabledDict[@"com.opa334.Dopamine.idownloadd"];
+            if (idownloaddDisabledNum) {
+                isEnabled = ![idownloaddDisabledNum boolValue];
+            }
+            else {
+                isEnabled = NO;
+            }
+        }];
+    }];
+    return isEnabled;
 }
 
-- (void)setIDownloadEnabled:(BOOL)enabled
+- (void)setIDownloadEnabled:(BOOL)enabled needsUnsandbox:(BOOL)needsUnsandbox
 {
-    NSString *idownloaddEnabledPath = NSJBRootPath(@"/basebin/.idownloadd_enabled");
-    if ([self isJailbroken]) {
+    void (^updateBlock)(void) = ^{
+        if (enabled) {
+            exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "enable", "system/com.opa334.Dopamine.idownloadd", NULL);
+        }
+        else {
+            exec_cmd_trusted(JBRootPath("/usr/bin/launchctl"), "disable", "system/com.opa334.Dopamine.idownloadd", NULL);
+        }
+    };
+
+    if (needsUnsandbox) {
         [self runAsRoot:^{
-            [self runUnsandboxed:^{
-                if (enabled) {
-                    [[NSData data] writeToFile:idownloaddEnabledPath atomically:YES];
-                    exec_cmd(JBRootPath("/usr/bin/launchctl"), "load", JBRootPath("/basebin/LaunchDaemons/com.opa334.Dopamine.idownloadd.plist"), NULL);
-                }
-                else {
-                    [[NSFileManager defaultManager] removeItemAtPath:idownloaddEnabledPath error:nil];
-                    exec_cmd(JBRootPath("/usr/bin/launchctl"), "unload", JBRootPath("/basebin/LaunchDaemons/com.opa334.Dopamine.idownloadd.plist"), NULL);
-                }
-            }];
+            [self runUnsandboxed:updateBlock];
         }];
+    }
+    else {
+        updateBlock();
+    }
+}
+
+- (void)setIDownloadLoaded:(BOOL)loaded needsUnsandbox:(BOOL)needsUnsandbox
+{
+    if (loaded) {
+        [self setIDownloadEnabled:loaded needsUnsandbox:needsUnsandbox];
+    }
+    
+    void (^updateBlock)(void) = ^{
+        if (loaded) {
+            exec_cmd(JBRootPath("/usr/bin/launchctl"), "load", JBRootPath("/basebin/LaunchDaemons/com.opa334.Dopamine.idownloadd.plist"), NULL);
+        }
+        else {
+            exec_cmd(JBRootPath("/usr/bin/launchctl"), "unload", JBRootPath("/basebin/LaunchDaemons/com.opa334.Dopamine.idownloadd.plist"), NULL);
+        }
+    };
+    
+    if (needsUnsandbox) {
+        [self runAsRoot:^{
+            [self runUnsandboxed:updateBlock];
+        }];
+    }
+    else {
+        updateBlock();
+    }
+    
+    if (!loaded) {
+        [self setIDownloadEnabled:loaded needsUnsandbox:needsUnsandbox];
     }
 }
 

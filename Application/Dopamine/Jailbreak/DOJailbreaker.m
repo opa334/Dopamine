@@ -478,12 +478,6 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         [[NSData data] writeToFile:NSJBRootPath(@"/basebin/.safe_mode") atomically:YES];
     }
     
-    if (idownloadEnabled) {
-        printf("Enabling idownloadd\n");
-        [[NSData data] writeToFile:NSJBRootPath(@"/basebin/.idownloadd_enabled") atomically:YES];
-        // This file is checked in launchd and determines whether idownloadd gets loaded after a userspace reboot or not
-    }
-    
     [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Loading BaseBin TrustCache") debug:NO];
     *errOut = [self loadBasebinTrustcache];
     if (*errOut) return;
@@ -501,6 +495,8 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     
     *errOut = [self finalizeBootstrapIfNeeded];
     if (*errOut) return;
+    
+    [[DOEnvironmentManager sharedManager] setIDownloadEnabled:idownloadEnabled needsUnsandbox:NO];
     
     [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Checking For Duplicate Apps") debug:NO];
     *errOut = [self ensureNoDuplicateApps];
