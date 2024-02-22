@@ -211,7 +211,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 - (BOOL)deleteSymlinkAtPath:(NSString *)path error:(NSError **)error
 {
     NSDictionary<NSFileAttributeKey, id> *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:error];
-    if (!attributes) return NO;
+    if (!attributes) return YES;
     if (attributes[NSFileType] == NSFileTypeSymbolicLink) {
         return [[NSFileManager defaultManager] removeItemAtPath:path error:error];
     }
