@@ -329,27 +329,29 @@ int daemon_hook(int __nochdir, int __noclose)
 }
 
 // Always set CS_VALID in csflag to avoid causing a crash when hooking a c function on arm64
-int csops_hook(pid_t pid, unsigned int ops, void * useraddr, size_t usersize)
+int csops_hook(pid_t pid, unsigned int ops, void *useraddr, size_t usersize)
 {
 	int rv = syscall(SYSCALL_CSOPS, pid, ops, useraddr, usersize);
 	if (rv != 0) return rv;
 	if (ops == CS_OPS_STATUS) {
 		if (useraddr) {
-			uint32_t* csflag = (uint32_t*)useraddr;
-			csflag[0] |= CS_VALID;
+			uint32_t* csflag = (uint32_t *)useraddr;
+			*csflag |= CS_VALID;
+			*csflag &= ~CS_DEBUGGED;
 		}
 	}
 	return rv;
 }
 
-int csops_audittoken_hook(pid_t pid, unsigned int ops, void * useraddr, size_t usersize, audit_token_t * token)
+int csops_audittoken_hook(pid_t pid, unsigned int ops, void *useraddr, size_t usersize, audit_token_t *token)
 {
 	int rv = syscall(SYSCALL_CSOPS_AUDITTOKEN, pid, ops, useraddr, usersize, token);
 	if (rv != 0) return rv;
 	if (ops == CS_OPS_STATUS) {
 		if (useraddr) {
-			uint32_t* csflag = (uint32_t*)useraddr;
-			csflag[0] |= CS_VALID;
+			uint32_t* csflag = (uint32_t *)useraddr;
+			*csflag |= CS_VALID;
+			*csflag &= ~CS_DEBUGGED;
 		}
 	}
 	return rv;
