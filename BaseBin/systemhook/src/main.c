@@ -9,6 +9,10 @@
 #include "objc.h"
 #include <libjailbreak/jbclient_xpc.h>
 #include <libjailbreak/codesign.h>
+#include "litehook.h"
+
+#define SYSCALL_CSOPS 0xA9
+#define SYSCALL_CSOPS_AUDITTOKEN 0xAA
 
 #define JBRootPath(path) ({ \
 	char *outPath = alloca(PATH_MAX); \
@@ -327,8 +331,8 @@ int daemon_hook(int __nochdir, int __noclose)
 // Always set CS_VALID in csflag to avoid causing a crash when hooking a c function on arm64
 int csops_hook(pid_t pid, unsigned int ops, void * useraddr, size_t usersize)
 {
-	int rv = csops(pid, ops, useraddr, usersize);
-	if (rv) return rv;
+	int rv = syscall(SYSCALL_CSOPS, pid, ops, useraddr, usersize);
+	if (rv != 0) return rv;
 	if (ops == CS_OPS_STATUS) {
 		if (useraddr) {
 			uint32_t* csflag = (uint32_t*)useraddr;
@@ -340,8 +344,8 @@ int csops_hook(pid_t pid, unsigned int ops, void * useraddr, size_t usersize)
 
 int csops_audittoken_hook(pid_t pid, unsigned int ops, void * useraddr, size_t usersize, audit_token_t * token)
 {
-	int rv = csops_audittoken(pid, ops, useraddr, usersize, token);
-	if (rv) return rv;
+	int rv = syscall(SYSCALL_CSOPS_AUDITTOKEN, pid, ops, useraddr, usersize, token);
+	if (rv != 0) return rv;
 	if (ops == CS_OPS_STATUS) {
 		if (useraddr) {
 			uint32_t* csflag = (uint32_t*)useraddr;
@@ -402,6 +406,11 @@ __attribute__((constructor)) static void initializer(void)
 			dlopen_hook(JBRootPath("/basebin/watchdoghook.dylib"), RTLD_NOW);
 		}
 
+#ifndef __arm64e__
+		litehook_hook_function(csops, csops_hook);
+		litehook_hook_function(csops_audittoken, csops_audittoken_hook);
+#endif
+
 		if (shouldEnableTweaks()) {
 			const char *tweakLoaderPath = "/var/jb/usr/lib/TweakLoader.dylib";
 			if(access(tweakLoaderPath, F_OK) == 0) {
@@ -438,8 +447,4 @@ DYLD_INTERPOSE(fork_hook, fork)
 DYLD_INTERPOSE(vfork_hook, vfork)
 DYLD_INTERPOSE(forkpty_hook, forkpty)
 DYLD_INTERPOSE(daemon_hook, daemon)
-#else
-/* !__arm64e__ */
-DYLD_INTERPOSE(csops_hook, csops)
-DYLD_INTERPOSE(csops_audittoken_hook, csops_audittoken)
 #endif
