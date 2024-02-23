@@ -324,11 +324,10 @@ int daemon_hook(int __nochdir, int __noclose)
 	return daemon(__nochdir, __noclose);
 }
 
-static void (*MSHookFunction)(void *symbol, void *replace, void **result) = NULL;
-int (*csops_orig)(pid_t pid, unsigned int ops, void * useraddr, size_t usersize);
+// Always set CS_VALID in csflag to avoid causing a crash when hooking a c function on arm64
 int csops_hook(pid_t pid, unsigned int ops, void * useraddr, size_t usersize)
 {
-	int rv = csops_orig(pid, ops, useraddr, usersize);
+	int rv = csops(pid, ops, useraddr, usersize);
 	if (rv) return rv;
 	if (ops == CS_OPS_STATUS) {
 		if (useraddr) {
@@ -339,10 +338,9 @@ int csops_hook(pid_t pid, unsigned int ops, void * useraddr, size_t usersize)
 	return rv;
 }
 
-int (*csops_audittoken_orig)(pid_t pid, unsigned int ops, void * useraddr, size_t usersize, audit_token_t * token);
 int csops_audittoken_hook(pid_t pid, unsigned int ops, void * useraddr, size_t usersize, audit_token_t * token)
 {
-	int rv = csops_audittoken_orig(pid, ops, useraddr, usersize, token);
+	int rv = csops_audittoken(pid, ops, useraddr, usersize, token);
 	if (rv) return rv;
 	if (ops == CS_OPS_STATUS) {
 		if (useraddr) {
@@ -351,18 +349,6 @@ int csops_audittoken_hook(pid_t pid, unsigned int ops, void * useraddr, size_t u
 		}
 	}
 	return rv;
-}
-
-void enable_csops_fix(void)
-{
-	void *handle = dlopen(JBRootPath("/usr/lib/libellekit.dylib"), RTLD_NOLOAD);
-	if (handle) {
-		MSHookFunction = dlsym(handle, "MSHookFunction");
-		if (MSHookFunction) {
-			MSHookFunction((void *)csops, (void *)csops_hook, (void **)&csops_orig);
-			MSHookFunction((void *)csops_audittoken, (void *)csops_audittoken_hook, (void **)&csops_audittoken_orig);
-		}
-	}
 }
 
 bool shouldEnableTweaks(void)
@@ -423,10 +409,6 @@ __attribute__((constructor)) static void initializer(void)
 				void *tweakLoaderHandle = dlopen_hook(tweakLoaderPath, RTLD_NOW);
 				if (tweakLoaderHandle != NULL) {
 					dlclose(tweakLoaderHandle);
-#ifndef __arm64e__
-					// Always set CS_VALID in csflag to avoid causing a crash when hooking a c function on arm64
-					enable_csops_fix();
-#endif
 					dopamine_fix_NSTask();
 				}
 			}
@@ -456,4 +438,8 @@ DYLD_INTERPOSE(fork_hook, fork)
 DYLD_INTERPOSE(vfork_hook, vfork)
 DYLD_INTERPOSE(forkpty_hook, forkpty)
 DYLD_INTERPOSE(daemon_hook, daemon)
+#else
+/* !__arm64e__ */
+DYLD_INTERPOSE(csops_hook, csops)
+DYLD_INTERPOSE(csops_audittoken_hook, csops_audittoken)
 #endif
