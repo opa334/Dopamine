@@ -501,7 +501,7 @@ int reboot3(uint64_t flags, ...);
                     // For some weird reason after removing systemhook from fakelib, accessing "/usr/lib/systemhook.dylib" still works
                     // For some even more weird reason, just opening /usr/lib and closing it again fixes it o.O
                     int fd = open("/usr/lib", O_RDONLY);
-                    close(fd);
+                    if (fd >= 0) close(fd);
                 }
                 [[NSFileManager defaultManager] removeItemAtPath:@"/var/jb" error:nil];
             }
