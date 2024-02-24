@@ -181,8 +181,4 @@ void jbupdate_finalize_stage2(const char *prevVersion, const char *newVersion)
 	if (!access(JBRootPath("/basebin/.idownloadd_enabled"), F_OK)) {
 		remove(JBRootPath("/basebin/.idownloadd_enabled"));
 	}
-
-	// Seems to fix systemhook taking a while to become updated
-	int fd = open("/usr/lib", O_RDONLY);
-	if (fd >= 0) close(fd);
 }

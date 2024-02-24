@@ -497,11 +497,6 @@ int reboot3(uint64_t flags, ...);
                     [self unregisterJailbreakApps];
                     [[NSFileManager defaultManager] removeItemAtPath:NSJBRootPath(@"/basebin/.fakelib/systemhook.dylib") error:nil];
                     carbonCopy(NSJBRootPath(@"/basebin/.dyld.orig"), NSJBRootPath(@"/basebin/.fakelib/dyld"));
-                    
-                    // For some weird reason after removing systemhook from fakelib, accessing "/usr/lib/systemhook.dylib" still works
-                    // For some even more weird reason, just opening /usr/lib and closing it again fixes it o.O
-                    int fd = open("/usr/lib", O_RDONLY);
-                    if (fd >= 0) close(fd);
                 }
                 [[NSFileManager defaultManager] removeItemAtPath:@"/var/jb" error:nil];
             }
