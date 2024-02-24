@@ -88,12 +88,12 @@ jobs:
           gmake -j$(sysctl -n hw.physicalcpu) NIGHTLY=1
 
       - name: Upload Artifact
-        id: dopamine-latest-upload
+        id: opamine-latest-upload
         uses: actions/upload-artifact@v3
         with:
-          name: Dopamine
+          name: Opamine.tipa
           path: |
-            ${{ github.workspace }}/Application/Dopamine.ipa
+            ${{ github.workspace }}/Application/Opamine.tipa
 
   update-release:
       name: Opamine.tipa
