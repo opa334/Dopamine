@@ -95,28 +95,28 @@ jobs:
           path: |
             ${{ github.workspace }}/Application/Dopamine.ipa
 
-  update-release:
-      name: Opamine.tipa
-      runs-on: ubuntu-latest
-      needs: build
-  
-      steps:
-      - name: Delete old release
-        uses: dev-drprasad/delete-tag-and-release@v0.2.1
-        with:
-          delete_release: true
-          tag_name: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: Opamine.tipa
-      - name: Create new release
-        uses: ncipollo/release-action@v1
-        with:
-          name: Opamine
-          body: These are automatically updated builds of the latest commit.
-          artifacts: "Opamine.tipa"
-          tag: release
-          token: ${{ secrets.GITHUB_TOKEN }}
+    update-release:
+    name: Opamine.tipa
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Delete old release
+      uses: dev-drprasad/delete-tag-and-release@v0.2.1
+      with:
+        delete_release: true
+        tag_name: release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Get artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: Opamine.tipa
+    - name: Create new release
+      uses: ncipollo/release-action@v1
+      with:
+        name: Opamine
+        body: These are automatically updated builds of the latest commit.
+        artifacts: "Opamine.tipa"
+        tag: release
+        token: ${{ secrets.GITHUB_TOKEN }}
