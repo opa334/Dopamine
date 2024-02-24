@@ -264,7 +264,7 @@ int reboot3(uint64_t flags, ...);
 {
     uint32_t orgUser = getuid();
     uint32_t orgGroup = getgid();
-    if (orgUser == 0 && orgGroup == 0) {
+    if (geteuid() == 0 && orgGroup == 0) {
         rootBlock();
         return;
     }
@@ -335,6 +335,22 @@ int reboot3(uint64_t flags, ...);
     [self runAsRoot:^{
         [self runUnsandboxed:^{
             exec_cmd(JBRootPath("/usr/bin/uicache"), "-a", NULL);
+        }];
+    }];
+}
+
+- (void)unregisterJailbreakApps
+{
+    [self runAsRoot:^{
+        [self runUnsandboxed:^{
+            NSArray *jailbreakApps = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:NSJBRootPath(@"/Applications") error:nil];
+            if (jailbreakApps.count) {
+                for (NSString *jailbreakApp in jailbreakApps) {
+                    NSString *jailbreakAppPath = [NSJBRootPath(@"/Applications") stringByAppendingPathComponent:jailbreakApp];
+                    exec_cmd(JBRootPath("/usr/bin/uicache"), "-u", jailbreakAppPath.fileSystemRepresentation, NULL);
+                }
+                
+            }
         }];
     }];
 }
@@ -477,16 +493,25 @@ int reboot3(uint64_t flags, ...);
         BOOL alreadyHidden = [self isJailbreakHidden];
         if (hidden != alreadyHidden) {
             if (hidden) {
-                [[NSFileManager defaultManager] removeItemAtPath:@"/var/jb" error:nil];
                 if ([self isJailbroken]) {
+                    [self unregisterJailbreakApps];
                     [[NSFileManager defaultManager] removeItemAtPath:NSJBRootPath(@"/basebin/.fakelib/systemhook.dylib") error:nil];
                     carbonCopy(NSJBRootPath(@"/basebin/.dyld.orig"), NSJBRootPath(@"/basebin/.fakelib/dyld"));
+                    
+                    // For some weird reason after removing systemhook from fakelib, accessing "/usr/lib/systemhook.dylib" still works
+                    // For some even more weird reason, just opening /usr/lib and closing it again fixes it o.O
+                    int fd = open("/usr/lib", O_RDONLY);
+                    close(fd);
                 }
+                [[NSFileManager defaultManager] removeItemAtPath:@"/var/jb" error:nil];
             }
             else {
                 [[NSFileManager defaultManager] createSymbolicLinkAtPath:@"/var/jb" withDestinationPath:NSJBRootPath(@"/") error:nil];
-                carbonCopy(NSJBRootPath(@"/basebin/.dyld.patched"), NSJBRootPath(@"/basebin/.fakelib/dyld"));
-                carbonCopy(NSJBRootPath(@"/basebin/systemhook.dylib"), NSJBRootPath(@"/basebin/.fakelib/systemhook.dylib"));
+                if ([self isJailbroken]) {
+                    carbonCopy(NSJBRootPath(@"/basebin/.dyld.patched"), NSJBRootPath(@"/basebin/.fakelib/dyld"));
+                    carbonCopy(NSJBRootPath(@"/basebin/systemhook.dylib"), NSJBRootPath(@"/basebin/.fakelib/systemhook.dylib"));
+                    [self refreshJailbreakApps];
+                }
             }
         }
     };
