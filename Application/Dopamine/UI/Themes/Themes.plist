@@ -90,5 +90,41 @@
 		<key>titleShadow</key>
 		<false/>
 	</dict>
+	<dict>
+		<key>key</key>
+		<string>techtips</string>
+		<key>icon</key>
+		<string>AppIcon_Techtips</string>
+		<key>name</key>
+		<string>Techtips</string>
+		<key>image</key>
+		<string>Background_Techtips.jpg</string>
+		<key>actionMenuColor</key>
+		<string>3F0C2571</string>
+		<key>windowColor</key>
+		<string>6004050A</string>
+		<key>blur</key>
+		<integer>0</integer>
+		<key>titleShadow</key>
+		<false/>
+	</dict>
+	<dict>
+		<key>key</key>
+		<string>opamine</string>
+		<key>icon</key>
+		<string>AppIcon_Opamine</string>
+		<key>name</key>
+		<string>Opamine</string>
+		<key>image</key>
+		<string>Background_Opamine.jpg</string>
+		<key>actionMenuColor</key>
+		<string>723f3f3f</string>
+		<key>windowColor</key>
+		<string>994c4c4c</string>
+		<key>blur</key>
+		<integer>0</integer>
+		<key>titleShadow</key>
+		<false/>
+	</dict>
 </array>
 </plist>
