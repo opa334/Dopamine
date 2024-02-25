@@ -334,7 +334,7 @@ int csops_hook(pid_t pid, unsigned int ops, void *useraddr, size_t usersize)
 	int rv = syscall(SYSCALL_CSOPS, pid, ops, useraddr, usersize);
 	if (rv != 0) return rv;
 	if (ops == CS_OPS_STATUS) {
-		if (useraddr) {
+		if (useraddr && usersize == sizeof(uint32_t)) {
 			uint32_t* csflag = (uint32_t *)useraddr;
 			*csflag |= CS_VALID;
 			*csflag &= ~CS_DEBUGGED;
@@ -348,7 +348,7 @@ int csops_audittoken_hook(pid_t pid, unsigned int ops, void *useraddr, size_t us
 	int rv = syscall(SYSCALL_CSOPS_AUDITTOKEN, pid, ops, useraddr, usersize, token);
 	if (rv != 0) return rv;
 	if (ops == CS_OPS_STATUS) {
-		if (useraddr) {
+		if (useraddr && usersize == sizeof(uint32_t)) {
 			uint32_t* csflag = (uint32_t *)useraddr;
 			*csflag |= CS_VALID;
 			*csflag &= ~CS_DEBUGGED;
