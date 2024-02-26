@@ -41,6 +41,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     BootstrapErrorCodeFailedExtracting          = -4,
     BootstrapErrorCodeFailedRemount             = -5,
     BootstrapErrorCodeFailedFinalising          = -6,
+    BootstrapErrorCodeFailedReplacing           = -7,
 };
 
 #define BUFFER_SIZE 8192
@@ -207,13 +208,14 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     return nil;
 }
 
-- (void)deleteSymlinkAtPath:(NSString *)path
+- (BOOL)deleteSymlinkAtPath:(NSString *)path error:(NSError **)error
 {
-    NSDictionary<NSFileAttributeKey, id> *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
-    if (!attributes) return;
+    NSDictionary<NSFileAttributeKey, id> *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:error];
+    if (!attributes) return YES;
     if (attributes[NSFileType] == NSFileTypeSymbolicLink) {
-        [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+        return [[NSFileManager defaultManager] removeItemAtPath:path error:error];
     }
+    return NO;
 }
 
 - (BOOL)fileOrSymlinkExistsAtPath:(NSString *)path
@@ -387,7 +389,18 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     }
     
     // Remove /var/jb as it might be wrong
-    [self deleteSymlinkAtPath:@"/var/jb"];
+    if (![self deleteSymlinkAtPath:@"/var/jb" error:&error]) {
+        if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb"]) {
+            if (![[NSFileManager defaultManager] removeItemAtPath:@"/var/jb" error:&error]) {
+                completion([NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedReplacing userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Removing /var/jb directory failed with error: %@", error]}]);
+                return;
+            }
+        }
+        else {
+            completion([NSError errorWithDomain:bootstrapErrorDomain code:BootstrapErrorCodeFailedReplacing userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Removing /var/jb symlink failed with error: %@", error]}]);
+            return;
+        }
+    }
     
     // Clean up xinaA15 v1 leftovers if desired
     if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/.keep_symlinks"]) {
@@ -434,7 +447,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
         ];
         
         for (NSString *xinaLeftoverSymlink in xinaLeftoverSymlinks) {
-            [self deleteSymlinkAtPath:xinaLeftoverSymlink];
+            [self deleteSymlinkAtPath:xinaLeftoverSymlink error:nil];
         }
         
         for (NSString *xinaLeftoverFile in xinaLeftoverFiles) {

@@ -9,6 +9,10 @@
 #include "objc.h"
 #include <libjailbreak/jbclient_xpc.h>
 #include <libjailbreak/codesign.h>
+#include "litehook.h"
+
+#define SYSCALL_CSOPS 0xA9
+#define SYSCALL_CSOPS_AUDITTOKEN 0xAA
 
 #define JBRootPath(path) ({ \
 	char *outPath = alloca(PATH_MAX); \
@@ -324,45 +328,33 @@ int daemon_hook(int __nochdir, int __noclose)
 	return daemon(__nochdir, __noclose);
 }
 
-static void (*MSHookFunction)(void *symbol, void *replace, void **result) = NULL;
-int (*csops_orig)(pid_t pid, unsigned int ops, void * useraddr, size_t usersize);
-int csops_hook(pid_t pid, unsigned int ops, void * useraddr, size_t usersize)
+// Always set CS_VALID in csflag to avoid causing a crash when hooking a c function on arm64
+int csops_hook(pid_t pid, unsigned int ops, void *useraddr, size_t usersize)
 {
-	int rv = csops_orig(pid, ops, useraddr, usersize);
-	if (rv) return rv;
+	int rv = syscall(SYSCALL_CSOPS, pid, ops, useraddr, usersize);
+	if (rv != 0) return rv;
 	if (ops == CS_OPS_STATUS) {
-		if (useraddr) {
-			uint32_t* csflag = (uint32_t*)useraddr;
-			csflag[0] |= CS_VALID;
+		if (useraddr && usersize == sizeof(uint32_t)) {
+			uint32_t* csflag = (uint32_t *)useraddr;
+			*csflag |= CS_VALID;
+			*csflag &= ~CS_DEBUGGED;
 		}
 	}
 	return rv;
 }
 
-int (*csops_audittoken_orig)(pid_t pid, unsigned int ops, void * useraddr, size_t usersize, audit_token_t * token);
-int csops_audittoken_hook(pid_t pid, unsigned int ops, void * useraddr, size_t usersize, audit_token_t * token)
+int csops_audittoken_hook(pid_t pid, unsigned int ops, void *useraddr, size_t usersize, audit_token_t *token)
 {
-	int rv = csops_audittoken_orig(pid, ops, useraddr, usersize, token);
-	if (rv) return rv;
+	int rv = syscall(SYSCALL_CSOPS_AUDITTOKEN, pid, ops, useraddr, usersize, token);
+	if (rv != 0) return rv;
 	if (ops == CS_OPS_STATUS) {
-		if (useraddr) {
-			uint32_t* csflag = (uint32_t*)useraddr;
-			csflag[0] |= CS_VALID;
+		if (useraddr && usersize == sizeof(uint32_t)) {
+			uint32_t* csflag = (uint32_t *)useraddr;
+			*csflag |= CS_VALID;
+			*csflag &= ~CS_DEBUGGED;
 		}
 	}
 	return rv;
-}
-
-void enable_csops_fix(void)
-{
-	void *handle = dlopen(JBRootPath("/usr/lib/libellekit.dylib"), RTLD_NOLOAD);
-	if (handle) {
-		MSHookFunction = dlsym(handle, "MSHookFunction");
-		if (MSHookFunction) {
-			MSHookFunction((void *)csops, (void *)csops_hook, (void **)&csops_orig);
-			MSHookFunction((void *)csops_audittoken, (void *)csops_audittoken_hook, (void **)&csops_audittoken_orig);
-		}
-	}
 }
 
 bool shouldEnableTweaks(void)
@@ -416,6 +408,11 @@ __attribute__((constructor)) static void initializer(void)
 			dlopen_hook(JBRootPath("/basebin/watchdoghook.dylib"), RTLD_NOW);
 		}
 
+#ifndef __arm64e__
+		litehook_hook_function(csops, csops_hook);
+		litehook_hook_function(csops_audittoken, csops_audittoken_hook);
+#endif
+
 		if (shouldEnableTweaks()) {
 			const char *tweakLoaderPath = "/var/jb/usr/lib/TweakLoader.dylib";
 			if(access(tweakLoaderPath, F_OK) == 0) {
@@ -423,11 +420,15 @@ __attribute__((constructor)) static void initializer(void)
 				void *tweakLoaderHandle = dlopen_hook(tweakLoaderPath, RTLD_NOW);
 				if (tweakLoaderHandle != NULL) {
 					dlclose(tweakLoaderHandle);
-#ifndef __arm64e__
-					// Always set CS_VALID in csflag to avoid causing a crash when hooking a c function on arm64
-					enable_csops_fix();
-#endif
 					dopamine_fix_NSTask();
+
+#ifndef __arm64e__
+					// Feeable attempt at adding back CS_VALID
+					// If any hooks are applied after this, it is lost again
+					// Temporary workaround until a better solution for this problem is found
+					// This + the csops hook should resolve all cases unless a tweak does something really stupid
+					jbclient_cs_revalidate();
+#endif
 				}
 			}
 		}

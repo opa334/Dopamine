@@ -3,7 +3,12 @@ name: "Dopamine: build and upload"
 on:
   push:
     branches:
-      - 2.x
+      - '*'
+    paths-ignore:
+      - ".gitignore"
+  pull_request:
+    branches:
+      - '*'
     paths-ignore:
       - ".gitignore"
   workflow_dispatch:
