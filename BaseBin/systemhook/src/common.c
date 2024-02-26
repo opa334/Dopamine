@@ -229,10 +229,6 @@ kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 		"/System/Library/PrivateFrameworks/DataAccess.framework/Support/dataaccessd",
 		"/System/Library/PrivateFrameworks/IDSBlastDoorSupport.framework/XPCServices/IDSBlastDoorService.xpc/IDSBlastDoorService",
 		"/System/Library/PrivateFrameworks/MessagesBlastDoorSupport.framework/XPCServices/MessagesBlastDoorService.xpc/MessagesBlastDoorService",
-#ifndef __arm64e__
-		// Hooking anything in nesessionmanager on arm64 removes CS_VALID and breaks VPN functionality because the kernel checks for that
-		"/usr/libexec/nesessionmanager",
-#endif
 	};
 	size_t blacklistCount = sizeof(processBlacklist) / sizeof(processBlacklist[0]);
 	for (size_t i = 0; i < blacklistCount; i++)

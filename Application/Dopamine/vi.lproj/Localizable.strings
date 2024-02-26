@@ -70,7 +70,7 @@
 
 // Duplicate Apps Errors
 "Duplicate_Apps_Error_Dopamine_App" = "Có nhiều ứng dụng với tên định danh \"%@\" trùng nhau trong thư mục ứng dụng của Dopamine (\"%@\"). Không thể tiếp tục.";
-"Duplicate_Apps_Error_User_App" = "Các ứng dụng với tên định danh \"%@\" đã tồn tại trong thư mục ứng dụng của Dopamine (\"%@\"), nhưng đồng thời cũng được cài đặt tách biệt trên hệ thống. Không thể tiếp tục.";
+"Duplicate_Apps_Error_User_App" = "Ứng dụng với tên định danh \"%@\" đã tồn tại trong thư mục ứng dụng của Dopamine (\"%@\"), nhưng đồng thời cũng được cài đặt tách biệt trên hệ thống. Không thể tiếp tục.";
 "Duplicate_Apps_Error_Icon_Cache" = "Ứng dụng với tên định danh \"%@\" đã tồn tại trong thư mục ứng dụng của Dopamine (\"%@\"), nhưng lại được ghi bên trong icon cache với một tên đường dẫn khác (\"%@\"). Không thể tiếp tục.";
 
 // Settings Lists
@@ -85,18 +85,18 @@
 "Credits_Button_Source_Code" = "Mã nguồn";
 
 // Logs
-"Initializing Environment" = "Đang khởi tạo môi trường Jailbreak";
+"Initializing Environment" = "Khởi tạo môi trường Jailbreak";
 "Loading BaseBin TrustCache" = "Đang tải TrustCache BaseBin";
 "Applying Bind Mount" = "Đang gắn Bind Mount";
 "Removing Jailbreak" = "Đang gỡ bỏ Jailbreak";
-"Elevating Privileges" = "Đang lấy quyền truy cập nâng cao";
+"Elevating Privileges" = "Đang thực hiện nâng quyền";
 "Cleaning Up Exploits" = "Đang dọn dẹp khai thác";
 "Building Phys R/W Primitive" = "Đang dựng Phys R/W Primitive";
-"Rebooting Userspace" = "Đang khởi động lại Userspace";
+"Rebooting Userspace" = "Đang kh.động lại Userspace";
 "Patchfinding" = "Đang chạy Patchfinding";
-"Exploiting Kernel (%@)" = "Đang khai thác lỗ hổng Kernel (%@)";
-"Bypassing PAC (%@)" = "Đang khai thác lỗ hổng PAC (%@)";
-"Bypassing PPL (%@)" = "Đang khai thác lỗ hổng PPL (%@)";
+"Exploiting Kernel (%@)" = "Kh.thác lỗ hổng Kernel (%@)";
+"Bypassing PAC (%@)" = "Kh.thác lỗ hổng PAC (%@)";
+"Bypassing PPL (%@)" = "Kh.thác lỗ hổng PPL (%@)";
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "Chọn trình quản lý gói";

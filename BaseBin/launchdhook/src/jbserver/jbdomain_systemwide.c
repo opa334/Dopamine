@@ -232,6 +232,19 @@ static int systemwide_fork_fix(audit_token_t *parentToken, uint64_t childPid)
 	return 0;
 }
 
+static int systemwide_cs_revalidate(audit_token_t *callerToken)
+{
+	uint64_t callerPid = audit_token_to_pid(*callerToken);
+	if (callerPid > 0) {
+		uint64_t callerProc = proc_find(callerPid);
+		if (callerProc) {
+			proc_csflags_set(callerProc, CS_VALID);
+			return 0;
+		}
+	}
+	return -1;
+}
+
 struct jbserver_domain gSystemwideDomain = {
 	.permissionHandler = systemwide_domain_allowed,
 	.actions = {
@@ -286,6 +299,14 @@ struct jbserver_domain gSystemwideDomain = {
 			.args = (jbserver_arg[]) {
 				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
 				{ .name = "child-pid", .type = JBS_TYPE_UINT64, .out = false },
+				{ 0 },
+			},
+		},
+		// JBS_SYSTEMWIDE_CS_REVALIDATE
+		{
+			.handler = systemwide_cs_revalidate,
+			.args = (jbserver_arg[]) {
+				{ .name = "caller-token", .type = JBS_TYPE_CALLER_TOKEN, .out = false },
 				{ 0 },
 			},
 		},
