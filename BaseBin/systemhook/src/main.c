@@ -421,17 +421,17 @@ __attribute__((constructor)) static void initializer(void)
 				if (tweakLoaderHandle != NULL) {
 					dlclose(tweakLoaderHandle);
 					dopamine_fix_NSTask();
-
-#ifndef __arm64e__
-					// Feeable attempt at adding back CS_VALID
-					// If any hooks are applied after this, it is lost again
-					// Temporary workaround until a better solution for this problem is found
-					// This + the csops hook should resolve all cases unless a tweak does something really stupid
-					jbclient_cs_revalidate();
-#endif
 				}
 			}
 		}
+
+#ifndef __arm64e__
+		// Feeable attempt at adding back CS_VALID
+		// If any hooks are applied after this, it is lost again
+		// Temporary workaround until a better solution for this problem is found
+		// This + the csops hook should resolve all cases unless a tweak does something really stupid
+		jbclient_cs_revalidate();
+#endif
 	}
 }
 
