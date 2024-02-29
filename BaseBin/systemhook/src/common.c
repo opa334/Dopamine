@@ -217,6 +217,13 @@ kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 							return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
 						}
 					}
+#ifndef __arm64e__
+ 					// Attempt to solve issues with VPN on arm64
+					else if (!strcmp(argv[1], "com.apple.terminusd") ||
+							 !strcmp(argv[1], "com.apple.nesessionmanager")) {
+						return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
+					}
+#endif
 				}
 			}
 		}
