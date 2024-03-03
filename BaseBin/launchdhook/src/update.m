@@ -135,7 +135,7 @@ void jbupdate_update_system_info(void)
 				sets[idx++] = "badRecovery"; 
 			}
 
-			systemInfoXdict = xpf_construct_offset_dictionary(sets);
+			systemInfoXdict = xpf_construct_offset_dictionary((const char **)sets);
 			if (!systemInfoXdict) {
 				error = xpf_get_error();
 			}

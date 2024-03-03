@@ -89,7 +89,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
             sets[idx++] = "badRecovery"; 
         }
 
-        _systemInfoXdict = xpf_construct_offset_dictionary(sets);
+        _systemInfoXdict = xpf_construct_offset_dictionary((const char **)sets);
         if (_systemInfoXdict) {
             xpc_dictionary_set_uint64(_systemInfoXdict, "kernelConstant.staticBase", gXPF.kernelBase);
             printf("System Info:\n");
