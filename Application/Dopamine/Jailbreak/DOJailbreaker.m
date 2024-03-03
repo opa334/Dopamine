@@ -68,20 +68,25 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     
     int r = xpf_start_with_kernel_path(kernelPath.fileSystemRepresentation);
     if (r == 0) {
-        const char *sets[] = {
+        char *sets[] = {
             "translation",
-            "sandbox",
             "trustcache",
+            "sandbox",
             "physmap",
             "struct",
             "physrw",
             "perfkrw",
-            "badRecovery",
-            NULL
+            NULL,
+            NULL,
+            NULL,
         };
-        
-        if (!xpf_set_is_supported("badRecovery")) {
-            sets[(sizeof(sets)/sizeof(sets[0]))-2] = NULL;
+
+        uint32_t idx = 7;
+        if (xpf_set_is_supported("devmode")) {
+            sets[idx++] = "devmode"; 
+        }
+        if (xpf_set_is_supported("badRecovery")) {
+            sets[idx++] = "badRecovery"; 
         }
 
         _systemInfoXdict = xpf_construct_offset_dictionary(sets);
@@ -258,6 +263,17 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 {
     _CFPreferencesSetValueWithContainer(CFSTR("SBShowNonDefaultSystemApps"), kCFBooleanTrue, CFSTR("com.apple.springboard"), CFSTR("mobile"), kCFPreferencesAnyHost, kCFPreferencesNoContainer);
     _CFPreferencesSynchronizeWithContainer(CFSTR("com.apple.springboard"), CFSTR("mobile"), kCFPreferencesAnyHost, kCFPreferencesNoContainer);
+    return nil;
+}
+
+- (NSError *)ensureDevModeEnabled
+{
+    if (@available(iOS 16.0, *)) {
+        uint64_t developer_mode_state = kread64(ksymbol(developer_mode_enabled));
+        if (kread8(developer_mode_state) == 0) {
+            kwrite8(developer_mode_state, 1);
+        }
+    }
     return nil;
 }
 
@@ -456,6 +472,8 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     *errOut = [self elevatePrivileges];
     if (*errOut) return;
     *errOut = [self showNonDefaultSystemApps];
+    if (*errOut) return;
+    *errOut = [self ensureDevModeEnabled];
     if (*errOut) return;
 
     // Now that we are unsandboxed, populate the jailbreak root path
