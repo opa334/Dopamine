@@ -51,7 +51,7 @@
 
 // Settings Hints
 "Hint_Hide_Jailbreak" = "「隱藏越獄」將在下次越獄時移除部分越獄檔案";
-"Hint_Hide_Jailbreak_Jailbroken" = "「隱藏越獄」能暫時停用某些越獄功能以閃避部分越獄偵測。";
+"Hint_Hide_Jailbreak_Jailbroken" = "「隱藏越獄」能暫時停用某些越獄功能以閃避越獄偵測，但此未必能成功阻擋所有偵測。";
 "Section_Jailbreak_Settings" = "越獄設定";
 "Section_Actions" = "動作";
 "Section_Customization" = "客製化";
@@ -98,6 +98,6 @@
 "Bypassing PPL (%@)" = "正在閃避 PPL (%@)";
 
 // Package Manager selection
-"Status_Title_Select_Package_Managers" = "選擇套件管理器";
-"Select_Package_Managers_Install_Message" = "建議使用 Sileo";
+"Status_Title_Select_Package_Managers" = "請選擇套件管理器";
+"Select_Package_Managers_Install_Message" = "若不確定使用何者建議使用 Sileo";
 "Continue" = "繼續";
