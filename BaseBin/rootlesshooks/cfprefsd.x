@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "substrate.h"
-
+#import <substrate.h>
 
 BOOL preferencePlistNeedsRedirection(NSString *plistPath)
 {
