@@ -479,8 +479,8 @@
 	NSError *authError = nil;
 	NSString *reason = DOLocalizedString(@"Password_Auth_Required");
 	
-	if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:&authError]) {
-		[context evaluatePolicy:LAPolicyDeviceOwnerAuthentication
+	if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&authError]) {
+		[context evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics
 			localizedReason:reason
 			reply:^(BOOL success, NSError * _Nullable error) {
 			dispatch_async(dispatch_get_main_queue(), ^{
