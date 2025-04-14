@@ -72,6 +72,7 @@
 "Alert_Change_Mobile_Password_Body" = "Establezca la contraseña del usuario \"mobile\" en su dispositivo, esto también se puede utilizar para el acceso root utilizando sudo. Si desea establecer la contraseña de root, puede hacerlo desde un shell móvil utilizando el comando \"sudo passwd root\"";
 "Password_Placeholder" = "Contraseña";
 "Repeat_Password_Placeholder" = "Repetir contraseña";
+/*Password_Auth_Required*/
 "Button_Change" = "Cambiar";
 "Button_Cancel" = "Cancelar";
 "Button_Continue" = "Continuar";

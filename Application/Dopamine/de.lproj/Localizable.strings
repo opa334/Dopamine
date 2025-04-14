@@ -73,6 +73,7 @@
 "Alert_Change_Mobile_Password_Body" = "Setzte das Passwort des \"mobile\" Benutzers von deinem Gerät, dieses Passwort kann ebenfalls für Root-Zugriff via sudo verwendet werden. Um das Root-Passwort zu setzen kann der Befehl \"sudo passwd root\" innerhalb einer mobile-Shell verwendet werden.";
 "Password_Placeholder" = "Passwort";
 "Repeat_Password_Placeholder" = "Passwort wiederholen";
+/*Password_Auth_Required*/
 "Button_Change" = "Ändern";
 "Button_Cancel" = "Abbrechen";
 "Button_Continue" = "Weiter";

@@ -70,6 +70,7 @@
 /*Alert_Change_Mobile_Password_Body*/
 /*Password_Placeholder*/
 /*Repeat_Password_Placeholder*/
+/*Password_Auth_Required*/
 /*Button_Change*/
 "Button_Cancel" = "Anuluj";
 /*Button_Continue*/

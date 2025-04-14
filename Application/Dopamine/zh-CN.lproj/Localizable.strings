@@ -72,6 +72,7 @@
 "Alert_Change_Mobile_Password_Body" = "这将会在你的设备上修改 “mobile” 密码，此密码可用于使用 sudo 命令。如需设置 “root” 密码，请在 shell 中使用命令 “sudo passwd root”。";
 "Password_Placeholder" = "密码";
 "Repeat_Password_Placeholder" = "重复密码";
+/*Password_Auth_Required*/
 "Button_Change" = "修改";
 "Button_Cancel" = "取消";
 "Button_Continue" = "继续";
