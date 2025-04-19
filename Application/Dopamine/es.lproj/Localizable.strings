@@ -42,7 +42,6 @@
 "Settings_iDownload" = "iDownload (Shell de desarrollador)";
 "Settings_Verbose_Logs" = "Registros detallados";
 "Settings_Apps_JIT" = "Permitir JIT en las aplicaciones";
-"Settings_Allow_Old_arm64e_ABI_Libraries" = "Permitir bibliotecas heredadas arm64e";
 "Settings_Jetsam_Multiplier" = "Multiplicador Jetsam";
 
 // Settings Buttons
