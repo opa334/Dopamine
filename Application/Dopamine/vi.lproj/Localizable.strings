@@ -72,6 +72,7 @@
 "Alert_Change_Mobile_Password_Body" = "Thiết đặt mật khẩu của người dùng \"mobile\", có thể sử dụng để lấy quyền root thông qua sudo. Nếu muốn đặt mật khẩu root, bạn có thể thực hiện bằng lệnh \"sudo passwd root\" trong terminal.";
 "Password_Placeholder" = "Nhập mật khẩu";
 "Repeat_Password_Placeholder" = "Nhập lại mật khẩu";
+/*Password_Auth_Required*/
 "Button_Change" = "Đổi";
 "Button_Cancel" = "Hủy bỏ";
 "Button_Continue" = "Tiếp tục";

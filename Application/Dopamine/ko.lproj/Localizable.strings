@@ -72,6 +72,7 @@
 "Alert_Change_Mobile_Password_Body" = "기기의 \"mobile\" 사용자 비밀번호를 설정하세요. 이 비밀번호는 sudo를 사용하여 루트 권한에 접근할 때 필요합니다. 루트 비밀번호를 설정하려면 터미널 앱에서 \"sudo passwd root\" 명령을 실행하세요.";
 "Password_Placeholder" = "비밀번호";
 "Repeat_Password_Placeholder" = "비밀번호 확인";
+/*Password_Auth_Required*/
 "Button_Change" = "변경";
 "Button_Cancel" = "취소";
 "Button_Continue" = "계속";

@@ -310,7 +310,12 @@ int reboot3(uint64_t flags, ...);
             }
         }];
         if (r == 0) {
-            cmd_wait_for_exit(pid);
+            if (cmd_wait_for_exit(pid) != 0) {
+                // Fallback
+                [self runUnsandboxed:^{
+                    killall("/usr/libexec/backboardd", SIGTERM);
+                }];
+            }
         }
     }];
 }

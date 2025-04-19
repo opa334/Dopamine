@@ -711,7 +711,7 @@ int jbctl_earlyboot(mach_port_t earlyBootServer, ...)
 	return cmd_wait_for_exit(spawnedPid);
 }
 
-void killall(const char *executablePathToKill, bool softly)
+void killall(const char *executablePath, int signal)
 {
 	static int maxArgumentSize = 0;
 	if (maxArgumentSize == 0) {
@@ -743,16 +743,9 @@ void killall(const char *executablePathToKill, bool softly)
 		size_t size = maxArgumentSize;
 		char* buffer = (char *)malloc(length);
 		if (sysctl((int[]){ CTL_KERN, KERN_PROCARGS2, pid }, 3, buffer, &size, NULL, 0) == 0) {
-			char *executablePath = buffer + sizeof(int);
-			if (strcmp(executablePath, executablePathToKill) == 0) {
-				if(softly)
-				{
-					kill(pid, SIGTERM);
-				}
-				else
-				{
-					kill(pid, SIGKILL);
-				}
+			char *cExecutablePath = buffer + sizeof(int);
+			if (strcmp(cExecutablePath, executablePath) == 0) {
+				kill(pid, signal);
 			}
 		}
 		free(buffer);

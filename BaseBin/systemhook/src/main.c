@@ -248,12 +248,18 @@ int __execve_hook(const char *path, char *const argv[], char *const envp[])
 
 const struct mach_header_64 *get_dyld_mach_header(void)
 {
-	task_dyld_info_data_t dyldInfo;
-	uint32_t count = TASK_DYLD_INFO_COUNT;
-	kern_return_t kr = task_info(mach_task_self_, TASK_DYLD_INFO, (task_info_t)&dyldInfo, &count);
-	if (kr != KERN_SUCCESS) return NULL;
-	struct dyld_all_image_infos *infos = (struct dyld_all_image_infos *)dyldInfo.all_image_info_addr;
-	return (const struct mach_header_64 *)infos->dyldImageLoadAddress;
+	static const struct mach_header_64 *dyldMachHeader = NULL;
+	static dispatch_once_t onceToken;
+	dispatch_once (&onceToken, ^{
+		task_dyld_info_data_t dyldInfo;
+		uint32_t count = TASK_DYLD_INFO_COUNT;
+		kern_return_t kr = task_info(mach_task_self_, TASK_DYLD_INFO, (task_info_t)&dyldInfo, &count);
+		if (kr == KERN_SUCCESS) {
+			struct dyld_all_image_infos *infos = (struct dyld_all_image_infos *)dyldInfo.all_image_info_addr;
+			dyldMachHeader = (const struct mach_header_64 *)infos->dyldImageLoadAddress;
+		}
+	});
+	return dyldMachHeader;
 }
 
 int parse_dyldhook_jbinfo(char **jbRootPathOut, char **bootUUIDOut, char **sandboxExtensionsOut, bool *fullyDebuggedOut)
@@ -317,8 +323,7 @@ __attribute__((constructor)) static void initializer(void)
 	}
 	else {
 		// On iOS 15 there is a way to hook posix_spawn and execve without doing instruction replacements
-		// This is fairly convenient due to instruction replacements being presumed to be the primary trigger for spinlock panics on iOS 15 arm64e
-		// Unfortunately Apple decided to remove these in iOS 16 :( Doesn't matter too much though because spinlock panics are fixed there
+		// Unfortunately Apple decided to remove these in iOS 16 :(
 
 		void **posix_spawn_with_filter = litehook_find_dsc_symbol("/usr/lib/system/libsystem_kernel.dylib", "_posix_spawn_with_filter");
 		void **execve_with_filter      = litehook_find_dsc_symbol("/usr/lib/system/libsystem_kernel.dylib", "_execve_with_filter");
@@ -326,6 +331,12 @@ __attribute__((constructor)) static void initializer(void)
 		*posix_spawn_with_filter = __posix_spawn_hook_with_filter;
 		*execve_with_filter      = __execve_hook;
 	}
+
+	// Hook the dyld_shared_cache __fcntl to jump to the dyld __fcntl instead
+	// This makes it so that library validation is also bypassed if someone calls fcntl in userspace to attach a signature manually
+	void *dyld___fcntl = litehook_find_symbol(get_dyld_mach_header(), "___fcntl");
+	extern int __fcntl(int fd, int op, ... /* arg */ );
+	litehook_hook_function(__fcntl, dyld___fcntl);
 
 	// Initialize stuff neccessary for sandbox_apply hook
 	gLibSandboxHandle = dlopen("/usr/lib/libsandbox.1.dylib", RTLD_FIRST | RTLD_LOCAL | RTLD_LAZY);

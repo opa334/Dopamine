@@ -6,6 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <LocalAuthentication/LocalAuthentication.h>
 #import <Preferences/PSListController.h>
 #import <Preferences/PSSpecifier.h>
 #import "DOPSListController.h"

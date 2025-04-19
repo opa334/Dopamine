@@ -177,6 +177,11 @@ func collectData(fromMachO machO: MachO) -> MachOMergeData {
 var dataA = collectData(fromMachO: a)
 var dataB = collectData(fromMachO: b)
 
+// Patch out magic of both MachOs
+// Fixes issues with some third party software (e.g. Frida) finding the wrong place and mistaking it for the header
+// Of course the root issue is in third party software, but I guess we can make their life easier
+let magicReplacement = UInt32(0xd0d0d0d0)
+
 /*
  * Now comes the real magic: Merging the MachOs.
  * To do this, the following steps have to be performed:
@@ -193,14 +198,26 @@ for seg in dataA.segments {
         print("Found duplicate segment! [A]")
         exit(-1)
     }
+
+    var data = seg.1
+
+    if seg.0.name == "__TEXT" {
+        data = Data(fromObject:magicReplacement) + data.subdata(in: 4..<data.count)
+    }
     
-    segments.append((seg.0.name, [(isB: false, origCommand: seg.0, data: seg.1, offset: 0)]))
+    segments.append((seg.0.name, [(isB: false, origCommand: seg.0, data: data, offset: 0)]))
 }
 
 var sortingRequired = false
 
 for seg in dataB.segments {
-    let newEntry = [(isB: true, origCommand: seg.0, data: seg.1, offset: 0 as UInt64)]
+    var data = seg.1
+
+    if seg.0.name == "__TEXT" {
+        data = Data(fromObject:magicReplacement) + data.subdata(in: 4..<data.count)
+    }
+
+    let newEntry = [(isB: true, origCommand: seg.0, data: data, offset: 0 as UInt64)]
     
     var found = false
     var new: [(String, [(isB: Bool, origCommand: Segment64LoadCommand, data: Data, offset: UInt64)])] = []

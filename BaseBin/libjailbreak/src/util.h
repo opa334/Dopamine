@@ -40,7 +40,7 @@ uint64_t kptr_sign(uint64_t kaddr, uint64_t pointer, uint16_t salt);
 void proc_allow_all_syscalls(uint64_t proc);
 void proc_remove_msg_filter(uint64_t proc);
 
-void killall(const char *executablePathToKill, bool softly);
+void killall(const char *executablePath, int signal);
 int libarchive_unarchive(const char *fileToExtract, const char *extractionPath);
 
 void thread_caffeinate_start(void);

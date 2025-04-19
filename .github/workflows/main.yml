@@ -25,10 +25,10 @@ concurrency:
 
 jobs:
   build:
-    runs-on: macos-13
+    runs-on: macos-15
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@main
         with:
             submodules: recursive
 
@@ -36,6 +36,11 @@ jobs:
         uses: dhinakg/procursus-action@main
         with:
           packages: ldid findutils sed coreutils make
+
+      - name: Install better GNU Make
+        run: |
+          brew install make
+          echo "PATH=$(brew --prefix make)/libexec/gnubin:$PATH" >> $GITHUB_ENV
 
       - name: Install THEOS
         run: |
@@ -57,7 +62,9 @@ jobs:
           set -x
           git clone https://github.com/CRKatri/trustcache
           cd trustcache
-          gmake -j$(sysctl -n hw.physicalcpu) OPENSSL=1
+          export CFLAGS="$CFLAGS -I$(brew --prefix openssl)/include -arch arm64"
+          export LDFLAGS="$LDFLAGS -L$(brew --prefix openssl)/lib -arch arm64"
+          gmake -j$(sysctl -n hw.logicalcpu) OPENSSL=1
           sudo cp trustcache /opt/procursus/bin/
 
       - name: Set Environment Variables
@@ -85,11 +92,11 @@ jobs:
           set -x
           export BASEDIR="$(pwd)"
           export THEOS="${BASEDIR}/theos"
-          gmake -j$(sysctl -n hw.physicalcpu) NIGHTLY=1
+          gmake -j$(sysctl -n hw.logicalcpu) NIGHTLY=1
 
       - name: Upload Artifact
         id: dopamine-latest-upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@main
         with:
           name: Dopamine
           path: |

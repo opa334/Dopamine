@@ -1,7 +1,7 @@
 "Credits_Made_By" = "Creato da opa334, évelyne";
 
 // Log
-"Status_Title_Jailbreaking" = "Eseguendo il Jailbreak";
+"Status_Title_Jailbreaking" = "Eseguo il Jailbreak";
 "Log_Error" = "Fallito";
 
 // Jailbreak Button
@@ -21,9 +21,9 @@
 "Button_Update_Environment" = "Aggiorna l'Ambiente";
 
 // Update View
-"Update_Status_Downloading" = "Scaricando l'aggiornamento...";
-"Update_Status_Subtitle_Please_Wait" = "Attendere lo scaricamento dei file";
-"Update_Status_Installing" = "Installando l'aggiornamento...";
+"Update_Status_Downloading" = "Scarico l'aggiornamento...";
+"Update_Status_Subtitle_Please_Wait" = "Attendi lo scaricamento dei file";
+"Update_Status_Installing" = "Installo l'aggiornamento...";
 "Update_Status_Subtitle_Restart_Soon" = "Il dispositivo si riavvierà tra poco";
 "Title_Changelog" = "Registro Delle Modifiche";
 "Changelog_Unavailable_Text" = "Registro Delle Modifiche Non Disponibile";
@@ -39,16 +39,16 @@
 
 // Settings Toggles
 "Settings_Tweak_Injection" = "Iniezione Tweak";
-"Settings_iDownload" = "iDownload (Terminal per sviluppatori)";
+"Settings_iDownload" = "iDownload (Terminale per sviluppatori)";
 "Settings_Verbose_Logs" = "Log Dettagliati";
 /*Settings_Apps_JIT*/
 
 // Settings Buttons
 "Button_Remove_Jailbreak" = "Rimuovi il Jailbreak";
 "Button_Hide_Jailbreak" = "Nascondi il Jailbreak";
-"Button_Unhide_Jailbreak" = "Scopri il Jailbreak";
+"Button_Unhide_Jailbreak" = "Mostra il Jailbreak";
 /*Button_Refresh_Jailbreak_Apps*/
-"Button_Reinstall_Package_Managers" = "Reinstalla i Gestori di Pacchetti";
+"Button_Reinstall_Package_Managers" = "Reinstalla i Package Manager";
 /*Button_Change_Mobile_Password*/
 
 // Settings Hints
@@ -61,7 +61,7 @@
 
 // Settings Alerts
 /*Alert_Tweak_Injection_Toggled_Title*/
-"Alert_Tweak_Injection_Toggled_Body" = "Il riavviamento userspace è necessario per applicare modifiche. Vorresti farlo ora?";
+"Alert_Tweak_Injection_Toggled_Body" = "Il riavvio userspace è necessario per applicare modifiche. Vuoi farlo ora?";
 /*Alert_Tweak_Injection_Toggled_Reboot_Now*/
 /*Alert_Tweak_Injection_Toggled_Reboot_Later*/
 "Alert_Remove_Jailbreak_Title" = "Rimuovi il Jailbreak";
@@ -70,6 +70,7 @@
 /*Alert_Change_Mobile_Password_Body*/
 /*Password_Placeholder*/
 /*Repeat_Password_Placeholder*/
+/*Password_Auth_Required*/
 /*Button_Change*/
 "Button_Cancel" = "Cancella";
 /*Button_Continue*/
@@ -93,7 +94,7 @@
 "Credits_Button_Source_Code" = "Codice Sorgente";
 
 // Logs
-"Initializing Environment" = "Inizializzando l'ambiente";
+"Initializing Environment" = "Inizializzo l'ambiente";
 /*Initializing Protection*/
 /*Loading BaseBin TrustCache*/
 /*Applying Bind Mount*/
@@ -102,13 +103,13 @@
 /*Cleaning Up Exploits*/
 /*Building Phys R/W Primitive*/
 /*Rebooting Userspace*/
-"Patchfinding" = "Scoprendo patch";
+"Patchfinding" = "Trovo patch";
 /*Exploiting Kernel (%@)*/
 /*Bypassing PAC (%@)*/
 /*Bypassing PPL (%@)*/
 
 // Package Manager selection
-"Status_Title_Select_Package_Managers" = "Seleziona i Gestori di Pacchetti";
+"Status_Title_Select_Package_Managers" = "Seleziona i Package Manager";
 "Select_Package_Managers_Install_Message" = "Se non sei sicuro/a di quale scegliere, scegli Sileo";
 "Continue" = "Continua";
 

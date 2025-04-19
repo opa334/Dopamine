@@ -275,7 +275,7 @@
                     [changeMobilePasswordSpecifier setProperty:@"Button_Change_Mobile_Password" forKey:@"title"];
                     [changeMobilePasswordSpecifier setProperty:@"DOButtonCell" forKey:@"headerCellClass"];
                     [changeMobilePasswordSpecifier setProperty:@"key" forKey:@"image"];
-                    [changeMobilePasswordSpecifier setProperty:@"changeMobilePasswordPressed" forKey:@"action"];
+                    [changeMobilePasswordSpecifier setProperty:@"changeMobilePasswordWithAuthenticationPressed" forKey:@"action"];
                     [specifiers addObject:changeMobilePasswordSpecifier];
                     
                     PSSpecifier *reinstallPackageManagersSpecifier = [PSSpecifier emptyGroupSpecifier];
@@ -473,7 +473,29 @@
     [self.navigationController pushViewController:[[DOPkgManagerPickerViewController alloc] init] animated:YES];
 }
 
-- (void)changeMobilePasswordPressed
+- (void)changeMobilePasswordWithAuthenticationPressed
+{
+	LAContext *context = [[LAContext alloc] init];
+	NSError *authError = nil;
+	NSString *reason = DOLocalizedString(@"Password_Auth_Required");
+	
+	if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:&authError]) {
+		[context evaluatePolicy:LAPolicyDeviceOwnerAuthentication
+			localizedReason:reason
+			reply:^(BOOL success, NSError * _Nullable error) {
+			dispatch_async(dispatch_get_main_queue(), ^{
+				if (success) {
+					[self changeMobilePassword];
+				}
+			});
+		}];
+	}
+	else {
+		[self changeMobilePassword];
+	}
+}
+
+- (void)changeMobilePassword
 {
     UIAlertController *changeMobilePasswordAlert = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Button_Change_Mobile_Password") message:DOLocalizedString(@"Alert_Change_Mobile_Password_Body") preferredStyle:UIAlertControllerStyleAlert];
     
@@ -492,7 +514,7 @@
         NSString *repeatPassword = changeMobilePasswordAlert.textFields[1].text;
         if (![password isEqualToString:repeatPassword]) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self changeMobilePasswordPressed];
+                [self changeMobilePassword];
             });
         }
         else {

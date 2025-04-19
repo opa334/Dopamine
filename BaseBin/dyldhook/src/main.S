@@ -74,6 +74,7 @@ MAKE_TRAMPOLINE(open)
 MAKE_TRAMPOLINE(fcntl)
 MAKE_TRAMPOLINE(mmap)
 MAKE_TRAMPOLINE(_simple_getenv)
+MAKE_TRAMPOLINE_ALIAS(mig_get_reply_port, dyld_mig_get_reply_port)
 
 #if IOS>=16
 MAKE_TRAMPOLINE(mach_msg_overwrite)

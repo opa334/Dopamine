@@ -70,6 +70,7 @@
 "Alert_Change_Mobile_Password_Body" = "Установите пароль \"mobile\" пользователя на вашем устройстве, который также можно использовать для доступа root с помощью sudo. Если вы хотите установить пароль root, вы можете сделать это из мобильной оболочки, используя команду \"sudo passwd root\"";
 "Password_Placeholder" = "Пароль";
 "Repeat_Password_Placeholder" = "Повторите пароль";
+/*Password_Auth_Required*/
 "Button_Change" = "Изменить";
 "Button_Cancel" = "Отмена";
 "Button_Continue" = "Продолжить";

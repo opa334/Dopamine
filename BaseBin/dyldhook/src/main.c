@@ -12,6 +12,8 @@
 __attribute__((section("__DATA,__jbinfo"))) static char jbinfoSection[0x4000];
 #define jbInfo ((struct dyld_jbinfo *)&jbinfoSection[0])
 
+bool gDyldhookInitDone = false;
+
 bool jbinfo_is_checked_in(void)
 {
 	return jbInfo->state == DYLD_STATE_CHECKED_IN;

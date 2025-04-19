@@ -63,7 +63,7 @@ func generateSegmentLoadCommands(infoA: MachOMergeData, infoB: MachOMergeData, r
         for sect in seg.1[0].origCommand.sections {
             var sectLC = section_64()
             _ = withUnsafeMutableBytes(of: &sectLC.sectname) { ptr in
-                strcpy(ptr.baseAddress!, sect.section + (seg.1.count > 1 ? "_1" : ""))
+                strcpy(ptr.baseAddress!, sect.section)
             }
             _ = withUnsafeMutableBytes(of: &sectLC.segname) { ptr in
                 strcpy(ptr.baseAddress!, seg.0)

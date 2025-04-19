@@ -66,7 +66,7 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
 - (NSError *)gatherSystemInformation
 {
     NSString *kernelPath = [[DOEnvironmentManager sharedManager] accessibleKernelPath];
-    if (!kernelPath) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedToFindKernel userInfo:@{NSLocalizedDescriptionKey:@"Failed to find kernelcache"}];
+    if (!kernelPath) return [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedToFindKernel userInfo:@{NSLocalizedDescriptionKey:@"Failed to find kernelcache. Ensure your device is properly connected to the internet. If it still does not work, try installing Dopamine via TrollStore instead."}];
     NSLog(@"Kernel at %s", kernelPath.UTF8String);
     
     [[DOUIManager sharedInstance] sendLog:DOLocalizedString(@"Patchfinding") debug:NO];
