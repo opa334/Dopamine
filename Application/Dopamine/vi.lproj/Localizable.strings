@@ -22,11 +22,11 @@
 
 // Update View
 "Update_Status_Downloading" = "Đang tải bản cập nhật...";
-"Update_Status_Subtitle_Please_Wait" = "Đang tải xuống các tệp thiết yếu, xin hãy kiên nhẫn";
+"Update_Status_Subtitle_Please_Wait" = "Đang tải các tệp thiết yếu, xin hãy kiên nhẫn chờ";
 "Update_Status_Installing" = "Đang cài bản cập nhật...";
 "Update_Status_Subtitle_Restart_Soon" = "Thiết bị sẽ khởi động lại";
-"Title_Changelog" = "Nhật ký sửa đổi";
-"Changelog_Unavailable_Text" = "Không có nhật ký sửa đổi";
+"Title_Changelog" = "Nội dung cập nhật";
+"Changelog_Unavailable_Text" = "Không có nội dung cập nhật";
 
 // Removed Jailbreak Alert
 "Removed_Jailbreak_Alert_Title" = "Đã gỡ Jailbreak";
@@ -37,11 +37,12 @@
 "Button_Share" = "Chia sẻ lỗi";
 "Button_Reboot" = "Khởi động lại";
 
-// Settings Toggles
+// Settings Options
 "Settings_Tweak_Injection" = "Cho phép chạy Tweak";
 "Settings_iDownload" = "iDownload (nhà phát triển)";
 "Settings_Verbose_Logs" = "Hiện Log dạng phức tạp";
 "Settings_Apps_JIT" = "Bật JIT";
+"Settings_Allow_Old_arm64e_ABI_Libraries" = "Dùng thư viện arm64e cũ";
 "Settings_Jetsam_Multiplier" = "Hệ số Jetsam";
 
 // Settings Buttons
@@ -59,7 +60,7 @@
 "Section_Actions" = "Tác vụ";
 "Section_Customization" = "Tùy biến";
 "Section_Exploits" = "Khai thác";
-"Jetsam_Description" = "Jetsam là một tính năng hệ thống nhằm tự động dừng các tiến trình vượt quá giới hạn bộ nhớ đã định. Khi có nhiều tweak được cài đặt, giới hạn này có thể bị vượt quá ngay khi tiến trình vừa khởi động, gây ra tình trạng treo. Ở mục này, bạn có thể chọn một hệ số nhất định, hệ số này sau đó sẽ được nhân với giới hạn bộ nhớ riêng của từng tiến trình. Tăng hệ số này nếu các ứng dụng hay tiến trình xuất hiện lỗi văng/treo, hoặc nếu hệ thống xuất hiện lỗi vặt khi có nhiều tweak được cài đặt. Tuy nhiên, bạn nên chọn hệ số thấp nhất có thể sao cho hệ thống vẫn chạy ổn định, tránh ảnh hưởng đến hiệu năng.";
+"Jetsam_Description" = "Jetsam là tính năng hệ thống nhằm dừng các tiến trình vượt ngưỡng bộ nhớ đã định. Khi có nhiều tweak được cài đặt, các tiến trình có thể vượt ngưỡng này ngay khi khởi động, gây ra tình trạng treo. Ở mục này, bạn có thể chọn một hệ số nhất định, số này sẽ được nhân với ngưỡng bộ nhớ riêng của từng tiến trình. Tăng hệ số nếu thiết bị gặp tình trạng văng/treo, hoặc xảy ra lỗi vặt khi có nhiều tweak được cài đặt. Để tránh ảnh hưởng đến hiệu năng, bạn nên chọn hệ số thấp nhất sao cho thiết bị vẫn chạy ổn định.";
 
 // Settings Alerts
 "Alert_Tweak_Injection_Toggled_Title" = "Khởi động lại Userspace";
@@ -72,7 +73,7 @@
 "Alert_Change_Mobile_Password_Body" = "Thiết đặt mật khẩu của người dùng \"mobile\", có thể sử dụng để lấy quyền root thông qua sudo. Nếu muốn đặt mật khẩu root, bạn có thể thực hiện bằng lệnh \"sudo passwd root\" trong terminal.";
 "Password_Placeholder" = "Nhập mật khẩu";
 "Repeat_Password_Placeholder" = "Nhập lại mật khẩu";
-/*Password_Auth_Required*/
+"Password_Auth_Required" = "Bạn cần phải xác thực để đổi mật khẩu mobile.";
 "Button_Change" = "Đổi";
 "Button_Cancel" = "Hủy bỏ";
 "Button_Continue" = "Tiếp tục";
