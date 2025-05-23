@@ -1,13 +1,13 @@
-"Credits_Made_By" = "Made by opa334, évelyne";
+"Credits_Made_By" = "";
 
 // Log
-"Status_Title_Jailbreaking" = "Jailbreaking";
+"Status_Title_Jailbreaking" = "脱獄しています…";
 "Log_Error" = "エラー";
 
 // Jailbreak Button
-"Button_Jailbreak_Title" = "Jailbreak";
-"Status_Title_Jailbroken" = "Jailbroken";
-"Unsupported" = "Unsupported";
+"Button_Jailbreak_Title" = "";
+"Status_Title_Jailbroken" = "";
+"Unsupported" = "";
 
 // Action Menu
 "Menu_Settings_Title" = "設定";
@@ -29,87 +29,89 @@
 "Changelog_Unavailable_Text" = "更新履歴は利用できません";
 
 // Removed Jailbreak Alert
-"Removed_Jailbreak_Alert_Title" = "Jailbreak環境は削除されました";
-"Removed_Jailbreak_Alert_Message" = "Jailbreak環境の削除に成功しました. デバイスの再起動をお勧めします。";
+"Removed_Jailbreak_Alert_Title" = "脱獄環境は削除されました";
+"Removed_Jailbreak_Alert_Message" = "脱獄環境の削除に成功しました。デバイスの再起動をおすすめします。";
 "Button_Close" = "閉じる";
 
 // Error View
 "Button_Share" = "共有";
 "Button_Reboot" = "再起動";
 
-// Settings Toggles
-"Settings_Tweak_Injection" = "Tweak Injection";
+// Settings Options
+"Settings_Tweak_Injection" = "";
 "Settings_iDownload" = "iDownload (開発者用シェル)";
 "Settings_Verbose_Logs" = "詳細なログ";
-/*Settings_Apps_JIT*/
+"Settings_Apps_JIT" = "アプリでJITを許可";
+"Settings_Allow_Old_arm64e_ABI_Libraries" = "従来のarm64eライブラリを許可";
+"Settings_Jetsam_Multiplier" = "Jetsam Multiplier";
 
 // Settings Buttons
-"Button_Remove_Jailbreak" = "Jailbreak環境の削除";
-"Button_Hide_Jailbreak" = "Jailbreakを隠す";
-"Button_Unhide_Jailbreak" = "Jailbreak環境を戻す";
-"Button_Refresh_Jailbreak_Apps" = "Jailbreakアプリを更新 (UICache)";
+"Button_Remove_Jailbreak" = "脱獄環境の削除";
+"Button_Hide_Jailbreak" = "脱獄を隠す";
+"Button_Unhide_Jailbreak" = "脱獄環境を戻す";
+"Button_Refresh_Jailbreak_Apps" = "脱獄アプリを更新 (UICache)";
 "Button_Reinstall_Package_Managers" = "パッケージマネージャーを再インストール";
-/*Button_Change_Mobile_Password*/
+"Button_Change_Mobile_Password" = "「mobile」のパスワードを変更";
 
 // Settings Hints
-"Hint_Hide_Jailbreak" = "\"Jailbreakを隠す\"は、次のjailbreakの実行までjailbreak関連のファイルを一時的に隠します";
-"Hint_Hide_Jailbreak_Jailbroken" = "\"Jailbreakを隠す\"は、jailbreakを部分的に無効にして、jailbreak検出をより困難にすることを目的としています。しかし、この機能ではすべてを完全に隠せるわけではありません。";
-"Section_Jailbreak_Settings" = "Jailbreak Settings";
-"Section_Actions" = "Actions";
-"Section_Customization" = "Customization";
-"Section_Exploits" = "Exploits";
+"Hint_Hide_Jailbreak" = "「脱獄を隠す」は、次回の再脱獄まで脱獄関連ファイルを一時的に隠します。";
+"Hint_Hide_Jailbreak_Jailbroken" = "「脱獄を隠す」機能は脱獄を部分的に無効化し、脱獄検出を困難にすることを目的としています。ただし、すべてを完全に隠せるわけではありません。";
+"Section_Jailbreak_Settings" = "脱獄の設定";
+"Section_Actions" = "アクション";
+"Section_Customization" = "カスタマイズ";
+"Section_Exploits" = "";
+"Jetsam_Description" = "Jetsamは、メモリ使用量が指定の制限を超えたプロセスを自動的に強制終了するシステム機能です。多くのTweakがインストールされている場合、起動時にこの制限を超え、プロセスがクラッシュループを引き起こす可能性があります。ここでは、メモリ制限付きで起動されるすべてのプロセスのメモリ制限に掛ける乗数を選択できます。クラッシュループが発生する場合や、多数のTweakをインストールした際にシステムの動作が不安定になる場合は、この設定値を上げてください。システム全体のメモリ使用量に悪影響を与えないように、システムが安定する最低のオプションを選択することをおすすめします。";
 
 // Settings Alerts
 "Alert_Tweak_Injection_Toggled_Title" = "Userspaceの再起動が必要です";
 "Alert_Tweak_Injection_Toggled_Body" = "この変更を適用するためには、userspaceを再起動する必要があります。今すぐ再起動をしてもよろしいですか？";
 "Alert_Tweak_Injection_Toggled_Reboot_Now" = "今すぐ再起動";
 "Alert_Tweak_Injection_Toggled_Reboot_Later" = "後で再起動";
-"Alert_Remove_Jailbreak_Title" = "Jailbreak環境を削除";
-"Alert_Remove_Jailbreak_Pressed_Body" = "Jailbreak環境を削除すると、jailbreak関連のファイルはすべて削除されますが、通常のアプリケーション、ファイル、データはすべて保持されます。本当に続けてもよろしいですか？この操作を元に戻すことはできません。";
-"Alert_Remove_Jailbreak_Enabled_Body" = "\"Jailbreak環境を削除\"を有効にすると、次回のjailbreak実行時にjailbreak関連ファイルはすべて削除されますが、通常のアプリ、ファイル、データはすべて保持されます。本当に続けてもよろしいですか？この操作を元に戻すことはできません。";
-/*Alert_Change_Mobile_Password_Body*/
-/*Password_Placeholder*/
-/*Repeat_Password_Placeholder*/
-/*Password_Auth_Required*/
-/*Button_Change*/
+"Alert_Remove_Jailbreak_Title" = "脱獄環境を削除";
+"Alert_Remove_Jailbreak_Pressed_Body" = "脱獄環境をを削除すると、脱獄関連ファイルはすべて削除されますが、通常のアプリ、ファイル、データはすべて保持されます。続行してもよろしいですか？この操作は元に戻せません。";
+"Alert_Remove_Jailbreak_Enabled_Body" = "「脱獄環境を削除」を有効にすると、次回の脱獄実行時に脱獄関連ファイルはすべて削除されますが、通常のアプリ、ファイル、データはすべて保持されます。続行してもよろしいですか？この操作は元に戻せません。";
+"Alert_Change_Mobile_Password_Body" = "デバイスの「mobile」ユーザーのパスワードを設定します。これはsudoを使用したルートアクセスにも使用できます。ルートパスワードを設定する場合は、モバイルシェルから「sudo passwd root」コマンドを使用して設定できます。";
+"Password_Placeholder" = "パスワード";
+"Repeat_Password_Placeholder" = "パスワードを再入力";
+"Password_Auth_Required" = "「mobile」のパスワードを変更するには認証が必要です。";
+"Button_Change" = "変更";
 "Button_Cancel" = "キャンセル";
-"Button_Continue" = "続ける";
+"Button_Continue" = "続行";
 
 // Duplicate Apps Errors
-"Duplicate_Apps_Error_Dopamine_App" = "バンドルID \"%@\" を持つアプリケーションはDopamine用アプリケーションディレクトリ(\"%@\")内に複数存在しています。この作業を続行できません。";
-"Duplicate_Apps_Error_User_App" = "バンドルID \"%@\" を持つアプリケーションはDopamine用アプリケーションディレクトリ(\"%@\")内に存在しますが、システムにも別々にインストールされています。この作業を続行できません。";
-"Duplicate_Apps_Error_Icon_Cache" = "バンドルID \"%@\" を持つアプリケーションはDopamine用アプリケーションディレクトリ(\"%@\")内に存在しますが、アイコンキャッシュには別のパス(\"%@\")で登録されています。この作業を続行できません。";
+"Duplicate_Apps_Error_Dopamine_App" = "バンドルID「%@」を持つアプリケーションはDopamine用アプリケーションディレクトリ (「%@」) 内に複数存在しています。この作業を続行できません。";
+"Duplicate_Apps_Error_User_App" = "バンドルID「%@」を持つアプリケーションはDopamine用アプリケーションディレクトリ (「%@」) 内に存在しますが、システムにも別々にインストールされています。この作業を続行できません。";
+"Duplicate_Apps_Error_Icon_Cache" = "バンドルID「%@」を持つアプリケーションはDopamine用アプリケーションディレクトリ (「%@」) 内に存在しますが、アイコンキャッシュには別のパス (「%@」) で登録されています。この作業を続行できません。";
 
 // Settings Lists
 "Theme" = "テーマ";
-"Kernel Exploit" = "Kernel Exploit";
-"PPL Bypass" = "PPL Bypass";
-"PAC Bypass" = "PAC Bypass";
-/*None*/
-/*Recommended*/
+"Kernel Exploit" = "";
+"PPL Bypass" = "";
+"PAC Bypass" = "";
+"None" = "なし";
+"Recommended" = "おすすめ";
 
 // Credits
-"Credits_Button_Discord" = "Discord";
+"Credits_Button_Discord" = "";
 "Credits_Button_License" = "ライセンス";
 "Credits_Button_Source_Code" = "ソースコード";
 
 // Logs
-"Initializing Environment" = "Initializing Jailbreak Environment";
-/*Initializing Protection*/
-"Loading BaseBin TrustCache" = "Loading BaseBin TrustCache";
-"Applying Bind Mount" = "Applying Bind Mount";
-"Removing Jailbreak" = "Removing Jailbreak";
-"Elevating Privileges" = "Elevating Privileges";
-"Cleaning Up Exploits" = "Cleaning Up Exploits";
-"Building Phys R/W Primitive" = "Building Phys R/W Primitive";
-"Rebooting Userspace" = "Rebooting Userspace";
-"Patchfinding" = "Patchfinding";
-"Exploiting Kernel (%@)" = "Exploiting Kernel (%@)";
-"Bypassing PAC (%@)" = "Bypassing PAC (%@)";
-"Bypassing PPL (%@)" = "Bypassing PPL (%@)";
+"Initializing Environment" = "脱獄環境を初期化しています…";
+"Initializing Protection" = "保護を初期化しています…";
+"Loading BaseBin TrustCache" = "BaseBin TrustCacheを読み込んでいます…";
+"Applying Bind Mount" = "Bind Mountを適用しています…";
+"Removing Jailbreak" = "脱獄環境を削除しています…";
+"Elevating Privileges" = "権限を昇格しています…";
+"Cleaning Up Exploits" = "Exploitをクリーンアップしています…";
+"Building Phys R/W Primitive" = "Phys R/W Primitiveを構築しています…";
+"Rebooting Userspace" = "Userspaceを再起動しています…";
+"Patchfinding" = "Patchfinding…";
+"Exploiting Kernel (%@)" = "Exploiting Kernel… (%@)";
+"Bypassing PAC (%@)" = "PACをバイパスしています… (%@)";
+"Bypassing PPL (%@)" = "PPLをバイパスしています… (%@)";
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "パッケージマネージャーを選択";
-"Select_Package_Managers_Install_Message" = "どちらを選択するか迷った場合は、Sileoを選択してください";
-"Continue" = "続ける";
-
+"Select_Package_Managers_Install_Message" = "どちらを選択すればよいかわからない場合は、Sileoを選択してください";
+"Continue" = "続行";
