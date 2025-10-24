@@ -17,6 +17,7 @@
 #include "private.h"
 
 bool gFullyDebugged = false;
+bool gHideTracedFlag = true;
 static void *gLibSandboxHandle;
 char *JB_BootUUID = NULL;
 char *JB_RootPath = NULL;
@@ -99,6 +100,10 @@ void *dyld_dlsym_hook(void *dyld, void *handle, const char *name)
 
 int ptrace_hook(int request, pid_t pid, caddr_t addr, int data)
 {
+    if (request == PT_ATTACHEXC || request == PT_ATTACH) {
+        jbclient_platform_clear_process_noattach(pid, true, false);
+    }
+
 	int r = syscall(SYS_ptrace, request, pid, addr, data);
 
 	// ptrace works on any process when the caller is unsandboxed,
@@ -110,6 +115,7 @@ int ptrace_hook(int request, pid_t pid, caddr_t addr, int data)
 	if (r == 0 && (request == PT_ATTACHEXC || request == PT_ATTACH)) {
 		jbclient_platform_set_process_debugged(pid, true);
 		jbclient_platform_set_process_debugged(getpid(), true);
+        jbclient_platform_clear_process_noattach(pid, false, gHideTracedFlag);
 	}
 
 	return r;
