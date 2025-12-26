@@ -40,7 +40,7 @@
 // Settings Toggles
 "Settings_Tweak_Injection" = "Tweak Enjeksiyonu";
 "Settings_iDownload" = "iDownload (Geliştirici Terminali)";
-"Settings_Verbose_Logs" = "Ayrıntılı Loglar";
+"Settings_Verbose_Logs" = "Ayrıntılı Günlükler";
 /*Settings_Apps_JIT*/
 
 // Settings Buttons
