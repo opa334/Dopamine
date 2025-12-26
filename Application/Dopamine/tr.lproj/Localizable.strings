@@ -1,32 +1,32 @@
-"Credits_Made_By" = "opa334 ve évelyne tarafından yapılmıştır";
+"Credits_Made_By" = "opa334 ve évelyne tarafından geliştirilmiştir";
 
 // Log
-"Status_Title_Jailbreaking" = "Jailbreak Yapılıyor";
-"Log_Error" = "Başarısız";
+"Status_Title_Jailbreaking" = "Jailbreak yapılıyor";
+"Log_Error" = "İşlem başarısız";
 
 // Jailbreak Button
 "Button_Jailbreak_Title" = "Jailbreak";
-"Status_Title_Jailbroken" = "Jailbreakli";
+"Status_Title_Jailbroken" = "Jailbreak yapıldı";
 /*Unsupported*/
 
 // Action Menu
 "Menu_Settings_Title" = "Ayarlar";
-"Menu_Restart_SpringBoard_Title" = "Springboard'u Yeniden Başlat";
+"Menu_Restart_SpringBoard_Title" = "SpringBoard'u Yeniden Başlat";
 "Menu_Reboot_Userspace_Title" = "Userspace'i Yeniden Başlat";
 "Menu_Credits_Title" = "Hakkında";
 
 // Updating
 "Button_Update" = "Güncelle";
 "Button_Update_Available" = "Güncelleme mevcut";
-"Button_Update_Environment" = "Update Environment";
+"Button_Update_Environment" = "Ortamı Güncelle";
 
 // Update View
 "Update_Status_Downloading" = "Güncelleme indiriliyor...";
-"Update_Status_Subtitle_Please_Wait" = "Dosyaların indirilmesi biterken lütfen bekleyiniz";
+"Update_Status_Subtitle_Please_Wait" = "Dosyalar indirilirken lütfen bekleyiniz";
 "Update_Status_Installing" = "Güncelleme yükleniyor...";
 "Update_Status_Subtitle_Restart_Soon" = "Cihaz az sonra yeniden başlatılacaktır";
 "Title_Changelog" = "Sürüm Günlüğü";
-"Changelog_Unavailable_Text" = "Güncelleme Günlüğü Mevcut Değil";
+"Changelog_Unavailable_Text" = "Güncelleme günlüğü mevcut değil";
 
 // Removed Jailbreak Alert
 /*Removed_Jailbreak_Alert_Title*/
@@ -40,11 +40,11 @@
 // Settings Toggles
 "Settings_Tweak_Injection" = "Tweak Enjeksiyonu";
 "Settings_iDownload" = "iDownload (Geliştirici Terminali)";
-"Settings_Verbose_Logs" = "Sözlü Loglar";
+"Settings_Verbose_Logs" = "Ayrıntılı Loglar";
 /*Settings_Apps_JIT*/
 
 // Settings Buttons
-"Button_Remove_Jailbreak" = "Jailbreak'i Sil";
+"Button_Remove_Jailbreak" = "Jailbreak'i Kaldır";
 "Button_Hide_Jailbreak" = "Jailbreak'i Sakla";
 "Button_Unhide_Jailbreak" = "Jailbreak'i Göster";
 /*Button_Refresh_Jailbreak_Apps*/
@@ -52,8 +52,8 @@
 /*Button_Change_Mobile_Password*/
 
 // Settings Hints
-"Hint_Hide_Jailbreak" = "\"Jailbreak'i Sakla\" Geçici olarak jailbreak ile ilgili dosyaları sonraki jailbreak'e kadar saklar";
-"Hint_Hide_Jailbreak_Jailbroken" = "\"Jailbreak'i Sakla" Jailbreak’i kısmen devre dışı bırakır ve tespit edilmeyi zorlaştırmayı amaçlar. Ancak tamamen etkili değildir ve her şeyi gizlemez.";
+"Hint_Hide_Jailbreak" = "\"Jailbreak'i Sakla\", geçici olarak jailbreak ile ilgili dosyaları bir sonraki jailbreak'e kadar gizler";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Jailbreak'i Sakla\", jailbreak’i kısmen devre dışı bırakır ve tespit edilmeyi zorlaştırmayı amaçlar. Ancak tamamen etkili değildir ve her şeyi gizlemez.";
 /*Section_Jailbreak_Settings*/
 /*Section_Actions*/
 /*Section_Customization*/
@@ -61,7 +61,7 @@
 
 // Settings Alerts
 /*Alert_Tweak_Injection_Toggled_Title*/
-"Alert_Tweak_Injection_Toggled_Body" = "Değişiklikleri uygulamak için Kullanıcı Alanı yeniden başlatılmalı. Şimdi yapmak ister misiniz?";
+"Alert_Tweak_Injection_Toggled_Body" = "Değişiklikleri uygulamak için kullanıcı alanı yeniden başlatılmalı. Şimdi yapmak ister misiniz?";
 /*Alert_Tweak_Injection_Toggled_Reboot_Now*/
 /*Alert_Tweak_Injection_Toggled_Reboot_Later*/
 "Alert_Remove_Jailbreak_Title" = "Jailbreak'i Sil";
@@ -94,7 +94,7 @@
 "Credits_Button_Source_Code" = "Kaynak Kodu";
 
 // Logs
-"Initializing Environment" = "Ortam Başlatılıyor";
+"Initializing Environment" = "Ortam başlatılıyor";
 /*Initializing Protection*/
 /*Loading BaseBin TrustCache*/
 /*Applying Bind Mount*/
@@ -103,7 +103,7 @@
 /*Cleaning Up Exploits*/
 /*Building Phys R/W Primitive*/
 /*Rebooting Userspace*/
-"Patchfinding" = "Patchfinding Yapılıyor";
+"Patchfinding" = "Yama aranıyor";
 /*Exploiting Kernel (%@)*/
 /*Bypassing PAC (%@)*/
 /*Bypassing PPL (%@)*/
@@ -112,4 +112,3 @@
 "Status_Title_Select_Package_Managers" = "Paket Yöneticisi Seçin";
 "Select_Package_Managers_Install_Message" = "Hangisini seçeceğinizi bilmiyorsanız, Sileo'yu seçin.";
 "Continue" = "Devam Et";
-
