@@ -64,7 +64,7 @@
 "Alert_Tweak_Injection_Toggled_Body" = "Değişiklikleri uygulamak için kullanıcı alanı yeniden başlatılmalı. Şimdi yapmak ister misiniz?";
 /*Alert_Tweak_Injection_Toggled_Reboot_Now*/
 /*Alert_Tweak_Injection_Toggled_Reboot_Later*/
-"Alert_Remove_Jailbreak_Title" = "Jailbreak'i Sil";
+"Alert_Remove_Jailbreak_Title" = "Jailbreak'i Kaldır";
 "Alert_Remove_Jailbreak_Pressed_Body" = "Jailbreak’i kaldırmak, cihazınızdaki jailbreak ile ilgili tüm dosyaları silecektir. Ancak normal uygulama, dosya ve verileriniz korunacaktır. Devam etmek istediğinize emin misiniz? Bu işlem geri alınamaz.";
 /*Alert_Remove_Jailbreak_Enabled_Body*/
 /*Alert_Change_Mobile_Password_Body*/
