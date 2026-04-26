@@ -22,6 +22,7 @@ int jbclient_jbsettings_get(const char *key, xpc_object_t *valueOut);
 bool jbclient_jbsettings_get_bool(const char *key);
 uint64_t jbclient_jbsettings_get_uint64(const char *key);
 double jbclient_jbsettings_get_double(const char *key);
+int jbclient_platform_clear_process_noattach(uint64_t pid, bool preflight, bool hideTraced);
 int jbclient_platform_set_process_debugged(uint64_t pid, bool fullyDebugged);
 int jbclient_platform_stage_jailbreak_update(const char *updateTar);
 int jbclient_platform_jbsettings_set(const char *key, xpc_object_t value);

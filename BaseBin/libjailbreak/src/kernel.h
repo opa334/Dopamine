@@ -15,6 +15,9 @@
 #define PERM_KRW_URW 0x7 // R/W for kernel and user
 
 #define P_SUGID 0x00000100
+#define P_LTRACED 0x00000400
+#define P_LNOATTACH 0x00001000
+#define P_LCLEARED_NOATTACH 0x80000000
 #define atop(x) ((vm_address_t)(x) >> vm_real_kernel_page_shift)
 typedef struct __attribute__((__packed__)) _vm_map_flags {
     unsigned int
