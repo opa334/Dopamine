@@ -2,7 +2,7 @@
 
 // Log
 "Status_Title_Jailbreaking" = "正在越狱";
-"Log_Error" = "发生错误";
+"Log_Error" = "错误";
 
 // Jailbreak Button
 "Button_Jailbreak_Title" = "越狱";
@@ -53,7 +53,7 @@
 "Button_Change_Mobile_Password" = "修改 “mobile” 密码";
 
 // Settings Hints
-"Hint_Hide_Jailbreak" = "“隐藏越狱” 将在下次越狱前移除部分可能导致越狱检测的文件。";
+"Hint_Hide_Jailbreak" = "“隐藏越狱” 将在下次重新越狱前移除部分可能导致越狱检测的文件。";
 "Hint_Hide_Jailbreak_Jailbroken" = "“隐藏越狱” 将禁用部分越狱功能以提升检测越狱的难度，不过这并不能完全防止应用检测到越狱。";
 "Section_Jailbreak_Settings" = "越狱设置";
 "Section_Actions" = "操作";
@@ -69,10 +69,10 @@
 "Alert_Remove_Jailbreak_Title" = "移除越狱";
 "Alert_Remove_Jailbreak_Pressed_Body" = "“移除越狱” 将移除所有和越狱相关的文件，而常规的 App、文档及数据不会受到任何影响。请注意，此操作无法撤销。确认要移除越狱吗？";
 "Alert_Remove_Jailbreak_Enabled_Body" = "“移除越狱” 将在下次越狱时移除所有和越狱相关的文件，而常规的 App、文档及数据不会受到任何影响。请注意，此操作无法撤销。确认要移除越狱吗？";
-"Alert_Change_Mobile_Password_Body" = "这将会在你的设备上修改 “mobile” 密码，此密码可用于使用 sudo 命令。如需设置 “root” 密码，请在 shell 中使用命令 “sudo passwd root”。";
+"Alert_Change_Mobile_Password_Body" = "这将会在你的设备上修改 “mobile” 用户的密码，此密码可用于使用 sudo 命令。如需设置 root 密码，请在 shell 中使用命令 “sudo passwd root”。";
 "Password_Placeholder" = "密码";
 "Repeat_Password_Placeholder" = "重复密码";
-/*Password_Auth_Required*/
+"Password_Auth_Required" = "更改 mobile 密码需要进行身份认证。";
 "Button_Change" = "修改";
 "Button_Cancel" = "取消";
 "Button_Continue" = "继续";
@@ -98,17 +98,17 @@
 // Logs
 "Initializing Environment" = "初始化环境";
 "Initializing Protection" = "初始化保护";
-"Loading BaseBin TrustCache" = "将基础套件加载至信任缓存（TrustCache）";
+"Loading BaseBin TrustCache" = "加载基础套件信任缓存";
 "Applying Bind Mount" = "应用绑定挂载";
 "Removing Jailbreak" = "移除越狱";
 "Elevating Privileges" = "提升权限";
 "Cleaning Up Exploits" = "清理环境";
-"Building Phys R/W Primitive" = "构建硬件读写条件";
+"Building Phys R/W Primitive" = "构建物理内存读写原语";
 "Rebooting Userspace" = "重启用户空间";
 "Patchfinding" = "查找地址";
-"Exploiting Kernel (%@)" = "正在利用内核 (%@)";
-"Bypassing PAC (%@)" = "正在绕过 PAC (%@)";
-"Bypassing PPL (%@)" = "正在绕过 PPL (%@)";
+"Exploiting Kernel (%@)" = "利用内核漏洞 (%@)";
+"Bypassing PAC (%@)" = "绕过 PAC (%@)";
+"Bypassing PPL (%@)" = "绕过 PPL (%@)";
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "请选择包管理器";
