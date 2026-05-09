@@ -1,0 +1,121 @@
+"Credits_Made_By" = "opa334 द्वारा, ElleKit by évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "जेलब्रेक हो रहा है";
+"Log_Error" = "त्रुटि";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "जेलब्रेक";
+"Status_Title_Jailbroken" = "जेलब्रेक पूरा हुआ";
+"Unsupported" = "समर्थित नहीं";
+
+// Action Menu
+"Menu_Settings_Title" = "सेटिंग्स";
+"Menu_Restart_SpringBoard_Title" = "SpringBoard रीस्टार्ट करें";
+"Menu_Reboot_Userspace_Title" = "Userspace रीबूट करें";
+"Menu_Credits_Title" = "श्रेय";
+
+// Updating
+"Button_Update" = "अपडेट";
+"Button_Update_Available" = "अपडेट उपलब्ध है";
+"Button_Update_Environment" = "Environment अपडेट करें";
+
+// Update View
+"Update_Status_Downloading" = "अपडेट डाउनलोड हो रहा है...";
+"Update_Status_Subtitle_Please_Wait" = "कृपया फाइलों का डाउनलोड पूरा होने तक प्रतीक्षा करें";
+"Update_Status_Installing" = "अपडेट इंस्टॉल हो रहा है...";
+"Update_Status_Subtitle_Restart_Soon" = "डिवाइस जल्द ही रीस्टार्ट होगा";
+"Title_Changelog" = "चेंजलॉग";
+"Changelog_Unavailable_Text" = "चेंजलॉग उपलब्ध नहीं है";
+
+// Removed Jailbreak Alert
+"Removed_Jailbreak_Alert_Title" = "जेलब्रेक हटाया गया";
+"Removed_Jailbreak_Alert_Message" = "जेलब्रेक सफलतापूर्वक हटा दिया गया। डिवाइस को रीबूट करना अनुशंसित है।";
+"Button_Close" = "बंद करें";
+
+// Error View
+"Button_Share" = "शेयर करें";
+"Button_Reboot" = "रीबूट";
+
+// Settings Options
+"Settings_Tweak_Injection" = "Tweak Injection";
+"Settings_iDownload" = "iDownload (Developer Shell)";
+"Settings_Verbose_Logs" = "विस्तृत लॉग";
+"Settings_Apps_JIT" = "ऐप्स में JIT की अनुमति दें";
+"Settings_Allow_Old_arm64e_ABI_Libraries" = "Legacy arm64e Libraries की अनुमति दें";
+"Settings_Jetsam_Multiplier" = "Jetsam Multiplier";
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "जेलब्रेक हटाएं";
+"Button_Hide_Jailbreak" = "जेलब्रेक छिपाएं";
+"Button_Unhide_Jailbreak" = "जेलब्रेक दिखाएं";
+"Button_Refresh_Jailbreak_Apps" = "जेलब्रेक ऐप्स रिफ्रेश करें";
+"Button_Reinstall_Package_Managers" = "Package Managers फिर से इंस्टॉल करें";
+"Button_Change_Mobile_Password" = "\"mobile\" पासवर्ड बदलें";
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"जेलब्रेक छिपाएं\" अगले री-जेलब्रेक तक जेलब्रेक-संबंधित फाइलों को अस्थायी रूप से हटा देता है";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"जेलब्रेक छिपाएं\" जेलब्रेक को आंशिक रूप से निष्क्रिय करता है और पहचान को अधिक कठिन बनाने का प्रयास करता है। हालांकि, यह पूरी तरह प्रभावी नहीं है और सब कुछ नहीं छिपाता।";
+"Section_Jailbreak_Settings" = "जेलब्रेक सेटिंग्स";
+"Section_Actions" = "कार्रवाइयां";
+"Section_Customization" = "कस्टमाइजेशन";
+"Section_Exploits" = "एक्सप्लॉइट्स";
+"Section_Boot_Logo" = "बूट लोगो";
+"Jetsam_Description" = "Jetsam एक सिस्टम फीचर है जो उन प्रक्रियाओं को अपने आप बंद कर देता है जिनका मेमोरी उपयोग तय सीमा से अधिक हो जाता है। जब बहुत सारे tweaks इंस्टॉल होते हैं, तो यह सीमा लॉन्च होते ही पार हो सकती है, जिससे प्रक्रियाएं बार-बार क्रैश हो सकती हैं। यहां आप एक multiplier चुन सकते हैं जिससे मेमोरी सीमा वाली सभी लॉन्च की गई प्रक्रियाओं की मेमोरी सीमा गुणा की जाएगी। जब चीजें crash loop कर रही हों या बहुत सारे tweaks इंस्टॉल होने पर अजीब सिस्टम व्यवहार दिखे, तो इस सेटिंग को बढ़ाएं। पूरे सिस्टम के मेमोरी उपयोग पर नकारात्मक प्रभाव न पड़े, इसके लिए वह सबसे कम विकल्प चुनना अनुशंसित है जिसके अंतर्गत सिस्टम स्थिर रहे।";
+"Enabled" = "सक्षम";
+"Custom_Boot_Logo" = "कस्टम बूट लोगो";
+"Select_Image" = "चित्र चुनें";
+
+// Settings Alerts
+"Alert_Tweak_Injection_Toggled_Title" = "Userspace रीबूट आवश्यक है";
+"Alert_Tweak_Injection_Toggled_Body" = "बदलाव लागू करने के लिए userspace रीबूट आवश्यक है। क्या आप इसे अभी करना चाहते हैं?";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "अभी रीबूट करें";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "बाद में रीबूट करें";
+"Alert_Remove_Jailbreak_Title" = "जेलब्रेक हटाएं";
+"Alert_Remove_Jailbreak_Pressed_Body" = "जेलब्रेक हटाने से सभी जेलब्रेक-संबंधित फाइलें हट जाएंगी, लेकिन सभी सामान्य ऐप्स, फाइलें और डेटा सुरक्षित रहेंगे। क्या आप वाकई जारी रखना चाहते हैं? आप इस कार्रवाई को वापस नहीं कर सकते।";
+"Alert_Remove_Jailbreak_Enabled_Body" = "\"जेलब्रेक हटाएं\" सक्षम करने से अगले जेलब्रेक पर सभी जेलब्रेक-संबंधित फाइलें हट जाएंगी, लेकिन सभी सामान्य ऐप्स, फाइलें और डेटा सुरक्षित रहेंगे। क्या आप वाकई जारी रखना चाहते हैं? आप इस कार्रवाई को वापस नहीं कर सकते।";
+"Alert_Change_Mobile_Password_Body" = "अपने डिवाइस पर \"mobile\" उपयोगकर्ता का पासवर्ड सेट करें। इसे sudo के माध्यम से root access के लिए भी इस्तेमाल किया जा सकता है। यदि आप root पासवर्ड सेट करना चाहते हैं, तो mobile shell से \"sudo passwd root\" कमांड का उपयोग कर सकते हैं";
+"Password_Placeholder" = "पासवर्ड";
+"Repeat_Password_Placeholder" = "पासवर्ड दोहराएं";
+"Password_Auth_Required" = "आपका mobile पासवर्ड बदलने के लिए प्रमाणीकरण आवश्यक है।";
+"Button_Change" = "बदलें";
+"Button_Cancel" = "रद्द करें";
+"Button_Continue" = "जारी रखें";
+
+// Duplicate Apps Errors
+"Duplicate_Apps_Error_Dopamine_App" = "Dopamine की application directory (\"%@\") में \"%@\" identifier वाले कई ऐप्स हैं। जारी नहीं रखा जा सकता।";
+"Duplicate_Apps_Error_User_App" = "%@ identifiers वाले ऐप्स Dopamine की application directory (\"%@\") में मौजूद हैं, लेकिन वे सिस्टम पर अलग से भी इंस्टॉल हैं। जारी नहीं रखा जा सकता।";
+"Duplicate_Apps_Error_Icon_Cache" = "\"%@\" identifier वाला ऐप Dopamine application directory (\"%@\") में मौजूद है, लेकिन icon cache में अलग path (\"%@\") के अंतर्गत भी registered है। जारी नहीं रखा जा सकता।";
+
+// Settings Lists
+"Theme" = "थीम";
+"Kernel Exploit" = "Kernel Exploit";
+"PPL Bypass" = "PPL Bypass";
+"PAC Bypass" = "PAC Bypass";
+"None" = "कोई नहीं";
+"Recommended" = "अनुशंसित";
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "लाइसेंस";
+"Credits_Button_Source_Code" = "सोर्स कोड";
+
+// Logs
+"Initializing Environment" = "जेलब्रेक Environment शुरू हो रहा है";
+"Initializing Protection" = "Protection शुरू हो रही है";
+"Loading BaseBin TrustCache" = "BaseBin TrustCache लोड हो रहा है";
+"Applying Bind Mount" = "Bind Mount लागू हो रहा है";
+"Removing Jailbreak" = "जेलब्रेक हटाया जा रहा है";
+"Elevating Privileges" = "Privileges बढ़ाए जा रहे हैं";
+"Cleaning Up Exploits" = "Exploits साफ किए जा रहे हैं";
+"Building Phys R/W Primitive" = "Phys R/W Primitive बनाया जा रहा है";
+"Rebooting Userspace" = "Userspace रीबूट हो रहा है";
+"Patchfinding" = "Patchfinding";
+"Exploiting Kernel (%@)" = "Kernel exploit हो रहा है (%@)";
+"Bypassing PAC (%@)" = "PAC bypass हो रहा है (%@)";
+"Bypassing PPL (%@)" = "PPL bypass हो रहा है (%@)";
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Package Manager(s) चुनें";
+"Select_Package_Managers_Install_Message" = "यदि आप सुनिश्चित नहीं हैं कि कौन सा चुनना है, तो Sileo चुनें";
+"Continue" = "जारी रखें";
