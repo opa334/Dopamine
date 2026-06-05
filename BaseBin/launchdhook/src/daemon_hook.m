@@ -24,6 +24,7 @@ void xpc_dictionary_add_launch_daemon_plist_at_path(xpc_object_t xdict, const ch
 			xpc_object_t daemonXdict = xpc_create_from_plist(addr, len);
 			if (daemonXdict) {
 				xpc_dictionary_set_value(xdict, path, daemonXdict);
+				CFRelease((__bridge CFTypeRef)daemonXdict);
 			}
 			munmap(addr, len);
 		}
