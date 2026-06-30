@@ -2,91 +2,91 @@
 
 // Log
 "Status_Title_Jailbreaking" = "Jailbreak Yapılıyor";
-"Log_Error" = "Başarısız";
+"Log_Error" = "Hata / Başarısız";
 
 // Jailbreak Button
 "Button_Jailbreak_Title" = "Jailbreak";
 "Status_Title_Jailbroken" = "Jailbreakli";
-/*Unsupported*/
+"Unsupported" = "Desteklenmiyor";
 
 // Action Menu
 "Menu_Settings_Title" = "Ayarlar";
-"Menu_Restart_SpringBoard_Title" = "Springboard'u Yeniden Başlat";
+"Menu_Restart_SpringBoard_Title" = "SpringBoard'u Yeniden Başlat";
 "Menu_Reboot_Userspace_Title" = "Userspace'i Yeniden Başlat";
 "Menu_Credits_Title" = "Hakkında";
 
 // Updating
 "Button_Update" = "Güncelle";
-"Button_Update_Available" = "Güncelleme mevcut";
-"Button_Update_Environment" = "Update Environment";
+"Button_Update_Available" = "Güncelleme Mevcut";
+"Button_Update_Environment" = "Ortamı Güncelle";
 
 // Update View
 "Update_Status_Downloading" = "Güncelleme indiriliyor...";
-"Update_Status_Subtitle_Please_Wait" = "Dosyaların indirilmesi biterken lütfen bekleyiniz";
+"Update_Status_Subtitle_Please_Wait" = "Dosyalar indirilirken lütfen bekleyiniz";
 "Update_Status_Installing" = "Güncelleme yükleniyor...";
-"Update_Status_Subtitle_Restart_Soon" = "Cihaz az sonra yeniden başlatılacaktır";
-"Title_Changelog" = "Sürüm Günlüğü";
-"Changelog_Unavailable_Text" = "Güncelleme Günlüğü Mevcut Değil";
+"Update_Status_Subtitle_Restart_Soon" = "Cihaz kısa süre içinde yeniden başlatılacaktır";
+"Title_Changelog" = "Değişiklik Günlüğü";
+"Changelog_Unavailable_Text" = "Değişiklik Günlüğü Mevcut Değil";
 
 // Removed Jailbreak Alert
-/*Removed_Jailbreak_Alert_Title*/
-/*Removed_Jailbreak_Alert_Message*/
-/*Button_Close*/
+"Removed_Jailbreak_Alert_Title" = "Jailbreak Kaldırıldı";
+"Removed_Jailbreak_Alert_Message" = "Jailbreak başarıyla kaldırıldı. Cihazın yeniden başlatılması önerilir.";
+"Button_Close" = "Kapat";
 
 // Error View
-/*Button_Share*/
-/*Button_Reboot*/
+"Button_Share" = "Paylaş";
+"Button_Reboot" = "Yeniden Başlat";
 
 // Settings Toggles
-"Settings_Tweak_Injection" = "Tweak Enjeksiyonu";
+"Settings_Tweak_Injection" = "Tweakleri Etkinleştir";
 "Settings_iDownload" = "iDownload (Geliştirici Terminali)";
-"Settings_Verbose_Logs" = "Sözlü Loglar";
-/*Settings_Apps_JIT*/
+"Settings_Verbose_Logs" = "Ayrıntılı Loglar";
+"Settings_Apps_JIT" = "Uygulamalar için JIT";
 
 // Settings Buttons
-"Button_Remove_Jailbreak" = "Jailbreak'i Sil";
-"Button_Hide_Jailbreak" = "Jailbreak'i Sakla";
+"Button_Remove_Jailbreak" = "Jailbreak'i Kaldır";
+"Button_Hide_Jailbreak" = "Jailbreak'i Gizle";
 "Button_Unhide_Jailbreak" = "Jailbreak'i Göster";
-/*Button_Refresh_Jailbreak_Apps*/
-"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
-/*Button_Change_Mobile_Password*/
+"Button_Refresh_Jailbreak_Apps" = "Jailbreak Uygulamalarını Yenile";
+"Button_Reinstall_Package_Managers" = "Paket Yöneticilerini Yeniden Yükle";
+"Button_Change_Mobile_Password" = "Mobile Şifresini Değiştir";
 
 // Settings Hints
-"Hint_Hide_Jailbreak" = "\"Jailbreak'i Sakla\" Geçici olarak jailbreak ile ilgili dosyaları sonraki jailbreak'e kadar saklar";
-"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
-/*Section_Jailbreak_Settings*/
-/*Section_Actions*/
-/*Section_Customization*/
-/*Section_Exploits*/
+"Hint_Hide_Jailbreak" = "\"Jailbreak'i Gizle\" seçeneği, bir sonraki jailbreak işlemine kadar jailbreak dosyalarını geçici olarak saklar.";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Jailbreak'i Gizle\" jailbreak'i kısmen devre dışı bırakır ve tespit edilmesini zorlaştırır. Ancak tamamen etkili değildir ve her şeyi gizlemez.";
+"Section_Jailbreak_Settings" = "Jailbreak Ayarları";
+"Section_Actions" = "Eylemler";
+"Section_Customization" = "Özelleştirme";
+"Section_Exploits" = "Exploitler";
 
 // Settings Alerts
-/*Alert_Tweak_Injection_Toggled_Title*/
-"Alert_Tweak_Injection_Toggled_Body" = "A userspace reboot is neccessary to apply the changes. Do you want to do it now?";
-/*Alert_Tweak_Injection_Toggled_Reboot_Now*/
-/*Alert_Tweak_Injection_Toggled_Reboot_Later*/
-"Alert_Remove_Jailbreak_Title" = "Remove Jailbreak";
-"Alert_Remove_Jailbreak_Pressed_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
-/*Alert_Remove_Jailbreak_Enabled_Body*/
-/*Alert_Change_Mobile_Password_Body*/
-/*Password_Placeholder*/
-/*Repeat_Password_Placeholder*/
-/*Password_Auth_Required*/
-/*Button_Change*/
+"Alert_Tweak_Injection_Toggled_Title" = "Tweak Enjeksiyonu Değiştirildi";
+"Alert_Tweak_Injection_Toggled_Body" = "Değişikliklerin uygulanması için Userspace yeniden başlatılması gerekir. Şimdi yapmak istiyor musunuz?";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Şimdi Yeniden Başlat";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Daha Sonra";
+"Alert_Remove_Jailbreak_Title" = "Jailbreak'i Kaldır";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Jailbreak'i kaldırmak, jailbreak ile ilgili tüm dosyaları silecek ancak verileriniz korunacaktır. Devam etmek istediğinizden emin misiniz? Bu işlem geri alınamaz.";
+"Alert_Remove_Jailbreak_Enabled_Body" = "Jailbreak'i Kaldır seçeneği etkinleştirildi. Tüm tweakler ve jailbreak verileri silinecek.";
+"Alert_Change_Mobile_Password_Body" = "Cihazın 'mobile' kullanıcı şifresini değiştirin. Bu, güvenlik için önemlidir.";
+"Password_Placeholder" = "Şifre";
+"Repeat_Password_Placeholder" = "Şifreyi Tekrarla";
+"Password_Auth_Required" = "Kimlik Doğrulaması Gerekiyor";
+"Button_Change" = "Değiştir";
 "Button_Cancel" = "İptal";
-"Button_Continue" = "Continue";
+"Button_Continue" = "Devam Et";
 
 // Duplicate Apps Errors
-/*Duplicate_Apps_Error_Dopamine_App*/
-/*Duplicate_Apps_Error_User_App*/
-/*Duplicate_Apps_Error_Icon_Cache*/
+"Duplicate_Apps_Error_Dopamine_App" = "Aynı ada sahip birden fazla Dopamine uygulaması bulundu.";
+"Duplicate_Apps_Error_User_App" = "Kullanıcı uygulamaları arasında çakışma tespit edildi.";
+"Duplicate_Apps_Error_Icon_Cache" = "Simge önbelleği (Icon Cache) hatası.";
 
 // Settings Lists
-/*Theme*/
-/*Kernel Exploit*/
-/*PPL Bypass*/
-/*PAC Bypass*/
-/*None*/
-/*Recommended*/
+"Theme" = "Tema";
+"Kernel Exploit" = "Kernel Exploiti";
+"PPL Bypass" = "PPL Bypass";
+"PAC Bypass" = "PAC Bypass";
+"None" = "Yok";
+"Recommended" = "Önerilen";
 
 // Credits
 "Credits_Button_Discord" = "Discord";
@@ -95,21 +95,20 @@
 
 // Logs
 "Initializing Environment" = "Ortam Başlatılıyor";
-/*Initializing Protection*/
-/*Loading BaseBin TrustCache*/
-/*Applying Bind Mount*/
-/*Removing Jailbreak*/
-/*Elevating Privileges*/
-/*Cleaning Up Exploits*/
-/*Building Phys R/W Primitive*/
-/*Rebooting Userspace*/
+"Initializing Protection" = "Koruma Başlatılıyor";
+"Loading BaseBin TrustCache" = "BaseBin TrustCache Yükleniyor";
+"Applying Bind Mount" = "Bind Mount Uygulanıyor";
+"Removing Jailbreak" = "Jailbreak Kaldırılıyor";
+"Elevating Privileges" = "Yetkiler Yükseltiliyor";
+"Cleaning Up Exploits" = "Exploitler Temizleniyor";
+"Building Phys R/W Primitive" = "Phys R/W Primitive Oluşturuluyor";
+"Rebooting Userspace" = "Userspace Yeniden Başlatılıyor";
 "Patchfinding" = "Patchfinding Yapılıyor";
-/*Exploiting Kernel (%@)*/
-/*Bypassing PAC (%@)*/
-/*Bypassing PPL (%@)*/
+"Exploiting Kernel (%@)" = "Kernel Exploit Ediliyor (%@)";
+"Bypassing PAC (%@)" = "PAC Bypass Ediliyor (%@)";
+"Bypassing PPL (%@)" = "PPL Bypass Ediliyor (%@)";
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "Paket Yöneticisi Seçin";
-"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
-"Continue" = "Continue";
-
+"Select_Package_Managers_Install_Message" = "Hangi paket yöneticisini seçeceğinizden emin değilseniz Sileo'yu seçin.";
+"Continue" = "Devam Et";
