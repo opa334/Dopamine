@@ -1,0 +1,119 @@
+"Credits_Made_By" = "opa334 tərəfindən, ElleKit évelyne tərəfindən";
+
+// Log
+"Status_Title_Jailbreaking" = "Jailbreak edilir";
+"Log_Error" = "Xəta";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "Jailbreak";
+"Status_Title_Jailbroken" = "Jailbreak olunub";
+"Unsupported" = "Dəstəklənmir";
+
+// Action Menu
+"Menu_Settings_Title" = "Ayarlar";
+"Menu_Restart_SpringBoard_Title" = "SpringBoard-u yenidən başlat";
+"Menu_Reboot_Userspace_Title" = "İstifadəçi sahəsini (Userspace) yenidən başlat";
+"Menu_Credits_Title" = "Köməkçilər";
+
+// Updating
+"Button_Update" = "Yenilə";
+"Button_Update_Available" = "Yeniləmə mövcuddur";
+"Button_Update_Environment" = "Mühiti yenilə (Update Environment)";
+
+// Update View
+"Update_Status_Downloading" = "Yeniləmə yüklənir...";
+"Update_Status_Subtitle_Please_Wait" = "Faylların yüklənməsi bitənədək gözləyin";
+"Update_Status_Installing" = "Yeniləmə quraşdırılır...";
+"Update_Status_Subtitle_Restart_Soon" = "Cihaz tezliklə yenidən başlayacaq";
+"Title_Changelog" = "Dəyişikliklər siyahısı (Changelog)";
+"Changelog_Unavailable_Text" = "Dəyişikliklər siyahısı mövcud deyil";
+
+// Removed Jailbreak Alert
+"Removed_Jailbreak_Alert_Title" = "Jailbreak silindi";
+"Removed_Jailbreak_Alert_Message" = "Jailbreak uğurla silindi. Cihazı yenidən başlatmağınız tövsiyə olunur.";
+"Button_Close" = "Bağla";
+
+// Error View
+"Button_Share" = "Paylaş";
+"Button_Reboot" = "Yenidən başlat";
+
+// Settings Options
+"Settings_Tweak_Injection" = "Tvik inyeksiyası";
+"Settings_iDownload" = "iDownload (Developer Shell)";
+"Settings_Verbose_Logs" = "Ətraflı loqlar (Verbose Logs)";
+"Settings_Apps_JIT" = "Tətbiqlərdə JIT-ə icazə ver";
+"Settings_Allow_Old_arm64e_ABI_Libraries" = "Köhnə arm64e kitabxanalarına icazə ver";
+"Settings_Jetsam_Multiplier" = "Jetsam çarpanı";
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "Jailbreak-i sil";
+"Button_Hide_Jailbreak" = "Jailbreak-i gizlə";
+"Button_Unhide_Jailbreak" = "Jailbreak-i göstər";
+"Button_Refresh_Jailbreak_Apps" = "Jailbreak tətbiqlərini yenilə";
+"Button_Reinstall_Package_Managers" = "Paket menecerlərini yenidən quraşdır";
+"Button_Change_Mobile_Password" = "\"mobile\" şifrəsini dəyiş";
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"Jailbreak-i gizlə\" növbəti rejailbreak-ə qədər jailbreak ilə bağlı faylları müvəqqəti olaraq silir";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Jailbreak-i gizlə\" jailbreak-i qismən sıradan çıxarır və aşkarlanmanı çətinləşdirməyi hədəfləyir. Lakin bu tam təsirli deyil və hər şeyi gizlətmir.";
+"Section_Jailbreak_Settings" = "Jailbreak ayarları";
+"Section_Actions" = "Hərəkətlər (Actions)";
+"Section_Customization" = "Fərdiləşdirmə (Customization)";
+"Section_Exploits" = "Eksploytlar (Exploits)";
+"Section_Boot_Logo" = "Yüklənmə loqosu (Boot Logo)";
+"Jetsam_Description" = "Jetsam, yaddaş istifadəsi müəyyən edilmiş limiti keçən prosesləri avtomatik dayandıran sistem funksiyasıdır. Çox sayda tweak quraşdırıldıqda, bu limitin keçilməsi mümkündür. Buradan yaddaş limitinin vurulacağı çarpanı seçə bilərsiniz. Sistem stabil olmadıqda ən aşağı seçimi seçmək tövsiyə olunur.";
+"Enabled" = "Aktivdir";
+"Custom_Boot_Logo" = "Fərdi yüklənmə loqosu";
+"Select_Image" = "Şəkil seç";
+
+// Settings Alerts
+"Alert_Tweak_Injection_Toggled_Title" = "İstifadəçi sahəsini (Userspace) yenidən başlatmaq lazımdır";
+"Alert_Tweak_Injection_Toggled_Body" = "Dəyişiklikləri tətbiq etmək üçün istifadəçi sahəsi (Userspace) yenidən başladılmalıdır. İndi etmək istəyirsiniz?";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "İndi başlat";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Sonra başlat";
+"Alert_Remove_Jailbreak_Title" = "Jailbreak-i sil";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Jailbreak-in silinməsi bütün jailbreak fayllarını siləcək, lakin adi tətbiqlər və məlumatlar qalacaq. Davam etmək istədiyinizə əminsiniz? Bu hərəkəti geri qaytarmaq olmaz.";
+"Alert_Remove_Jailbreak_Enabled_Body" = "\"Jailbreak-i sil\" seçimini aktiv etmək növbəti jailbreak zamanı bütün faylları siləcək. Davam etmək istədiyinizə əminsiniz?";
+"Alert_Change_Mobile_Password_Body" = "Cihazınızda \"mobile\" istifadəçisi üçün şifrə təyin edin. Bu həmçinin sudo vasitəsilə root girişi üçün istifadə edilə bilər.";
+"Password_Placeholder" = "Şifrə";
+"Repeat_Password_Placeholder" = "Şifrəni təkrarla";
+"Password_Auth_Required" = "Şifrəni dəyişmək üçün identifikasiya tələb olunur.";
+"Button_Change" = "Dəyiş";
+"Button_Cancel" = "Ləğv et";
+"Button_Continue" = "Davam et";
+
+// Duplicate Apps Errors
+"Duplicate_Apps_Error_Dopamine_App" = "Dopamine qovluğunda eyni \"%@\" identifikatoruna malik bir neçə tətbiq var. Davam etmək mümkün deyil.";
+
+// Settings Lists
+"Theme" = "Mövzu (Theme)";
+"Kernel Exploit" = "Kernel eksploytu (Kernel Exploit)";
+"PPL Bypass" = "PPL Bypass";
+"PAC Bypass" = "PAC Bypass";
+"None" = "Heç biri";
+"Recommended" = "Tövsiyə olunan";
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Lisenziyalar";
+"Credits_Button_Source_Code" = "Mənbə kodu (Source Code)";
+
+// Logs
+"Initializing Environment" = "Jailbreak mühiti (Environment) hazırlanır";
+"Initializing Protection" = "Mühafizə (Protection) hazırlanır";
+"Loading BaseBin TrustCache" = "BaseBin TrustCache yüklənir";
+"Applying Bind Mount" = "Bind Mount tətbiq olunur";
+"Removing Jailbreak" = "Jailbreak silinir";
+"Elevating Privileges" = "İmtiyazlar (Privileges) yüksəldilir";
+"Cleaning Up Exploits" = "Eksploytlar (Exploits) təmizlənir";
+"Building Phys R/W Primitive" = "Phys R/W Primitive qurulur";
+"Rebooting Userspace" = "İstifadəçi sahəsi (Userspace) yenidən başladılır";
+"Patchfinding" = "Patchfinding";
+"Exploiting Kernel (%@)" = "Kernel eksployt edilir (%@)";
+"Bypassing PAC (%@)" = "PAC bypass edilir (%@)";
+"Bypassing PPL (%@)" = "PPL bypass edilir (%@)";
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Paket menecerini seçin (Package Managers)";
+"Select_Package_Managers_Install_Message" = "Hansını seçəcəyinizi bilmirsinizsə, Sileo-nu seçin";
+"Continue" = "Davam et (Continue)";
