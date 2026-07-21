@@ -1,0 +1,115 @@
+"Credits_Made_By" = "Creato da opa334, évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "Eseguo il Jailbreak";
+"Log_Error" = "Fallito";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "Jailbreak";
+"Status_Title_Jailbroken" = "Jailbreakkato";
+/*Unsupported*/
+
+// Action Menu
+"Menu_Settings_Title" = "Impostazioni";
+"Menu_Restart_SpringBoard_Title" = "Riavvia SpringBoard";
+"Menu_Reboot_Userspace_Title" = "Riavvia Userspace";
+"Menu_Credits_Title" = "Crediti";
+
+// Updating
+"Button_Update" = "Aggiorna";
+"Button_Update_Available" = "Aggiornamento Disponibile";
+"Button_Update_Environment" = "Aggiorna l'Ambiente";
+
+// Update View
+"Update_Status_Downloading" = "Scarico l'aggiornamento...";
+"Update_Status_Subtitle_Please_Wait" = "Attendi lo scaricamento dei file";
+"Update_Status_Installing" = "Installo l'aggiornamento...";
+"Update_Status_Subtitle_Restart_Soon" = "Il dispositivo si riavvierà tra poco";
+"Title_Changelog" = "Registro Delle Modifiche";
+"Changelog_Unavailable_Text" = "Registro Delle Modifiche Non Disponibile";
+
+// Removed Jailbreak Alert
+/*Removed_Jailbreak_Alert_Title*/
+/*Removed_Jailbreak_Alert_Message*/
+/*Button_Close*/
+
+// Error View
+/*Button_Share*/
+/*Button_Reboot*/
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "Iniezione Tweak";
+"Settings_iDownload" = "iDownload (Terminale per sviluppatori)";
+"Settings_Verbose_Logs" = "Log Dettagliati";
+/*Settings_Apps_JIT*/
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "Rimuovi il Jailbreak";
+"Button_Hide_Jailbreak" = "Nascondi il Jailbreak";
+"Button_Unhide_Jailbreak" = "Mostra il Jailbreak";
+/*Button_Refresh_Jailbreak_Apps*/
+"Button_Reinstall_Package_Managers" = "Reinstalla i Package Manager";
+/*Button_Change_Mobile_Password*/
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"Nascondi il Jailbreak\" rimuove temporaneamente i file relativi al jailbreak fino al rejailbreak";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Nascondi il Jailbreak\" disabilita parzialmente il jailbreak e tenta di rendere più difficile il rilevamento del jailbreak. Tuttavia, non è del tutto efficace e non nasconde tutto.";
+/*Section_Jailbreak_Settings*/
+/*Section_Actions*/
+/*Section_Customization*/
+/*Section_Exploits*/
+
+// Settings Alerts
+/*Alert_Tweak_Injection_Toggled_Title*/
+"Alert_Tweak_Injection_Toggled_Body" = "Il riavvio userspace è necessario per applicare modifiche. Vuoi farlo ora?";
+/*Alert_Tweak_Injection_Toggled_Reboot_Now*/
+/*Alert_Tweak_Injection_Toggled_Reboot_Later*/
+"Alert_Remove_Jailbreak_Title" = "Rimuovi il Jailbreak";
+"Alert_Remove_Jailbreak_Pressed_Body" = "La rimozione del jailbreak eliminerà tutti i file relativi al jailbreak, ma tutte le app, file, e dati personali verranno mantenuti. Sei sicuro/a di voler continuare? Non puoi annullare questa azione.";
+/*Alert_Remove_Jailbreak_Enabled_Body*/
+/*Alert_Change_Mobile_Password_Body*/
+/*Password_Placeholder*/
+/*Repeat_Password_Placeholder*/
+/*Password_Auth_Required*/
+/*Button_Change*/
+"Button_Cancel" = "Cancella";
+/*Button_Continue*/
+
+// Duplicate Apps Errors
+/*Duplicate_Apps_Error_Dopamine_App*/
+/*Duplicate_Apps_Error_User_App*/
+/*Duplicate_Apps_Error_Icon_Cache*/
+
+// Settings Lists
+/*Theme*/
+/*Kernel Exploit*/
+/*PPL Bypass*/
+/*PAC Bypass*/
+/*None*/
+/*Recommended*/
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Licenza";
+"Credits_Button_Source_Code" = "Codice Sorgente";
+
+// Logs
+"Initializing Environment" = "Inizializzo l'ambiente";
+/*Initializing Protection*/
+/*Loading BaseBin TrustCache*/
+/*Applying Bind Mount*/
+/*Removing Jailbreak*/
+/*Elevating Privileges*/
+/*Cleaning Up Exploits*/
+/*Building Phys R/W Primitive*/
+/*Rebooting Userspace*/
+"Patchfinding" = "Trovo patch";
+/*Exploiting Kernel (%@)*/
+/*Bypassing PAC (%@)*/
+/*Bypassing PPL (%@)*/
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Seleziona i Package Manager";
+"Select_Package_Managers_Install_Message" = "Se non sei sicuro/a di quale scegliere, scegli Sileo";
+"Continue" = "Continua";
+

@@ -1,0 +1,10 @@
+module XPC [system] [extern_c] {
+	header "xpc.h"
+	header "availability.h"
+	header "base.h"
+	header "activity.h"
+	header "connection.h"
+	header "debug.h"
+	header "endpoint.h"
+	export *
+}

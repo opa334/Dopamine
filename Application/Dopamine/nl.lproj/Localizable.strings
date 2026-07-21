@@ -1,0 +1,115 @@
+"Credits_Made_By" = "Gemaakt door opa334, évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "Aan het jailbreaken";
+"Log_Error" = "Mislukt";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "Jailbreak";
+"Status_Title_Jailbroken" = "Jailbreak klaar";
+/*Unsupported*/
+
+// Action Menu
+"Menu_Settings_Title" = "Instellingen";
+"Menu_Restart_SpringBoard_Title" = "SpringBoard herstarten";
+"Menu_Reboot_Userspace_Title" = "Userspace herstarten";
+"Menu_Credits_Title" = "Credits";
+
+// Updating
+"Button_Update" = "Update";
+"Button_Update_Available" = "Update beschikbaar";
+"Button_Update_Environment" = "Update Environment";
+
+// Update View
+"Update_Status_Downloading" = "Update aan het downloaden...";
+"Update_Status_Subtitle_Please_Wait" = "Een ogenblik geduld tot de bestanden zijn gedownload";
+"Update_Status_Installing" = "Update aan het installeren...";
+"Update_Status_Subtitle_Restart_Soon" = "Het apparaat zal binnenkort worden herstart";
+"Title_Changelog" = "Changelog";
+"Changelog_Unavailable_Text" = "Changelog niet beschikbaar";
+
+// Removed Jailbreak Alert
+/*Removed_Jailbreak_Alert_Title*/
+/*Removed_Jailbreak_Alert_Message*/
+/*Button_Close*/
+
+// Error View
+/*Button_Share*/
+/*Button_Reboot*/
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "Tweak Injection";
+"Settings_iDownload" = "iDownload (Ontwikkelaar Terminal)";
+"Settings_Verbose_Logs" = "Uitgebreide logs";
+/*Settings_Apps_JIT*/
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "Jailbreak verwijderen";
+"Button_Hide_Jailbreak" = "Jailbreak verbergen";
+"Button_Unhide_Jailbreak" = "Jailbreak tonen";
+/*Button_Refresh_Jailbreak_Apps*/
+"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
+/*Button_Change_Mobile_Password*/
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"Jailbreak verbergen\" verwijderd jailbreak-gerelateerde bestanden tot de volgende jailbreak";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+/*Section_Jailbreak_Settings*/
+/*Section_Actions*/
+/*Section_Customization*/
+/*Section_Exploits*/
+
+// Settings Alerts
+/*Alert_Tweak_Injection_Toggled_Title*/
+"Alert_Tweak_Injection_Toggled_Body" = "Een userspace reboot is nodig om de veranderingen toe te passen. Wil je het nu doen?";
+/*Alert_Tweak_Injection_Toggled_Reboot_Now*/
+/*Alert_Tweak_Injection_Toggled_Reboot_Later*/
+"Alert_Remove_Jailbreak_Title" = "Jailbreak verwijderen";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Het verwijderen van jailbreak zal alle jailbreak-gerelateerde bestanden verwijderen, maar alle reguliere apps, bestanden en gegevens blijven behouden. Weet u zeker dat u wilt doorgaan? U kunt deze actie niet ongedaan maken.";
+/*Alert_Remove_Jailbreak_Enabled_Body*/
+/*Alert_Change_Mobile_Password_Body*/
+/*Password_Placeholder*/
+/*Repeat_Password_Placeholder*/
+/*Password_Auth_Required*/
+/*Button_Change*/
+"Button_Cancel" = "Annuleren";
+/*Button_Continue*/
+
+// Duplicate Apps Errors
+/*Duplicate_Apps_Error_Dopamine_App*/
+/*Duplicate_Apps_Error_User_App*/
+/*Duplicate_Apps_Error_Icon_Cache*/
+
+// Settings Lists
+/*Theme*/
+/*Kernel Exploit*/
+/*PPL Bypass*/
+/*PAC Bypass*/
+/*None*/
+/*Recommended*/
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Licentie";
+"Credits_Button_Source_Code" = "Broncode";
+
+// Logs
+"Initializing Environment" = "Omgeving aan het initialiseren";
+/*Initializing Protection*/
+/*Loading BaseBin TrustCache*/
+/*Applying Bind Mount*/
+/*Removing Jailbreak*/
+/*Elevating Privileges*/
+/*Cleaning Up Exploits*/
+/*Building Phys R/W Primitive*/
+/*Rebooting Userspace*/
+"Patchfinding" = "Patchfinding";
+/*Exploiting Kernel (%@)*/
+/*Bypassing PAC (%@)*/
+/*Bypassing PPL (%@)*/
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Selecteer Package Manager(s)";
+"Select_Package_Managers_Install_Message" = "Als u niet zeker weet welke u moet selecteren, selecteer dan Sileo";
+"Continue" = "Doorgaan";
+

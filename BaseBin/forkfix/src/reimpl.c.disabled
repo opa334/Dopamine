@@ -1,0 +1,217 @@
+// This file contains reimplementations for everything that calls fork
+// This would be neccessary if we want to use DYLD_INTERPOSE instead of hooking __fork directly
+// It is no longer used for the following reasons:
+// - Spinlock panics are fixed, so there is no disadvantage of hooking __fork directly
+// - There are weird issues happening when interposing fork (Some CLI scripts start failing in weird ways)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <signal.h>
+#include <dlfcn.h>
+#include <os/log.h>
+#include <util.h>
+#include <errno.h>
+#include <syslog.h>
+#include <mach-o/dyld.h>
+#include "../_external/modules/litehook/src/litehook.h"
+
+kern_return_t bootstrap_parent(mach_port_t bp, mach_port_t *parent_port);
+void __fork(void);
+
+// There are two functions with direct branches to __fork: fork and vfork
+// We want to rebind these to reimplementations that work the same, but call our __forkfix_fork instead
+
+// Additionally, there are also two functions with direct branches to fork: daemon and forkpty
+// For these, we want to rebind them to reimplementations that work the same, but call our fork_reimpl instead
+
+// Unfortunately, there is no other option here than to reimplement the functions, since the point is to do no instruction replacements
+
+static int (*__fork_ptr)(void) = NULL;
+
+void (**_libSystem_atfork_prepare)(uint64_t v2Arg) = NULL;
+void (**_libSystem_atfork_parent) (uint64_t v2Arg) = NULL;
+void (**_libSystem_atfork_child)  (uint64_t v2Arg) = NULL;
+
+int fork_reimpl(void)
+{
+	(*_libSystem_atfork_prepare)(0);
+	int pid = __fork_ptr();
+	if (pid != 0) {
+		(*_libSystem_atfork_parent)(0);
+	}
+	else {
+		(*_libSystem_atfork_child)(0);
+	}
+	return pid;
+}
+
+int vfork_reimpl(void)
+{
+	(*_libSystem_atfork_prepare)(1);
+	int pid = __fork_ptr();
+	if (pid != 0) {
+		(*_libSystem_atfork_parent)(1);
+	}
+	else {
+		(*_libSystem_atfork_child)(1);
+	}
+	return pid;
+}
+
+static void move_to_root_bootstrap(void)
+{
+	mach_port_t parent_port = 0;
+	mach_port_t previous_port = 0;
+
+	do {
+		if (previous_port) {
+			mach_port_deallocate(mach_task_self(), previous_port);
+			previous_port = parent_port;
+		} else {
+			previous_port = bootstrap_port;
+		}
+
+		if (bootstrap_parent(previous_port, &parent_port) != 0) {
+			return;
+		}
+	} while (parent_port != previous_port);
+
+	task_set_bootstrap_port(mach_task_self(), parent_port);
+	bootstrap_port = parent_port;
+}
+
+int daemon_reimpl(int nochdir, int noclose)
+{
+	struct sigaction osa, sa;
+	int fd;
+	pid_t newgrp;
+	int oerrno;
+	int osa_ok;
+
+	/* A SIGHUP may be thrown when the parent exits below. */
+	sigemptyset(&sa.sa_mask);
+	sa.sa_handler = SIG_IGN;
+	sa.sa_flags = 0;
+	osa_ok = sigaction(SIGHUP, &sa, &osa);
+	move_to_root_bootstrap();
+	switch (fork_reimpl()) {
+	case -1:
+		return (-1);
+	case 0:
+		break;
+	default:
+		_exit(0);
+	}
+
+	newgrp = setsid();
+	oerrno = errno;
+	if (osa_ok != -1)
+		sigaction(SIGHUP, &osa, NULL);
+
+	if (newgrp == -1) {
+		errno = oerrno;
+		return (-1);
+	}
+
+	if (!nochdir)
+		(void)chdir("/");
+
+	if (!noclose && (fd = open("/dev/null", O_RDWR, 0)) != -1) {
+		(void)dup2(fd, STDIN_FILENO);
+		(void)dup2(fd, STDOUT_FILENO);
+		(void)dup2(fd, STDERR_FILENO);
+		if (fd > 2)
+			(void)close(fd);
+	}
+	return (0);
+}
+
+int forkpty_reimpl(int *aprimary, char *name, struct termios *termp, struct winsize *winp)
+{
+	int primary, replica, pid;
+
+	if (openpty(&primary, &replica, name, termp, winp) == -1)
+		return (-1);
+	switch (pid = fork_reimpl()) {
+	case -1:
+		(void) close(primary);
+		(void) close(replica);
+		return (-1);
+	case 0:
+		/* 
+		 * child
+		 */
+		(void) close(primary);
+		/*
+		 * 4300297: login_tty() may fail to set the controlling tty.
+		 * Since we have already forked, the best we can do is to 
+		 * dup the replica as if login_tty() succeeded.
+		 */
+		if (login_tty(replica) < 0) {
+			syslog(LOG_ERR, "forkpty: login_tty could't make controlling tty");
+			(void) dup2(replica, 0);
+			(void) dup2(replica, 1);
+			(void) dup2(replica, 2);
+			if (replica > 2)
+				(void) close(replica);
+		}
+		return (0);
+	}
+	/*
+	 * parent
+	 */
+	*aprimary = primary;
+	(void) close(replica);
+	return (pid);
+}
+
+bool fork_rebind_filter(const mach_header *header)
+{
+	Dl_info info;
+	dladdr(header, &info);
+
+	const char *path = info.dli_fname;
+	if (_dyld_shared_cache_contains_path(path)) {
+		// Ignore all dsc images that don't have fork or __fork pointers in their GOTs
+		// Just reading a GOT faults it in, which increases the resident memory
+		// By skipping these we save a fuck ton of memory and avoid issues with jetsam
+		// Unfortunately this is hardcoded since you cannot know them without reading their GOTs
+		// Since this code is only used on iOS 15, it should be fine
+		if (!strcmp(path, "/usr/lib/system/libsystem_c.dylib") || 
+			!strcmp(path, "/System/Library/Frameworks/SystemConfiguration.framework/SystemConfiguration") ||
+			!strcmp(path, "/System/Library/Frameworks/FileProvider.framework/FileProvider") || 
+			!strcmp(path, "/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore") ||
+			!strcmp(path, "/System/Library/PrivateFrameworks/LoggingSupport.framework/LoggingSupport")) {
+			return true;
+		}
+		return false;
+	}
+
+	return true;
+}
+
+bool fork_reimpl_init(void *fork_ptr)
+{
+	if (!fork_ptr) return false;
+
+	__fork_ptr = fork_ptr;
+
+	// The v2 functions take one argument, but we can still store them in the same pointer since the argument will just be discarded if the non v2 implementation is used
+	// In practice, the v2 implementation should always exist, since we're not dealing with super old versions, so all of this doesn't matter too much
+	const char *libcpath = "/usr/lib/system/libsystem_c.dylib";
+	_libSystem_atfork_prepare = litehook_find_dsc_symbol(libcpath, "__libSystem_atfork_prepare_v2") ?: litehook_find_dsc_symbol(libcpath, "__libSystem_atfork_prepare");
+	_libSystem_atfork_parent  = litehook_find_dsc_symbol(libcpath, "__libSystem_atfork_parent_v2")  ?: litehook_find_dsc_symbol(libcpath, "__libSystem_atfork_parent");
+	_libSystem_atfork_child   = litehook_find_dsc_symbol(libcpath, "__libSystem_atfork_child_v2")   ?: litehook_find_dsc_symbol(libcpath, "__libSystem_atfork_child");
+
+	litehook_rebind_symbol(LITEHOOK_REBIND_GLOBAL, (void *)__fork,  (void *)__fork_ptr,     fork_rebind_filter);
+	litehook_rebind_symbol(LITEHOOK_REBIND_GLOBAL, (void *)fork,    (void *)fork_reimpl,    fork_rebind_filter);
+	litehook_rebind_symbol(LITEHOOK_REBIND_GLOBAL, (void *)vfork,   (void *)vfork_reimpl,   fork_rebind_filter);
+	litehook_rebind_symbol(LITEHOOK_REBIND_GLOBAL, (void *)daemon,  (void *)daemon_reimpl , fork_rebind_filter);
+	litehook_rebind_symbol(LITEHOOK_REBIND_GLOBAL, (void *)forkpty, (void *)forkpty_reimpl, fork_rebind_filter);
+
+	return true;
+}

@@ -1,0 +1,115 @@
+"Credits_Made_By" = "Desenvolvido por opa334, évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "Executando o Jailbreak";
+"Log_Error" = "Sem sucesso";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "Jailbreak";
+"Status_Title_Jailbroken" = "Jailbreak concluído!";
+/*Unsupported*/
+
+// Action Menu
+"Menu_Settings_Title" = "Configurações";
+"Menu_Restart_SpringBoard_Title" = "Reiniciar SpringBoard";
+"Menu_Reboot_Userspace_Title" = "Reiniciar 'Userspace'";
+"Menu_Credits_Title" = "Créditos";
+
+// Updating
+"Button_Update" = "Atualizar";
+"Button_Update_Available" = "Atualização disponível";
+"Button_Update_Environment" = "Atualizar o 'Ambiente' do Jailbreak";
+
+// Update View
+"Update_Status_Downloading" = "Baixando atualização...";
+"Update_Status_Subtitle_Please_Wait" = "Aguarde o download todos os arquivos";
+"Update_Status_Installing" = "Instalando atualização...";
+"Update_Status_Subtitle_Restart_Soon" = "O dispostivo reiniciará em breve";
+"Title_Changelog" = "Histórico de mudanças";
+"Changelog_Unavailable_Text" = "Histórico de mudanças indisponível";
+
+// Removed Jailbreak Alert
+/*Removed_Jailbreak_Alert_Title*/
+/*Removed_Jailbreak_Alert_Message*/
+/*Button_Close*/
+
+// Error View
+/*Button_Share*/
+/*Button_Reboot*/
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "Injeção de Tweaks";
+"Settings_iDownload" = "iDownload (Terminal de desenvolvedor)";
+"Settings_Verbose_Logs" = "Logs do Verbose";
+/*Settings_Apps_JIT*/
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "Remover o Jailbreak";
+"Button_Hide_Jailbreak" = "Ocultar o Jailbreak";
+"Button_Unhide_Jailbreak" = "Deixar de ocultar o Jailbreak";
+/*Button_Refresh_Jailbreak_Apps*/
+"Button_Reinstall_Package_Managers" = "Reinstalar Gerenciadores de Pacotes";
+/*Button_Change_Mobile_Password*/
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"Ocultar o Jailbreak\" remove temporariamente os arquivos do Jailbreak até a próxima execução";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Ocultar o Jailbreak\" desabilita parcialmente o Jailbreak e tenta deixá-lo mais difícil de ser detectado. Entretando, não é completamente efetivo.";
+/*Section_Jailbreak_Settings*/
+/*Section_Actions*/
+/*Section_Customization*/
+/*Section_Exploits*/
+
+// Settings Alerts
+/*Alert_Tweak_Injection_Toggled_Title*/
+"Alert_Tweak_Injection_Toggled_Body" = "Para que as mudanças sejam aplicadas, é necessário reiniciar o 'Userspace'. Reiniciar agora?";
+/*Alert_Tweak_Injection_Toggled_Reboot_Now*/
+/*Alert_Tweak_Injection_Toggled_Reboot_Later*/
+"Alert_Remove_Jailbreak_Title" = "Remover o Jailbreak";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Remover o Jailbreak irá deletar todos arquivos do Jailbreak, porém todos aplicativos, arquivos e informações se manterão. Você tem certeza que deseja continuar? Não será possível reverter isso.";
+/*Alert_Remove_Jailbreak_Enabled_Body*/
+/*Alert_Change_Mobile_Password_Body*/
+/*Password_Placeholder*/
+/*Repeat_Password_Placeholder*/
+/*Password_Auth_Required*/
+/*Button_Change*/
+"Button_Cancel" = "Cancelar";
+/*Button_Continue*/
+
+// Duplicate Apps Errors
+/*Duplicate_Apps_Error_Dopamine_App*/
+/*Duplicate_Apps_Error_User_App*/
+/*Duplicate_Apps_Error_Icon_Cache*/
+
+// Settings Lists
+/*Theme*/
+/*Kernel Exploit*/
+/*PPL Bypass*/
+/*PAC Bypass*/
+/*None*/
+/*Recommended*/
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Licenças";
+"Credits_Button_Source_Code" = "Código-Fonte";
+
+// Logs
+"Initializing Environment" = "Iniciando o Ambiente do Jailbreak";
+/*Initializing Protection*/
+/*Loading BaseBin TrustCache*/
+/*Applying Bind Mount*/
+/*Removing Jailbreak*/
+/*Elevating Privileges*/
+/*Cleaning Up Exploits*/
+/*Building Phys R/W Primitive*/
+/*Rebooting Userspace*/
+"Patchfinding" = "Patchfinding";
+/*Exploiting Kernel (%@)*/
+/*Bypassing PAC (%@)*/
+/*Bypassing PPL (%@)*/
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Escolha o(s) Gerenciador(es) de Pacotes";
+"Select_Package_Managers_Install_Message" = "Se estiver em dúvida, selecione o Sileo";
+"Continue" = "Continuar";
+

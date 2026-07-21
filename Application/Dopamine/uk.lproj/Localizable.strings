@@ -1,0 +1,115 @@
+"Credits_Made_By" = "Зроблено opa334, évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "Джейлбрейк";
+"Log_Error" = "Не вдалося";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "Зробити джейлбрейк";
+"Status_Title_Jailbroken" = "Джейлбрейк завершено";
+/*Unsupported*/
+
+// Action Menu
+"Menu_Settings_Title" = "Налаштування";
+"Menu_Restart_SpringBoard_Title" = "Перезапустити SpringBoard";
+"Menu_Reboot_Userspace_Title" = "Перезавантажити простір користувача";
+"Menu_Credits_Title" = "Титри";
+
+// Updating
+"Button_Update" = "Оновити";
+"Button_Update_Available" = "Оновлення доступне";
+"Button_Update_Environment" = "Update Environment";
+
+// Update View
+"Update_Status_Downloading" = "Завантаження оновлення...";
+"Update_Status_Subtitle_Please_Wait" = "Будь ласка, зачекайте, поки файли завершать завантаження";
+"Update_Status_Installing" = "Встановлення оновлення...";
+"Update_Status_Subtitle_Restart_Soon" = "Пристрій буде перезавантажено найближчим часом";
+"Title_Changelog" = "Журнал змін";
+"Changelog_Unavailable_Text" = "Журнал змін недоступний";
+
+// Removed Jailbreak Alert
+/*Removed_Jailbreak_Alert_Title*/
+/*Removed_Jailbreak_Alert_Message*/
+/*Button_Close*/
+
+// Error View
+/*Button_Share*/
+/*Button_Reboot*/
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "ін'єкція твiков";
+"Settings_iDownload" = "iDownload (Термінал розробника)";
+"Settings_Verbose_Logs" = "Докладні логи";
+/*Settings_Apps_JIT*/
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "Видалити джейлбрейк";
+"Button_Hide_Jailbreak" = "Приховати джейлбрейк";
+"Button_Unhide_Jailbreak" = "Розкрити джейлбрейк";
+/*Button_Refresh_Jailbreak_Apps*/
+"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
+/*Button_Change_Mobile_Password*/
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"Приховати джейлбрейк\" тимчасово видаляє файли, пов'язані з джейлбрейком, до наступного джейлбрейку";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+/*Section_Jailbreak_Settings*/
+/*Section_Actions*/
+/*Section_Customization*/
+/*Section_Exploits*/
+
+// Settings Alerts
+/*Alert_Tweak_Injection_Toggled_Title*/
+"Alert_Tweak_Injection_Toggled_Body" = "A userspace reboot is neccessary to apply the changes. Do you want to do it now?";
+/*Alert_Tweak_Injection_Toggled_Reboot_Now*/
+/*Alert_Tweak_Injection_Toggled_Reboot_Later*/
+"Alert_Remove_Jailbreak_Title" = "Remove Jailbreak";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+/*Alert_Remove_Jailbreak_Enabled_Body*/
+/*Alert_Change_Mobile_Password_Body*/
+/*Password_Placeholder*/
+/*Repeat_Password_Placeholder*/
+/*Password_Auth_Required*/
+/*Button_Change*/
+"Button_Cancel" = "Скасувати";
+/*Button_Continue*/
+
+// Duplicate Apps Errors
+/*Duplicate_Apps_Error_Dopamine_App*/
+/*Duplicate_Apps_Error_User_App*/
+/*Duplicate_Apps_Error_Icon_Cache*/
+
+// Settings Lists
+/*Theme*/
+/*Kernel Exploit*/
+/*PPL Bypass*/
+/*PAC Bypass*/
+/*None*/
+/*Recommended*/
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Ліцензія";
+"Credits_Button_Source_Code" = "Вихідний код";
+
+// Logs
+"Initializing Environment" = "Ініціалізація середовища";
+/*Initializing Protection*/
+/*Loading BaseBin TrustCache*/
+/*Applying Bind Mount*/
+/*Removing Jailbreak*/
+/*Elevating Privileges*/
+/*Cleaning Up Exploits*/
+/*Building Phys R/W Primitive*/
+/*Rebooting Userspace*/
+"Patchfinding" = "Пошук патчів";
+/*Exploiting Kernel (%@)*/
+/*Bypassing PAC (%@)*/
+/*Bypassing PPL (%@)*/
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Вибрати менеджер(и) пакунків";
+"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+"Continue" = "Continue";
+

@@ -1,0 +1,13 @@
+.DS_Store
+/.build
+/*.xcodeproj
+xcuserdata/
+xcshareddata/
+DerivedData/
+.swiftpm/xcode/
+/Package.resolved
+Dopamine/Dopamine/bootstrap/tmp/
+Application/Payload
+.idea
+Tools/fastPathSign/.build_*
+Exploits/kfd/kfd.framework/kfd

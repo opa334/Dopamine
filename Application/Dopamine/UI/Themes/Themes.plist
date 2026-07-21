@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>key</key>
+		<string>default</string>
+		<key>name</key>
+		<string>Dopamine</string>
+		<key>image</key>
+		<string>Background_Green.jpg</string>
+		<key>actionMenuColor</key>
+		<string>723f3f3f</string>
+		<key>windowColor</key>
+		<string>994c4c4c</string>
+		<key>blur</key>
+		<integer>18</integer>
+		<key>titleShadow</key>
+		<false/>
+	</dict>
+	<dict>
+		<key>key</key>
+		<string>ellekit</string>
+		<key>icon</key>
+		<string>AppIcon_ElleKit</string>
+		<key>name</key>
+		<string>ElleKit</string>
+		<key>image</key>
+		<string>Background_ElleKit.jpg</string>
+		<key>actionMenuColor</key>
+		<string>3F610C71</string>
+		<key>windowColor</key>
+		<string>6009040A</string>
+		<key>blur</key>
+		<integer>18</integer>
+		<key>titleShadow</key>
+		<true/>
+	</dict>
+	<dict>
+		<key>key</key>
+		<string>blue</string>
+		<key>icon</key>
+		<string>AppIcon_Blue</string>
+		<key>name</key>
+		<string>Deep Blue Sky</string>
+		<key>image</key>
+		<string>Background_Blue.jpg</string>
+		<key>actionMenuColor</key>
+		<string>3F0C2571</string>
+		<key>windowColor</key>
+		<string>6004050A</string>
+		<key>blur</key>
+		<integer>40</integer>
+		<key>titleShadow</key>
+		<false/>
+	</dict>
+	<dict>
+		<key>key</key>
+		<string>red</string>
+		<key>icon</key>
+		<string>AppIcon_Red</string>
+		<key>name</key>
+		<string>Blood Sky</string>
+		<key>image</key>
+		<string>Background_Red.jpg</string>
+		<key>actionMenuColor</key>
+		<string>5F560808</string>
+		<key>windowColor</key>
+		<string>600A0404</string>
+		<key>blur</key>
+		<integer>25</integer>
+		<key>titleShadow</key>
+		<false/>
+	</dict>
+	<dict>
+		<key>key</key>
+		<string>purple</string>
+		<key>icon</key>
+		<string>AppIcon_Purple</string>
+		<key>name</key>
+		<string>Desert Dusk</string>
+		<key>image</key>
+		<string>Background_Purple.jpg</string>
+		<key>actionMenuColor</key>
+		<string>4F150C71</string>
+		<key>windowColor</key>
+		<string>6008040A</string>
+		<key>blur</key>
+		<integer>35</integer>
+		<key>titleShadow</key>
+		<false/>
+	</dict>
+</array>
+</plist>

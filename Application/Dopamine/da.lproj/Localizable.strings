@@ -1,0 +1,115 @@
+"Credits_Made_By" = "Lavet af opa334, évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "Jailbreaking";
+"Log_Error" = "Mislykket";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "Jailbreak";
+"Status_Title_Jailbroken" = "Jailbroken";
+/*Unsupported*/
+
+// Action Menu
+"Menu_Settings_Title" = "Indstillinger";
+"Menu_Restart_SpringBoard_Title" = "Genstart SpringBoard";
+"Menu_Reboot_Userspace_Title" = "Genstart Userspace";
+"Menu_Credits_Title" = "Credits";
+
+// Updating
+"Button_Update" = "Opdater";
+"Button_Update_Available" = "Opdatering tilgængelig";
+"Button_Update_Environment" = "Update Environment";
+
+// Update View
+"Update_Status_Downloading" = "Downloader opdatering...";
+"Update_Status_Subtitle_Please_Wait" = "Vent venligst mens filerne er færdige med at downloade";
+"Update_Status_Installing" = "Installerer opdatering...";
+"Update_Status_Subtitle_Restart_Soon" = "Enheden vil genstarte snart";
+"Title_Changelog" = "Ændringslog";
+"Changelog_Unavailable_Text" = "Ændringslog utilgængelig";
+
+// Removed Jailbreak Alert
+/*Removed_Jailbreak_Alert_Title*/
+/*Removed_Jailbreak_Alert_Message*/
+/*Button_Close*/
+
+// Error View
+/*Button_Share*/
+/*Button_Reboot*/
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "Tweak-injektion";
+"Settings_iDownload" = "iDownload (Udviklerterminal)";
+"Settings_Verbose_Logs" = "Detaljerede logfiler";
+/*Settings_Apps_JIT*/
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "Fjern Jailbreak";
+"Button_Hide_Jailbreak" = "Skjul Jailbreak";
+"Button_Unhide_Jailbreak" = "Vis Jailbreak";
+/*Button_Refresh_Jailbreak_Apps*/
+"Button_Reinstall_Package_Managers" = "Reinstall Package Managers";
+/*Button_Change_Mobile_Password*/
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"Skjul Jailbreak\" fjerner midlertidigt jailbreak-relaterede filer indtil næste jailbreak";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Hide Jailbreak\" partially disables the jailbreak and aims to make detection more challenging. However, it is not entirely effective and does not conceal everything.";
+/*Section_Jailbreak_Settings*/
+/*Section_Actions*/
+/*Section_Customization*/
+/*Section_Exploits*/
+
+// Settings Alerts
+/*Alert_Tweak_Injection_Toggled_Title*/
+"Alert_Tweak_Injection_Toggled_Body" = "For at ændringerne træder i kraft, skal du genstarte Userspace. Vil du genstarte nu?";
+/*Alert_Tweak_Injection_Toggled_Reboot_Now*/
+/*Alert_Tweak_Injection_Toggled_Reboot_Later*/
+"Alert_Remove_Jailbreak_Title" = "Fjern Jailbreak";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Fjernelse af jailbreak vil slette alle jailbreak-relaterede filer, men alle almindelige apps, filer og data vil blive bevaret. Er du sikker på, at du vil fortsætte? Du kan ikke fortryde denne handling.";
+/*Alert_Remove_Jailbreak_Enabled_Body*/
+/*Alert_Change_Mobile_Password_Body*/
+/*Password_Placeholder*/
+/*Repeat_Password_Placeholder*/
+/*Password_Auth_Required*/
+/*Button_Change*/
+"Button_Cancel" = "Annuller";
+/*Button_Continue*/
+
+// Duplicate Apps Errors
+/*Duplicate_Apps_Error_Dopamine_App*/
+/*Duplicate_Apps_Error_User_App*/
+/*Duplicate_Apps_Error_Icon_Cache*/
+
+// Settings Lists
+/*Theme*/
+/*Kernel Exploit*/
+/*PPL Bypass*/
+/*PAC Bypass*/
+/*None*/
+/*Recommended*/
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Licens";
+"Credits_Button_Source_Code" = "Kildekode";
+
+// Logs
+"Initializing Environment" = "Initialiserer miljø";
+/*Initializing Protection*/
+/*Loading BaseBin TrustCache*/
+/*Applying Bind Mount*/
+/*Removing Jailbreak*/
+/*Elevating Privileges*/
+/*Cleaning Up Exploits*/
+/*Building Phys R/W Primitive*/
+/*Rebooting Userspace*/
+"Patchfinding" = "Patchfinding";
+/*Exploiting Kernel (%@)*/
+/*Bypassing PAC (%@)*/
+/*Bypassing PPL (%@)*/
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Vælg Pakkehåndteringsprogram(mer)";
+"Select_Package_Managers_Install_Message" = "If you are unsure which one to select, select Sileo";
+"Continue" = "Continue";
+

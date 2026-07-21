@@ -1,0 +1,115 @@
+"Credits_Made_By" = "Сделано opa334, évelyne";
+
+// Log
+"Status_Title_Jailbreaking" = "Выполнение джейлбрейка";
+"Log_Error" = "Неудачно";
+
+// Jailbreak Button
+"Button_Jailbreak_Title" = "Джейлбрейк";
+"Status_Title_Jailbroken" = "Джейлбрейк выполнен";
+"Unsupported" = "Не поддерживается";
+
+// Action Menu
+"Menu_Settings_Title" = "Настройки";
+"Menu_Restart_SpringBoard_Title" = "Перезапустить SpringBoard";
+"Menu_Reboot_Userspace_Title" = "Перезагрузить Userspace";
+"Menu_Credits_Title" = "Благодарности";
+
+// Updating
+"Button_Update" = "Обновить";
+"Button_Update_Available" = "Доступно обновление";
+"Button_Update_Environment" = "Обновить переменную среду";
+
+// Update View
+"Update_Status_Downloading" = "Загрузка обновления...";
+"Update_Status_Subtitle_Please_Wait" = "Пожалуйста подождите, пока файлы будут загружены";
+"Update_Status_Installing" = "Установка обновления...";
+"Update_Status_Subtitle_Restart_Soon" = "Устройство скоро перезагрузится";
+"Title_Changelog" = "Список изменений";
+"Changelog_Unavailable_Text" = "Список изменений недоступен";
+
+// Removed Jailbreak Alert
+"Removed_Jailbreak_Alert_Title" = "Джейлбрейк удалён";
+"Removed_Jailbreak_Alert_Message" = "Джейлбрейк успешно удален. Рекомендуется перезагрузить устройство.";
+"Button_Close" = "Закрыть";
+
+// Error View
+"Button_Share" = "Поделиться";
+"Button_Reboot" = "Перезагрузить";
+
+// Settings Toggles
+"Settings_Tweak_Injection" = "Внедрение твиков";
+"Settings_iDownload" = "iDownload (Терминал разработчика)";
+"Settings_Verbose_Logs" = "Расширенные логи";
+"Settings_Apps_JIT" = "Разрешить JIT в приложениях";
+
+// Settings Buttons
+"Button_Remove_Jailbreak" = "Удалить джейлбрейк";
+"Button_Hide_Jailbreak" = "Скрыть джейлбрейк";
+"Button_Unhide_Jailbreak" = "Отобразить джейлбрейк";
+"Button_Refresh_Jailbreak_Apps" = "Обновить приложения джейлбрейка";
+"Button_Reinstall_Package_Managers" = "Переустановить менеджеры пакетов";
+"Button_Change_Mobile_Password" = "Изменить пароль для \"mobile\"";
+
+// Settings Hints
+"Hint_Hide_Jailbreak" = "\"Скрыть джейлбрейк\" временно удаляет файлы, связанные с джейлбрейком, до следующего джейлбрейка";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Скрыть джейлбрейк\" частично отключает джейлбрейк и стремится сделать обнаружение более сложным. Однако это не совсем эффективно и скрывает не всё.";
+"Section_Jailbreak_Settings" = "Настройки джейлбрейка";
+"Section_Actions" = "Действия";
+"Section_Customization" = "Кастомизация";
+"Section_Exploits" = "Эксплоиты";
+
+// Settings Alerts
+"Alert_Tweak_Injection_Toggled_Title" = "Перезагрузите Userspace";
+"Alert_Tweak_Injection_Toggled_Body" = "Чтобы изменения вступили в силу, нужно перезагрузить Userspace. Перезагрузить сейчас?";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Сейчас";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Потом";
+"Alert_Remove_Jailbreak_Title" = "Удаление джейлбрейка";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Удаление джейлбрейка приведёт к удалению всех файлов, связанных с джейлбрейком, но все обычные приложения, файлы и данные будут сохранены. Вы уверены, что хотите продолжить? Вы не сможете отменить это действие.";
+"Alert_Remove_Jailbreak_Enabled_Body" = "Нажимая \"Удаление джейлбрейка\", все файлы, связанные с джейлбрейком, будут удалены до следующего джейлбрейка. Все обычные приложения, файлы и данные будут сохранены. Вы уверены, что хотите продолжить? Вы не сможете отменить это действие.";
+"Alert_Change_Mobile_Password_Body" = "Установите пароль \"mobile\" пользователя на вашем устройстве, который также можно использовать для доступа root с помощью sudo. Если вы хотите установить пароль root, вы можете сделать это из мобильной оболочки, используя команду \"sudo passwd root\"";
+"Password_Placeholder" = "Пароль";
+"Repeat_Password_Placeholder" = "Повторите пароль";
+/*Password_Auth_Required*/
+"Button_Change" = "Изменить";
+"Button_Cancel" = "Отмена";
+"Button_Continue" = "Продолжить";
+
+// Duplicate Apps Errors
+"Duplicate_Apps_Error_Dopamine_App" = "Обнаружено несколько приложений с идентификатором \"%@\" внутри пути Dopamine (\"%@\"). Невозможно продолжить.";
+"Duplicate_Apps_Error_User_App" = "Приложения с идентификатором %@ есть в директории Dopamine (\"%@\"), но в системе установлены раздельно. Невозможно продолжить.";
+"Duplicate_Apps_Error_Icon_Cache" = "Приложение с идентификатором \"%@\" есть в каталоге приложений (\"%@\"), но также зарегистрировано в кэше иконок по пути (\"%@\"). Невозможно продолжить.";
+
+// Settings Lists
+"Theme" = "Темы";
+"Kernel Exploit" = "Эксплоит Ядра";
+"PPL Bypass" = "Обход PPL";
+"PAC Bypass" = "Обход PAC";
+/*None*/
+/*Recommended*/
+
+// Credits
+"Credits_Button_Discord" = "Discord";
+"Credits_Button_License" = "Лицензия";
+"Credits_Button_Source_Code" = "Исходный код";
+
+// Logs
+"Initializing Environment" = "Инициализация среды";
+"Initializing Protection" = "Инициализация защиты";
+"Loading BaseBin TrustCache" = "Получение кэша доверия BaseBin";
+"Applying Bind Mount" = "Применение монтирования с привязкой";
+"Removing Jailbreak" = "Удаление джейлбрейка";
+"Elevating Privileges" = "Повышение прав";
+"Cleaning Up Exploits" = "Очистка эксплоитов";
+"Building Phys R/W Primitive" = "Создание R/W примитива";
+"Rebooting Userspace" = "Перезагрузка Userspace";
+"Patchfinding" = "Поиск патчей";
+"Exploiting Kernel (%@)" = "Эксплуатация ядра (%@)";
+"Bypassing PAC (%@)" = "Обход PAC (%@)";
+"Bypassing PPL (%@)" = "Обход PPL (%@)";
+
+// Package Manager selection
+"Status_Title_Select_Package_Managers" = "Выберите менеджер(ы) пакетов";
+"Select_Package_Managers_Install_Message" = "Если вы не знаете, какой из них выбрать, выберите Sileo";
+"Continue" = "Продолжить";
+

@@ -1,0 +1,12 @@
+Package: libkrw0-dopamine
+Name: libkrw Plug-in (Dopamine)
+Author: opa334 <opa334@protonmail.com>
+Maintainer: opa334 <opa334@protonmail.com>
+Architecture: iphoneos-arm64
+Version: 2.0.4
+Provides: libkrw0-plugin
+Depends: libiosexec1 (>= 1.3.1)
+Section: Libraries
+Priority: standard
+Homepage: https://github.com/opa334/Dopamine/tree/main/Packages/libkrw-provider
+Description: libkrw Plug-in for Dopamine (Shared Library)

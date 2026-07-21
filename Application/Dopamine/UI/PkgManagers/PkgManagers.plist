@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>Display Name</key>
+		<string>Sileo</string>
+		<key>Key</key>
+		<string>org.coolstar.SileoStore</string>
+		<key>Icon</key>
+		<string>Sileo</string>
+		<key>Package</key>
+		<string>sileo.deb</string>
+	</dict>
+	<dict>
+		<key>Display Name</key>
+		<string>Zebra</string>
+		<key>Key</key>
+		<string>xyz.willy.Zebra</string>
+		<key>Icon</key>
+		<string>Zebra</string>
+		<key>Package</key>
+		<string>zebra.deb</string>
+	</dict>
+</array>
+</plist>
