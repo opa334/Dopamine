@@ -23,6 +23,7 @@
 @property DOActionMenuButton *updateButton;
 @property(nonatomic) BOOL hideStatusBar;
 @property(nonatomic) BOOL hideHomeIndicator;
+@property(nonatomic) BOOL didAutoStartJailbreak;
 
 @end
 
@@ -31,6 +32,25 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setupStack];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+
+    if (self.didAutoStartJailbreak) return;
+    self.didAutoStartJailbreak = YES;
+
+    BOOL isJailbroken = [[DOEnvironmentManager sharedManager] isJailbroken];
+    BOOL isSupported = [[DOEnvironmentManager sharedManager] isSupported];
+    BOOL removeJailbreakEnabled = [[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"removeJailbreakEnabled" fallback:NO];
+
+    if (isJailbroken || !isSupported || removeJailbreakEnabled) return;
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        if (!self.jailbreakBtn.enabled || self.jailbreakBtn.didExpand) return;
+        [self.jailbreakBtn.button sendActionsForControlEvents:UIControlEventTouchUpInside];
+    });
 }
 
 -(void)setupStack
