@@ -7,7 +7,7 @@
 // Jailbreak Button
 "Button_Jailbreak_Title" = "Jailbreak";
 "Status_Title_Jailbroken" = "Jailbreakkato";
-/*Unsupported*/
+"Unsupported" = "Non Supportato";
 
 // Action Menu
 "Menu_Settings_Title" = "Impostazioni";
@@ -29,65 +29,61 @@
 "Changelog_Unavailable_Text" = "Registro Delle Modifiche Non Disponibile";
 
 // Removed Jailbreak Alert
-/*Removed_Jailbreak_Alert_Title*/
-/*Removed_Jailbreak_Alert_Message*/
-/*Button_Close*/
+"Removed_Jailbreak_Alert_Title" = "Jailbreak Rimosso";
+"Removed_Jailbreak_Alert_Message" = "Il jailbreak è stato rimosso. Consigliamo di riavviare il dispositivo.";
+"Button_Close" = "Chiudi";
 
 // Error View
-/*Button_Share*/
-/*Button_Reboot*/
+"Button_Share" = "Condividi";
+"Button_Reboot" = "Riavvia";
 
 // Settings Toggles
 "Settings_Tweak_Injection" = "Iniezione Tweak";
 "Settings_iDownload" = "iDownload (Terminale per sviluppatori)";
 "Settings_Verbose_Logs" = "Log Dettagliati";
-/*Settings_Apps_JIT*/
+"Settings_Apps_JIT" = "Abilita JIT nella App";
 
 // Settings Buttons
 "Button_Remove_Jailbreak" = "Rimuovi il Jailbreak";
 "Button_Hide_Jailbreak" = "Nascondi il Jailbreak";
 "Button_Unhide_Jailbreak" = "Mostra il Jailbreak";
-/*Button_Refresh_Jailbreak_Apps*/
+"Button_Refresh_Jailbreak_Apps" = "Refresh App Jailbreak";
 "Button_Reinstall_Package_Managers" = "Reinstalla i Package Manager";
-/*Button_Change_Mobile_Password*/
+"Button_Change_Mobile_Password" = "Cambia password \"mobile\" ";
 
 // Settings Hints
 "Hint_Hide_Jailbreak" = "\"Nascondi il Jailbreak\" rimuove temporaneamente i file relativi al jailbreak fino al rejailbreak";
 "Hint_Hide_Jailbreak_Jailbroken" = "\"Nascondi il Jailbreak\" disabilita parzialmente il jailbreak e tenta di rendere più difficile il rilevamento del jailbreak. Tuttavia, non è del tutto efficace e non nasconde tutto.";
-/*Section_Jailbreak_Settings*/
-/*Section_Actions*/
-/*Section_Customization*/
-/*Section_Exploits*/
+"Section_Jailbreak_Settings" = "Impostazioni Jailbreak";
+"Section_Actions" = "Azioni";
+"Section_Customization" = "Personalizzazione";
+"Section_Exploits" = "Exploit";
 
 // Settings Alerts
-/*Alert_Tweak_Injection_Toggled_Title*/
+"Alert_Tweak_Injection_Toggled_Title" = "Userspace Reboot Richiesto";
 "Alert_Tweak_Injection_Toggled_Body" = "Il riavvio userspace è necessario per applicare modifiche. Vuoi farlo ora?";
-/*Alert_Tweak_Injection_Toggled_Reboot_Now*/
-/*Alert_Tweak_Injection_Toggled_Reboot_Later*/
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Riavvia Ora";
+"Alert_Tweak_Injection_Toggled_Reboot_Later" = "Riavvia Dopo";
 "Alert_Remove_Jailbreak_Title" = "Rimuovi il Jailbreak";
 "Alert_Remove_Jailbreak_Pressed_Body" = "La rimozione del jailbreak eliminerà tutti i file relativi al jailbreak, ma tutte le app, file, e dati personali verranno mantenuti. Sei sicuro/a di voler continuare? Non puoi annullare questa azione.";
-/*Alert_Remove_Jailbreak_Enabled_Body*/
-/*Alert_Change_Mobile_Password_Body*/
-/*Password_Placeholder*/
-/*Repeat_Password_Placeholder*/
-/*Password_Auth_Required*/
-/*Button_Change*/
+"Alert_Remove_Jailbreak_Enabled_Body" = "Abilitando \"Remove Jailbreak\" cancellerà tutti i file relativi al jailbreak nel prossimo jailbreak, ma tutte le app regolare, file e dati verrano mantenuti. Sicuro di voler continuare? Non puoi annulare poi questa azione.";
+"Alert_Change_Mobile_Password_Body" = "Imposta la password dell'utente \"mobile\" sul tuo dispositivo, questo può acnhe essere usato con sudo per accedere come root. Se vuoi impostare la password di root, puoi farlo da una shell usando il comando \"sudo passwd root\"";
+"Password_Placeholder" = "Password";
+"Repeat_Password_Placeholder" = "Ripeti Password";
+"Password_Auth_Required" = "Autenticazione richiesta per cambiare la password.";
+"Button_Change" = "Cambia";
 "Button_Cancel" = "Cancella";
-/*Button_Continue*/
+"Button_Continue" = "Continua";
 
 // Duplicate Apps Errors
-/*Duplicate_Apps_Error_Dopamine_App*/
-/*Duplicate_Apps_Error_User_App*/
-/*Duplicate_Apps_Error_Icon_Cache*/
+"Duplicate_Apps_Error_Dopamine_App" = "Ci sono diverse app con lo stesso identificatore \"%@\" dentro la cartella delle applicazioni (\"%@\"). Impossibile continuare.";
+"Duplicate_Apps_Error_User_App" = "Le app con l'identificatore %@ esiste nella cartella delle applicazioni (\"%@\") ma sono anche installare separatamente nel sistema. Impossibile continuare.";
+"Duplicate_Apps_Error_Icon_Cache" = "L'app con l'identificatore \"%@\" esiste nella cartella delle applicazioni (\"%@\") ma è anche registrata nella cache icone con un path diverso (\"%@\"). Impossibile continuare.";
 
 // Settings Lists
-/*Theme*/
-/*Kernel Exploit*/
-/*PPL Bypass*/
-/*SPTM Bypass*/
-/*PAC Bypass*/
-/*None*/
-/*Recommended*/
+"Theme" = "Tema";
+"None" = "Nessuno";
+"Recommended" = "Raccomandato";
 
 // Credits
 "Credits_Button_Discord" = "Discord";
@@ -96,19 +92,15 @@
 
 // Logs
 "Initializing Environment" = "Inizializzo l'ambiente";
-/*Initializing Protection*/
-/*Loading BaseBin TrustCache*/
-/*Applying Bind Mount*/
-/*Removing Jailbreak*/
-/*Elevating Privileges*/
-/*Cleaning Up Exploits*/
-/*Building Phys R/W Primitive*/
-/*Rebooting Userspace*/
+"Initializing Protection" = "Inizializzo la Proteczione";
+"Loading BaseBin TrustCache" = "Carico BaseBin TrustCache";
+"Applying Bind Mount" = "Applico Bind Mount";
+"Removing Jailbreak" = "Rimuovo il Jailbreak";
+"Elevating Privileges" = "Elevo i Privilegi";
+"Cleaning Up Exploits" = "Pulisco gli Exploit";
+"Building Phys R/W Primitive" = "Costruisco Phys R/W Primitive";
+"Rebooting Userspace" = "Riavvio in Userspace";
 "Patchfinding" = "Trovo patch";
-/*Exploiting Kernel (%@)*/
-/*Bypassing PAC (%@)*/
-/*Bypassing PPL (%@)*/
-/*Bypassing SPTM (%@)*/
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "Seleziona i Package Manager";
