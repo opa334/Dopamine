@@ -1,4 +1,4 @@
-"Credits_Made_By" = "由opa334開發，ElleKit 由 évelyne 開發";
+"Credits_Made_By" = "由 opa334 開發，ElleKit 由 évelyne 開發";
 
 // Log
 "Status_Title_Jailbreaking" = "正在越獄";
@@ -11,14 +11,14 @@
 
 // Action Menu
 "Menu_Settings_Title" = "設定";
-"Menu_Restart_SpringBoard_Title" = "重新啟動主畫面";
+"Menu_Restart_SpringBoard_Title" = "重新啟動 SpringBoard";
 "Menu_Reboot_Userspace_Title" = "重新啟動使用者空間";
 "Menu_Credits_Title" = "致謝";
 
 // Updating
 "Button_Update" = "更新";
-"Button_Update_Available" = "可用更新";
-"Button_Update_Environment" = "環境更新";
+"Button_Update_Available" = "有可用的更新";
+"Button_Update_Environment" = "更新環境";
 
 // Update View
 "Update_Status_Downloading" = "正在下載更新……";
@@ -30,58 +30,62 @@
 
 // Removed Jailbreak Alert
 "Removed_Jailbreak_Alert_Title" = "移除越獄";
-"Removed_Jailbreak_Alert_Message" = "移除越獄成功。 建議將設備重開機。";
+"Removed_Jailbreak_Alert_Message" = "已成功移除越獄。建議重新啟動裝置。";
 "Button_Close" = "關閉";
 
 // Error View
 "Button_Share" = "分享";
 "Button_Reboot" = "重新開機";
 
-// Settings Toggles
-"Settings_Tweak_Injection" = "載入外掛";
-"Settings_iDownload" = "iDownload（開發者終端）";
+// Settings Options
+"Settings_Tweak_Injection" = "Tweak 注入";
+"Settings_iDownload" = "iDownload（開發者 Shell）";
 "Settings_Verbose_Logs" = "詳細日誌";
-"Settings_Apps_JIT" = "於應用程式中啟用 JIT";
+"Settings_Apps_JIT" = "允許應用程式使用 JIT";
+"Settings_Allow_Old_arm64e_ABI_Libraries" = "允許舊版 arm64e 函式庫";
+"Settings_Jetsam_Multiplier" = "Jetsam 倍率";
 
 // Settings Buttons
 "Button_Remove_Jailbreak" = "移除越獄";
 "Button_Hide_Jailbreak" = "隱藏越獄";
-"Button_Unhide_Jailbreak" = "顯示越獄";
+"Button_Unhide_Jailbreak" = "取消隱藏越獄";
 "Button_Refresh_Jailbreak_Apps" = "重新整理越獄應用程式";
 "Button_Reinstall_Package_Managers" = "重新安裝套件管理器";
 "Button_Change_Mobile_Password" = "更改「mobile」密碼";
 
 // Settings Hints
-"Hint_Hide_Jailbreak" = "\"隱藏越獄\"將在下次越獄時暫時移除越獄檔案";
-"Hint_Hide_Jailbreak_Jailbroken" = "在越獄狀態下，\"隱藏越獄\" 選項會停用部分越獄功能來躲避越獄偵測。但不保證一定能成功躲避偵測。";
+"Hint_Hide_Jailbreak" = "「隱藏越獄」會暫時移除越獄相關檔案，直到下次重新越獄為止";
+"Hint_Hide_Jailbreak_Jailbroken" = "在越獄狀態下，「隱藏越獄」會停用部分越獄功能，讓越獄偵測變得更加困難。但此功能並非完全有效，也無法完全隱藏越獄痕跡。";
 "Section_Jailbreak_Settings" = "越獄設定";
-"Section_Actions" = "動作";
-"Section_Customization" = "客製化";
-"Section_Exploits" = "選擇漏洞";
+"Section_Actions" = "操作";
+"Section_Customization" = "自訂";
+"Section_Exploits" = "漏洞利用";
+"Section_Boot_Logo" = "開機 Logo";
+"Jetsam_Description" = "Jetsam 是一項系統功能，會自動終止記憶體用量超過指定限制的程序。安裝大量 Tweak 時，程序可能會在啟動時就超過此限制，導致反覆崩潰。在此可選擇倍率，所有設有記憶體限制的程序，其限制都會乘上這個倍率。當程序反覆崩潰，或安裝大量 Tweak 後出現異常的系統行為時，可提高此設定。為避免對整體系統的記憶體使用造成負面影響，建議選擇能讓系統穩定運作的最低倍率。";
+"Enabled" = "啟用";
+"Custom_Boot_Logo" = "自訂開機 Logo";
+"Select_Image" = "選擇圖片";
 
 // Settings Alerts
 "Alert_Tweak_Injection_Toggled_Title" = "需要重新啟動使用者空間";
-"Alert_Tweak_Injection_Toggled_Body" = "必需重新啟動使用者空間才能套用更變。 要現在進行嗎?";
+"Alert_Tweak_Injection_Toggled_Body" = "必須重新啟動使用者空間才能套用變更。要現在重新啟動嗎？";
 "Alert_Tweak_Injection_Toggled_Reboot_Now" = "現在重新啟動";
 "Alert_Tweak_Injection_Toggled_Reboot_Later" = "稍後重新啟動";
 "Alert_Remove_Jailbreak_Title" = "移除越獄";
-"Alert_Remove_Jailbreak_Pressed_Body" =
-"移除越獄將移除所有和越獄相關的檔案，但將保留非越獄相關應用程式、檔案，與資料。請注意，移除的檔案無法復原。是否移除越獄？";
-"Alert_Remove_Jailbreak_Enabled_Body" =
-"啟用「移除越獄」將於下次越獄刪除所有與越獄相關的所有檔案，不過所有其他非越獄相關應用程式、檔案，與資料將被保留。移除的檔案無法復原，是否移除越獄？";
-"Alert_Change_Mobile_Password_Body" = "於此裝置中設定「mobile」使用者的密碼。此密碼亦可與 sudo
-搭配取得根權限。若您想設定「root」使用者密碼可於 mobile 終端中輸入「sudo passwd root」";
+"Alert_Remove_Jailbreak_Pressed_Body" = "移除越獄將刪除所有越獄相關檔案，但會保留一般應用程式、檔案與資料。確定要繼續嗎？此操作無法復原。";
+"Alert_Remove_Jailbreak_Enabled_Body" = "啟用「移除越獄」後，將在下次越獄時刪除所有越獄相關檔案，但會保留一般應用程式、檔案與資料。確定要繼續嗎？此操作無法復原。";
+"Alert_Change_Mobile_Password_Body" = "設定此裝置上「mobile」使用者的密碼，此密碼也可搭配 sudo 取得 root 權限。若要設定 root 密碼，可在 mobile Shell 中執行「sudo passwd root」。";
 "Password_Placeholder" = "密碼";
 "Repeat_Password_Placeholder" = "重複密碼";
-"Password_Auth_Required" = "在更改密碼前需要授權。";
+"Password_Auth_Required" = "需要驗證身分才能更改 mobile 密碼。";
 "Button_Change" = "更改";
 "Button_Cancel" = "取消";
 "Button_Continue" = "繼續";
 
 // Duplicate Apps Errors
-"Duplicate_Apps_Error_Dopamine_App" = "Dopamines 應用程式目錄 (\"%@\") 內有多個識別碼為 \"%@\" 的應用程式。無法繼續。";
-"Duplicate_Apps_Error_User_App" = "標識碼為 %@ 的應用程式存在於 Dopamines 應用程式目錄 (\"%@\") 中，但也單獨安裝在系統上。無法繼續。";
-"Duplicate_Apps_Error_Icon_Cache" = "標識碼為 \"%@\" 的應用程式存在於 Dopamine 應用程式目錄 (\"%@\") 中，但也在不同路徑 (\"%@\") 下的圖示快取中註冊。無法繼續。";
+"Duplicate_Apps_Error_Dopamine_App" = "有多個識別碼為「%@」的應用程式存在於 Dopamine 應用程式目錄（「%@」）內。無法繼續。";
+"Duplicate_Apps_Error_User_App" = "識別碼為 %@ 的應用程式存在於 Dopamine 應用程式目錄（「%@」）中，但也另外安裝於系統上。無法繼續。";
+"Duplicate_Apps_Error_Icon_Cache" = "識別碼為「%@」的應用程式存在於 Dopamine 應用程式目錄（「%@」）中，但也以不同的路徑（「%@」）註冊於圖示快取中。無法繼續。";
 
 // Settings Lists
 "Theme" = "主題";
@@ -93,11 +97,11 @@
 "Recommended" = "建議";
 
 // DarkSword Workaround
-/*Respring_Required*/
-/*Respring_Required_Message*/
-/*Respring_Required_Notice_A8*/
-/*Apply_Workaround*/
-/*Respring_Cancel*/
+"Respring_Required" = "需要重新啟動 SpringBoard";
+"Respring_Required_Message" = "所選的核心漏洞利用需要建立連續的記憶體映射，而在此裝置上只能透過會重新啟動 SpringBoard 的特殊因應措施來完成。重新啟動 SpringBoard 後，請再次開啟 Dopamine 並按下「越獄」。";
+"Respring_Required_Notice_A8" = "在您的裝置上，此因應措施不一定每次都能成功，可能需要重複套用數次，直到這個提示不再出現。";
+"Apply_Workaround" = "套用因應措施";
+"Respring_Cancel" = "取消";
 
 // Credits
 "Credits_Button_Discord" = "Discord";
@@ -105,16 +109,16 @@
 "Credits_Button_Source_Code" = "原始碼";
 
 // Logs
-"Initializing Environment" = "正在初始化環境";
-"Initializing Protection" = "正在初始話保護";
+"Initializing Environment" = "正在初始化越獄環境";
+"Initializing Protection" = "正在初始化保護";
 "Loading BaseBin TrustCache" = "正在載入 BaseBin TrustCache";
 "Applying Bind Mount" = "正在套用 Bind Mount";
 "Removing Jailbreak" = "正在移除越獄";
 "Elevating Privileges" = "正在提升權限";
-"Cleaning Up Exploits" = "正在為利用漏洞善後";
+"Cleaning Up Exploits" = "正在清理漏洞利用";
 "Building Phys R/W Primitive" = "正在建立 Phys R/W Primitive";
 "Rebooting Userspace" = "正在重新啟動使用者空間";
-"Patchfinding" = "正在尋找修正檔";
+"Patchfinding" = "正在進行 Patchfinding";
 "Exploiting Kernel (%@)" = "正在利用核心漏洞 (%@)";
 "Bypassing PAC (%@)" = "正在繞過 PAC 防護 (%@)";
 "Bypassing PPL (%@)" = "正在繞過 PPL 防護 (%@)";
@@ -122,5 +126,5 @@
 
 // Package Manager selection
 "Status_Title_Select_Package_Managers" = "選擇套件管理器";
-"Select_Package_Managers_Install_Message" = "請於不確定時選擇 Sileo";
+"Select_Package_Managers_Install_Message" = "如果不確定該選哪一個，請選擇 Sileo";
 "Continue" = "繼續";
