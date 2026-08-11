@@ -1,125 +1,130 @@
 "Credits_Made_By" = "por opa334, ElleKit por évelyne";
 
-// Log
-"Status_Title_Jailbreaking" = "Jailbreaking";
+// Registro
+"Status_Title_Jailbreaking" = "Realizando jailbreak";
 "Log_Error" = "Error";
 
-// Jailbreak Button
+// Botón de Jailbreak
 "Button_Jailbreak_Title" = "Jailbreak";
-"Status_Title_Jailbroken" = "Jailbroken";
+"Status_Title_Jailbroken" = "Jailbreak realizado";
 "Unsupported" = "No compatible";
 
-// Action Menu
+// Menú de acciones
 "Menu_Settings_Title" = "Ajustes";
 "Menu_Restart_SpringBoard_Title" = "Reiniciar SpringBoard";
-"Menu_Reboot_Userspace_Title" = "Reiniciar el Espacio de Usuario";
+"Menu_Reboot_Userspace_Title" = "Reiniciar espacio de usuario";
 "Menu_Credits_Title" = "Créditos";
 
-// Updating
-"Button_Update" = "Actualización";
+// Actualización
+"Button_Update" = "Actualizar";
 "Button_Update_Available" = "Actualización disponible";
 "Button_Update_Environment" = "Actualizar entorno";
 
-// Update View
+// Vista de actualización
 "Update_Status_Downloading" = "Descargando actualización...";
-"Update_Status_Subtitle_Please_Wait" = "Espere mientras se descargan los archivos";
+"Update_Status_Subtitle_Please_Wait" = "Espera mientras terminan de descargarse los archivos";
 "Update_Status_Installing" = "Instalando actualización...";
 "Update_Status_Subtitle_Restart_Soon" = "El dispositivo se reiniciará pronto";
-"Title_Changelog" = "Lista de cambios";
-"Changelog_Unavailable_Text" = "Lista de cambios no disponible";
+"Title_Changelog" = "Registro de cambios";
+"Changelog_Unavailable_Text" = "Registro de cambios no disponible";
 
-// Removed Jailbreak Alert
-"Removed_Jailbreak_Alert_Title" = "Eliminar Jailbreak";
-"Removed_Jailbreak_Alert_Message" = "Eliminado con éxito el jailbreak. Se recomienda reiniciar el dispositivo.";
+// Alerta de jailbreak eliminado
+"Removed_Jailbreak_Alert_Title" = "Jailbreak eliminado";
+"Removed_Jailbreak_Alert_Message" = "El jailbreak se ha eliminado correctamente. Se recomienda reiniciar el dispositivo.";
 "Button_Close" = "Cerrar";
 
-// Error View
+// Vista de error
 "Button_Share" = "Compartir";
 "Button_Reboot" = "Reiniciar";
 
-// Settings Options
-"Settings_Tweak_Injection" = "Inyección de ajustes";
+// Opciones de ajustes
+"Settings_Tweak_Injection" = "Inyección de tweaks";
 "Settings_iDownload" = "iDownload (Shell de desarrollador)";
 "Settings_Verbose_Logs" = "Registros detallados";
-"Settings_Apps_JIT" = "Permitir JIT en las aplicaciones";
-"Settings_Jetsam_Multiplier" = "Multiplicador Jetsam";
+"Settings_Apps_JIT" = "Permitir JIT en apps";
+"Settings_Allow_Old_arm64e_ABI_Libraries" = "Permitir bibliotecas arm64e antiguas";
+"Settings_Jetsam_Multiplier" = "Multiplicador de Jetsam";
 
-// Settings Buttons
-"Button_Remove_Jailbreak" = "Eliminar Jailbreak";
-"Button_Hide_Jailbreak" = "Ocultar Jailbreak";
-"Button_Unhide_Jailbreak" = "Desocultar Jailbreak";
-"Button_Refresh_Jailbreak_Apps" = "Actualizar aplicaciones Jailbreak";
-"Button_Reinstall_Package_Managers" = "Reinstalar los gestores de paquetes";
+// Botones de ajustes
+"Button_Remove_Jailbreak" = "Eliminar jailbreak";
+"Button_Hide_Jailbreak" = "Ocultar jailbreak";
+"Button_Unhide_Jailbreak" = "Dejar de ocultar jailbreak";
+"Button_Refresh_Jailbreak_Apps" = "Actualizar apps de jailbreak";
+"Button_Reinstall_Package_Managers" = "Reinstalar gestores de paquetes";
 "Button_Change_Mobile_Password" = "Cambiar contraseña de \"mobile\"";
 
-// Settings Hints
-"Hint_Hide_Jailbreak" = "\"Ocultar Jailbreak\" elimina temporalmente los archivos relacionados con el jailbreak hasta el próximo rejailbreak";
-"Hint_Hide_Jailbreak_Jailbroken" = "\"Ocultar Jailbreak\" desactiva parcialmente el jailbreak y pretende hacer más difícil su detección. Sin embargo, no es del todo eficaz y no lo oculta todo.";
-"Section_Jailbreak_Settings" = "Ajustes de Jailbreak";
+// Sugerencias de ajustes
+"Hint_Hide_Jailbreak" = "\"Ocultar jailbreak\" elimina temporalmente los archivos relacionados con el jailbreak hasta el próximo rejailbreak";
+"Hint_Hide_Jailbreak_Jailbroken" = "\"Ocultar jailbreak\" desactiva parcialmente el jailbreak e intenta dificultar su detección. Sin embargo, no es totalmente eficaz y no oculta todo.";
+"Section_Jailbreak_Settings" = "Ajustes de jailbreak";
 "Section_Actions" = "Acciones";
 "Section_Customization" = "Personalización";
 "Section_Exploits" = "Exploits";
-"Jetsam_Description" = "Jetsam es una característica del sistema que matará automáticamente los procesos cuyo uso de memoria supere un límite especificado. Cuando se instalan muchos tweaks, es posible que este límite se exceda justo en el lanzamiento, causando que los procesos se bloqueen en bucle. Aquí puede seleccionar un multiplicador por el que se multiplicará el límite de memoria de todos los procesos lanzados con un límite de memoria. Aumente este valor cuando se produzca un bucle de bloqueo o si encuentra un comportamiento extraño del sistema cuando se instala un gran número de tweaks. Para no impactar negativamente en el uso de memoria de todo el sistema, se recomienda seleccionar la opción más baja bajo la cual el sistema sea estable.";
+"Section_Boot_Logo" = "Logo de arranque";
+"Jetsam_Description" = "Jetsam es una función del sistema que cierra automáticamente los procesos cuyo uso de memoria supera un límite especificado. Cuando hay muchos tweaks instalados, es posible que este límite se supere justo al iniciar, provocando que los procesos entren en un bucle de fallos. Aquí puedes seleccionar un multiplicador por el que se multiplicará el límite de memoria de todos los procesos que se inicien con un límite de memoria. Aumenta este ajuste cuando algo entre en bucle de fallos o si experimentas comportamientos extraños del sistema al tener muchos tweaks instalados. Para no afectar negativamente al uso de memoria de todo el sistema, se recomienda seleccionar la opción más baja con la que el sistema sea estable.";
+"Enabled" = "Activado";
+"Custom_Boot_Logo" = "Logo de arranque personalizado";
+"Select_Image" = "Seleccionar imagen";
 
-// Settings Alerts
-"Alert_Tweak_Injection_Toggled_Title" = "Es necesario reiniciar el Espacio de Usuario";
-"Alert_Tweak_Injection_Toggled_Body" = "Es necesario reiniciar el Espacio de Usuario para aplicar los cambios. ¿Desea hacerlo ahora?";
-"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Reinicie ahora";
+// Alertas de ajustes
+"Alert_Tweak_Injection_Toggled_Title" = "Se requiere reinicio del espacio de usuario";
+"Alert_Tweak_Injection_Toggled_Body" = "Es necesario reiniciar el espacio de usuario para aplicar los cambios. ¿Quieres hacerlo ahora?";
+"Alert_Tweak_Injection_Toggled_Reboot_Now" = "Reiniciar ahora";
 "Alert_Tweak_Injection_Toggled_Reboot_Later" = "Reiniciar más tarde";
-"Alert_Remove_Jailbreak_Title" = "Quitar Jailbreak";
-"Alert_Remove_Jailbreak_Pressed_Body" = "Al eliminar jailbreak se borrarán todos los archivos relacionados con jailbreak, pero se conservarán todas las aplicaciones, archivos y datos normales. ¿Estás seguro de que quieres continuar? No puedes deshacer esta acción";
-"Alert_Remove_Jailbreak_Enabled_Body" = "Al activar \"Quitar Jailbreak\" se eliminarán todos los archivos relacionados con el jailbreak en el próximo jailbreak, pero se conservarán todas las aplicaciones, archivos y datos normales. ¿Estás seguro de que quieres continuar? No puedes deshacer esta acción";
-"Alert_Change_Mobile_Password_Body" = "Establezca la contraseña del usuario \"mobile\" en su dispositivo, esto también se puede utilizar para el acceso root utilizando sudo. Si desea establecer la contraseña de root, puede hacerlo desde un shell móvil utilizando el comando \"sudo passwd root\"";
+"Alert_Remove_Jailbreak_Title" = "Eliminar jailbreak";
+"Alert_Remove_Jailbreak_Pressed_Body" = "Eliminar el jailbreak borrará todos los archivos relacionados con él, pero se conservarán todas las apps, archivos y datos normales. ¿Seguro que quieres continuar? No podrás deshacer esta acción.";
+"Alert_Remove_Jailbreak_Enabled_Body" = "Activar \"Eliminar jailbreak\" borrará todos los archivos relacionados con el jailbreak en el próximo jailbreak, pero se conservarán todas las apps, archivos y datos normales. ¿Seguro que quieres continuar? No podrás deshacer esta acción.";
+"Alert_Change_Mobile_Password_Body" = "Establece la contraseña del usuario \"mobile\" en tu dispositivo; también se puede usar para acceso root mediante sudo. Si quieres establecer la contraseña de root, puedes hacerlo desde una shell de mobile con el comando \"sudo passwd root\"";
 "Password_Placeholder" = "Contraseña";
 "Repeat_Password_Placeholder" = "Repetir contraseña";
-"Password_Auth_Required" = "Es necesario autenticarse para cambiar la contraseña del móvil.";
+"Password_Auth_Required" = "Se requiere autenticación para cambiar tu contraseña de mobile.";
 "Button_Change" = "Cambiar";
 "Button_Cancel" = "Cancelar";
 "Button_Continue" = "Continuar";
 
-// Duplicate Apps Errors
-"Duplicate_Apps_Error_Dopamine_App" = "Existen múltiples aplicaciones con el identificador \"%@\" dentro del directorio de aplicaciones Dopamine (\"%@\"). No se puede continuar.";
-"Duplicate_Apps_Error_User_App" = "Las apps con los identificadores %@ existen en el directorio de aplicaciones de Dopamine (\"%@\") pero también están instaladas por separado en el sistema. No se puede continuar";
-"Duplicate_Apps_Error_Icon_Cache" = "La app con el identificador \"%@\" existe en el directorio de aplicaciones de Dopamine (\"%@\") pero también está registrada en la caché de iconos bajo una ruta diferente (\"%@\"). No se puede continuar";
+// Errores de apps duplicadas
+"Duplicate_Apps_Error_Dopamine_App" = "Hay varias apps con el identificador \"%@\" dentro del directorio de aplicaciones de Dopamine (\"%@\"). No se puede continuar.";
+"Duplicate_Apps_Error_User_App" = "Las apps con los identificadores %@ existen en el directorio de aplicaciones de Dopamine (\"%@\") pero también están instaladas por separado en el sistema. No se puede continuar.";
+"Duplicate_Apps_Error_Icon_Cache" = "La app con el identificador \"%@\" existe en el directorio de aplicaciones de Dopamine (\"%@\") pero también está registrada en la caché de iconos con una ruta diferente (\"%@\"). No se puede continuar.";
 
-// Settings Lists
+// Listas de ajustes
 "Theme" = "Tema";
-"Kernel Exploit" = "Exploit del kernel";
-"PPL Bypass" = "PPL Bypass";
-"SPTM Bypass" = "SPTM Bypass";
-"PAC Bypass" = "PAC Bypass";
+"Kernel Exploit" = "Exploit de kernel";
+"PPL Bypass" = "Bypass de PPL";
+"SPTM Bypass" = "Bypass de SPTM";
+"PAC Bypass" = "Bypass de PAC";
 "None" = "Ninguno";
 "Recommended" = "Recomendado";
 
-// DarkSword Workaround
-/*Respring_Required*/
-/*Respring_Required_Message*/
-/*Respring_Required_Notice_A8*/
-/*Apply_Workaround*/
-/*Respring_Cancel*/
+// Solución alternativa DarkSword
+"Respring_Required" = "Se requiere respring";
+"Respring_Required_Message" = "El exploit de kernel seleccionado requiere crear un mapeo de memoria contiguo que, en este dispositivo, solo es posible mediante una solución especial que realiza un respring. Una vez completado el respring, vuelve a abrir la app Dopamine y pulsa \"Jailbreak\" de nuevo.";
+"Respring_Required_Notice_A8" = "En tu dispositivo, esta solución no funciona siempre y puede que tengas que aplicarla varias veces hasta que esta alerta deje de aparecer.";
+"Apply_Workaround" = "Aplicar solución";
+"Respring_Cancel" = "Cancelar";
 
-// Credits
+// Créditos
 "Credits_Button_Discord" = "Discord";
 "Credits_Button_License" = "Licencias";
 "Credits_Button_Source_Code" = "Código fuente";
 
-// Logs
-"Initializing Environment" = "Inicializando entorno de Jailbreak";
-"Initializing Protection" = "Inicializar la protección";
-"Loading BaseBin TrustCache" = "Cargando BaseBin TrustCache";
-"Applying Bind Mount" = "Aplicando montaje por vínculo";
-"Removing Jailbreak" = "Eliminando Jailbreak";
+// Registros
+"Initializing Environment" = "Inicializando entorno de jailbreak";
+"Initializing Protection" = "Inicializando protección";
+"Loading BaseBin TrustCache" = "Cargando TrustCache de BaseBin";
+"Applying Bind Mount" = "Aplicando bind mount";
+"Removing Jailbreak" = "Eliminando jailbreak";
 "Elevating Privileges" = "Elevando privilegios";
-"Cleaning Up Exploits" = "Limpiando Exploits";
-"Building Phys R/W Primitive" = "Construcción física R/W primitiva";
-"Rebooting Userspace" = "Reiniciando el Espacio de Usuario";
+"Cleaning Up Exploits" = "Limpiando exploits";
+"Building Phys R/W Primitive" = "Construyendo primitiva de lectura/escritura física";
+"Rebooting Userspace" = "Reiniciando espacio de usuario";
 "Patchfinding" = "Buscando parches";
-"Exploiting Kernel (%@)" = "Explotando Kernel (%@)";
-"Bypassing PAC (%@)" = "Saltando PAC (%@)";
-"Bypassing PPL (%@)" = "Saltando PPL (%@)";
-"Bypassing SPTM (%@)" = "Saltando SPTM (%@)";
+"Exploiting Kernel (%@)" = "Explotando kernel (%@)";
+"Bypassing PAC (%@)" = "Sorteando PAC (%@)";
+"Bypassing PPL (%@)" = "Sorteando PPL (%@)";
+"Bypassing SPTM (%@)" = "Sorteando SPTM (%@)";
 
-// Package Manager selection
-"Status_Title_Select_Package_Managers" = "Seleccione gestor(es) de paquetes";
-"Select_Package_Managers_Install_Message" = "Si no está seguro de cuál seleccionar, seleccione Sileo";
+// Selección de gestor de paquetes
+"Status_Title_Select_Package_Managers" = "Selecciona gestor(es) de paquetes";
+"Select_Package_Managers_Install_Message" = "Si no estás seguro de cuál elegir, selecciona Sileo";
 "Continue" = "Continuar";
