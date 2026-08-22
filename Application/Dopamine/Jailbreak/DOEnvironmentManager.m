@@ -54,7 +54,7 @@ extern char **environ;
         if ([self isJailbroken]) {
             gSystemInfo.jailbreakInfo.rootPath = strdup(jbclient_get_jbroot() ?: "");
         }
-        else if ([self isInstalledThroughTrollStore]) {
+        else {
             [self locateJailbreakRoot];
         }
     }
@@ -97,6 +97,7 @@ extern char **environ;
     return [[self privatePrebootPath] stringByAppendingPathComponent:bootManifestString];
 }
 
+#if 0 /* replaced by RootHide category */
 - (void)locateJailbreakRoot
 {
     if (!gSystemInfo.jailbreakInfo.rootPath) {
@@ -150,7 +151,9 @@ extern char **environ;
         }
     }
 }
+#endif
 
+#if 0 /* replaced by RootHide category */
 - (NSError *)ensureJailbreakRootExists
 {
     NSError *error = nil;
@@ -212,6 +215,7 @@ extern char **environ;
     
     return error;
 }
+#endif
 
 - (BOOL)isArm64e
 {
@@ -655,7 +659,7 @@ extern char **environ;
                 [[NSFileManager defaultManager] removeItemAtPath:@"/var/jb" error:nil];
             }
             else {
-                [[NSFileManager defaultManager] createSymbolicLinkAtPath:@"/var/jb" withDestinationPath:JBROOT_PATH(@"/") error:nil];
+                /* RootHide: never create /var/jb. Rootless ABI leaks jailbreak and breaks RootHide tweaks. */
                 if ([self isJailbroken]) {
                     jbclient_platform_set_systemwide_domain_enabled(true);
                     [self setFakelibMounted:YES];

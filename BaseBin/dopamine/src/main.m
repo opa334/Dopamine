@@ -248,7 +248,7 @@ void load_var_jb_daemons(void)
 	// I spent a lot of time figuring out why and it's something related to us being considered the wrong session / domain
 	// No clue how to fix that, but I also figured out that 'launchctl bootstrap system' works...
 	// Supposedly because this command allows us to manually specifiy a session / domain (which in this case is 'system')
-	exec_cmd_trusted("/var/jb/usr/bin/launchctl", "bootstrap", "system", "/var/jb/Library/LaunchDaemons", NULL);
+	exec_cmd_trusted(JBROOT_PATH("/usr/bin/launchctl"), "bootstrap", "system", JBROOT_PATH("/Library/LaunchDaemons"), NULL);
 }
 
 void install_builtin_packages(void)
@@ -280,9 +280,9 @@ void finalize_bootstrap_if_needed(bool *finalized)
 	char *shellBackup = getenv("SHELL") ? strdup(getenv("SHELL")) : NULL;
 
 	setenv("NO_PASSWORD_PROMPT", "1", 1);
-	setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/var/jb/sbin:/var/jb/bin:/var/jb/usr/sbin:/var/jb/usr/bin", 1);
+	setenv("PATH", "/sbin:/bin:/usr/sbin:/usr/bin:/rootfs/sbin:/rootfs/bin:/rootfs/usr/sbin:/rootfs/usr/bin", 1);
 	setenv("TERM", "xterm-256color", 1);
-	setenv("SHELL", "/var/jb/bin/sh", 1);
+	setenv("SHELL", JBROOT_PATH("/bin/sh"), 1);
 
 	if ([[NSFileManager defaultManager] fileExistsAtPath:JBROOT_PATH(@"/prep_bootstrap.sh")]) {
 		printf("Running prep_bootstrap script...\n");

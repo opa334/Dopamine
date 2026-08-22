@@ -1,27 +1,42 @@
 .PHONY: all clean build_clean
 
-all: Dopamine.ipa
+APP = build/Build/Products/Debug-iphoneos/Dopamine.app
 
-Dopamine.ipa: build/Build/Products/Debug-iphoneos/Dopamine.app
-	@echo Ad-Hoc signing Dopamine
-	xattr -rc build/Build/Products/Debug-iphoneos/Dopamine.app
-	ldid -SDopamine/Dopamine.entitlements build/Build/Products/Debug-iphoneos/Dopamine.app/Dopamine
-	ldid -s build/Build/Products/Debug-iphoneos/Dopamine.app
-	rm -rf Payload Dopamine.ipa
-	mkdir Payload
-	cp -r build/Build/Products/Debug-iphoneos/Dopamine.app Payload/Dopamine.app
-	zip -Ar Dopamine.ipa Payload
-	rm -rf Payload
-	rm -rf Dopamine.tipa
-	cp Dopamine.ipa Dopamine.tipa
+all: Dopamine.ipa Dopamine.tipa
 
 ifeq ($(NIGHTLY), 1)
-build/Build/Products/Debug-iphoneos/Dopamine.app: FORCE
+$(APP): FORCE
 	xcodebuild -scheme Dopamine -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO GCC_PREPROCESSOR_DEFINITIONS='NIGHTLY=1 COMMIT_HASH=\"$(COMMIT_HASH)\"'
+	touch $(APP)/Dopamine.roothide
+	cp -a Dopamine/Resources/*.deb $(APP)/
 else
-build/Build/Products/Debug-iphoneos/Dopamine.app: FORCE
+$(APP): FORCE
 	xcodebuild -scheme Dopamine -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+	touch $(APP)/Dopamine.roothide
+	cp -a Dopamine/Resources/*.deb $(APP)/
 endif
+
+Dopamine.ipa: $(APP)
+	@echo Ad-Hoc signing Dopamine IPA
+	xattr -rc $(APP)
+	ldid -SDopamine/Dopamine.entitlements $(APP)/Dopamine
+	ldid -s $(APP)
+	rm -rf Payload Dopamine.ipa
+	mkdir Payload
+	cp -r $(APP) Payload/Dopamine.app
+	zip -Ar Dopamine.ipa Payload
+	rm -rf Payload
+
+Dopamine.tipa: $(APP)
+	@echo Ad-Hoc signing Dopamine TIPA
+	xattr -rc $(APP)
+	ldid -SDopamine/Dopamine-TrollStore.entitlements $(APP)/Dopamine
+	ldid -s $(APP)
+	rm -rf Payload Dopamine.tipa
+	mkdir Payload
+	cp -r $(APP) Payload/Dopamine.app
+	zip -Ar Dopamine.tipa Payload
+	rm -rf Payload
 
 clean:
 	rm -rf build Payload Dopamine.ipa Dopamine.tipa

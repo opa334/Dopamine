@@ -37,3 +37,16 @@ typedef NS_ENUM(NSInteger, BootstrapErrorCode) {
 @end
 
 NS_ASSUME_NONNULL_END
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+uint64_t jbrand_new(void);
+uint64_t jbrand_current(void);
+int is_jbroot_name(char *name);
+NSString *find_jbroot(BOOL force);
+NSString *jbrootPrefix(NSString *path);
+NSString *rootfsPrefix(NSString *path);
+#ifdef __cplusplus
+}
+#endif

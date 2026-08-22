@@ -9,6 +9,7 @@
 #import <objc/runtime.h>
 #import <Photos/Photos.h>
 #import <libjailbreak/util.h>
+#import <libjailbreak/jbclient_xpc.h>
 #import "DOUIManager.h"
 #import "DOPkgManagerPickerViewController.h"
 #import "DOHeaderCell.h"
@@ -255,7 +256,19 @@
             [appJitSpecifier setProperty:@"appJITEnabled" forKey:@"key"];
             [appJitSpecifier setProperty:@YES forKey:@"default"];
             [specifiers addObject:appJitSpecifier];
-            
+
+            /**************************** roothide specfic *********************************/
+            NSString* namedesc = DOLocalizedString(@"Enable dyld patch");
+            if(envManager.isArm64e && NSProcessInfo.processInfo.operatingSystemVersion.majorVersion==15) {
+                namedesc = DOLocalizedString(@"Dyld Patch(Spinlock Fix)");
+            }
+            PSSpecifier *dyldPatchSpecifier = [PSSpecifier preferenceSpecifierNamed:namedesc target:self set:@selector(setDyldPatchEnabled:specifier:) get:@selector(readDyldPatchEnabled:) detail:nil cell:PSSwitchCell edit:nil];
+            [dyldPatchSpecifier setProperty:@YES forKey:@"enabled"];
+            [dyldPatchSpecifier setProperty:@"dyldPatchEnabled" forKey:@"key"];
+            [dyldPatchSpecifier setProperty:@NO forKey:@"default"];
+            [specifiers addObject:dyldPatchSpecifier];
+            /**************************** roothide specfic *********************************/
+
             PSSpecifier *jetsamSpecifier = [PSSpecifier preferenceSpecifierNamed:DOLocalizedString(@"Settings_Jetsam_Multiplier") target:self set:@selector(setJetsamMultiplier:specifier:) get:@selector(readJetsamMultiplier:) detail:nil cell:PSLinkListCell edit:nil];
             [jetsamSpecifier setProperty:@YES forKey:@"enabled"];
             [jetsamSpecifier setProperty:@"jetsamMultiplier" forKey:@"key"];
@@ -740,5 +753,64 @@
     [self reloadSpecifiers];
 }
 
+
+- (id)readDyldPatchEnabled:(PSSpecifier *)specifier
+{
+    DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
+    if (envManager.isJailbroken) {
+        return @(jbclient_dyld_patch_enabled());
+    }
+    return [self readPreferenceValue:specifier];
+}
+
+- (void)setDyldPatchEnabled:(id)value specifier:(PSSpecifier *)specifier
+{
+    DOEnvironmentManager *envManager = [DOEnvironmentManager sharedManager];
+
+    bool enable = ((NSNumber *)value).boolValue;
+
+    void (^confirmAction)(void) = ^{
+
+        if (!envManager.isJailbroken) {
+
+            [self setPreferenceValue:value specifier:specifier];
+            return;
+        }
+
+        UIAlertController *userspaceRebootAlertController = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Alert_Tweak_Injection_Toggled_Title") message:DOLocalizedString(@"Alert_Tweak_Injection_Toggled_Body") preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *rebootNowAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Menu_Reboot_Userspace_Title") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            if(jbclient_set_dyld_patch(enable) == 0) {
+                [self setPreferenceValue:value specifier:specifier];
+                [[DOEnvironmentManager sharedManager] rebootUserspace];
+            } else {
+                [self reloadSpecifiers];
+            }
+        }];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [self reloadSpecifiers];
+        }];
+
+        [userspaceRebootAlertController addAction:cancelAction];
+        [userspaceRebootAlertController addAction:rebootNowAction];
+        [self presentViewController:userspaceRebootAlertController animated:YES completion:nil];
+    };
+
+
+    if(enable && envManager.isArm64e && NSProcessInfo.processInfo.operatingSystemVersion.majorVersion==15) {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Warning") message:DOLocalizedString(@"When spinlock fix is ​​enabled, app extensions of blacklisted apps will be disabled and may also cause spinlock panics when the blacklisted app is in foreground/background.\n\nYou can first try disabling tweak injection for the app in Choicy (spinlock fix still works), and only blacklist the app if that doesn't work.") preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *continueAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Continue") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            confirmAction();
+        }];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [self reloadSpecifiers];
+        }];
+
+        [alert addAction:cancelAction];
+        [alert addAction:continueAction];
+        [self presentViewController:alert animated:YES completion:nil];
+    } else {
+        confirmAction();
+    }
+}
 
 @end

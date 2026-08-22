@@ -1,1 +1,2 @@
-bootstrap_*.tar.zst
+# vendored RootHide bootstraps are required for hide layout
+# bootstrap_*.tar.zst

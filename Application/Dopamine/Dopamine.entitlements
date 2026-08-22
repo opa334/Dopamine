@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>platform-application</key>
-	<true/>
-	<key>proc_info-allow</key>
-	<true/>
-	<key>com.apple.private.persona-mgmt</key>
-	<true/>
 	<key>com.apple.private.tcc.allow</key>
 	<array>
 		<string>kTCCServiceSystemPolicyAllFiles</string>
@@ -15,8 +9,6 @@
 	<key>com.apple.private.security.storage-exempt.heritable</key>
 	<true/>
 	<key>com.apple.private.security.storage.AppBundles</key>
-	<true/>
-	<key>com.apple.private.security.no-sandbox</key>
 	<true/>
 	<key>com.apple.springboard.CFUserNotification</key>
 	<true/>

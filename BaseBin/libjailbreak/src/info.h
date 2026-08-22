@@ -43,6 +43,9 @@ struct system_info {
 		uint64_t usesPACBypass;
 		char *rootPath;
 		char *appIdentifier;
+		uint64_t jbrand;
+		uint64_t palera1n;
+		bool dyld_patch_enabled;
 	} jailbreakInfo;
 
 	struct {
@@ -408,6 +411,9 @@ extern struct system_info gSystemInfo;
 	iterator(ctx, kernelConstant.TFRO_HARDENED);
 
 #define JAILBREAK_INFO_ITERATE(ctx, iterator) \
+	iterator(ctx, jailbreakInfo.jbrand); \
+	iterator(ctx, jailbreakInfo.palera1n); \
+	iterator(ctx, jailbreakInfo.dyld_patch_enabled); \
 	iterator(ctx, jailbreakInfo.usesPACBypass); \
 	iterator(ctx, jailbreakInfo.rootPath); \
 	iterator(ctx, jailbreakInfo.appIdentifier);

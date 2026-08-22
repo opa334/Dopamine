@@ -45,4 +45,18 @@ bool jbclient_dopamine_is_jailbroken(char **version);
 int jbclient_dopamine_get_root(void);
 int jbclient_dopamine_drop_root(void);
 
+/*********** roothide specfic **********/
+bool jbclient_palehide_present();
+bool jbclient_roothide_jailbroken();
+mach_port_t jbclient_jailbreakd_lookup();
+mach_port_t jbclient_jailbreakd_checkin();
+bool jbclient_blacklist_check_pid(pid_t pid);
+bool jbclient_blacklist_check_path(const char* path);
+bool jbclient_blacklist_check_bundle(const char* bundle);
+int jbclient_trust_library_recurse(const char *libraryPath, void *addressInCaller);
+int jbclient_trust_executable_recurse(const char *executablePath, xpc_object_t preferredArchsArray);
+bool jbclient_dyld_patch_enabled();
+int jbclient_set_dyld_patch(bool enabled);
+/************** roothide specfic *************/
+
 #endif

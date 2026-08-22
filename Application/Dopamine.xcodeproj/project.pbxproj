@@ -101,6 +101,7 @@
 		8C05B0182B632925001A7CF3 /* badRecovery.s in Sources */ = {isa = PBXBuildFile; fileRef = 8C05B0172B632925001A7CF3 /* badRecovery.s */; };
 		8C05C59F2B75A1770097A931 /* bootstrap_1800.tar.zst in Resources */ = {isa = PBXBuildFile; fileRef = 8C05C59E2B759F8A0097A931 /* bootstrap_1800.tar.zst */; };
 		8C05C5A02B75A17A0097A931 /* bootstrap_1900.tar.zst in Resources */ = {isa = PBXBuildFile; fileRef = 8C05C59D2B759F8A0097A931 /* bootstrap_1900.tar.zst */; };
+		8C00DEBA2B5C9F9100C6F14B /* roothideapp.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C00DEBB2B5C9DE800C6F14B /* roothideapp.deb */; };
 		8C2131912B50CA4B008E682C /* krkw.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C2131782B50CA4B008E682C /* krkw.h */; };
 		8C2131922B50CA4B008E682C /* kread_sem_open.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C21317B2B50CA4B008E682C /* kread_sem_open.h */; };
 		8C2131932B50CA4B008E682C /* kread_IOSurface.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C21317C2B50CA4B008E682C /* kread_IOSurface.h */; };
@@ -541,6 +542,7 @@
 		8C05B0172B632925001A7CF3 /* badRecovery.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = badRecovery.s; sourceTree = "<group>"; };
 		8C05C59D2B759F8A0097A931 /* bootstrap_1900.tar.zst */ = {isa = PBXFileReference; lastKnownFileType = file; path = bootstrap_1900.tar.zst; sourceTree = "<group>"; };
 		8C05C59E2B759F8A0097A931 /* bootstrap_1800.tar.zst */ = {isa = PBXFileReference; lastKnownFileType = file; path = bootstrap_1800.tar.zst; sourceTree = "<group>"; };
+		8C00DEBB2B5C9DE800C6F14B /* roothideapp.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = roothideapp.deb; sourceTree = "<group>"; };
 		8C1FC8422B6460FD00282536 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8C2131782B50CA4B008E682C /* krkw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = krkw.h; sourceTree = "<group>"; };
 		8C21317B2B50CA4B008E682C /* kread_sem_open.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kread_sem_open.h; sourceTree = "<group>"; };
@@ -1414,6 +1416,7 @@
 				8CB94F022B59E17A0098BAFD /* basebin.tc */,
 				8C512B8B2B5C9DE800C6F14A /* sileo.deb */,
 				8C512B8C2B5C9DE800C6F14A /* zebra.deb */,
+				8C00DEBB2B5C9DE800C6F14B /* roothideapp.deb */,
 				8C609C992C19AC250023DD12 /* libkrw-dopamine.deb */,
 				8CCD8A832B6F165A004B72B0 /* libroot.deb */,
 				8CCD2FC32B77AA9200F9C5DA /* basebin-link.deb */,
@@ -1998,6 +2001,7 @@
 				8C2875212BD850B4008B24DA /* LICENSE_libgrabkernel2.md in Resources */,
 				8C512B912B5C9F9100C6F14A /* sileo.deb in Resources */,
 				8C512B922B5C9F9400C6F14A /* zebra.deb in Resources */,
+				8C00DEBA2B5C9F9100C6F14B /* roothideapp.deb in Resources */,
 				8CCD8A882B6F16D0004B72B0 /* libroot.deb in Resources */,
 				8C296BAE2BE05914007C2AD1 /* LICENSE_plooshinit.md in Resources */,
 				8C5FA9712BDD81EF008C246F /* LICENSE_weightBufs.md in Resources */,
