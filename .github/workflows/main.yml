@@ -36,6 +36,7 @@ jobs:
         uses: actions/checkout@main
         with:
             submodules: recursive
+            lfs: true
 
       - name: Install Procursus
         uses: dhinakg/procursus-action@main
