@@ -187,5 +187,12 @@ kSpawnConfig spawn_config_for_executable(const char *path, char *const argv[rest
     }
 
     // ── 3. Default: inject + trust + patch (all three bits set) ───────────────
-    return (kSpawnConfigInject | kSpawnConfigTrust);
+    // kSpawnConfigPatchProcess: roothider_main.c's posthook requires this bit
+    // to route the child through the suspended-spawn + jbdSpawnPatchChild
+    // path so its jbenv (jbroot/sandbox extensions) is patched BEFORE the
+    // child's constructors run. Without it (previous builds) bash spawned by
+    // RootHidePatcher never received sandbox extensions, and any jbroot file
+    // access outside the app container failed EPERM — the "select deb ->
+    // convert -> nothing happens" RootHidePatcher symptom.
+    return (kSpawnConfigInject | kSpawnConfigTrust | kSpawnConfigPatchProcess);
 }

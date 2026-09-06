@@ -21,10 +21,16 @@
 // a garbage DYLD_INSERT_LIBRARIES path that would make dyld kill the child.
 extern const char *HOOK_DYLIB_PATH;
 
-typedef enum 
+typedef enum
 {
 	kSpawnConfigInject = 1 << 0,
 	kSpawnConfigTrust = 1 << 1,
+	// RootHide port: roothider_main.c's posthook uses this bit to decide
+	// whether the child takes the suspended-spawn + jbdSpawnPatchChild
+	// exec-trace path (stock-dyld mode). The local spawn config always
+	// sets it for injectable children (upstream roothide parity: every
+	// such child gets its jbenv patched before its constructors run).
+	kSpawnConfigPatchProcess = 1 << 2,
 } kSpawnConfig;
 
 int __posix_spawn(pid_t *restrict pid, const char *restrict path, struct _posix_spawn_args_desc *desc, char *const argv[restrict], char *const envp[restrict]);

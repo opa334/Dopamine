@@ -329,18 +329,37 @@ bool should_enable_tweaks(void)
 
 int __posix_spawn_hook(pid_t *restrict pid, const char *restrict path, struct _posix_spawn_args_desc *desc, char *const argv[restrict], char * const envp[restrict])
 {
-        return posix_spawn_hook_shared(pid, path, desc, argv, envp, (void *)__posix_spawn_inline, jbclient_trust_file_by_path, jbclient_platform_set_process_debugged, jbclient_jbsettings_get_double("jetsamMultiplier"));
+        // RootHide port (Dopamine2-roothide main.c parity): dispatch through
+        // the roothide pre/post hook pair instead of plain
+        // posix_spawn_hook_shared. The posthook performs, per spawned child:
+        //   - jbclient_trust_executable_recurse(path, preferredArchs):
+        //     recursive trust of the executable AND its dependent dylibs
+        //     (bash -> libvrootapi -> libvroot -> libroothide -> roothideinit
+        //     for every RootHide bootstrap binary) with roothide
+        //     randomized-cdhash normalization. Flat trust of only the main
+        //     binary left the libvroot chain untrusted, so AMFI killed the
+        //     process during dyld load and RootHidePatcher's patch.sh never
+        //     ran (silent "select deb -> convert -> nothing" symptom).
+        //   - DYLD_IN_CACHE=0 handling + trust_insert_libraries
+        //   - jbdSpawnExecStart/jbdSpawnPatchChild exec-trace so the child
+        //     gets its jbenv patched before main.
+        return roothide_systemhook___posix_spawn_prehook(pid, path, desc, argv, envp, (void *)roothide_systemhook___posix_spawn_posthook, jbclient_trust_file_by_path, jbclient_platform_set_process_debugged, jbclient_jbsettings_get_double("jetsamMultiplier"));
 }
 
 int __posix_spawn_hook_with_filter(pid_t *restrict pid, const char *restrict path, char *const argv[restrict], char * const envp[restrict], struct _posix_spawn_args_desc *desc, int *ret)
 {
-        *ret = posix_spawn_hook_shared(pid, path, desc, argv, envp, (void *)__posix_spawn_inline, jbclient_trust_file_by_path, jbclient_platform_set_process_debugged, jbclient_jbsettings_get_double("jetsamMultiplier"));
+        // RootHide port: same roothide dispatch as __posix_spawn_hook above.
+        *ret = roothide_systemhook___posix_spawn_prehook(pid, path, desc, argv, envp, (void *)roothide_systemhook___posix_spawn_posthook, jbclient_trust_file_by_path, jbclient_platform_set_process_debugged, jbclient_jbsettings_get_double("jetsamMultiplier"));
         return 1;
 }
 
 int __execve_hook(const char *path, char *const argv[], char *const envp[])
 {
-        return execve_hook_shared(path, argv, envp, (void *)__execve_inline, jbclient_trust_file_by_path);
+        // RootHide port: roothide pre/post pair (prehook first retries the
+        // exec via POSIX_SPAWN_SETEXEC posix_spawn, falling back to
+        // execve_hook_shared only for fork-restricted callers; the posthook
+        // exec-traces the child so its jbenv gets patched).
+        return roothide_systemhook___execve_prehook(path, argv, envp, (void *)roothide_systemhook___execve_posthook, jbclient_trust_file_by_path);
 }
 
 xpc_object_t copy_entitlements_xpc(void)
