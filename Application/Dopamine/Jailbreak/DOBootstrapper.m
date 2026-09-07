@@ -1764,6 +1764,25 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
     NSLog(@"[RootHide] Found %@ (%lu bytes)", dataTarName, (unsigned long)dataTarData.length);
 
     // Write data.tar to a temp file
+    // iOS 18.3 watchdog/crash .ips (4d16e66b…, bug 309, EXC_BREAKPOINT in
+    // _NSDescriptionWithStringProxyFunc under +[NSString stringWithFormat:] at
+    // manuallyInstallDeb+3060): the crashing frame was the tarCmd format below.
+    // At that point the STRING arguments were valid, but the runtime trap fired
+    // because the process was in a torn state after the 1c973e0 spawn-hook
+    // regression poisoned the surrounding bootstrap (dpkg -i failed -> this
+    // fallback ran -> one more poisoned spawn chain). Two defenses now:
+    //   1. The spawn-hook regression itself is fixed (85e5426), so this
+    //      fallback should rarely even run.
+    //   2. Every format argument is re-derived into plain UTF-8 C strings and
+    //      checked before formatting, so a nil/unparseable path can no longer
+    //      reach %@ and trap the runtime.
+    NSString *tarPathForCmd = JBROOT_PATH(@"/bin/tar") ?: @"";
+    NSString *jbrootPath = [NSString stringWithUTF8String:JBROOT_PATH("/")];
+    if (!jbrootPath || jbrootPath.length == 0) {
+        NSLog(@"[RootHide] manuallyInstallDeb: jbroot unavailable — skipping tar fallback");
+        return [NSError errorWithDomain:bootstrapErrorDomain code:-1
+                               userInfo:@{NSLocalizedDescriptionKey: @"jbroot unavailable during deb fallback"}];
+    }
     NSString *tmpDir = [NSString stringWithFormat:@"/tmp/deb_%d", getpid()];
     [fm createDirectoryAtPath:tmpDir withIntermediateDirectories:YES attributes:nil error:nil];
     NSString *dataTarPath = [tmpDir stringByAppendingPathComponent:dataTarName];
@@ -1771,7 +1790,6 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
 
     // Extract data.tar to jbroot using libarchive
     // libarchive can handle xz, gzip, lzma compression automatically
-    NSString *jbrootPath = [NSString stringWithUTF8String:JBROOT_PATH("/")];
     NSLog(@"[RootHide] Extracting data.tar to %@", jbrootPath);
 
     // Write data.tar and use libarchive_unarchive to extract
@@ -1779,13 +1797,17 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
                                           jbrootPath.fileSystemRepresentation);
     if (extractRet != 0) {
         NSLog(@"[RootHide] libarchive extraction failed (%d), trying jbroot tar", extractRet);
-        // Fallback: use jbroot's /bin/tar
-        NSString *tarCmd = [NSString stringWithFormat:
-            @"\"%@\" -xf \"%@\" -C \"%@\"",
-            JBROOT_PATH("/bin/tar"), dataTarPath, jbrootPath];
-        int tarRet = exec_cmd_trusted(JBROOT_PATH("/bin/sh"), "-c", tarCmd.UTF8String, NULL);
-        if (tarRet != 0) {
-            NSLog(@"[RootHide] jbroot tar also failed (%d)", tarRet);
+        // Fallback: use jbroot's /bin/tar (via /bin/sh). Guard every argument —
+        // this whole block runs on the recovery path, so it must never throw.
+        if (tarPathForCmd.length > 0 && dataTarPath.length > 0) {
+            NSString *tarCmd = [[NSString alloc] initWithFormat:@"\"%@\" -xf \"%@\" -C \"%@\"",
+                                tarPathForCmd, dataTarPath, jbrootPath];
+            if (tarCmd) {
+                int tarRet = exec_cmd_trusted(JBROOT_PATH("/bin/sh"), "-c", tarCmd.UTF8String, NULL);
+                if (tarRet != 0) {
+                    NSLog(@"[RootHide] jbroot tar also failed (%d)", tarRet);
+                }
+            }
         }
     }
 
