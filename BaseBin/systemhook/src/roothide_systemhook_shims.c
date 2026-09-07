@@ -186,13 +186,34 @@ kSpawnConfig spawn_config_for_executable(const char *path, char *const argv[rest
         }
     }
 
-    // ── 3. Default: inject + trust + patch (all three bits set) ───────────────
-    // kSpawnConfigPatchProcess: roothider_main.c's posthook requires this bit
-    // to route the child through the suspended-spawn + jbdSpawnPatchChild
-    // path so its jbenv (jbroot/sandbox extensions) is patched BEFORE the
-    // child's constructors run. Without it (previous builds) bash spawned by
-    // RootHidePatcher never received sandbox extensions, and any jbroot file
-    // access outside the app container failed EPERM — the "select deb ->
-    // convert -> nothing happens" RootHidePatcher symptom.
-    return (kSpawnConfigInject | kSpawnConfigTrust | kSpawnConfigPatchProcess);
+    // ── 3. Default: inject + trust (kSpawnConfigPatchProcess deliberately
+    // NOT set) ─────────────────────────────────────────────────────────────────
+    // REGRESSION ANALYSIS (dopamine.ips bug_type 509, iOS 16.7.16 stackshot,
+    // build 1c973e0): setting kSpawnConfigPatchProcess by default routed EVERY
+    // spawn system-wide through the roothider_main.c suspended-spawn +
+    // jbdSpawnExecStart/jbdSpawnPatchChild branch. That branch makes TWO
+    // synchronous XPC round trips per child, and its failure paths are
+    // catastrophic under a stock-dyld fork where children already self-check-in
+    // via the DYLD_INSERT_LIBRARIES-injected systemhook:
+    //   - jbdSpawnExecStart failure returns 201 straight out of posix_spawn
+    //     (dash printed "Unknown error: 201" for every command in
+    //     prep_bootstrap.sh), and
+    //   - jbdSpawnPatchChild failure SIGQUIT+SIGKILLs the suspended child,
+    //     which reads to the user as "spam kill 9" and freezes setup.
+    // Proof from the stackshot: the jailbreak worker (tid 3952) sat blocked in
+    // jbserver_xpc_send after xpc_pipe_routine with the reply never arriving —
+    // every extra XPC round trip is a hang vector whenever the server side is
+    // busy (bootstrap storm) or mid-teardown.
+    // The exec-trace jbenv patch is redundant in stock-dyld mode anyway:
+    // spawn_exec_hook_common already appends DYLD_INSERT_LIBRARIES=systemhook,
+    // and the child's systemhook constructor fetches jbroot + sandbox
+    // extensions itself via jbclient_process_checkin. Upstream agrees the path
+    // is optional: exec_cmd_roothide_spawn skips patching when systemhook is
+    // already loaded (dlopen("systemhook.dylib", RTLD_NOLOAD)).
+    // The RootHidePatcher fix in 1c973e0 was the TRUST half (recursive trust of
+    // bash -> libvrootapi -> libvroot -> libroothide -> roothideinit), which
+    // stays enabled here via kSpawnConfigTrust; jbenv/sandbox for the
+    // patcher's shell comes from env-based injection, exactly like every
+    // other jailbreak binary.
+    return (kSpawnConfigInject | kSpawnConfigTrust);
 }

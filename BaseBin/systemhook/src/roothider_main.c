@@ -287,9 +287,19 @@ int roothide_systemhook___posix_spawn_posthook(pid_t *restrict pidp,
 
     if (patch_exec) {
         if (jbdSpawnExecStart(path, should_resume) != 0) { // jdb fault?
-            //restore flags
+            // ROOTHIDE PORT, fail-safe fix: upstream returns 201 here, which
+            // propagates out of posix_spawn and makes the caller believe the
+            // exec itself failed — dash surfaces it as
+            // "prep_bootstrap.sh: N: /usr/bin/sed: Unknown error: 201" for
+            // EVERY command once jailbreakd is slow/unresponsive, bricking
+            // bootstrap Step 2/5 (dopamine.ips bug 509 evidence, build 1c973e0).
+            // In stock-dyld mode the child does not need the exec-trace jbenv
+            // patch (it self-checks-in via injected systemhook), so restore
+            // the caller's flags and FALL THROUGH to the plain spawn instead
+            // of failing it.
             posix_spawnattr_setflags(attrp, flags);
-            return 201;
+            patch_exec = false;
+            should_suspend = false;
         }
     }
 
@@ -320,11 +330,21 @@ int roothide_systemhook___posix_spawn_posthook(pid_t *restrict pidp,
         jbdSpawnExecCancel(path);
     } else if (ret == 0 && pid > 0) {
         if (should_suspend) {
-            if (jbdSpawnPatchChild(pid, should_resume) != 0) { // jdb fault? kill
-                //just kill it instead of letting it hang forever, and the requester decides what to do later
-                kill(pid, SIGQUIT); //core dump
-                kill(pid, SIGKILL);
-                return 202;
+            if (jbdSpawnPatchChild(pid, should_resume) != 0) { // jdb fault?
+                // ROOTHIDE PORT, fail-safe fix: upstream SIGQUIT+SIGKILLs the
+                // child here and reports 202 to the caller. With this hook
+                // wired into EVERY injected process (build 1c973e0), that
+                // turned any jailbreakd hiccup into system-wide child
+                // slaughter — the user-visible "spam kill 9" freeze during
+                // setup on iOS 16/17/18. The child is spawned with env-based
+                // systemhook injection and is fully functional without the
+                // CS_GET_TASK_ALLOW patch (that bit only matters for debuggers
+                // and the redundant exec-trace path), so just RESUME it and
+                // report the spawn as succeeded. Also restore the caller's
+                // suspension state faithfully when resume was not requested.
+                if (should_resume) {
+                    kill(pid, SIGCONT);
+                }
             }
         }
     }
@@ -344,8 +364,12 @@ int roothide_systemhook___execve_prehook(const char *path,
     int ret = posix_spawn(NULL, path, NULL, &attr, argv, envp);
     posix_spawnattr_destroy(&attr);
 
-    //posix_spawn with POSIX_SPAWN_SETEXEC failed
-    assert(ret != 0);
+    // posix_spawn with POSIX_SPAWN_SETEXEC failed (ret != 0 expected here).
+    // ROOTHIDE PORT: NO assert — the SETEXEC spawn above goes through the
+    // hooked posix_spawn → roothider spawn posthook, so a jailbreakd outage
+    // surfaces here as a nonzero ret (201 pre-fix). assert()ing on it kills
+    // the calling process inside its own execve; every other hook in this
+    // file degrades to the plain exec on failure, so mirror that.
 
     /* some processes are only allowed to call execve but not posix_spawn,
          e.g: "configd" on ios15, we need to trace it so that we can patch the subprocess before it runs. */
@@ -368,8 +392,23 @@ int roothide_systemhook___execve_posthook(const char *path, char *const argv[], 
     bool traced = false;
 
     if (jbdExecTraceStart(path, &traced) != 0) { // jdb fault?
-        errno = 203;
-        return -1;
+        // ROOTHIDE PORT, fail-safe fix: upstream returns -1 with errno=203,
+        // converting a jailbreakd outage into an exec failure for the caller
+        // (and the whole process dies with it — this hook runs inside the
+        // calling process's execve). In stock-dyld mode the traced-jbenv patch
+        // is redundant: the exec'd image either re-execs via the SETEXEC
+        // posix_spawn above (full env patching by the spawn posthook) or
+        // self-checks-in through its injected systemhook. Fall through to the
+        // plain exec instead of failing it.
+        char **envcFailsafe = envbuf_mutcopy((const char **)envp);
+        if (envbuf_getenv(envcFailsafe, "DYLD_INSERT_LIBRARIES")) {
+            envbuf_setenv(&envcFailsafe, "DYLD_IN_CACHE", "0");
+        }
+        int retFailsafe = __execve_orig(path, argv, envcFailsafe);
+        int olderrFailsafe = errno;
+        envbuf_free(envcFailsafe);
+        errno = olderrFailsafe;
+        return retFailsafe;
     }
 
     //wait for SIGSTOP
@@ -391,8 +430,16 @@ int roothide_systemhook___execve_posthook(const char *path, char *const argv[], 
     bool detached = false;
 
     if (jbdExecTraceCancel(path, &detached) != 0) {
-        //broken process
-        exit(99);
+        // ROOTHIDE PORT, fail-safe fix: upstream exit(99)s the whole process
+        // here ("broken process") when the cancel round trip to jailbreakd
+        // fails — but exec* only reaches this line when the exec ALREADY
+        // FAILED (a successful exec never returns). Killing the caller on a
+        // jailbreakd hiccup turns a benign EPERM/ENOENT exec failure into an
+        // unexplained process death; with the hook wired into every injected
+        // process that reads as "device bricked". Just return the exec
+        // failure to the caller like a normal execve would.
+        errno = olderr;
+        return ret;
     }
 
     //wait for detach
