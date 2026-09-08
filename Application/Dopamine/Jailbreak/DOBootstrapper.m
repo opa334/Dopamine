@@ -2001,6 +2001,33 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
         } else {
             NSLog(@"[RootHide] PATCHER: all patch.sh dependencies present");
         }
+
+        // --- 4. PATCHER IMPORT DIAGNOSTICS: if the Patcher app was opened
+        // since the last jailbreak, its systemhook probes appended results to
+        // /var/mobile/.patcher_diag.log. Surface the latest launch's probes so
+        // the silent DocumentPicker import failure becomes visible.
+        NSString *diagPath = JBROOT_PATH(@"/var/mobile/RootHidePatcher/.patcher_diag.log");
+        NSString *diagContents = [NSString stringWithContentsOfFile:diagPath
+                                                           encoding:NSUTF8StringEncoding
+                                                              error:nil];
+        if (diagContents.length > 0) {
+            NSArray *lines = [diagContents componentsSeparatedByCharactersInSet:
+                [NSCharacterSet newlineCharacterSet]];
+            NSMutableArray *recent = [NSMutableArray array];
+            for (NSString *line in lines) {
+                if (line.length == 0) continue;
+                [recent addObject:line];
+            }
+            // Keep at most the last 6 entries (1 launch = up to 4 lines).
+            NSUInteger start = recent.count > 6 ? recent.count - 6 : 0;
+            for (NSUInteger i = start; i < recent.count; i++) {
+                NSString *line = recent[i];
+                NSLog(@"[RootHide][PatcherDiag] %@", line);
+                [[DOUIManager sharedInstance] sendLog:[NSString stringWithFormat:@"PATCHER-DIAG: %@", line] debug:NO];
+            }
+            // Truncate so the next report only contains fresh probes.
+            [@"" writeToFile:diagPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+        }
     } @catch (NSException *e) {
         NSLog(@"[RootHide] PATCHER support EXCEPTION (non-fatal): %@: %@", e.name, e.reason);
     }

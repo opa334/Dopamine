@@ -255,6 +255,18 @@ int systemwide_process_checkin(audit_token_t *processToken, char **rootPathOut, 
 
                 // Make jbroot/var/mobile writable (RootHide: dynamic path)
                 sandbox_extension_issue_file_to_process("com.apple.app-sandbox.read-write", JBROOT_PATH("/var/mobile"), 0, *processToken),
+
+                // ROOTHIDE PATCHER IMPORT FIX: the Patcher app's DocumentPicker
+                // does its deb import (copyItem into jbroot/var/mobile/
+                // RootHidePatcher/.Inbox) silently — failures are swallowed with
+                // just a print(). Some sandbox implementations don't honour the
+                // umbrella /var/mobile extension for a freshly-created subfolder,
+                // so the copy fails with no UI feedback and "Select .deb file"
+                // appears to do nothing. Issue a dedicated read-write extension
+                // for the Patcher work tree so the import always succeeds.
+                // Harmless for every other process: the path may not exist yet
+                // (it is pre-created by DOBootstrapper on every jailbreak).
+                sandbox_extension_issue_file_to_process("com.apple.app-sandbox.read-write", JBROOT_PATH("/var/mobile/RootHidePatcher"), 0, *processToken),
         };
         int sandboxExtensionsCount = sizeof(sandboxExtensionsArr) / sizeof(char *);
         *sandboxExtensionsOut = combine_strings('|', sandboxExtensionsArr, sandboxExtensionsCount);

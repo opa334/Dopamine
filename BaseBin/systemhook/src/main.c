@@ -5,6 +5,11 @@
 #include <mach-o/getsect.h>
 #include <dlfcn.h>
 #include <sys/stat.h>
+#include <fcntl.h>
+#include <time.h>
+#include <errno.h>
+#include <stdio.h>
+#include <limits.h>
 #include <paths.h>
 #include <util.h>
 #include <ptrauth.h>
@@ -741,4 +746,97 @@ __attribute__((constructor)) static void initializer(void)
                 jbclient_cs_revalidate();
 #endif
         }
+
+        // ========== ROOTHIDE PATCHER IMPORT DIAGNOSTICS ==========
+        // Temporary diagnostics for the silent DocumentPicker import failure.
+        // The Patcher app imports a picked deb via copyItem() into
+        // jbroot/var/mobile/RootHidePatcher/.Inbox and swallows all errors
+        // (catch -> print), so the user sees "no alert, nothing happens".
+        // These probes re-create every step of that copy inside the Patcher
+        // process itself and log each result to
+        // <jbroot>/var/mobile/.patcher_diag.log which the jailbreak app
+        // surfaces to the user.
+        if (string_has_suffix(gExecutablePath, "/Patcher.app/Patcher")) {
+                // The log lives INSIDE the Patcher work tree, which check-in now
+                // grants a dedicated read-write extension for — so even if the
+                // umbrella /var/mobile extension is broken on this build, the
+                // probes can still record results for the jailbreak app to show.
+                char diagPath[PATH_MAX];
+                snprintf(diagPath, sizeof(diagPath), "%s/var/mobile/RootHidePatcher/.patcher_diag.log",
+                         JB_RootPath ? JB_RootPath : "");
+
+                // (0) marker: the Patcher process reached systemhook init with a
+                // valid checkin — if this line is MISSING from the log the
+                // Patcher was spawned clean (not injected / not checked in) and
+                // everything else follows.
+                FILE *df = fopen(diagPath, "a");
+                if (df) {
+                        fprintf(df, "[%ld] === Patcher launched: pid=%d uid=%d checkin=%d jbroot=%s\n",
+                                (long)time(NULL), getpid(), getuid(),
+                                JB_RootPath ? 1 : 0,
+                                JB_RootPath ? JB_RootPath : "(none)");
+                        fclose(df);
+                }
+
+                if (JB_RootPath) {
+                        // (1) stat + open of the Patcher work dirs — what
+                        // folderCheck()/DocumentPicker touch first.
+                        const char *probeDirs[] = {
+                                "/var/mobile/RootHidePatcher",
+                                "/var/mobile/RootHidePatcher/.Inbox",
+                        };
+                        for (size_t i = 0; i < sizeof(probeDirs)/sizeof(probeDirs[0]); i++) {
+                                char p[PATH_MAX];
+                                snprintf(p, sizeof(p), "%s%s", JB_RootPath, probeDirs[i]);
+                                struct stat st;
+                                int stR = stat(p, &st);
+                                int opR = open(p, O_RDONLY);
+                                int opErr = errno;
+                                if (opR >= 0) close(opR);
+                                df = fopen(diagPath, "a");
+                                if (df) {
+                                        fprintf(df, "[%ld] stat(%s)=rc%d mode=%o uid=%d open=%d errno=%d(%s)\n",
+                                                (long)time(NULL), p, stR,
+                                                stR == 0 ? (int)(st.st_mode & 07777) : 0,
+                                                stR == 0 ? (int)st.st_uid : -1,
+                                                opR, stR == 0 && opR >= 0 ? 0 : opErr,
+                                                stR == 0 && opR >= 0 ? "" : strerror(opErr));
+                                        fclose(df);
+                                }
+                        }
+
+                        // (2) the critical probe: create+write+unlink inside
+                        // .Inbox — exactly what DocumentPicker's copyItem does.
+                        // If this fails the app sandbox is blocking the write
+                        // (extension not consumed / not honoured) and the import
+                        // can never work.
+                        char probe[PATH_MAX];
+                        snprintf(probe, sizeof(probe), "%s/var/mobile/RootHidePatcher/.Inbox/.diag-%d", JB_RootPath, getpid());
+                        errno = 0;
+                        int fd = open(probe, O_CREAT | O_WRONLY, 0644);
+                        int openErr = errno;
+                        if (fd >= 0) {
+                                errno = 0;
+                                ssize_t w = write(fd, "diag", 4);
+                                int wErr = errno;
+                                fsync(fd);
+                                close(fd);
+                                unlink(probe);
+                                df = fopen(diagPath, "a");
+                                if (df) {
+                                        fprintf(df, "[%ld] WRITE-PROBE .Inbox OK: wrote=%zd errno=%d\n",
+                                                (long)time(NULL), w, wErr);
+                                        fclose(df);
+                                }
+                        } else {
+                                df = fopen(diagPath, "a");
+                                if (df) {
+                                        fprintf(df, "[%ld] WRITE-PROBE .Inbox FAILED: errno=%d (%s)\n",
+                                                (long)time(NULL), openErr, strerror(openErr));
+                                        fclose(df);
+                                }
+                        }
+                }
+        }
+        // ========== END PATCHER DIAGNOSTICS ==========
 }
