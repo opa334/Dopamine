@@ -1196,50 +1196,16 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
             [[NSFileManager defaultManager] createDirectoryAtPath:mobilePreferencesPath withIntermediateDirectories:YES attributes:attributes error:nil];
         }
 
-        // Pre-create the working directories that rootless→roothide package
-        // converters (RootHidePatcher et al.) expect to create on first
-        // launch. Their app code runs as mobile and does
-        // createDirectory(jbroot("/var/mobile/RootHidePatcher/...")) inside
-        // the iOS app sandbox — a mkdir that fails whenever the sandbox
-        // extension lookup races or the app was spawned before check-in.
-        // Creating them here (as root, pre-sandbox concerns) makes the
-        // converter work on first open, matching the upstream RootHide
-        // postinst behaviour (chown -R mobile:mobile /var/mobile/RootHidePatcher/).
-        //
-        // ROOTHIDE PATCHER FIX: patch.sh runs with TMPDIR=/var/mobile/RootHidePatcher
-        // and does `mktemp -d "$TMPDIR/<deb>.old.XXXXXX"` + writes the converted
-        // output deb into the SAME directory, so that directory must be writable
-        // by uid 501 AND have room for the extracted package tree. The extra
-        // sub-directories give the flow predictable, pre-permissioned locations
-        // even if the app's own mkdir races with first launch.
-        NSArray<NSString *> *precreatedMobileDirs = @[
-            @"/var/mobile/RootHidePatcher",
-            @"/var/mobile/RootHidePatcher/.Inbox",
-            @"/var/mobile/RootHidePatcher/output",
-            @"/var/mobile/RootHidePatcher/tmp",
-            @"/var/mobile/RootHidePatcher/.cache",
-            @"/var/tmp/com.roothide.patcher-Inbox",
-        ];
-        for (NSString *relDir in precreatedMobileDirs) {
-            NSString *dirPath = JBROOT_PATH(relDir);
-            if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath]) {
-                NSDictionary<NSFileAttributeKey, id> *dirAttrs = @{
-                    NSFilePosixPermissions : @0755,
-                    NSFileOwnerAccountID : @501,
-                    NSFileGroupOwnerAccountID : @501,
-                };
-                NSError *mkErr = nil;
-                if (![[NSFileManager defaultManager] createDirectoryAtPath:dirPath
-                                               withIntermediateDirectories:YES
-                                                                attributes:dirAttrs
-                                                                     error:&mkErr]
-                    && mkErr) {
-                    NSLog(@"[RootHide] pre-create %@ failed: %@", relDir, mkErr);
-                }
-            }
-        }
-
         JBFixMobilePermissions();
+
+        // ROOTHIDE PATCHER FIX: pre-create the Patcher work dirs + enforce
+        // mobile ownership + verify patch.sh tools. Delegated to the shared
+        // idempotent helper (see ensureRootHidePatcherSupport) which also runs
+        // on every finalizeBootstrap and after every dpkg install — previously
+        // this block ONLY ran on first-extract, so re-jailbreaks (which skip
+        // extraction via .thebootstrapped) never re-applied it and a
+        // root-owned patch.sh directory broke folderCheck() again.
+        [self ensureRootHidePatcherSupport];
 
         completion(nil);
     };
@@ -1576,7 +1542,7 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
         } else {
             // dpkg -i thành công → vẫn cần trust-cache + symlinks (roothide-specific)
             [self trustCacheAppBinariesAfterInstall:name];
-            [self ensureJbrootSymlinksInApps];
+            [self ensureRootHidePatcherSupport];
         }
 
         // Run uicache to refresh the app icon
@@ -1915,9 +1881,129 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
     // We re-sweep ALL .app dirs (not just the one we just installed) so
     // that apps the user installed separately via dpkg -i also get the
     // symlink on the next jailbreak cycle.
-    [self ensureJbrootSymlinksInApps];
+    [self ensureRootHidePatcherSupport];
 
     return nil;
+}
+
+// ============================================================================
+// ROOTHIDE PATCHER SUPPORT (runs on EVERY jailbreak, not just first extract)
+// ============================================================================
+// RootHidePatcher 2.1.4 flow and why each piece must exist BEFORE the user
+// opens the app:
+//
+//   1. -[Derootifier_ShellScript folderCheck] (Patcher's ContentView.onAppear)
+//      does fileExists(jbroot("/var/mobile/RootHidePatcher/.Inbox")) and on
+//      miss does createDirectory(withIntermediateDirectories:YES) — as uid 501
+//      INSIDE the app sandbox. Two independent failure modes produce the alert
+//      "Error! There was a problem with making the folder for the deb.":
+//        a) /var/mobile/RootHidePatcher does not exist yet. The checkin
+//           sandbox extension covers <jbroot>/var/mobile, but the extension
+//           was issued by name at check-in time; when the directory tree was
+//           created by an earlier root-context run (dpkg postinst / patch.sh
+//           running as root via the persona fix) the subdirectory is root-
+//           owned and mkdir fails with EPERM for mobile.
+//        b) The directory exists but is owned by root:mobile (created by
+//           patch.sh, which runs as root) — mode 0755 leaves mobile unable
+//           to create .Inbox inside it.
+//      Both are fixed by pre-creating the tree 501:501 and force-chowning
+//      any pre-existing root-owned copies on every jailbreak.
+//
+//   2. patch.sh hard-gates on dpkg-deb / file / awk / ldid and later calls
+//      install_name_tool, plutil, sed, find, mktemp, realpath, sw_vers,
+//      whoami. The RootHide bootstrap straps (1800 AND 1900, verified) ship
+//      dpkg-deb/ldid/bash/sed/find/mktemp/realpath/sw_vers/whoami but NOT
+//      file, awk (any variant) or plutil, and otool needs
+//      @rpath/libxar.1.dylib (libxar1) which is also absent. Those four only
+//      arrive via the Patcher deb's Depends when installed through Sileo —
+//      a raw `dpkg -i` skips Depends entirely. We can't install them from
+//      the JB app (they're not bundled), so surface a user-visible warning
+//      listing exactly what to install instead of the UI swallowing the
+//      failure as a bare "Error(1)".
+//
+//   3. The Patcher deb's postinst is a best-effort no-op (`chown ... || true`)
+//      and the deb itself contains no /var/mobile paths, so nothing in the
+//      package creates this tree — it must be bootstrapped from here.
+//
+// Idempotent and cheap: a handful of stat/createDirectory/chown calls.
+- (void)ensureRootHidePatcherSupport
+{
+    @try {
+        NSFileManager *fm = [NSFileManager defaultManager];
+
+        // --- 1. Pre-create + enforce mobile ownership of the Patcher work dirs
+        NSArray<NSString *> *patcherDirs = @[
+            @"/var/mobile/RootHidePatcher",
+            @"/var/mobile/RootHidePatcher/.Inbox",
+            @"/var/mobile/RootHidePatcher/output",
+            @"/var/mobile/RootHidePatcher/tmp",
+            @"/var/mobile/RootHidePatcher/.cache",
+            @"/var/tmp/com.roothide.patcher-Inbox",
+        ];
+        for (NSString *relDir in patcherDirs) {
+            NSString *dirAbs = JBROOT_PATH(relDir);
+            BOOL isDirectory = NO;
+            BOOL exists = [fm fileExistsAtPath:dirAbs isDirectory:&isDirectory];
+            if (!exists) {
+                NSDictionary<NSFileAttributeKey, id> *attrs = @{
+                    NSFilePosixPermissions : @0755,
+                    NSFileOwnerAccountID : @501,
+                    NSFileGroupOwnerAccountID : @501,
+                };
+                NSError *mkErr = nil;
+                if (![fm createDirectoryAtPath:dirAbs
+                   withIntermediateDirectories:YES
+                                    attributes:attrs
+                                         error:&mkErr]) {
+                    NSLog(@"[RootHide] PATCHER: pre-create %@ failed: %@", dirAbs, mkErr);
+                }
+            } else if (isDirectory) {
+                // Force mobile ownership non-recursively; patch.sh (running as
+                // root via persona fix) recreates these with root ownership.
+                // The top-level dir must be mobile-writable or folderCheck()'s
+                // createDirectory(.Inbox) throws inside the app sandbox.
+                chown(dirAbs.fileSystemRepresentation, 501, 501);
+            }
+        }
+        // The extracted-deb trees patch.sh leaves under .Inbox are root-owned
+        // (patch.sh runs as root); chown them so the NEXT import can clean them.
+        NSString *inboxAbs = JBROOT_PATH(@"/var/mobile/RootHidePatcher/.Inbox");
+        NSDirectoryEnumerator *inboxEnum = [fm enumeratorAtURL:[NSURL fileURLWithPath:inboxAbs]
+                                    includingPropertiesForKeys:nil options:0 errorHandler:nil];
+        for (NSURL *itemURL in inboxEnum) {
+            chown(itemURL.path.fileSystemRepresentation, 501, 501);
+        }
+
+        // --- 2. Ensure app-level + nested .jbroot symlinks (covers cctools)
+        [self ensureJbrootSymlinksInApps];
+
+        // --- 3. Verify patch.sh tool availability; warn loudly when missing
+        NSArray<NSString *> *patcherToolPaths = @[
+            @"/usr/bin/bash", @"/usr/bin/dpkg-deb", @"/usr/bin/file", @"/usr/bin/awk",
+            @"/usr/bin/ldid", @"/usr/bin/otool", @"/usr/bin/install_name_tool",
+            @"/usr/bin/plutil", @"/usr/bin/mktemp", @"/usr/bin/realpath",
+            @"/usr/bin/sw_vers", @"/usr/bin/whoami", @"/usr/bin/find", @"/usr/bin/sed",
+        ];
+        NSMutableString *missing = [NSMutableString string];
+        for (NSString *toolRelPath in patcherToolPaths) {
+            NSString *toolAbsPath = JBROOT_PATH(toolRelPath);
+            BOOL isDir = NO;
+            if (![fm fileExistsAtPath:toolAbsPath isDirectory:&isDir] || isDir) {
+                [missing appendFormat:@" %@", toolRelPath];
+            }
+        }
+        if (missing.length > 0) {
+            NSString *warn = [NSString stringWithFormat:
+                @"PATCHER: thiếu công cụ cho patch.sh:%@ — cài qua Sileo "
+                @"(file, gawk, plutil, libxar1) hoặc convert sẽ báo Error", missing];
+            NSLog(@"[RootHide] PATCHER WARNING:%@", warn);
+            [[DOUIManager sharedInstance] sendLog:warn debug:NO];
+        } else {
+            NSLog(@"[RootHide] PATCHER: all patch.sh dependencies present");
+        }
+    } @catch (NSException *e) {
+        NSLog(@"[RootHide] PATCHER support EXCEPTION (non-fatal): %@: %@", e.name, e.reason);
+    }
 }
 
 // Create `.jbroot -> ../..` symlink inside every .app directory under
@@ -2304,7 +2390,7 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
         } else {
             // dpkg -i thành công → vẫn cần trust-cache + symlinks (roothide-specific)
             [self trustCacheAppBinariesAfterInstall:@"RootHide"];
-            [self ensureJbrootSymlinksInApps];
+            [self ensureRootHidePatcherSupport];
         }
 
         // Verify binary on disk
@@ -2518,46 +2604,13 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
         fflush(stderr);
     }
 
-    // ROOTHIDE PATCHER FIX: verify every tool RootHidePatcher's patch.sh needs.
-    // patch.sh aborts with exit 1 + "Please install dpkg-deb/file/awk/ldid" if
-    // any of these are missing, but the Patcher UI swallows that output, so the
-    // user just sees "convert does nothing". Check them at jailbreak time and
-    // log loudly — the missing tool then shows up in the app log immediately.
-    @try {
-        NSArray<NSString *> *patcherToolPaths = @[
-            @"/usr/bin/bash", @"/usr/bin/dpkg-deb", @"/usr/bin/file", @"/usr/bin/awk",
-            @"/usr/bin/ldid", @"/usr/bin/otool", @"/usr/bin/install_name_tool",
-            @"/usr/bin/plutil", @"/usr/bin/mktemp", @"/usr/bin/realpath",
-            @"/usr/bin/sw_vers", @"/usr/bin/whoami", @"/usr/bin/find", @"/usr/bin/sed",
-        ];
-        NSFileManager *fmChk = [NSFileManager defaultManager];
-        NSMutableString *missing = [NSMutableString string];
-        for (NSString *toolRelPath in patcherToolPaths) {
-            NSString *toolAbsPath = JBROOT_PATH(toolRelPath);
-            BOOL isDir = NO;
-            if (![fmChk fileExistsAtPath:toolAbsPath isDirectory:&isDir] || isDir) {
-                [missing appendFormat:@" %@ (rel %@)", toolAbsPath, toolRelPath];
-            }
-        }
-        if (missing.length > 0) {
-            NSLog(@"[RootHide] PATCHER WARNING: patch.sh dependencies missing:%@ — RootHidePatcher convert will fail with 'Please install ...'", missing);
-        } else {
-            NSLog(@"[RootHide] PATCHER: all patch.sh dependencies present (bash/dpkg-deb/file/awk/ldid/otool/install_name_tool)");
-        }
-        // The upstream Patcher postinst chowns these to mobile:mobile; if the deb
-        // was installed before this fix ran, re-apply ownership defensively.
-        NSArray<NSString *> *patcherDirs = @[
-            @"/var/mobile/RootHidePatcher", @"/var/tmp/com.roothide.patcher-Inbox",
-        ];
-        for (NSString *dirRel in patcherDirs) {
-            NSString *dirAbs = JBROOT_PATH(dirRel);
-            if ([[NSFileManager defaultManager] fileExistsAtPath:dirAbs]) {
-                chown(dirAbs.fileSystemRepresentation, 501, 501);
-            }
-        }
-    } @catch (NSException *e) {
-        NSLog(@"[RootHide] PATCHER dependency check EXCEPTION (non-fatal): %@", e);
-    }
+    // ROOTHIDE PATCHER FIX: keep the Patcher working tree + .jbroot symlinks +
+    // dependency warnings correct on EVERY jailbreak. Previously this ran only
+    // inside the first-extract completion (bootstrapFinishedCompletion), which
+    // re-jailbreaks skip via .thebootstrapped — so a root-owned patch.sh
+    // directory or a missing tool set silently broke folderCheck()/convert
+    // until the next full re-bootstrap.
+    [self ensureRootHidePatcherSupport];
 
     // ROOTHIDE FIX LỖI 1 v5: KHÔNG gọi reboot trong finalizeBootstrap
     // Caller (DOMainViewController → fadeToBlack → jailbreaker.finalize → rebootUserspace)
