@@ -48,7 +48,11 @@ static inline uint64_t rh_u64le(const uint8_t *p) {
     return ((uint64_t)rh_u32le(p)) | ((uint64_t)rh_u32le(p + 4) << 32);
 }
 
-#define LIBKRW_DOPAMINE_BUNDLED_VERSION @"2.0.3"
+// FIX tweak-install: control của libkrw-dopamine.deb (Packages/libkrw-provider/control)
+// là 2.0.4 — constant cũ 2.0.3 làm shouldInstallPackage: bỏ qua nâng cấp trên
+// những máy đã cài 2.0.3 → libkrw0 (Depends libkrw0-plugin) không bao giờ có
+// provider → Sileo từ chối cài mọi tweak (lỗi "Depends: libkrw0-plugin").
+#define LIBKRW_DOPAMINE_BUNDLED_VERSION @"2.0.4"
 #define LIBROOT_DOPAMINE_BUNDLED_VERSION @"1.0.1"
 #define BASEBIN_LINK_BUNDLED_VERSION @"1.0.0"
 #define LAUNCHCTL_BUNDLED_VERSION @"1:1.2.0"
@@ -2546,9 +2550,70 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
     }
 
     // Step 5: install bundled packages
-    NSLog(@"[RootHide] Step 5/5: installing bundled packages (libroot, libkrw, basebin-link, launchctl)...");
+    NSLog(@"[RootHide] Step 5/5: installing bundled packages (tweak infra, libroot, libkrw, basebin-link, launchctl)...");
     fflush(stderr);
     @try {
+        // ============================================================
+        // FIX TWEAK-INSTALL (iOS 17/18): bootstrap arm64e KHÔNG chứa bất kỳ
+        // gói nào Provides: mobilesubstrate và không có libkrw0-plugin.
+        // Sileo vì thế từ chối cài hầu hết tweak với các lỗi:
+        //   "Depends mobilesubstrate" / "Depends preferenceloader" /
+        //   "Depends com.opa334.altlist" / "Depends libkrw0-plugin".
+        //
+        // Root cause: các repo arm64 (ellekit.space, Procursus 1900 arm64)
+        // không cài được vì dpkg trên strap arm64e không có foreign arch;
+        // repo arm64e duy nhất đủ bộ (roothide.github.io) là REPO — user
+        // phải tự bấm cài trong Sileo, nhưng chính những gói đó lại cần
+        // mobilesubstrate nên Sileo cũng không resolve nổi (deadlock deps).
+        // → Không bundle sẵn thì tweak không bao giờ cài được.
+        //
+        // Giải pháp: bundle 3 deb arm64e từ roothide.github.io (đã kiểm tra
+        // payload bằng extract sạch):
+        // - ElleKit 1.2-1 Provides mobilesubstrate (= 99) + libhooker;
+        //   payload chỉ là /usr/lib/{TweakLoader,TweakInject,libellekit,
+        //   libsubstrate,libhooker,libblackjack}.dylib + ellekit/ +
+        //   Library/MobileSubstrate + CydiaSubstrate.framework — KHÔNG đụng
+        //   libroothide.dylib/roothideinit.dylib của gói roothide trong strap;
+        // - PreferenceLoader 2.2.8 Depends mobilesubstrate (được ElleKit
+        //   Provide) → phải cài SAU ElleKit;
+        // - AltList 1.0.11 Depends firmware(>=7.0) — strap không có gói
+        //   firmware, nhưng dpkg chạy với --force-all (như mọi bundled deb)
+        //   nên dep thiếu này bị bỏ qua một cách có chủ đích.
+        // Cả 3 đều fat arm64+arm64e (minos 15.0) khớp hệ, và hệ thống fork
+        // đã sẵn sàng chạy chúng: dyldhook hook expandAtLoaderPath dịch
+        // @loader_path/.jbroot cho tweaks rootless, systemhook dlopen
+        // TweakLoader khi should_enable_tweaks, trust-cache sweep quét
+        // /usr sau install (cuối Step 5 này).
+        // ============================================================
+        static NSString * const kTweakInfraMarker = @"/usr/lib/TweakLoader.dylib";
+        NSString *tweakLoaderInstalled = JBROOT_PATH(kTweakInfraMarker);
+        BOOL shouldInstallTweakInfra = ![[NSFileManager defaultManager] fileExistsAtPath:tweakLoaderInstalled];
+        if (shouldInstallTweakInfra) {
+            NSString *packagesDir = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"Packages"];
+            NSString *elleKitDeb  = [packagesDir stringByAppendingPathComponent:@"ellekit_1.2-1_iphoneos-arm64e.deb"];
+            NSString *plDeb       = [packagesDir stringByAppendingPathComponent:@"preferenceloader_2.2.8_iphoneos-arm64e.deb"];
+            NSString *altListDeb  = [packagesDir stringByAppendingPathComponent:@"com.opa334.altlist_1.0.11_iphoneos-arm64e.deb"];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:elleKitDeb]) {
+                int r = exec_cmd_trusted(JBROOT_PATH("/usr/bin/dpkg"), "-i", "--force-all", elleKitDeb.fileSystemRepresentation, NULL);
+                NSLog(@"[RootHide] dpkg -i ellekit exit: %d", r);
+                fflush(stderr);
+            } else {
+                NSLog(@"[RootHide] ellekit deb NOT bundled (skipping tweak infra install)");
+            }
+            if ([[NSFileManager defaultManager] fileExistsAtPath:plDeb]) {
+                int r = exec_cmd_trusted(JBROOT_PATH("/usr/bin/dpkg"), "-i", "--force-all", plDeb.fileSystemRepresentation, NULL);
+                NSLog(@"[RootHide] dpkg -i preferenceloader exit: %d", r);
+                fflush(stderr);
+            }
+            if ([[NSFileManager defaultManager] fileExistsAtPath:altListDeb]) {
+                int r = exec_cmd_trusted(JBROOT_PATH("/usr/bin/dpkg"), "-i", "--force-all", altListDeb.fileSystemRepresentation, NULL);
+                NSLog(@"[RootHide] dpkg -i altlist exit: %d", r);
+                fflush(stderr);
+            }
+        } else {
+            NSLog(@"[RootHide] tweak infra already present (TweakLoader.dylib exists) — skipping");
+        }
+
         BOOL shouldInstallLibroot = [self shouldInstallPackage:@"libroot-dopamine"];
         BOOL shouldInstallLibkrw = [self shouldInstallPackage:@"libkrw0-dopamine"];
         BOOL shouldInstallBasebinLink = [self shouldInstallPackage:@"dopamine-basebin-link"];
@@ -2624,6 +2689,16 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
                 NSError *installErr = [self manuallyInstallDeb:basebinLinkPath appName:@"basebin-link"];
                 if (installErr) NSLog(@"[RootHide] basebin-link install (non-fatal): %@", installErr);
             }
+        }
+
+        // FIX TWEAK-INSTALL: trust-cache ngay các dylib vừa cài (TweakLoader,
+        // libellekit, PreferenceLoader, AltList...). sweep quét /usr +
+        // /Applications + /Library và gọi recurse-trust từng file — nếu bỏ
+        // qua, các dylib này chỉ được trust ở lần JB SAU (sau userspace
+        // reboot đầu tiên), tức phiên hiện tại vẫn KIA khi tweak inject.
+        if (shouldInstallTweakInfra || shouldInstallLibkrw || shouldInstallLibroot || shouldInstallBasebinLink) {
+            NSLog(@"[RootHide] re-sweeping trust cache after bundled installs...");
+            [self trustCacheBootstrapBinaries];
         }
         fflush(stderr);
     } @catch (NSException *e) {
