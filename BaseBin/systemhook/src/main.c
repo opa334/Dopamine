@@ -302,6 +302,29 @@ bool should_enable_tweaks(void)
                 }
         }
 
+        // ROOTHIDE FIX LỖI 5 v2 (upstream Dopamine2-roothide parity, main.c
+        // should_enable_tweaks): MobileSubstrate safe-mode semantics. The
+        // user toggles "Substrate Safe Mode" (or ellekit's MobileSafety
+        // writes these vars) to boot with tweaks disabled for ONE process
+        // or app-wide. Upstream checks both `_SafeMode` (MobileSubstrate
+        // classic) and `_MSSafeMode` (ellekit) HERE in systemhook, so the
+        // TweakLoader is never even dlopened for a safe-mode process. The
+        // fork lost these two checks in a rebase; ellekit's own
+        // injection_init would still no-op on them, but only AFTER loading
+        // libinjector + its whole dependency chain — wasted work and
+        // half-initialized MobileSafety state in SpringBoard.
+        // NOTE: spawn hooks (common.c envbuf_unsetenv) already strip these
+        // vars when propagating to NON-safe-mode children — do not unset
+        // them here; the user may read them back later this boot.
+        const char *safeModeValue = getenv("_SafeMode");
+        if (safeModeValue && !strcmp(safeModeValue, "1")) {
+                return false;
+        }
+        const char *msSafeModeValue = getenv("_MSSafeMode");
+        if (msSafeModeValue && !strcmp(msSafeModeValue, "1")) {
+                return false;
+        }
+
         if (jbclient_dopamine_is_jailbroken(NULL)) {
                 // Probe whether we are the Dopamine app
                 // Only the Dopamine app is allowed to contact this domain

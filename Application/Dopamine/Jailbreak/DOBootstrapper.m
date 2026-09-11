@@ -1111,14 +1111,13 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
         }
 
         // Default repositories written on first bootstrap extraction (also
-        // refreshed on every full re-extraction). Two files, two formats:
+        // refreshed on every full re-extraction). ONE file, ONE format:
         //
-        //   default.sources  — deb822 format, consumed by Sileo (and apt).
-        //   default.list     — one-line "deb URI suite component" format,
-        //                      consumed by Zebra (older Zebra builds do not
-        //                      parse deb822 .sources files).
+        //   default.sources  — deb822 format, consumed by Sileo AND apt
+        //                      (and by Zebra via its own container file).
+        //   (default.list    — REMOVED, see "ROOTHIDE FIX LỖI 4 v1" below.)
         //
-        // Both carry the same repos. The "1900" suite entries track the
+        // The "1900" suite entries track the
         // RootHide Bootstrap iOS 19 series (Procursus-compatible suites):
         //   - apt.procurs.us          → upstream Procursus bootstraps
         //   - roothide.github.io      → RootHide repo index
@@ -1175,20 +1174,24 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
             @"Components:\n";
         [defaultSources writeToFile:JBROOT_PATH(@"/etc/apt/sources.list.d/default.sources") atomically:NO encoding:NSUTF8StringEncoding error:nil];
 
-        // Zebra-format mirror of the same list. Zebra's SourcesManager reads
-        // /etc/apt/sources.list.d/*.list with the classic one-line syntax;
-        // writing ONLY a deb822 .sources file leaves Zebra with zero sources
-        // on a fresh bootstrap, so keep both files in sync.
-        NSString *defaultSourcesList = @"deb https://repo.chariz.com/ ./\n"
-            @"deb https://havoc.app/ ./\n"
-            @"deb http://apt.thebigboss.org/repofiles/cydia/ stable main\n"
-            @"deb https://apt.procurs.us/ 1900 main\n"
-            @"deb https://roothide.github.io/procursus/ iphoneos-arm64e/1900 main\n"
-            @"deb https://github.com/roothide/roothide.github.io/releases/download/1900/ ./\n"
-            @"deb https://roothide.github.io/ ./\n"
-            @"deb https://yourepo.com/ ./\n"
-            @"deb https://ellekit.space/ ./\n";
-        [defaultSourcesList writeToFile:JBROOT_PATH(@"/etc/apt/sources.list.d/default.list") atomically:NO encoding:NSUTF8StringEncoding error:nil];
+        // ROOTHIDE FIX LỖI 4 v1 (Sileo "configured multiple times" warnings):
+        // Fork cũ viết BOTH default.sources (deb822) VÀ default.list (one-line)
+        // với cùng 9 repo. apt đọc cả hai file → mỗi repo bị "configured
+        // multiple times in default.list:N and default.sources:N" → Sileo
+        // in hàng chục warning W: mỗi lần install/refresh, user tưởng lỗi.
+        // Upstream Bootstrap (bootstrap.m buildPackageSources) chỉ viết
+        // default.sources; Zebra KHÔNG đọc /etc/apt/sources.list.d/*.list —
+        // nó đọc file riêng trong data container của nó
+        // (.../xyz.willy.Zebra/sources.list, ZEBRA_SOURCES macro). Vậy
+        // default.list là thừa → bỏ hẳn việc ghi, VÀ xóa file stale đã ghi
+        // từ bản IPA cũ trong finalizeBootstrap (block updatelinks) vì
+        // devices đã jailbreak vẫn còn file đó trên đĩa.
+        //
+        // Giữ nguyên danh sách repo như cũ (chariz, havoc, bigboss,
+        // apt.procurs.us 1900, roothide/procursus, github releases,
+        // roothide.github.io, yourepo, ellekit.space).
+        //
+        // (đoạn default.sources bên dưới giữ nguyên — chỉ default.list bị xóa)
         
         NSString *mobilePreferencesPath = JBROOT_PATH(@"/var/mobile/Library/Preferences");
         if (![[NSFileManager defaultManager] fileExistsAtPath:mobilePreferencesPath]) {
@@ -2763,10 +2766,121 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
                 }
             }
         }
+
+        // ROOTHIDE FIX LỖI 4 v1 (stale duplicate sources file): IPA cũ của
+        // fork đã ghi cả default.list lẫn default.sources → apt warning
+        // "configured multiple times" mỗi refresh. Việc ghi default.list
+        // đã bị xóa ở trên (buildPackageSources parity với upstream —
+        // Zebra đọc file riêng trong data container của nó, không phải
+        // file này), nhưng thiết bị đã jailbreak vẫn còn file stale trên
+        // đĩa. Xóa ở đây MỖI finalizeBootstrap (idempotent — chạy cả khi
+        // TweakLoader chưa tồn tại, vì apt warnings xảy ra độc lập với
+        // tweak infra) để cảnh báo biến mất ngay sau khi cài IPA mới mà
+        // không cần re-bootstrap.
+        {
+            NSString *staleDefaultList = JBROOT_PATH(@"/etc/apt/sources.list.d/default.list");
+            if ([[NSFileManager defaultManager] fileExistsAtPath:staleDefaultList]) {
+                NSError *rmErr = nil;
+                if ([[NSFileManager defaultManager] removeItemAtPath:staleDefaultList error:&rmErr]) {
+                    NSLog(@"[RootHide] removed stale /etc/apt/sources.list.d/default.list (duplicate of default.sources)");
+                } else {
+                    NSLog(@"[RootHide] failed to remove stale default.list: %@", rmErr);
+                }
+                fflush(stderr);
+            }
+        }
         fflush(stderr);
     } @catch (NSException *e) {
         NSLog(@"[RootHide] EXCEPTION during bundled packages install: %@: %@", e.name, e.reason);
         fflush(stderr);
+    }
+
+    // ============================================================
+    // ROOTHIDE FIX LỖI 5 v1 (tweak environment incomplete — tweaks not
+    // loading anywhere, Crane disabled in runningboardd):
+    //
+    // ElleKit 1.2-1 libinjector.dylib (TweakLoader target) load command:
+    //   LC_LOAD_DYLIB @loader_path/.jbroot/usr/lib/libroothide.dylib
+    // libinjector gọi jbroot("/usr/lib/TweakInject/") CỦA libroothide
+    // (ellekit commit 250774da "using libroothide instead of JBROOT env
+    // var") — jbroot() đọc global ___roothideinit_JBROOT do
+    // roothideinit.dylib set lúc systemhook dlopen nó (nên env JBROOT
+    // KHÔNG cần — đừng ai set env đó, sẽ leak detection).
+    //
+    // CHUỖI PHỤ THUỘC cho 1 process load tweak:
+    //   dlopen(TweakLoader.dylib)  → symlink → usr/lib/ellekit/libinjector.dylib
+    //   libinjector LC_LOAD_DYLIB  → @loader_path/.jbroot/usr/lib/libroothide.dylib
+    //   = <jbroot>/usr/lib/ellekit/.jbroot/usr/lib/libroothide.dylib
+    //   → CẦN symlink ".jbroot" trong usr/lib/ellekit/ (và cả usr/lib/
+    //   cho TweakLoader resolution).
+    //
+    // Trên Bootstrap chính thức, các ".jbroot" này được tạo runtime bởi
+    // ensure_jbroot_symlink() (signatures.m) MỖI LẦN trust-recurse đi qua
+    // dylib — launchdhook jbdomain_roothide TRUST_LIBRARY_RECURSE gọi nó.
+    // Fork CŨNG có path đó (dyld_patch_fallback_enabled → init_dyldhooks →
+    // dyld_dlopen_hook → jbclient_trust_library_recurse → server →
+    // ensure_jbroot_symlink), NHƯNG nó chỉ chạy SAU khi dlopen đầu tiên
+    // THÀNH CÔNG — trong khi chính dlopen đó cần ".jbroot" tồn tại TRƯỚC
+    // (con gà - quả trứng): dyld resolve LC_LOAD_DYLIB trước khi hook
+    // kịp trust. Trên thiết bị thật, ellekit dir do dpkg cài (không nằm
+    // trong bootstrap tar → tar không có sẵn .jbroot ở đó) và nếu lần trust
+    // đầu fail (jailbreakd chưa check-in đúng lúc, hoặc process được spawn
+    // clean-mode không qua launchd path) → libinjector load abort →
+    // KHÔNG tweak nào chạy trong process đó → Crane không có
+    // CraneSupport.dylib trong runningboardd → "Crane đã bị vô hiệu hóa".
+    //
+    // FIX: tạo sẵn ".jbroot" symlink TRỎ VỀ self-link gốc "<jbroot>/.jbroot"
+    // (mà tar bootstrap cài sẵn, trỏ ".") trong MỌI thư mục chứa dylib
+    // tweak-infra NGAY SAU khi cài, chạy MỖI finalizeBootstrap — idempotent,
+    // không phụ thuộc runtime trust-recurse. Match chính xác những gì
+    // bootstrap tar 1900 làm cho thư mục của nó (usr/bin/.jbroot,
+    // usr/libexec/.jbroot, usr/lib/.jbroot, ...). Điểm đến tính theo depth:
+    // usr/lib/ellekit/.jbroot -> "../../../.jbroot" (3 bậc lên) — tất cả
+    // cùng resolve về self-link gốc ở jbroot.
+    // ============================================================
+    @try {
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSString *jbrootSelfLink = JBROOT_PATH(@"/.jbroot");
+        // Self-link gốc "<jbroot>/.jbroot -> ." — tar bootstrap đã cài; nếu
+        // thiếu (upgrade lạ) thì tạo để mọi ".jbroot" con có chỗ trỏ về.
+        if (![fm fileExistsAtPath:jbrootSelfLink]) {
+            [fm createSymbolicLinkAtPath:jbrootSelfLink withDestinationPath:@"." error:nil];
+        }
+        // Mọi thư mục CHỨA dylib/symlink tweak-infra cần ".jbroot" riêng vì
+        // @loader_path KHÔNG ascension theo fallback — mỗi binary chỉ nhìn
+        // thấy ".jbroot" NGAY trong thư mục của chính nó.
+        NSString *tweakInfraDirs[] = {
+            @"/usr/lib",
+            @"/usr/lib/ellekit",
+            @"/usr/lib/TweakInject",
+            @"/Library/MobileSubstrate/DynamicLibraries",
+            @"/usr/lib/TweakInject/RootHide.Patches", // Filza patch dir (com.roothide.patchloader)
+        };
+        for (size_t i = 0; i < sizeof(tweakInfraDirs) / sizeof(tweakInfraDirs[0]); i++) {
+            NSString *dirPath = JBROOT_PATH(tweakInfraDirs[i]);
+            if (![fm fileExistsAtPath:dirPath]) continue; // chưa cài — bỏ qua
+            NSString *dotLink = [dirPath stringByAppendingPathComponent:@".jbroot"];
+            BOOL isDir = NO;
+            if ([fm fileExistsAtPath:dotLink isDirectory:&isDir] && !isDir) continue; // đã có (symlink)
+            // Tính relative "../.." đúng theo depth thật của dirPath trong jbroot
+            // (dirPath luôn tuyệt đối dạng <jbroot>/a/b — đếm thành phần sau jbroot).
+            NSString *relPath = [dirPath stringByReplacingOccurrencesOfString:JBROOT_PATH(@"/") withString:@""];
+            if ([relPath isEqualToString:dirPath] || relPath.length == 0) continue; // không nằm trong jbroot → bỏ
+            NSInteger depth = [[relPath pathComponents] count]; // "usr/lib/ellekit" → 3
+            NSMutableString *up = [NSMutableString string];
+            for (NSInteger d = 0; d < depth; d++) [up appendString:@"../"];
+            [up appendString:@".jbroot"]; // usr/lib/ellekit/.jbroot -> ../../../.jbroot
+            NSError *lnErr = nil;
+            if (![fm createSymbolicLinkAtPath:dotLink withDestinationPath:up error:&lnErr]) {
+                // Đã tồn tại dưới dạng khác (file thường?) — bỏ qua, không phá
+                NSLog(@"[RootHide] ensureTweakInfraDotLinks: create %@ failed: %@", dotLink, lnErr.localizedDescription);
+            } else {
+                NSLog(@"[RootHide] ensureTweakInfraDotLinks: created %@ -> %@", dotLink, up);
+            }
+        }
+        fflush(stderr);
+    } @catch (NSException *e) {
+        NSLog(@"[RootHide] EXCEPTION ensureTweakInfraDotLinks: %@: %@", e.name, e.reason);
     }
 
     // ROOTHIDE PATCHER FIX: keep the Patcher working tree + .jbroot symlinks +
