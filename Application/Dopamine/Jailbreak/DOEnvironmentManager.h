@@ -47,7 +47,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setJailbroken:(BOOL)jailbroken withVersion:(NSString *)version;
 
 
-- (void)runUnsandboxed:(void (^)(void))unsandboxBlock;
+// FIX REMOVE-JAILBREAK EPERM (Issue 2): giờ trả về int (0 = OK / block đã chạy;
+// != 0 = KHÔNG unsandbox được, block KHÔNG chạy). Trước đây trả void và bỏ qua
+// thất bại unsandbox → block chạy trong sandbox → EPERM(1) trên mọi unlink
+// trong jbroot khi Remove Jailbreak.
+- (int)runUnsandboxed:(void (^)(void))unsandboxBlock;
 - (void)runAsRoot:(void (^)(void))rootBlock;
 
 - (void)respring;

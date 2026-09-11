@@ -248,6 +248,24 @@ int systemwide_process_checkin(audit_token_t *processToken, char **rootPathOut, 
         systemwide_get_boot_uuid(bootUUIDOut);
 
         // Generate sandbox extensions for the requesting process
+        //
+        // FIX SILEO "MÃ LỖI" (Issue 1/3): upstream roothide Dopamine2 dùng
+        // dual-jbroot — <jbroot>/var được move sang AppGroup secondary
+        // (/var/mobile/Containers/Shared/AppGroup/.jbroot-<brand>) và
+        // generate_sandbox_extensions() cấp read-write CHO TOÀN SECONDARY
+        // cho mọi process platform (csflags & CS_PLATFORM_BINARY). Fork này
+        // dùng single-jbroot (var nằm ngay trong Bundle jbroot) nên trước
+        // đây checkin chỉ cấp read+exec trên jbroot + rw trên var/mobile —
+        // dpkg/apt do Sileo spawn KHÔNG THỂ GHI <jbroot>/var/lib/dpkg →
+        // mọi lần cài tweak Sileo hiện "mã lỗi" (EPERM khi unpack/configure).
+        // (Lưu ý: persona-fix cho dpkg uid 0 KHÔNG tự thoát sandbox —
+        // sandbox là by-profile, áp cho mọi uid; và dpkg cũng không có
+        // entitlement no-sandbox như Sileo.)
+        //
+        // Giải pháp cho layout single-jbroot: cấp thêm read-write trên
+        // <jbroot>/var cho MỌI process đã checkin. var chứa dpkg db, apt
+        // lists/cache, log, tmp — chính là những gì package manager và
+        // tweak cần ghi; /usr (binary của bootstrap) vẫn chỉ read+exec.
         char *sandboxExtensionsArr[] = {
                 // Make jbroot readable and executable (RootHide: dynamic path)
                 sandbox_extension_issue_file_to_process("com.apple.app-sandbox.read", JBROOT_PATH(""), 0, *processToken),
@@ -255,6 +273,12 @@ int systemwide_process_checkin(audit_token_t *processToken, char **rootPathOut, 
 
                 // Make jbroot/var/mobile writable (RootHide: dynamic path)
                 sandbox_extension_issue_file_to_process("com.apple.app-sandbox.read-write", JBROOT_PATH("/var/mobile"), 0, *processToken),
+
+                // FIX Sileo dpkg: read-write toàn bộ <jbroot>/var — dpkg db
+                // (var/lib/dpkg), apt lists (var/lib/apt/lists), cache, log.
+                // Trước đây chỉ /var/mobile được cấp rw → dpkg của Sileo bị
+                // EPERM khi ghi status/updates → "mã lỗi" khi cài tweak.
+                sandbox_extension_issue_file_to_process("com.apple.app-sandbox.read-write", JBROOT_PATH("/var"), 0, *processToken),
 
                 // ROOTHIDE PATCHER IMPORT FIX: the Patcher app's DocumentPicker
                 // does its deb import (copyItem into jbroot/var/mobile/
@@ -356,9 +380,34 @@ int systemwide_process_checkin(audit_token_t *processToken, char **rootPathOut, 
         }
         // For the Dopamine app itself we want to give it a saved uid/gid of 0, unsandbox it and give it CS_PLATFORM_BINARY
         // This is so that the buttons inside it can work when jailbroken, even if the app was not installed by TrollStore
+        //
+        // FIX KHÔI PHỤC TỪ UPSTREAM (opa334 gốc + roothide 2.x đều có block
+        // này — jbdomain_systemwide.c: "else if (string_has_suffix(procPath,
+        // "/Dopamine.app/Dopamine"))"): set svuid/svgid = 0 (setuid-root!)
+        // + CS_PLATFORM_BINARY (+ CS_INSTALLER ở bản roothide). Fork trước
+        // đây CHỈ set CS_PLATFORM_BINARY mà KHÔNG set svuid=0, nên app phải
+        // đi qua dopamine_get_root (proc_ro task_tokens fixup) — nếu kernel
+        // thiếu offsets task_tokens thì get_root trả về euid 501 cũ từ audit
+        // token, mọi hành động ROOT-domain (gỡ jailbreak, set mac label…)
+        // bị từ chối → chính là nguồn gốc lỗi EPERM khi gỡ jailbreak
+        // (Issue 2) và unsandbox thất bại lặng lẽ. Khôi phục chuẩn upstream:
+        // app Dopamine khi checkin được nâng svuid/svgid = 0 ngay trong
+        // kernel — getuid() trả về 0, setuid(0) thành công, runAsRoot chạy
+        // thật, các hành động ROOT-domain pass kiểm tra euid==0.
         else if (is_dopamine_app(procPath)) {
+                // svuid = 0, svgid = 0 (upstream: cả proc + ucred)
+                uint64_t ucred = proc_ucred(proc);
+                kwrite32(proc + koffsetof(proc, svuid), 0);
+                kwrite32(ucred + koffsetof(ucred, svuid), 0);
+                kwrite32(proc + koffsetof(proc, svgid), 0);
+                kwrite32(ucred + koffsetof(ucred, svgid), 0);
+
                 // platformize
                 proc_csflags_set(proc, CS_PLATFORM_BINARY);
+
+                // roothide specific (upstream roothide 2.x): CS_INSTALLER cho
+                // phép runningboardd cấp profile installer khi launch apps.
+                proc_csflags_set(proc, CS_INSTALLER);
         }
 
         xpc_object_t customTrustObj = xpc_copy_entitlement_for_token("jb.pmap_cs.custom_trust", processToken);

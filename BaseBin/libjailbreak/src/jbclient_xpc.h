@@ -46,6 +46,10 @@ int jbclient_boomerang_done(void);
 bool jbclient_dopamine_is_jailbroken(char **version);
 int jbclient_dopamine_get_root(void);
 int jbclient_dopamine_drop_root(void);
+// FIX REMOVE-JAILBREAK EPERM (Issue 2): unsandbox via the DOPAMINE domain
+// (bundle-id permission) — immune to the stale audit-token euid that made
+// the ROOT-domain variant silently fail. See jbdomain_dopamine.c.
+int jbclient_dopamine_set_mac_label(uint64_t slot, uint64_t label, uint64_t *orgLabel);
 
 // ========== ROOTHIDE SPECIFIC (Relaxin upstream fork) ==========
 // Implementations live in jbclient_roothide.c (ported from Relaxin).

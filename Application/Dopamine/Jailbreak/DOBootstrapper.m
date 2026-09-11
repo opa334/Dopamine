@@ -2633,7 +2633,14 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
         // hay ensureJbrootSymlinksInApps (chỉ cần cho .app dirs).
         // ============================================================
         if (shouldInstallLaunchctl) {
-            NSString *launchctlPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"launchctl_1_1.2.0_iphoneos-arm64e.deb"];
+            // FIX FILENAME MISMATCH: file thật trong Packages/additional là
+            // launchctl_1_1.2.0_iphoneos-arm64.deb (arch arm64, KHÔNG phải
+            // arm64e) nhưng code cũ tham chiếu "..._iphoneos-arm64e.deb" →
+            // fileExists luôn NO → dpkg -i không bao giờ chạy, mỗi lần đều rơi
+            // vào fallback manuallyInstallDeb (không qua dpkg db → gói không
+            // được quản lý, lỗi "mã lỗi kiến trúc" về sau). Khớp tên file thật;
+            // arch arm64 được chấp nhận nhờ foreign-arch registration (Step 6).
+            NSString *launchctlPath = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"launchctl_1_1.2.0_iphoneos-arm64.deb"];
             int r = exec_cmd_trusted(JBROOT_PATH("/usr/bin/dpkg"),
                                       "-i", "--force-all",
                                       launchctlPath.fileSystemRepresentation, NULL);
@@ -2700,6 +2707,62 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
             NSLog(@"[RootHide] re-sweeping trust cache after bundled installs...");
             [self trustCacheBootstrapBinaries];
         }
+
+        // ============================================================
+        // FIX TWEAK ENVIRONMENT (Issue 1 — "mã nguồn setup môi trường
+        // cho tweak deb không hoàn chỉnh"): ElleKit 1.2-1 cài các symlink
+        // ABSOLUTE trong data.tar:
+        //   /usr/lib/TweakLoader.dylib  -> /usr/lib/ellekit/libinjector.dylib
+        //   /usr/lib/libsubstrate.dylib -> /usr/lib/libellekit.dylib
+        //   /Library/MobileSubstrate/DynamicLibraries -> /usr/lib/TweakInject
+        // Khi dpkg chạy với vroot (dpkg link @loader_path/.jbroot/usr/lib/
+        // libvrootapi.dylib; vroot_symlink gọi jbrootat_alloc(fd, target)
+        // rồi symlink() với target ĐÃ dịch thành relative ".jbroot/..."),
+        // symlink được relative-hóa tự động. NHƯNG:
+        //   1) IPA CŨ của fork từng cài ellekit/sileo/zebra/basebin-link
+        //      qua fallback manuallyInstallDeb — extract in-process bằng
+        //      libarchive trong app Dopamine (KHÔNG có vroot interpose)
+        //      → symlink absolute ĐỨNG trơ trọi trên đĩa, dlopen ENOENT.
+        //   2) Tweak do Sileo cài cũng vậy nếu Sileo từng fail giữa chừng
+        //      và rơi vào trạng thái nửa vời.
+        // Trên RootHide Bootstrap CHÍNH THỨC, ReRandomizeBootstrap
+        // (bootstrap.m:354) chạy "/bin/sh /usr/libexec/updatelinks.sh" sau
+        // MỖI lần randomize lại jbroot: find / -xdev -type l | updatelink
+        // — binary updatelink rewrite từng symlink absolute thành
+        // ".jbroot/usr/lib/..." (giải quyết qua self-symlink <jbroot>/
+        // .jbroot -> "." do bootstrap tar cài sẵn). Fork này trước giờ
+        // KHÔNG chạy bước đó lần nào.
+        // Chạy mỗi finalizeBootstrap khi TweakLoader đã tồn tại —
+        // idempotent (updatelink in "no change" cho symlink đã relative),
+        // và find -xdev tự giới hạn trong volume jbroot.
+        // ============================================================
+        if ([self fileOrSymlinkExistsAtPath:JBROOT_PATH(@"/usr/lib/TweakLoader.dylib")]) {
+            NSLog(@"[RootHide] running updatelinks.sh to fix absolute symlinks (TweakLoader, libsubstrate, DynamicLibraries)...");
+            int r = exec_cmd_trusted(JBROOT_PATH("/bin/sh"),
+                                     JBROOT_PATH("/usr/libexec/updatelinks.sh"), NULL);
+            NSLog(@"[RootHide] updatelinks.sh exit: %d", r);
+            if (r != 0) {
+                // Fallback: updatelink đọc DANH SÁCH symlink path từ stdin
+                // (find | updatelink), không nhận argv — pipe từng path
+                // quan trọng nhất của tweak environment qua echo.
+                const char *keyLinks[] = {
+                    "/usr/lib/TweakLoader.dylib",
+                    "/usr/lib/TweakInject.dylib",
+                    "/usr/lib/libsubstrate.dylib",
+                    "/usr/lib/libhooker.dylib",
+                    "/usr/lib/libblackjack.dylib",
+                    "/Library/MobileSubstrate/DynamicLibraries",
+                };
+                for (size_t i = 0; i < sizeof(keyLinks) / sizeof(keyLinks[0]); i++) {
+                    // echo '<link>' | updatelink '<link>'
+                    // (updatelink lấy path từ stdin, argv bị bỏ qua)
+                    char cmdBuf[PATH_MAX + 64];
+                    snprintf(cmdBuf, sizeof(cmdBuf), "echo '%s' | '%s'", keyLinks[i],
+                             JBROOT_PATH("/usr/libexec/updatelink"));
+                    exec_cmd_trusted(JBROOT_PATH("/bin/sh"), "-c", cmdBuf, NULL);
+                }
+            }
+        }
         fflush(stderr);
     } @catch (NSException *e) {
         NSLog(@"[RootHide] EXCEPTION during bundled packages install: %@: %@", e.name, e.reason);
@@ -2713,6 +2776,61 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
     // directory or a missing tool set silently broke folderCheck()/convert
     // until the next full re-bootstrap.
     [self ensureRootHidePatcherSupport];
+
+    // ============================================================
+    // FIX SILEO "MÃ LỖI KIẾN TRÚC" (Issue 3, Step 6/6): dpkg db của
+    // RootHide bootstrap coi hệ thống là iphoneos-arm64e duy nhất —
+    // KHÔNG có foreign arch nào được đăng ký (không tồn tại file
+    // <admindir>/arch, chưa bao giờ chạy dpkg --add-architecture).
+    // Hệ quả:
+    //   1) Mọi deb arch iphoneos-arm64 (rất phổ biến: repo Procursus
+    //      chuẩn, launchctl deb đi kèm IPA, nhiều tweak/từ repo cộng
+    //      đồng) bị dpkg từ chối: "package architecture (iphoneos-arm64)
+    //      does not match system (iphoneos-arm64e)" → Sileo hiện mã lỗi.
+    //   2) Gói arch all bị dpkg từ chối tương tự nếu db yêu cầu "all"
+    //      phải nằm trong danh sách foreign arches của một số build.
+    // RootHide Bootstrap CHÍNH THỨC tạo sẵn file arch với các dòng
+    // iphoneos-arm64e / all / iphoneos-arm64; fork thiếu bước này.
+    // Tạo trực tiếp file arch (an toàn hơn dpkg --add-architecture vì
+    // không cần spawn dpkg, không đụng lock db đang giữ bởi step trên).
+    // ============================================================
+    @try {
+        NSString *dpkgArchPath = JBROOT_PATH(@"/var/lib/dpkg/arch");
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSMutableArray<NSString *> *archLines = [NSMutableArray array];
+        if ([fm fileExistsAtPath:dpkgArchPath]) {
+            NSString *existing = [NSString stringWithContentsOfFile:dpkgArchPath
+                                                           encoding:NSUTF8StringEncoding
+                                                              error:nil];
+            if (existing) {
+                for (NSString *line in [existing componentsSeparatedByCharactersInSet:
+                                        [NSCharacterSet newlineCharacterSet]]) {
+                    NSString *trimmed = [line stringByTrimmingCharactersInSet:
+                                         [NSCharacterSet whitespaceCharacterSet]];
+                    if (trimmed.length && ![archLines containsObject:trimmed]) {
+                        [archLines addObject:trimmed];
+                    }
+                }
+            }
+        }
+        for (NSString *arch in @[@"iphoneos-arm64e", @"all", @"iphoneos-arm64"]) {
+            if (![archLines containsObject:arch]) [archLines addObject:arch];
+        }
+        NSString *archFileContent = [[archLines componentsJoinedByString:@"\n"]
+                                     stringByAppendingString:@"\n"];
+        NSError *writeErr = nil;
+        BOOL wrote = [archFileContent writeToFile:dpkgArchPath
+                                       atomically:YES
+                                         encoding:NSUTF8StringEncoding
+                                            error:&writeErr];
+        if (!wrote) {
+            NSLog(@"[RootHide] dpkg arch registration failed (non-fatal): %@", writeErr);
+        } else {
+            NSLog(@"[RootHide] dpkg arch file now:\n%@", archFileContent);
+        }
+    } @catch (NSException *e) {
+        NSLog(@"[RootHide] arch registration EXCEPTION (non-fatal): %@: %@", e.name, e.reason);
+    }
 
     // ROOTHIDE FIX LỖI 1 v5: KHÔNG gọi reboot trong finalizeBootstrap
     // Caller (DOMainViewController → fadeToBlack → jailbreaker.finalize → rebootUserspace)

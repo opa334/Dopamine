@@ -566,20 +566,53 @@ static BOOL checkRootHideJBRAND(NSString *str)
     return (BOOL)jbinfo(rootPath);
 }
 
-- (void)runUnsandboxed:(void (^)(void))unsandboxBlock
+// Trả về 0 nếu unsandbox thành công (hoặc không cần thiết), khác 0 nếu KHÔNG
+// thể unsandbox. Caller PHẢI kiểm tra: chạy block khi sandboxed là nguyên nhân
+// gốc của lỗi "Remove jailbreak failed ... (1)" (EPERM trên mọi unlink trong
+// jbroot — app chỉ có extension read+execute trên jbroot thật; phần ghi duy
+// nhất là <jbroot>/var/mobile).
+//
+// FIX REMOVE-JAILBREAK EPERM (Issue 2), 2 lớp:
+//  1) Ưu tiên action unsandbox MỚI trong DOPAMINE domain
+//     (jbclient_dopamine_set_mac_label): permission check là bundle ID của
+//     app, KHÔNG phụ thuộc euid trong audit token. Action cũ
+//     (jbclient_root_set_mac_label, ROOT domain) bị deny khi audit token
+//     vẫn báo euid 501 vì proc_ro/task_tokens fixup không chạy trên kernel
+//     đó — dispatcher deny KHÔNG gửi reply → client nhận NULL → trả -1 mà
+//     code cũ BỎ QUA return value và chạy block trong sandbox.
+//  2) Kiểm tra return value: nếu cả hai đường đều fail, KHÔNG chạy block
+//     một cách mù quáng nữa — trả về mã lỗi để caller báo cho user thay vì
+//     để rmrf xả ra EPERM từng file một.
+- (int)runUnsandboxed:(void (^)(void))unsandboxBlock
 {
     if ([self isInstalledThroughTrollStore]) {
         unsandboxBlock();
+        return 0;
     }
     else if ([self isJailbroken]) {
         uint64_t labelBackup = 0;
-        jbclient_root_set_mac_label(1, -1, &labelBackup);
+        int r = jbclient_dopamine_set_mac_label(1, -1, &labelBackup);
+        if (r != 0) {
+            // Fallback đường cũ (ROOT domain) — cần euid đã được fixup trong
+            // audit token; hoạt động trên các kernel có proc_ro task_tokens.
+            NSLog(@"[RootHide] runUnsandboxed: dopamine-domain unsandbox failed (%d), trying ROOT domain", r);
+            r = jbclient_root_set_mac_label(1, -1, &labelBackup);
+        }
+        if (r != 0) {
+            NSLog(@"[RootHide] runUnsandboxed: FAILED to unsandbox (err %d) — NOT running the block sandboxed", r);
+            return r == 0 ? -1 : r;
+        }
         unsandboxBlock();
-        jbclient_root_set_mac_label(1, labelBackup, NULL);
+        int restoreR = jbclient_dopamine_set_mac_label(1, labelBackup, NULL);
+        if (restoreR != 0) {
+            jbclient_root_set_mac_label(1, labelBackup, NULL);
+        }
+        return 0;
     }
     else {
         // Hope that we are already unsandboxed
         unsandboxBlock();
+        return 0;
     }
 }
 
@@ -734,7 +767,12 @@ static BOOL checkRootHideJBRAND(NSString *str)
     // → kill(pid, SIGCONT) → cmd_wait_for_exit(pid)
     [self runAsRoot:^{
         __block int pid = 0;
-        __block int r = 0;
+        // FIX REMOVE-JAILBREAK EPERM follow-up: r phải khởi tạo KHÁC 0 để
+        // nếu runUnsandboxed từ chối chạy block (unsandbox fail), ta không
+        // rơi vào cmd_wait_for_exit(pid=0) → waitpid(0) chờ mọi child → treo
+        // vĩnh viễn (watchdog giết app). Chỉ khi block chạy và spawn thành
+        // công thì r mới về 0.
+        __block int r = -1;
         [self runUnsandboxed:^{
             r = exec_cmd_suspended(&pid, JBROOT_PATH("/basebin/uptime_helper"), "reboot_userspace", NULL);
             if (r == 0) {
@@ -748,6 +786,8 @@ static BOOL checkRootHideJBRAND(NSString *str)
         }];
         if (r == 0) {
             cmd_wait_for_exit(pid);
+        } else {
+            NSLog(@"[RootHide] rebootUserspace: unsandbox/spawn failed (r=%d) — NOT waiting", r);
         }
     }];
 }
@@ -1175,12 +1215,38 @@ static BOOL checkRootHideJBRAND(NSString *str)
         return nil;
     }
     else if ([self isJailbroken]) {
-        __block NSError *error;
+        // FIX 2 lỗi trong 1 (vấn đề gỡ jailbreak khi đang jailbroken):
+        //
+        // (a) `__block NSError *error` trước đây KHÔNG được khởi tạo. Nếu
+        //     runAsRoot bỏ qua block (get_root != 0) hoặc runUnsandboxed từ
+        //     chối chạy block (xem dưới), `return error` trả về JUNK POINTER
+        //     → crash ngẫu nhiên hoặc error rác trong UI.
+        // (b) rmrf trước đây chạy cả khi unsandbox THẤT BẠI (runUnsandboxed
+        //     cũ bỏ qua return value) → app vẫn sandboxed, extension duy nhất
+        //     trên jbroot thật là read+execute → mọi unlink/rmdir EPERM(1).
+        //     Đây chính xác là lỗi trong ảnh: "rm /var/containers/Bundle/
+        //     Application/.jbroot-XXXX (1)". Giờ runUnsandboxed trả int và
+        //     KHÔNG chạy block khi không unsandbox được — phải truyền lỗi đó
+        //     ra ngoài để UI hiển thị lý do thật thay vì EPERM từng file.
+        __block NSError *error = nil;
+        __block int unsandboxErr = 0;
+        __block BOOL blockRan = NO;
         [self runAsRoot:^{
-            [self runUnsandboxed:^{
+            unsandboxErr = [self runUnsandboxed:^{
+                blockRan = YES;
                 error = [self->_bootstrapper deleteBootstrap];
             }];
         }];
+        if (!blockRan) {
+            // runAsRoot đã bỏ qua block (get_root != 0 và geteuid() != 0)
+            // → KHÔNG có gì bị xóa. Báo lỗi rõ ràng thay vì return nil ("thành công").
+            error = [NSError errorWithDomain:NSPOSIXErrorDomain code:EPERM
+                                    userInfo:@{NSLocalizedDescriptionKey:@"Failed to elevate privileges to root (jbserver get_root refused) — the jailbreak files were left in place. Try respringing or rebooting userspace, then remove again."}];
+        }
+        else if (unsandboxErr != 0 && !error) {
+            error = [NSError errorWithDomain:NSPOSIXErrorDomain code:unsandboxErr
+                                    userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to unsandbox the app (error %d) — the jailbreak files were left in place on purpose. Try respringing or rebooting userspace, then remove again.", unsandboxErr]}];
+        }
         return error;
     }
     else {
@@ -1191,12 +1257,21 @@ static BOOL checkRootHideJBRAND(NSString *str)
 
 - (NSError *)reinstallPackageManagers
 {
-    __block NSError *error;
+    // FIX (đồng bộ với deleteBootstrap): khởi tạo error = nil để không bao giờ
+    // trả về junk pointer; nếu unsandbox fail, block không chạy → trả về
+    // lỗi mô tả thay vì nil im lặng.
+    __block NSError *error = nil;
+    __block BOOL blockRan = NO;
     [self runAsRoot:^{
         [self runUnsandboxed:^{
+            blockRan = YES;
             error = [self->_bootstrapper installPackageManagers];
         }];
     }];
+    if (!blockRan) {
+        error = [NSError errorWithDomain:NSPOSIXErrorDomain code:EPERM
+                                userInfo:@{NSLocalizedDescriptionKey:@"Failed to elevate/unsandbox to reinstall package managers. Try respringing or rebooting userspace, then try again."}];
+    }
     return error;
 }
 

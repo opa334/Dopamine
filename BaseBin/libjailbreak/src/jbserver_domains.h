@@ -55,6 +55,11 @@ enum {
     JBS_DOPAMINE_IS_JAILBROKEN = 1,
     JBS_DOPAMINE_GET_ROOT,
     JBS_DOPAMINE_DROP_ROOT,
+    // FIX REMOVE-JAILBREAK EPERM (Issue 2): see jbdomain_dopamine.c
+    // dopamine_set_mac_label for the full write-up. Appending at the END of
+    // the enum is ABI-safe for existing clients (action codes unchanged),
+    // and the dispatcher only requires dense packing of DOMAINS, not actions.
+    JBS_DOPAMINE_SET_MAC_LABEL,
 };
 
 // Domain: RootHide

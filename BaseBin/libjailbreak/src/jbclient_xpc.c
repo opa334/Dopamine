@@ -557,3 +557,27 @@ int jbclient_dopamine_drop_root(void)
         }
         return -1;
 }
+
+// FIX REMOVE-JAILBREAK EPERM (Issue 2): DOPAMINE-domain unsandbox.
+// Identical wire format to jbclient_root_set_mac_label, but the permission
+// check is is_dopamine_app() instead of audit-token euid — see
+// jbdomain_dopamine.c::dopamine_set_mac_label for why that matters (stale
+// audit token after get_root → ROOT domain denies without a reply → client
+// gets NULL → the old runUnsandboxed silently ran the rmrf SANDBOXED →
+// EPERM(1) on every unlink). Returns 0 on success, -1 when no reply,
+// or the server-side result otherwise.
+int jbclient_dopamine_set_mac_label(uint64_t slot, uint64_t label, uint64_t *orgLabel)
+{
+        xpc_object_t xargs = xpc_dictionary_create_empty();
+        xpc_dictionary_set_uint64(xargs, "slot", slot);
+        xpc_dictionary_set_uint64(xargs, "label", label);
+        xpc_object_t xreply = jbserver_xpc_send(JBS_DOMAIN_DOPAMINE, JBS_DOPAMINE_SET_MAC_LABEL, xargs);
+        xpc_release(xargs);
+        if (xreply) {
+                int64_t result = xpc_dictionary_get_int64(xreply, "result");
+                if (orgLabel) *orgLabel = xpc_dictionary_get_uint64(xreply, "org-label");
+                xpc_release(xreply);
+                return result;
+        }
+        return -1;
+}
