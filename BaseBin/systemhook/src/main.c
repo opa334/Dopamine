@@ -4,6 +4,7 @@
 #include <mach-o/dyld_images.h>
 #include <mach-o/getsect.h>
 #include <dlfcn.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <time.h>
@@ -499,6 +500,42 @@ __attribute__((constructor)) static void initializer(void)
         // depends on this assignment.
         roothide_init();
         /**************************************************/
+
+        // ========== ROOTHIDE PATCHER DIAG EARLY MARKER (FIX LỖI B v2) ==========
+        // UPSTREAM DISCOVERY (clone Dopamine2-roothide + Relaxin để đối chiếu):
+        // Patcher binary 1.4-2 LC_LOAD_DYLIB ĐẦU TIÊN là
+        //   @loader_path/.jbroot/usr/lib/libroothide.dylib
+        // (đã otool xác chứng; Sileo.app y hệt). Nếu process chết TRƯỚC khi
+        // constructor này chạy (dyld load fail / AMFI kill / spawn clean-mode
+        // không inject) thì block diagnostics cuối constructor KHÔNG BAO GIỜ
+        // chạy → .patcher_diag.log KHÔNG TỒN TẠI (user: "cx ko có file log")
+        // → không phân biệt được chết ở đâu. Marker NÀY chạy ngay sau
+        // roothide_init(), TRƯỚC early-return của check-in: nếu log có
+        // "EARLY: systemhook constructor reached" mà KHÔNG có dòng
+        // "=== Patcher launched" phía dưới → chết giữa check-in; nếu log
+        // không có CẢ HAI → Patcher chưa hề được inject systemhook
+        // (blacklist / clean-mode / dyld chết trước constructor). Path
+        // tuyệt đối /var/mobile (không cần JB_RootPath — biến đó chỉ được
+        // set bởi check-in bên dưới), write fail = im lặng, an toàn.
+        // Tạm thời cho chẩn đoán — khi Issue B đóng thì bỏ marker.
+        {
+                char exep[PATH_MAX];
+                uint32_t exepLen = sizeof(exep);
+                if (_NSGetExecutablePath(exep, &exepLen) == 0 && exep[0]) {
+                        char realExep[PATH_MAX];
+                        if (realpath(exep, realExep) == NULL)
+                                strlcpy(realExep, exep, sizeof(realExep));
+                        if (string_has_suffix(realExep, "/Patcher.app/Patcher")) {
+                                FILE *ef = fopen("/var/mobile/.patcher_diag_early.log", "a");
+                                if (ef) {
+                                        fprintf(ef, "[%ld] EARLY: systemhook constructor reached pid=%d uid=%d exe=%s\n",
+                                                (long)time(NULL), getpid(), getuid(), realExep);
+                                        fclose(ef);
+                                }
+                        }
+                }
+        }
+        // ========== END ROOTHIDE PATCHER DIAG EARLY MARKER ==========
 
         // Under normal circumstances, dyldhook will have already handled the check-in, so get the check-in information from the __jbinfo section
         // For more information on the check-in process, check the comments in dyldhook

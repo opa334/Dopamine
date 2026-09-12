@@ -1119,15 +1119,10 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
         //
         // The "1900" suite entries track the
         // RootHide Bootstrap iOS 19 series (Procursus-compatible suites):
-        //   - apt.procurs.us          → upstream Procursus bootstraps
-        //   - roothide.github.io      → RootHide repo index
-        //   - roothide/procursus      → RootHide's own Procursus mirror
-        //                                (iphoneos-arm64e/1900)
-        //   - RootHide GitHub release → direct-download package root used by
-        //                                RootHide releases (1900 strapfiles)
         //   - yourepo.com             → general community repo
         //   - chariz / havoc / bigboss→ standard package repos
         //   - ellekit.space           → ElleKit (tweak hooking runtime)
+        //   (apt.procurs.us KHÔNG có ở đây — xem "ROOTHIDE FIX LỖI 4 v2" bên dưới.)
         NSString *defaultSources = @"Types: deb\n"
             @"URIs: https://repo.chariz.com/\n"
             @"Suites: ./\n"
@@ -1141,11 +1136,6 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
             @"Types: deb\n"
             @"URIs: http://apt.thebigboss.org/repofiles/cydia/\n"
             @"Suites: stable\n"
-            @"Components: main\n"
-            @"\n"
-            @"Types: deb\n"
-            @"URIs: https://apt.procurs.us/\n"
-            @"Suites: 1900\n"
             @"Components: main\n"
             @"\n"
             @"Types: deb\n"
@@ -1192,6 +1182,31 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
         // roothide.github.io, yourepo, ellekit.space).
         //
         // (đoạn default.sources bên dưới giữ nguyên — chỉ default.list bị xóa)
+        //
+        // ============================================================
+        // ROOTHIDE FIX LỖI 4 v2 (apt warning "configured multiple times"):
+        // apt.procurs.us bị trùng: bootstrap tar 1900 ships sẵn file
+        // ./etc/apt/sources.list.d/procursus.sources (URIs apt.procurs.us,
+        // Suites 1900, Components main) — đã kiểm chứng tar thật trong
+        // /tmp/boot1900.tar. v1 cũ ghi stanza apt.procurs.us 1900 vào
+        // default.sources nữa → apt parse CẢ HAI file →
+        //   "Target Packages (main/binary-iphoneos-arm64e/Packages) is
+        //    configured multiple times in
+        //    /etc/apt/sources.list.d/default.sources:4 and
+        //    /etc/apt/sources.list.d/procursus.sources:1"
+        // Upstream Dopamine2-roothide (DOBootstrapper.m DEFAULT_SOURCES,
+        // commit 4c781be) KHÔNG có apt.procurs.us — chính vì tar ships
+        // procursus.sources rồi. Relaxin (RLXBootstrapPreparer
+        // writePackageSourcesAtRoot) cũng không có.
+        // → XÓA stanza khỏi default.sources (chỉ giữ roothide/procursus
+        //   mirror iphoneos-arm64e/1900 — repo arm64e thật sự cần cho
+        //   dpkg arch arm64e của bootstrap này).
+        // Heal thiết bị đã cài: block "FIX LỖI 4 v2 (heal)" trong
+        // finalizeBootstrap (cạnh block default.list v1) rewrite lại
+        // default.sources mỗi lần jailbreak → warning biến mất ngay sau
+        // khi cài IPA mới, không cần re-bootstrap.
+        // ============================================================
+        // ĐÃ XÓA stanza apt.procurs.us 1900 khỏi defaultSources bên trên.
         
         NSString *mobilePreferencesPath = JBROOT_PATH(@"/var/mobile/Library/Preferences");
         if (![[NSFileManager defaultManager] fileExistsAtPath:mobilePreferencesPath]) {
@@ -2787,6 +2802,66 @@ NSString *const bootstrapErrorDomain = @"BootstrapErrorDomain";
                     NSLog(@"[RootHide] failed to remove stale default.list: %@", rmErr);
                 }
                 fflush(stderr);
+            }
+        }
+
+        // ============================================================
+        // ROOTHIDE FIX LỖI 4 v2 (heal thiết bị đã cài — apt warning
+        // "Target Packages ... configured multiple times in
+        // default.sources:4 and procursus.sources:1"):
+        //
+        // ROOT CAUSE: bootstrap tar 1900 tự ships
+        // ./etc/apt/sources.list.d/procursus.sources (apt.procurs.us 1900
+        // main). IPA v1 của fork ghi THÊM stanza apt.procurs.us 1900 vào
+        // default.sources → apt thấy cùng repo 2 lần → warning mỗi refresh.
+        // Upstream Dopamine2-roothide DEFAULT_SOURCES (DOBootstrapper.m,
+        // commit 4c781be) KHÔNG có apt.procurs.us — vì tar ships
+        // procursus.sources sẵn rồi. Relaxin RLXBootstrapPreparer cũng vậy.
+        //
+        // FIX: stanza đã xóa khỏi writer (lần bootstrap mới sẽ đúng ngay).
+        // Block NÀY heal thiết bị đã jailbreak: default.sources trên đĩa
+        // vẫn còn stanza procursus (file chỉ được ghi khi extract bootstrap
+        // mới — re-jailbreak không ghi lại). Mỗi finalizeBootstrap đọc
+        // default.sources, nếu có dòng "apt.procurs.us" thì xóa THẨM ĐOẠN
+        // deb822 chứa nó (khối "Types: deb ... Components: ...\n\n") và ghi
+        // lại. Idempotent — chạy mỗi jailbreak, file sau khi heal khớp
+        // 100% đầu ra writer mới. procursus.sources của tar KHÔNG bị đụng
+        // (repo apt.procurs.us vẫn dùng được qua file đó của tar).
+        // ============================================================
+        {
+            NSString *defaultSourcesPath = JBROOT_PATH(@"/etc/apt/sources.list.d/default.sources");
+            if ([[NSFileManager defaultManager] fileExistsAtPath:defaultSourcesPath]) {
+                NSError *readErr = nil;
+                NSString *content = [NSString stringWithContentsOfFile:defaultSourcesPath encoding:NSUTF8StringEncoding error:&readErr];
+                if (content && [content containsString:@"apt.procurs.us"]) {
+                    NSMutableString *healed = [NSMutableString string];
+                    // deb822: mỗi stanza = "Types: deb\n...\nComponents: ...\n\n"
+                    // (stanza cuối có thể thiếu "\n\n" — xử lý bằng cách append
+                    // tạm '\n' rồi trim).
+                    NSString *normalized = [content stringByAppendingString:@"\n"];
+                    NSArray<NSString *> *stanzas = [normalized componentsSeparatedByString:@"\n\n"];
+                    NSUInteger removed = 0;
+                    for (NSString *rawStanza in stanzas) {
+                        // Bỏ mảnh rỗng/chỉ-whitespace (trailing blank của lần
+                        // heal trước) — nếu không file sẽ dài thêm 1 dòng trống
+                        // mỗi lần jailbreak (vi phạm idempotent).
+                        if ([[rawStanza stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0) continue;
+                        if ([rawStanza containsString:@"apt.procurs.us"]) {
+                            removed++;
+                            continue; // bỏ stanza procursus trùng
+                        }
+                        [healed appendFormat:@"%@\n\n", rawStanza];
+                    }
+                    if (removed > 0) {
+                        NSError *writeErr = nil;
+                        if ([healed writeToFile:defaultSourcesPath atomically:NO encoding:NSUTF8StringEncoding error:&writeErr]) {
+                            NSLog(@"[RootHide] FIX LỖI 4 v2: removed %lu duplicate apt.procurs.us stanza(s) from default.sources (tar's procursus.sources owns that repo)", (unsigned long)removed);
+                        } else {
+                            NSLog(@"[RootHide] FIX LỖI 4 v2: FAILED to rewrite default.sources: %@", writeErr);
+                        }
+                        fflush(stderr);
+                    }
+                }
             }
         }
         fflush(stderr);
