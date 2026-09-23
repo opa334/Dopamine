@@ -98,7 +98,12 @@ int __posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
 			boomerang_stashPrimitives();
 
 			// Fix Xcode debugging being broken after the userspace reboot
-			unmount("/Developer", MNT_FORCE);
+			if (__builtin_available(iOS 17.0, *)) {
+				unmount("/System/Developer", MNT_FORCE);
+			}
+			else {
+				unmount("/Developer", MNT_FORCE);
+			}
 
 			// If there is a pending jailbreak update, apply it now
 			const char *stagedJailbreakUpdate = getenv("STAGED_JAILBREAK_UPDATE");
