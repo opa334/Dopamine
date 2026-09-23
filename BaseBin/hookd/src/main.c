@@ -57,15 +57,15 @@ int apply_hook(mach_port_t clientTaskPort, mach_port_t taskPortInClient, vm_addr
 		// printf("Failed to write data at %#lx in task %d (%d)\n", (vm_offset_t)data, taskPort, kr); fflush(stdout);
 	}
 
-	kr = vm_protect(taskPort, vmaddr, size, false, VM_PROT_READ | VM_PROT_EXECUTE) != KERN_SUCCESS;
-	if (kr != KERN_SUCCESS) {
-		// printf("Failed to make %lx->%#lx in task %d executable (%d)\n", vmaddr, vmaddr+size, taskPort, kr); fflush(stdout);
+	kern_return_t restoreKr = vm_protect(taskPort, vmaddr, size, false, VM_PROT_READ | VM_PROT_EXECUTE);
+	if (restoreKr != KERN_SUCCESS) {
+		// printf("Failed to make %lx->%#lx in task %d executable (%d)\n", vmaddr, vmaddr+size, taskPort, restoreKr); fflush(stdout);
 		mach_port_mod_refs(mach_task_self(), taskPort, MACH_PORT_RIGHT_SEND, -1);
-		return kr;
+		return restoreKr;
 	}
 
 	mach_port_mod_refs(mach_task_self(), taskPort, MACH_PORT_RIGHT_SEND, -1);
-	return KERN_SUCCESS;
+	return kr;
 }
 
 int apply_fixup(mach_port_t clientTaskPort, mach_port_t taskPortInClient, vm_address_t address, vm_size_t size, bool set_maximum, vm_prot_t prot)
