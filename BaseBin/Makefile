@@ -29,9 +29,8 @@ MachOMerger: .build .include
 	@cp MachOMerger/MachOMerger .build
 
 opainject: .build .include
-	$(MAKE) -C opainject FINALPACKAGE=1
-	@ldid -Cadhoc -s opainject/.theos/obj/opainject
-	@cp opainject/.theos/obj/opainject .build
+	$(MAKE) -C opainject
+	@cp opainject/opainject .build
 
 libjailbreak: .build .include ChOma
 	$(MAKE) -C libjailbreak

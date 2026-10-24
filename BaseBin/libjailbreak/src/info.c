@@ -597,39 +597,49 @@ void jbinfo_initialize_hardcoded_offsets(void)
 																gSystemInfo.kernelStruct.vm_map_entry.prev =  0x8;
 																gSystemInfo.kernelStruct.vm_map_entry.flags = 0x38;
 
-																// iOS 27.0+
-																if (strcmp(darwinVersion, "27.0.0") >= 0) {
-																	gSystemInfo.kernelConstant.PVH_TYPE_MASK = 0x7;
-																	gSystemInfo.kernelConstant.PVH_HIGH_FLAGS = 0x64C0000000000000;
+																// iOS 26.5+
+																if (strcmp(darwinVersion, "25.4.0") >= 0) {
+																	// proc_ro->task_tokens was removed in 26.5
+																	gSystemInfo.kernelStruct.proc_ro.task_tokens            = 0;
+																	gSystemInfo.kernelStruct.proc_ro.mach_trap_filter_mask -= 0x28;
+																	gSystemInfo.kernelStruct.proc_ro.mach_kobj_filter_mask -= 0x28;
+																	gSystemInfo.kernelStruct.proc_ro.t_flags_ro            -= 0x28;
 
-																	// vm_map
-																	gSystemInfo.kernelStruct.vm_map.hdr   = 0x0;
-																	gSystemInfo.kernelStruct.vm_map.flags = 0xB0;
 
-																	// vm_map_entry
-																	gSystemInfo.kernelStruct.vm_map_entry.prev                 = 0x4;
-																	gSystemInfo.kernelStruct.vm_map_entry.next                 = 0x8;
-																	gSystemInfo.kernelStruct.vm_map_entry.start                = 0x10;
-																	gSystemInfo.kernelStruct.vm_map_entry.end                  = 0x18;
-																	gSystemInfo.kernelStruct.vm_map_entry.flags_prot           = 4;
-																	gSystemInfo.kernelStruct.vm_map_entry.flags_maxprot        = 8;
-																	gSystemInfo.kernelStruct.vm_map_entry.flags_xnu_user_debug = 23;
+																	// iOS 27.0+
+																	if (strcmp(darwinVersion, "27.0.0") >= 0) {
+																		gSystemInfo.kernelConstant.PVH_TYPE_MASK = 0x7;
+																		gSystemInfo.kernelConstant.PVH_HIGH_FLAGS = 0x64C0000000000000;
 
-																	// proc
-																	gSystemInfo.kernelStruct.proc.flag = 0x444;
+																		// vm_map
+																		gSystemInfo.kernelStruct.vm_map.hdr   = 0x0;
+																		gSystemInfo.kernelStruct.vm_map.flags = 0xB0;
 
-																	// proc_ro
-																	gSystemInfo.kernelStruct.proc_ro.ucred                 += 0x8;
-																	gSystemInfo.kernelStruct.proc_ro.syscall_filter_mask   += 0x8;
-																	gSystemInfo.kernelStruct.proc_ro.mach_trap_filter_mask += 0x8;
-																	gSystemInfo.kernelStruct.proc_ro.mach_kobj_filter_mask += 0x8;
-																	gSystemInfo.kernelStruct.proc_ro.t_flags_ro            += 0x8;
-																	gSystemInfo.kernelStruct.proc_ro.task_tokens           = 0;
+																		// vm_map_entry
+																		gSystemInfo.kernelStruct.vm_map_entry.prev                 = 0x4;
+																		gSystemInfo.kernelStruct.vm_map_entry.next                 = 0x8;
+																		gSystemInfo.kernelStruct.vm_map_entry.start                = 0x10;
+																		gSystemInfo.kernelStruct.vm_map_entry.end                  = 0x18;
+																		gSystemInfo.kernelStruct.vm_map_entry.flags_prot           = 4;
+																		gSystemInfo.kernelStruct.vm_map_entry.flags_maxprot        = 8;
+																		gSystemInfo.kernelStruct.vm_map_entry.flags_xnu_user_debug = 23;
 
-																	if (hasSPTM) {
-																		// vm_page
-																		gSystemInfo.kernelStruct.vm_page.pv_head = 0x30;
-																		gSystemInfo.kernelStruct.vm_page.struct_size = 0x40;
+																		// proc
+																		gSystemInfo.kernelStruct.proc.flag = 0x444;
+
+																		// proc_ro
+																		// proc_ro->p_fixed_vfs_resolve_flags was added before ucred
+																		gSystemInfo.kernelStruct.proc_ro.ucred                 += 0x8;
+																		gSystemInfo.kernelStruct.proc_ro.syscall_filter_mask   += 0x8;
+																		gSystemInfo.kernelStruct.proc_ro.mach_trap_filter_mask += 0x8;
+																		gSystemInfo.kernelStruct.proc_ro.mach_kobj_filter_mask += 0x8;
+																		gSystemInfo.kernelStruct.proc_ro.t_flags_ro            += 0x8;
+
+																		if (hasSPTM) {
+																			// vm_page
+																			gSystemInfo.kernelStruct.vm_page.pv_head = 0x30;
+																			gSystemInfo.kernelStruct.vm_page.struct_size = 0x40;
+																		}
 																	}
 																}
 															}

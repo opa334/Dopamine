@@ -32,6 +32,9 @@ BOOL preferencePlistNeedsRedirection(NSString *plistPath)
 		@"ptpcamerad.plist",
 		@"com.google.gmp.measurement.monitor.plist",
 		@"com.google.gmp.measurement.plist",
+		@"ReportSystemMemory.plist",
+		@"TokenBucketRateLimiter.plist",
+		@"PerfPowerServices.plist",
 	];
 
 	return ![additionalSystemPlistNames containsObject:plistName];

@@ -47,6 +47,10 @@ xpc_object_t xpc_dictionary_get_value_hook(xpc_object_t xdict, const char *key)
 					xpc_dictionary_add_launch_daemon_plist_at_path(origXvalue, [JBROOT_PATH(@"/Library/LaunchDaemons") stringByAppendingPathComponent:daemonPlistName].fileSystemRepresentation);
 				}
 			}
+
+			// mtmergeprops reloads the touch controller firmware, which already happened on the initial boot.
+			// Running it again after a userspace reboot can leave touch dead on some aftermarket displays, so skip it.
+			xpc_dictionary_set_value(origXvalue, "/System/Library/LaunchDaemons/com.apple.mtmergeprops.plist", NULL);
 		}
 	}
 	else if (!strcmp(key, "Paths")) {
