@@ -2,7 +2,7 @@ Package: dopamine-basebin-link
 Name: Dopamine BaseBin Link
 Author: opa334 <opa334@protonmail.com>
 Maintainer: opa334 <opa334@protonmail.com>
-Architecture: iphoneos-arm64
+Architecture: iphoneos-arm64e
 Version: 1.0.0
 Provides: opainject
 Section: Libraries

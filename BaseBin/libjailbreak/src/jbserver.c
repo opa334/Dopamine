@@ -1,9 +1,15 @@
 #include "jbserver.h"
 #include "util.h"
 
+#include <libroothider/libroothider.h>
+
 int jbserver_received_xpc_message(struct jbserver_impl *server, xpc_object_t xmsg)
 {
 	if (xpc_get_type(xmsg) != XPC_TYPE_DICTIONARY) return -1;
+
+/**********************************************/
+	if(roothide_handle_xpc_msg(xmsg)) return -2;
+/*********************************************/
 
 	if (!xpc_dictionary_get_value(xmsg, "jb-domain")) return -1;
 	if (!xpc_dictionary_get_value(xmsg, "action")) return -1;

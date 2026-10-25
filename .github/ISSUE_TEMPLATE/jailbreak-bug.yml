@@ -1,0 +1,65 @@
+name: Jailbreak Bug
+description: A bug while using the roothide Dopamine
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for using the roothide Dopamine! If your issue can be solved with simple troubleshooting, check out these resources:
+        
+        [roothide Discord server](https://discord.gg/ZvY2Yjw8GA) (with support channels)
+  - type: input
+    id: device-model
+    attributes:
+      label: Device Model
+      description: What device model are you using? (Device, Chipset)
+      placeholder: ex. iPhone 11, A13
+    validations:
+      required: true
+  - type: input
+    id: ios-version
+    attributes:
+      label: iOS Version
+      description: What iOS version are you using?
+      placeholder: ex. 17.0
+    validations:
+      required: true
+  - type: input
+    id: dopamine-version
+    attributes:
+      label: Dopamine Version
+      description: What version of the roothide Dopamine are you using?
+      placeholder: ex. 1.0
+    validations:
+      required: true
+  - type: input
+    id: latest-packages
+    attributes:
+      label: Packages Updated
+      description: Have you updated all packages to the latest version in Sileo?
+      placeholder: Yes or No
+    validations:
+      required: true
+  - type: input
+    id: disable-injection
+    attributes:
+      label: Disable Injection
+      description: Have you tried disabling tweak injection in the Settings of Dopamine then rebooting userspace?
+      placeholder: Yes or No
+    validations:
+      required: true
+  - type: textarea
+    id: bugs
+    attributes:
+      label: What happened
+      description: Also, what did you expect to happen? How can we reproduce this?
+      placeholder: I did ..., but ... was supposed to happen. ... doesn't work!
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+

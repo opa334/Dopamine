@@ -95,6 +95,7 @@
 
     BOOL envUpdate = [[DOUIManager sharedInstance] environmentUpdateAvailable];
     
+/*
     self.button = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:DOLocalizedString(envUpdate ? @"Button_Update_Environment" : @"Button_Update") image:[UIImage systemImageNamed:@"arrow.down" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"update" handler:^(__kindof UIAction * _Nonnull action) {
         if (envUpdate)
         {
@@ -128,6 +129,18 @@
             [[DOEnvironmentManager sharedManager] updateJailbreakFromTIPA:file.path];
         }];
         [(UINavigationController*)(self.parentViewController) pushViewController:downloadVC animated:YES];
+    }] chevron:NO];
+ */
+    self.button = [DOActionMenuButton buttonWithAction:[UIAction actionWithTitle:DOLocalizedString(envUpdate ? @"Button_Reboot" : @"Button_Update") image:[UIImage systemImageNamed:(envUpdate ? @"arrow.clockwise.circle" : @"arrow.down") withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"update" handler:^(__kindof UIAction * _Nonnull action) {
+        if (envUpdate)
+        {
+            [[DOEnvironmentManager sharedManager] reboot];
+        }
+        else
+        {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/roothide/Dopamine-roothide/releases"] options:@{} completionHandler:nil];
+        }
+        
     }] chevron:NO];
     
     self.button.translatesAutoresizingMaskIntoConstraints = NO;

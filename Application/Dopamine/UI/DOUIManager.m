@@ -71,7 +71,7 @@
     static dispatch_once_t onceToken;
     static NSArray *releases;
     dispatch_once(&onceToken, ^{
-        NSURL *url = [NSURL URLWithString:@"https://api.github.com/repos/opa334/Dopamine/releases"];
+        NSURL *url = [NSURL URLWithString:@"https://api.github.com/repos/roothide/Dopamine-roothide/releases"];
         NSData *data = [NSData dataWithContentsOfURL:url];
         if (data) {
             NSError *error;
@@ -91,7 +91,9 @@
     if (![[DOEnvironmentManager sharedManager] jailbrokenVersion])
         return NO;
 
-    NSString *jailbrokenVersion = [[DOEnvironmentManager sharedManager] jailbrokenVersion];
+/********************************************** roothide specfic ***********************************/
+    NSString *jailbrokenVersion = [[DOEnvironmentManager sharedManager] jailbrokenVersionRootHide];
+/********************************************** roothide specfic ***********************************/
     NSString *launchedVersion = [self getLaunchedReleaseTag];
     
     return [launchedVersion numericalVersionRepresentation] > [jailbrokenVersion numericalVersionRepresentation];
@@ -127,7 +129,9 @@
 
 - (NSString*)getLaunchedReleaseTag
 {
-    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+/******************************************************** roothide specfic *******************************************************/
+    return [[[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"] componentsSeparatedByString:@"-"] lastObject];
+/*********************************************************************************************************************************/
 }
 
 - (NSArray*)availablePackageManagers

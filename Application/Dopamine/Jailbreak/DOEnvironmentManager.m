@@ -97,6 +97,7 @@ extern char **environ;
     return [[self privatePrebootPath] stringByAppendingPathComponent:bootManifestString];
 }
 
+/*
 - (void)locateJailbreakRoot
 {
     if (!gSystemInfo.jailbreakInfo.rootPath) {
@@ -212,6 +213,7 @@ extern char **environ;
     
     return error;
 }
+*/
 
 - (BOOL)isArm64e
 {
@@ -289,6 +291,11 @@ extern char **environ;
 
 - (BOOL)isJailbroken
 {
+/************** roothide specific ***********/
+    if(!jbclient_roothide_jailbroken())
+        return NO;
+/************** roothide specific ********/
+
     [self updateJailbreakState];
     return _isJailbroken;
 }
@@ -319,6 +326,15 @@ extern char **environ;
     [self updateJailbreakState];
     if (!_isJailbroken) return nil;
     return _jailbrokenVersion;
+}
+
+- (NSString *)jailbrokenVersionRootHide
+{
+    NSString *versionFile = JBROOT_PATH(@"/basebin/.version-roothide");
+    if(!versionFile) {
+        return nil;
+    }
+    return [NSString stringWithContentsOfFile:versionFile encoding:NSUTF8StringEncoding error:nil];
 }
 
 - (NSString *)systemVersion
@@ -539,6 +555,9 @@ extern char **environ;
                 else {
                     [[NSData data] writeToFile:safeModePath atomically:YES];
                 }
+/*************************** roothide specific *******************/
+                setBasebinDependency(enabled);
+/*************************** roothide specific *******************/
             }];
         }];
     }
@@ -612,6 +631,7 @@ extern char **environ;
     }
 }
 
+/*
 - (BOOL)isFakelibMounted
 {
     struct statfs fsb;
@@ -680,6 +700,7 @@ extern char **environ;
         actionBlock();
     }
 }
+*/
 
 - (NSString *)accessibleKernelPath
 {

@@ -6,6 +6,7 @@
 
 SInt32 CFUserNotificationDisplayAlert(CFTimeInterval timeout, CFOptionFlags flags, CFURLRef iconURL, CFURLRef soundURL, CFURLRef localizationURL, CFStringRef alertHeader, CFStringRef alertMessage, CFStringRef defaultButtonTitle, CFStringRef alternateButtonTitle, CFStringRef otherButtonTitle, CFOptionFlags *responseFlags) API_AVAILABLE(ios(3.0));
 
+/*
 void execute_unsandboxed(void (^block)(void))
 {
 	uint64_t credBackup = 0;
@@ -91,6 +92,7 @@ int fakelib_set_mounted(bool mounted)
 	}
 	return r;
 }
+*/
 
 int jbctl_handle_internal(const char *command, int argc, char* argv[])
 {
@@ -135,6 +137,7 @@ int jbctl_handle_internal(const char *command, int argc, char* argv[])
 		mach_port_deallocate(mach_task_self(), launchdTaskPort);
 		return 0;
 	}
+/*
 	else if (!strcmp(command, "protection")) {
 		bool toSet = false;
 		if (argc > 1) {
@@ -169,14 +172,33 @@ int jbctl_handle_internal(const char *command, int argc, char* argv[])
 		}
 		return -1;
 	}
+*/
 	else if (!strcmp(command, "startup")) {
-		protection_set_active(true);
+//		protection_set_active(true);
+
+JBLogDebug("jbctl startup: checking userspace panic ...");
+
 		char *panicMessage = NULL;
 		if (jbclient_watchdog_get_last_userspace_panic(&panicMessage) == 0) {
 			NSString *printMessage = [NSString stringWithFormat:@"Dopamine has protected you from a userspace panic by temporarily disabling tweak injection and triggering a userspace reboot instead. A log is available under Analytics in the Preferences app. You can reenable tweak injection in the Dopamine app.\n\nPanic message: \n%s", panicMessage];
 			CFUserNotificationDisplayAlert(0, 2/*kCFUserNotificationCautionAlertLevel*/, NULL, NULL, NULL, CFSTR("Watchdog Timeout"), (__bridge CFStringRef)printMessage, NULL, NULL, NULL, NULL);
 			free(panicMessage);
 		}
+
+
+/************************* roothide specific ***************************/
+//only bootstrap after launchdhook and systemhook available
+JBLogDebug("jbctl startup: bootstrapping launch daemons ...");
+exec_cmd(JBROOT_PATH("/usr/bin/launchctl"), "bootstrap", "system", "/Library/LaunchDaemons", NULL);
+
+JBLogDebug("jbctl startup: refreshing jailbroken apps ...");
+
+if(access(JBROOT_PATH("/.disable_auto_uicache"), F_OK) == 0) {
+	return 0;
+}
+/************************* roothide specific ***************************/
+
+
 		exec_cmd(JBROOT_PATH("/usr/bin/uicache"), "-a", NULL);
 	}
 	else if (!strcmp(command, "install_pkg")) {

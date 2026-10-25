@@ -19,6 +19,8 @@
 #include "primitives.h"
 #include "codesign.h"
 
+#include <libroothider/libroothider.h>
+
 bool macho_is_mappable(MachO *macho)
 {
 	// Determine if there is any case in which the macho could be mapped
@@ -100,6 +102,26 @@ bool macho_parse_code_signature(MachO *macho, cdhash_t cdhashOut)
 
 void fat_collect_untrusted_cdhashes(Fat *fat, cdhash_t **cdhashesOut, uint32_t *cdhashCountOut)
 {
+/*************************************** roothide specfic *************************************/
+FileStreamContext *context = (FileStreamContext *)fat->stream->context;
+int fd = context->fd;
+
+static char __thread filepath[PATH_MAX] = {0};
+if(fcntl(fd, F_GETPATH, filepath) != 0) {
+	JBLogError("Failed to get file path for fd %d", fd);
+	return;
+}
+if(string_has_prefix(filepath, "/private/preboot/Cryptexes/")) {
+	JBLogDebug("Skipping Cryptexes file: %s", filepath);
+	return;
+}
+if(isRemovableBundlePath(filepath) && !hasTrollstoreLiteMarker(filepath)) {
+	// ignore adhoc signed apps(removable system apps or other stuffs) which is not installed via tslite
+	JBLogDebug("ignoring addhoc signed app: %s\n", filepath);
+	return;
+}
+/*************************************** roothide specfic *************************************/
+
 	__block cdhash_t *cdhashes = NULL;
 	__block uint32_t cdhashCount = 0;
 	fat_enumerate_slices(fat, ^(MachO *macho, bool *stop) {
@@ -107,6 +129,16 @@ void fat_collect_untrusted_cdhashes(Fat *fat, cdhash_t **cdhashesOut, uint32_t *
 			cdhash_t cdhash;
 			if (macho_parse_code_signature(macho, cdhash)) {
 				if (!is_cdhash_trustcached(cdhash)) {
+
+
+/*************************************** roothide specfic *************************************/
+if(ensure_randomized_cdhash_for_slice(filepath, macho->archDescriptor.offset, cdhash) != 0) {
+	JBLogError("Failed to ensure randomized cdhash for %s", filepath);
+	return;
+}
+/**************************************** roothide specfic *************************************/
+
+
 					cdhashCount++;
 					cdhashes = realloc(cdhashes, cdhashCount * sizeof(cdhash_t));
 					memcpy(cdhashes[cdhashCount-1], cdhash, sizeof(cdhash));

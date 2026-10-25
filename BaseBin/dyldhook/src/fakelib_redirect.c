@@ -1,3 +1,5 @@
+#if 0
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -53,3 +55,4 @@ void *HOOK(_ZN5dyld44APIs11dlopen_fromEPKciPv)(uintptr_t self, const char* path,
 }
 
 #endif
+#endif // #if 0

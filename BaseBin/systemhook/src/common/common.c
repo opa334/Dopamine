@@ -1,4 +1,5 @@
 #include "common.h"
+#include "../roothider.h"
 #include <xpc/xpc.h>
 #include <xpc_private.h>
 #include <mach-o/dyld.h>
@@ -145,6 +146,11 @@ static kSpawnConfig spawn_config_for_executable(const char* path, char *const ar
 	return (kSpawnConfigInject | kSpawnConfigTrust);
 }
 
+kSpawnConfig roothide_spawn_config_for_executable(const char* path, char *const argv[restrict])
+{
+	return spawn_config_for_executable(path, argv);
+}
+
 // 1. Ensure the binary about to be spawned and all of it's dependencies are trust cached
 // 2. Insert "DYLD_INSERT_LIBRARIES=/usr/lib/systemhook.dylib" into all binaries spawned
 // 3. Increase Jetsam limit to more sane value (Multipler defined as JETSAM_MULTIPLIER)
@@ -204,14 +210,14 @@ static int spawn_exec_hook_common(bool isExec,
 		const char *msSafeModeValue = envbuf_getenv((const char **)envp, "_MSSafeMode");
 		if (safeModeValue) {
 			if (!strcmp(safeModeValue, "1")) {
-				shouldInsertJBEnv = false;
+				if(!allowInjectWithSafeMode(path)) shouldInsertJBEnv = false;
 				hasSafeModeVariable = true;
 				break;
 			}
 		}
 		if (msSafeModeValue) {
 			if (!strcmp(msSafeModeValue, "1")) {
-				shouldInsertJBEnv = false;
+				if(!allowInjectWithSafeMode(path)) shouldInsertJBEnv = false;
 				hasSafeModeVariable = true;
 				break;
 			}

@@ -289,6 +289,60 @@
 				</dict>
 				<dict>
 					<key>name</key>
+					<string>Ylarod</string>
+					<key>link</key>
+					<string>https://github.com/Ylarod</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>Shadow-</string>
+					<key>link</key>
+					<string>https://iosjb.top</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>zqbb</string>
+					<key>link</key>
+					<string>https://github.com/w2599</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>muhammad</string>
+					<key>link</key>
+					<string>https://t.me/muhammad1918</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>profiles</string>
+					<key>link</key>
+					<string>https://t.me/profiles</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>xybp888</string>
+					<key>link</key>
+					<string>https://github.com/xybp888</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>witchan</string>
+					<key>link</key>
+					<string>https://github.com/witchan</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>zhaonan</string>
+					<key>link</key>
+					<string>https://github.com/invalidunit</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>Anubis</string>
+					<key>link</key>
+					<string>https://github.com/AnubisTweaks</string>
+				</dict>
+				<dict>
+					<key>name</key>
 					<string>roothideDev</string>
 					<key>link</key>
 					<string>https://twitter.com/roothideDev</string>

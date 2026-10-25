@@ -1,9 +1,16 @@
-<img src="https://github.com/opa334/Dopamine/assets/52459150/ed04dd3e-d879-456d-9aa3-d4ed44819c7e" width="64" />
+# roothide Dopamine 3
 
-# Dopamine
+- Document: https://github.com/roothide/Developer
 
-A rootless semi-untethered jailbreak for iOS 15.0 - 17.3.1 (arm64e), iOS 15.0 - 18.7.1, 26.0 - 26.0.1 (A12/A13) and iOS 15.0 - 18.7.1 (arm64). More details will follow here soon.
+- Support: https://twitter.com/roothideDev
 
-Please note that all issues related to version support will be deleted without response.
+- Discord: https://discord.gg/ZvY2Yjw8GA
 
-Official website / download: https://ellekit.space/dopamine/
+
+# How To Build
+
+- [build your own Dopamine ipa/tipa on github action](BUILD.md).
+
+- or ref to [.github/workflows/roothide.yml](.github/workflows/main.yml) if you want to build it on macOS.
+
+

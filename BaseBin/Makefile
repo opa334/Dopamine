@@ -10,6 +10,7 @@
 all: basebin.tar
 
 subprojects: ChOma XPF MachOMerger opainject libjailbreak systemhook forkfix launchdhook hookd boomerang jbctl idownloadd watchdoghook rootlesshooks dopamine
+subprojects: roothidehooks libroothider jailbreakd bootstrapper
 
 ChOma: .build .include
 	@$(MAKE) -C ChOma TARGET=ios DISABLE_SIGNING=1 DISABLE_TESTS=1 DYLIB_LDFLAGS="-install_name @loader_path/libchoma.dylib"
@@ -74,15 +75,43 @@ rootlesshooks: .build .include libjailbreak
 	$(MAKE) -C rootlesshooks
 	@cp rootlesshooks/.theos/obj/rootlesshooks.dylib .build
 
+roothidehooks: .build .include libjailbreak libroothider
+	$(MAKE) -C roothidehooks
+	@cp roothidehooks/.theos/obj/roothidehooks.dylib .build
+
+bootstrapper: .build .include libjailbreak
+	$(MAKE) -C bootstrapper
+	@cp bootstrapper/bootstrapper .build
+
+libroothider-stub: .include .build ChOma XPF
+	@mkdir -p .include/libjailbreak
+	@cp libjailbreak/src/*.h .include/libjailbreak
+	@mkdir -p .include/libroothider
+	@cp libroothider/src/*.h .include/libroothider
+	$(MAKE) -C libroothider libroothider-stub.dylib
+	@cp libroothider/libroothider-stub.dylib .build/libroothider.dylib
+
+libjailbreak: libroothider-stub
+
+libroothider: .build .include ChOma XPF libjailbreak
+	$(MAKE) -C libroothider
+	@cp libroothider/libroothider.dylib .build
+
+jailbreakd: .build .include libjailbreak libroothider
+	$(MAKE) -C jailbreakd
+	@cp jailbreakd/jailbreakd .build
+
 dopamine: .build .include libjailbreak XPF ChOma
-	$(MAKE) -C dopamine
-	@cp dopamine/dopamine .build
+# 	$(MAKE) -C dopamine
+# 	@cp dopamine/dopamine .build
 
 .build:
 	rm -rf .build
 	mkdir -p .build
 	cp -r _external/basebin/* .build
 	cp _external/basebin/.version .build
+	cp _external/basebin/.version-roothide .build
+	cp _external/basebin/prebuilt/* .build || true
 
 .include:
 	rm -rf .include
@@ -120,6 +149,10 @@ clean:
 	@$(MAKE) -C idownloadd $@
 	@$(MAKE) -C watchdoghook $@
 	@$(MAKE) -C rootlesshooks $@
+	@$(MAKE) -C roothidehooks $@
+	@$(MAKE) -C bootstrapper $@
+	@$(MAKE) -C libroothider $@
+	@$(MAKE) -C jailbreakd $@
 	@$(MAKE) -C dyldhook $@
 	@$(MAKE) -C dopamine $@
 	@$(MAKE) -C hookd $@

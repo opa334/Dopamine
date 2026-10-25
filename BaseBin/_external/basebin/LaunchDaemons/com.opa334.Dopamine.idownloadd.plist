@@ -16,5 +16,11 @@
 	<true/>
 	<key>Disabled</key>
 	<true/>
+	
+	<key>EnvironmentVariables</key>
+    	<dict>
+        <key>DISABLE_TWEAKS</key>
+        <string>1</string>
+    	</dict>
 </dict>
 </plist>

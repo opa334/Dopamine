@@ -134,6 +134,21 @@
         jailbreakButtonImage = [UIImage systemImageNamed:@"lock.slash" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]];
     
     self.jailbreakBtn = [[DOJailbreakButton alloc] initWithAction: [UIAction actionWithTitle:jailbreakButtonTitle image:jailbreakButtonImage identifier:@"jailbreak" handler:^(__kindof UIAction * _Nonnull action) {
+
+
+/********************************** roothide specific ************************************/
+        if(otherJailbreakActived(false)) {
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Error") message:DOLocalizedString(@"Your device currently has another jailbreak activated, please reboot device.") preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *rebootAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Close") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                //exit(0);
+            }];
+            [alertController addAction:rebootAction];
+            [self presentViewController:alertController animated:YES completion:nil];
+            return;
+        }
+/********************************** roothide specific ************************************/
+
+
         [actionView hide];
         [self.jailbreakBtn expandButton: self.jailbreakButtonConstraints];
 
@@ -289,7 +304,9 @@
 
     if (environmentUpdate)
     {
-        releaseFrom = [[DOEnvironmentManager sharedManager] jailbrokenVersion];
+/************************************* roothide specfic ***********************************/
+        releaseFrom = [[DOEnvironmentManager sharedManager] jailbrokenVersionRootHide];
+/************************************* roothide specfic ***********************************/
         releaseTo = [[DOUIManager sharedInstance] getLaunchedReleaseTag];
     }
 

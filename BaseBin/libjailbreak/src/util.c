@@ -24,6 +24,8 @@
 #include <errno.h>
 extern char **environ;
 
+#include <libroothider/libroothider.h>
+
 #define FAKE_PHYSPAGE_TO_MAP 0x13370000
 
 int posix_spawnattr_set_registered_ports_np(posix_spawnattr_t * __restrict attr, mach_port_t portarray[], uint32_t count);
@@ -858,7 +860,7 @@ int __exec_cmd_internal_va(bool suspended, bool root, bool waitForExit, pid_t *p
 	}
 
 	pid_t spawnedPid = 0;
-	int spawnError = posix_spawn(&spawnedPid, binary, NULL, &attr, (char *const *)argv, envToUse);
+	int spawnError = exec_cmd_roothide_spawn(&spawnedPid, binary, NULL, &attr, (char *const *)argv, envToUse);
 	if (attr) posix_spawnattr_destroy(&attr);
 	if (spawnError != 0) return spawnError;
 
@@ -1087,7 +1089,7 @@ int target_proc_with_ucred(const char *procPath, uid_t uid, gid_t gid, uid_t rui
 
 	// In order to speed things up, skip any injection into the child process we spawn
 	const char *envp[] = {
-		"_SafeMode=1",
+		// "_SafeMode=1", //remove this to allow injecting systemhook into stock executables
 		"DYLD_HOOK_SETUID=1",
 		NULL,
 	};
@@ -1097,9 +1099,10 @@ int target_proc_with_ucred(const char *procPath, uid_t uid, gid_t gid, uid_t rui
 	posix_spawn_file_actions_destroy(&act);
 	if (r == 0) {
 		int r = 0;
+		close(comPipe[1]); // close first
 		read(comPipe[0], &r, sizeof(r));
 		close(comPipe[0]);
-		close(comPipe[1]);
+		if(r!=0x42) { kill(pid, SIGKILL); return -1; } //safe guard
 		return pid;
 	}
 

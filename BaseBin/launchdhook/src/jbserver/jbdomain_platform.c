@@ -4,6 +4,12 @@
 #include <libjailbreak/codesign.h>
 #include <libjailbreak/libjailbreak.h>
 
+
+#include <libroothider/libroothider.h>
+
+extern int roothide_unsupport_request();
+
+
 extern void systemwide_domain_set_enabled(bool enabled);
 
 static bool platform_domain_allowed(audit_token_t clientToken)
@@ -62,7 +68,7 @@ struct jbserver_domain gPlatformDomain = {
 		},
 		// JBS_PLATFORM_SET_SYSTEMWIDE_DOMAIN_ENABLED
 		{
-			.handler = systemwide_domain_set_enabled,
+			.handler = roothide_unsupport_request,
 			.args = (jbserver_arg[]){
 				{ .name = "enabled", .type = JBS_TYPE_BOOL, .out = false },
 				{ 0 },

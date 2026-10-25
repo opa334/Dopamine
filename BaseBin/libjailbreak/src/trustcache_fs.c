@@ -55,6 +55,7 @@ void walk_machos_in_dir(const char *dir_path, void (^macho_fat_walk)(const char 
     closedir(dir);
 }
 
+// fix null pointer and memory leak
 void directory_collect_untrusted_cdhashes_by_path(const char *directoryPath, bool recursive, cdhash_t **cdhashesOut, uint32_t *cdhashCountOut)
 {
 	__block cdhash_t *cdhashes = NULL;
@@ -65,9 +66,11 @@ void directory_collect_untrusted_cdhashes_by_path(const char *directoryPath, boo
 		cdhash_t *thisCdhashes = NULL;
 		uint32_t thiscdhashCount = 0;
 		fat_collect_untrusted_cdhashes(fat, &thisCdhashes, &thiscdhashCount);
+		if(!thisCdhashes) return;
 		cdhashCount += thiscdhashCount;
 		cdhashes = realloc(cdhashes, cdhashCount * sizeof(cdhash_t));
 		memcpy(&cdhashes[cdhashCount-thiscdhashCount], thisCdhashes, sizeof(cdhash_t) * thiscdhashCount);
+		free(thisCdhashes);
 	}, recursive);
 
 	*cdhashesOut = cdhashes;

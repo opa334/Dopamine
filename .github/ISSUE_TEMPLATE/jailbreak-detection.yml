@@ -1,0 +1,88 @@
+name: Jailbreak Detection
+description: A bug where an app detects the jailbreak even though it should be hidden
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for using the roothide Dopamine! If your issue can be solved with simple troubleshooting, check out these resources:
+        
+        [roothide Discord server](https://discord.gg/ZvY2Yjw8GA) (with support channels)
+  - type: input
+    id: device-model
+    attributes:
+      label: Device Model
+      description: What device model are you using? (Device, Chipset)
+      placeholder: ex. iPhone 11, A13
+    validations:
+      required: true
+  - type: input
+    id: ios-version
+    attributes:
+      label: iOS Version
+      description: What iOS version are you using?
+      placeholder: ex. 17.0
+    validations:
+      required: true
+  - type: input
+    id: dopamine-version
+    attributes:
+      label: Dopamine Version
+      description: What version of the roothide Dopamine are you using?
+      placeholder: ex. 1.0
+    validations:
+      required: true
+  - type: input
+    id: latest-packages
+    attributes:
+      label: Packages Update
+      description: Have you updated all packages to the latest version in Sileo?
+      placeholder: Yes or No
+    validations:
+      required: true
+  - type: input
+    id: app-link
+    attributes:
+      label: Appstore Link
+      description: Please provide the Appstore link for the app you are reporting a bug for.
+      placeholder: https://apps.apple.com/app/id123456789
+    validations:
+      required: true
+  - type: input
+    id: blacklist
+    attributes:
+      label: Blacklist in RootHide Manager
+      description: Did you blacklist the app in the RootHide Manager?
+      placeholder: Yes or No
+    validations:
+      required: true
+  - type: input
+    id: varClean
+    attributes:
+      label: varClean in RootHide Manager
+      description: Are there any leftover files in varClean listed in the RootHide Manager?
+      placeholder: Yes or No
+    validations:
+      required: true
+  - type: input
+    id: any-warnings
+    attributes:
+      label: RootHide Manager Warnings
+      description: Did you see any warnings when you launched the RootHide Manager app?
+      placeholder: Warning:...
+    validations:
+      required: true
+  - type: textarea
+    id: bugs
+    attributes:
+      label: More info
+      description: Screenshots? Videos? How can we reproduce this?
+      placeholder: I did ..., but ... was supposed to happen. ... doesn't work!
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell

@@ -1,4 +1,11 @@
 .DS_Store
+
+cmake-build-*
+.vscode
+jbupdate.sh
+appupdate.sh
+BaseBin/systemhook/src/roothider_test*
+
 /.build
 /*.xcodeproj
 xcuserdata/

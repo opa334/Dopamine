@@ -102,9 +102,39 @@ void dyld_make_dsc_text_private(uintptr_t slide)
 }
 
 extern bool ORIG(_ZN5dyld313loadDyldCacheERKNS_18SharedCacheOptionsEPNS_19SharedCacheLoadInfoE)(uintptr_t options, uintptr_t results);
+
+#pragma GCC push_options
+#pragma GCC optimize("O0")
+__attribute__((optimize("O0"), noinline))
+bool ORIG__ZN5dyld313loadDyldCacheERKNS_18SharedCacheOptionsEPNS_19SharedCacheLoadInfoE(uintptr_t options, uintptr_t results)
+{
+	__asm("\
+	nop \n\
+	nop \n\
+	nop \n\
+	nop \n\
+	nop \n\
+	nop \n\
+	nop \n\
+	nop \n\
+	nop \n\
+	nop \n\
+	");
+
+	return ORIG(_ZN5dyld313loadDyldCacheERKNS_18SharedCacheOptionsEPNS_19SharedCacheLoadInfoE)(options, results);
+}
+#pragma GCC pop_options
+
 bool HOOK(_ZN5dyld313loadDyldCacheERKNS_18SharedCacheOptionsEPNS_19SharedCacheLoadInfoE)(uintptr_t options, uintptr_t results)
 {
-	bool r = ORIG(_ZN5dyld313loadDyldCacheERKNS_18SharedCacheOptionsEPNS_19SharedCacheLoadInfoE)(options, results);
+	bool r = ORIG__ZN5dyld313loadDyldCacheERKNS_18SharedCacheOptionsEPNS_19SharedCacheLoadInfoE(options, results);
+
+	
+	extern bool SPINLOCK_FIX_DISABLED;
+	if(SPINLOCK_FIX_DISABLED) {
+		return r;
+	}
+
 
 	bool forcePrivate = *(bool *)(options + 8);
 	if (!forcePrivate) {

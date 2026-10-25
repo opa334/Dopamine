@@ -13,7 +13,11 @@
 #include "hookd_provider.h"
 extern char **environ;
 
-void abort_with_reason(uint32_t reason_namespace, uint64_t reason_code, const char *reason_string, uint64_t reason_flags);
+//void abort_with_reason(uint32_t reason_namespace, uint64_t reason_code, const char *reason_string, uint64_t reason_flags);
+#define abort_with_reason(reason_namespace,reason_code,reason_string,reason_flags)  launchd_panic("%s",reason_string)
+extern int roothide_launchd_trust_executable(const char* path);
+extern int roothide_launchd___posix_spawn_prehook(pid_t *restrict pidp, const char *restrict path, struct _posix_spawn_args_desc *desc, char *const argv[restrict], char *const envp[restrict]);
+extern int roothide_launchd___posix_spawn_posthook(pid_t *restrict pidp, const char *restrict path, struct _posix_spawn_args_desc *desc, char *const argv[restrict], char *const envp[restrict]);
 
 extern int systemwide_trust_file_by_path(const char *path);
 extern int platform_set_process_debugged(uint64_t pid, bool fullyDebugged);
@@ -30,6 +34,7 @@ void early_boot_done(void)
 	gInEarlyBoot = false;
 }
 
+/*
 void ensure_fakelib_mounted(void)
 {
 	struct statfs fsb;
@@ -48,18 +53,37 @@ void ensure_fakelib_mounted(void)
 		setenv("DOPAMINE_IS_HIDDEN", "1", true);
 	}
 }
+*/
 
 int __posix_spawn_orig_wrapper(pid_t *restrict pid, const char *restrict path,
 					   struct _posix_spawn_args_desc *desc,
 					   char *const argv[restrict],
 					   char *const envp[restrict])
 {
+short flags = -1;
+if (desc && desc->attrp) {
+	posix_spawnattr_t attr = desc->attrp;
+	posix_spawnattr_getflags(&attr, &flags);
+}
+JBLogDebug("launchd spawn path=%s flags=%x", path, flags);
+if (argv) for (int i = 0; argv[i]; i++) JBLogDebug("\targs[%d] = %s", i, argv[i]);
+if (envp) for (int i = 0; envp[i]; i++) JBLogDebug("\tenvp[%d] = %s", i, envp[i]);
+
+pid_t pidval = 0;
+if (!pid) pid = &pidval;
+
 	// we need to disable the crash reporter during the orig call
 	// otherwise the child process inherits the exception ports
 	// and this would trip jailbreak detections
-	crashreporter_pause();	
+	int key = crashreporter_pause();	
 	int r = __posix_spawn_inline(pid, path, desc, argv, envp);
-	crashreporter_resume();
+	crashreporter_resume(key);
+
+JBLogDebug("__posix_spawn ret=%d pid=%d", r, *pid);
+
+if(r == 0) {
+	register_job(*pid);
+}
 
 	return r;
 }
@@ -86,7 +110,7 @@ int __posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
 
 			// If the jailbreak is currently hidden, fakelib is not mounted
 			// It needs to be mounted to regain launchd code execution after the userspace reboot
-			ensure_fakelib_mounted();
+//			ensure_fakelib_mounted();
 
 #if LOG_PROCESS_LAUNCHES
 			FILE *f = fopen("/var/mobile/launch_log.txt", "a");
@@ -189,10 +213,10 @@ int __posix_spawn_hook(pid_t *restrict pid, const char *restrict path,
 		}
 	}
 
-	return posix_spawn_hook_shared(pid, path, desc, argv, envp, __posix_spawn_orig_wrapper, systemwide_trust_file_by_path, platform_set_process_debugged, jbsetting(jetsamMultiplier));
+	return posix_spawn_hook_shared(pid, path, desc, argv, envp, roothide_launchd___posix_spawn_posthook, roothide_launchd_trust_executable, platform_set_process_debugged, jbsetting(jetsamMultiplier));
 }
 
 void initSpawnHooks(void)
 {
-	litehook_hook_function(__posix_spawn, __posix_spawn_hook);
+	litehook_hook_function(__posix_spawn, roothide_launchd___posix_spawn_prehook);
 }

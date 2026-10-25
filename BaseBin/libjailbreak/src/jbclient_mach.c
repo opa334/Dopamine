@@ -51,6 +51,7 @@ kern_return_t jbclient_mach_send_msg(mach_msg_header_t *hdr, struct jbserver_mac
 		return kr;
 	}
 	
+	reply->status = -1;
 	kr = mach_msg(&reply->msg.hdr, MACH_RCV_MSG, 0, reply->msg.hdr.msgh_size, replyPort, 0, 0);
 	if (kr != KERN_SUCCESS) {
 		mach_port_deallocate(mach_task_self(), launchdPort);

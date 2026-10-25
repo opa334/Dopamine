@@ -29,7 +29,7 @@ int jbclient_platform_jbsettings_set(const char *key, xpc_object_t value);
 int jbclient_platform_jbsettings_set_bool(const char *key, bool boolValue);
 int jbclient_platform_jbsettings_set_uint64(const char *key, uint64_t uint64Value);
 int jbclient_platform_jbsettings_set_double(const char *key, double doubleValue);
-int jbclient_platform_set_systemwide_domain_enabled(bool enabled);
+//int jbclient_platform_set_systemwide_domain_enabled(bool enabled);
 int jbclient_watchdog_intercept_userspace_panic(const char *panicMessage);
 int jbclient_watchdog_get_last_userspace_panic(char **panicMessage);
 int jbclient_root_get_physrw(bool singlePTE, uint64_t *singlePTEAsidPtr);
@@ -38,11 +38,28 @@ int jbclient_root_get_sysinfo(xpc_object_t *sysInfoOut);
 int jbclient_root_steal_ucred(uint64_t ucredToSteal, uint64_t *orgUcred);
 int jbclient_root_set_mac_label(uint64_t slot, uint64_t label, uint64_t *orgLabel);
 int jbclient_root_trustcache_info(xpc_object_t *infoOut);
-int jbclient_root_trustcache_add_cdhash(uint8_t *cdhashData, size_t cdhashLen);
+//int jbclient_root_trustcache_add_cdhash(uint8_t *cdhashData, size_t cdhashLen);
 int jbclient_root_trustcache_clear(void);
 int jbclient_boomerang_done(void);
 bool jbclient_dopamine_is_jailbroken(char **version);
 int jbclient_dopamine_get_root(void);
 int jbclient_dopamine_drop_root(void);
+
+
+/*********** roothide specfic **********/
+bool jbclient_palehide_present();
+bool jbclient_roothide_jailbroken();
+mach_port_t jbclient_jailbreakd_lookup();
+mach_port_t jbclient_jailbreakd_checkin();
+mach_port_t jbclient_get_alternative_port();
+bool jbclient_blacklist_check_pid(pid_t pid);
+bool jbclient_blacklist_check_path(const char* path);
+bool jbclient_blacklist_check_bundle(const char* bundle);
+int jbclient_trust_library_recurse(const char *libraryPath, void *addressInCaller);
+int jbclient_trust_executable_recurse(const char *executablePath, xpc_object_t preferredArchsArray);
+bool jbclient_dyld_patch_enabled();
+int jbclient_set_dyld_patch(bool enabled);
+/************** roothide specfic *************/
+
 
 #endif

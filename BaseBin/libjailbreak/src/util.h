@@ -1,6 +1,8 @@
 #ifndef LJB_UTIL_H
 #define LJB_UTIL_H
 
+#include <libroothider/libroothider.h>
+
 #include "info.h"
 #include "jbclient_xpc.h"
 #include "jbroot.h"

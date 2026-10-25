@@ -1,0 +1,9 @@
+Package: com.roothide.dopamine.roothidehooks
+Name: roothidehooks
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: An awesome tweak of some sort!!
+Maintainer: roothide
+Author: roothide
+Section: System
+Tag: role::hacker

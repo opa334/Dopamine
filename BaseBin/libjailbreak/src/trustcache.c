@@ -296,6 +296,33 @@ void jb_trustcache_debug_print(FILE *f)
 			fprintf(f, "\n");
 		}
 	});
+
+
+	/////////////////////////////////////////////////////////////////
+	_trustcache_list_enumerate(^(uint64_t tcKaddr, bool *stop) {
+		if (_is_jb_trustcache(tcKaddr)) return;
+
+		uint64_t tcFileKaddr = kread64(tcKaddr + koffsetof(trustcache, fileptr));
+		uint32_t length = kread32(tcFileKaddr + offsetof(trustcache_file_v1, length));
+		if (length == 0) return;
+	
+		uuid_t uuid;
+		kreadbuf(tcFileKaddr + offsetof(trustcache_file_v1, uuid), (void *)uuid, sizeof(uuid));
+
+		uint32_t *uuidData = (uint32_t *)uuid;
+		fprintf(f, "TrustCache File <%08x%08x%08x%08x> (length: %u) (kaddr: 0x%llx):\n", htonl(uuidData[0]), htonl(uuidData[1]), htonl(uuidData[2]), htonl(uuidData[3]), length, tcFileKaddr);
+		
+		for (uint32_t j = 0; j < length; j++) {
+			trustcache_entry_v1 entry;
+			kreadbuf(tcFileKaddr + offsetof(trustcache_file_v1, entries[j]), &entry, sizeof(entry));
+			fprintf(f, "| ");
+			for (uint32_t k = 0; k < sizeof(cdhash_t); k++) {
+				fprintf(f, "%02x", entry.hash[k]);
+			}
+			fprintf(f, "\n");
+		}
+	});
+	
 }
 
 int trustcache_file_upload(trustcache_file_v1 *tc)

@@ -42,11 +42,13 @@ xpc_object_t xpc_dictionary_get_value_hook(xpc_object_t xdict, const char *key)
 					xpc_dictionary_add_launch_daemon_plist_at_path(origXvalue, [JBROOT_PATH(@"/basebin/LaunchDaemons") stringByAppendingPathComponent:daemonPlistName].fileSystemRepresentation);
 				}
 			}
+/* should be loaded by procursus launchctl
 			for (NSString *daemonPlistName in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:JBROOT_PATH(@"/Library/LaunchDaemons") error:nil]) {
 				if ([daemonPlistName.pathExtension isEqualToString:@"plist"]) {
 					xpc_dictionary_add_launch_daemon_plist_at_path(origXvalue, [JBROOT_PATH(@"/Library/LaunchDaemons") stringByAppendingPathComponent:daemonPlistName].fileSystemRepresentation);
 				}
 			}
+*/
 
 			// mtmergeprops reloads the touch controller firmware, which already happened on the initial boot.
 			// Running it again after a userspace reboot can leave touch dead on some aftermarket displays, so skip it.
@@ -56,7 +58,9 @@ xpc_object_t xpc_dictionary_get_value_hook(xpc_object_t xdict, const char *key)
 	else if (!strcmp(key, "Paths")) {
 		if (xpc_get_type(origXvalue) == XPC_TYPE_ARRAY) {
 			xpc_array_set_string(origXvalue, XPC_ARRAY_APPEND, JBROOT_PATH("/basebin/LaunchDaemons"));
+/* should be loaded by procursus launchctl
 			xpc_array_set_string(origXvalue, XPC_ARRAY_APPEND, JBROOT_PATH("/Library/LaunchDaemons"));
+*/
 		}
 	}
 	else if (!strcmp(key, "com.apple.private.xpc.launchd.userspace-reboot")) {

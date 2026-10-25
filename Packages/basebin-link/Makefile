@@ -1,11 +1,11 @@
 package: $(TARGET)
 	@mkdir -p .package/DEBIAN
-	@mkdir -p .package/var/jb/usr/bin
-	@mkdir -p .package/var/jb/usr/lib
+	@mkdir -p .package/usr/bin
+	@mkdir -p .package/usr/lib
 	@cp control .package/DEBIAN/control
-	@ln -s ../../basebin/jbctl .package/var/jb/usr/bin/jbctl
-	@ln -s ../../basebin/opainject .package/var/jb/usr/bin/opainject
-	@ln -s ../../basebin/libjailbreak.dylib .package/var/jb/usr/lib/libjailbreak.dylib
+	@ln -s ../../basebin/jbctl .package/usr/bin/jbctl
+	@ln -s ../../basebin/opainject .package/usr/bin/opainject
+	@ln -s ../../basebin/libjailbreak.dylib .package/usr/lib/libjailbreak.dylib
 	@dpkg-deb --root-owner-group -Zzstd -b .package ./basebin-link.deb
 	@rm -rf .package
 

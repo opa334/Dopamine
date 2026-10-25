@@ -14,22 +14,22 @@ all:
 	@$(MAKE) -C BaseBin
 	@$(MAKE) -C Packages
 	@$(MAKE) -C Application
-	@$(MAKE) -C Standalone
+# 	@$(MAKE) -C Standalone
 
 clean:
 	@$(MAKE) -C BaseBin clean
 	@$(MAKE) -C Packages clean
 	@$(MAKE) -C Application clean
-	@$(MAKE) -C Standalone clean
+# 	@$(MAKE) -C Standalone clean
 
 update: all
 	ssh $(DEVICE) "rm -rf /var/mobile/Documents/Dopamine.tipa"
 	scp -C ./Application/Dopamine.tipa "$(DEVICE):/var/mobile/Documents/Dopamine.tipa"
-	ssh $(DEVICE) "/var/jb/basebin/jbctl update tipa /var/mobile/Documents/Dopamine.tipa"
+	ssh $(DEVICE) "/basebin/jbctl update tipa \$$(jbroot)/var/mobile/Documents/Dopamine.tipa"
 
 update-basebin: all
 	ssh $(DEVICE) "rm -rf /var/mobile/Documents/basebin.tar"
 	scp -C ./BaseBin/basebin.tar "$(DEVICE):/var/mobile/Documents/basebin.tar"
-	ssh $(DEVICE) "/var/jb/basebin/jbctl update basebin /var/mobile/Documents/basebin.tar"
+	ssh $(DEVICE) "/basebin/jbctl update basebin \$$(jbroot)/var/mobile/Documents/basebin.tar"
 
 .PHONY: update clean

@@ -14,11 +14,16 @@
 #include <libjailbreak/codesign.h>
 #include <libjailbreak/txm.h>
 
+#include <signal.h>
+#include <libroothider/libroothider.h>
+
+/*
 bool gSystemwideDomainEnabled = true;
 void systemwide_domain_set_enabled(bool enabled)
 {
 	gSystemwideDomainEnabled = enabled;
 }
+*/
 
 extern bool string_has_prefix(const char *str, const char* prefix);
 extern bool string_has_suffix(const char* str, const char* suffix);
@@ -60,6 +65,12 @@ char *combine_strings(char separator, char **components, int count)
 
 bool systemwide_domain_allowed(audit_token_t clientToken)
 {
+/************************ roothide specfic ************************/
+extern bool roothide_domain_allowed(audit_token_t clientToken);
+	return roothide_domain_allowed(clientToken);
+	bool gSystemwideDomainEnabled = true;
+/*******************************************************************/
+	
 	if (!gSystemwideDomainEnabled) {
 		// While the jailbreak is hidden, we need to disable the systemwide domain
 		pid_t pid = audit_token_to_pid(clientToken);
@@ -114,11 +125,28 @@ int systemwide_trust_file(audit_token_t *processToken, int rfd, struct siginfo *
 	int fsr = fstatfs(fd, &fsb);
 	if (fsr == 0) {
 		// Anything on the rootfs or fakelib mount point can be ignored as it's guaranteed to already be in trustcache
-		if (!strcmp(fsb.f_mntonname, "/") || !strcmp(fsb.f_mntonname, "/usr/lib")) {
+		if (!strcmp(fsb.f_mntonname, "/") /*|| !strcmp(fsb.f_mntonname, "/usr/lib")*/) {
 			close(fd);
 			return 0;
 		}
 	}
+
+/************************ roothide specfic ************************/
+cdhash_t *cdhashes = NULL;
+uint32_t cdhashCount = 0;
+file_collect_untrusted_cdhashes(fd, &cdhashes, &cdhashCount);
+
+int retval = 0;
+
+if (cdhashes && cdhashCount > 0) {
+	retval = jb_trustcache_add_cdhashes(cdhashes, cdhashCount);
+	free(cdhashes);
+}
+
+close(fd);
+
+return retval;
+/*******************************************************************/
 
 	struct siginfo *sigInfos = NULL;
 	uint32_t sigInfoCount = 0;
@@ -193,6 +221,7 @@ int systemwide_process_checkin(audit_token_t *processToken, char **rootPathOut, 
 	systemwide_get_jbroot(rootPathOut);
 	systemwide_get_boot_uuid(bootUUIDOut);
 
+/*
 	// Generate sandbox extensions for the requesting process
 	char *sandboxExtensionsArr[] = {
 		// Make /var/jb readable and executable
@@ -212,6 +241,24 @@ int systemwide_process_checkin(audit_token_t *processToken, char **rootPathOut, 
 
 	bool fullyDebugged = false;
 	if (string_has_prefix(procPath, "/private/var/containers/Bundle/Application") || string_has_prefix(procPath, JBROOT_PATH("/Applications"))) {
+*/
+
+/************************************ roothide specific ************************************************/
+	uint32_t csflags = 0;
+    csops(pid, CS_OPS_STATUS, &csflags, sizeof(csflags));
+	bool isPlatformProcess = (csflags & CS_PLATFORM_BINARY) != 0;
+
+	if(sandboxExtensionsOut) { // Generate sandbox extensions for the requesting process
+		*sandboxExtensionsOut = generate_sandbox_extensions(processToken, isPlatformProcess);
+		if(!(*sandboxExtensionsOut)) {
+			JBLogError("Failed to generate sandbox extensions for process %d", pid);
+		}
+	}
+
+	bool fullyDebugged = false;
+	if (isRemovableBundlePath(procPath) || isSubPathOf(procPath, JBROOT_PATH("/Applications"))) {
+/*************************************** roothide specific *********************************/
+		
 		// This is an app, enable CS_DEBUGGED based on user preference
 		if (jbsetting(markAppsAsDebugged)) {
 			fullyDebugged = true;
@@ -293,7 +340,18 @@ int systemwide_process_checkin(audit_token_t *processToken, char **rootPathOut, 
 	else if (is_dopamine_app(procPath)) {
 		// platformize
 		proc_csflags_set(proc, CS_PLATFORM_BINARY);
+
+/********************* roothide specific ********************/
+		proc_csflags_set(proc, CS_INSTALLER);
+/*************************************************************/
 	}
+
+if (ksymbol(SPTMArgs) && isPlatformProcess) {
+int txm_fix_trustlevel(uint64_t);
+	if(txm_fix_trustlevel(proc) != 0) {
+		JBLogError("Failed to fix txm trustlevel for %d, %s", pid, proc_get_path(pid,NULL));
+	}
+}
 
 	xpc_object_t customTrustObj = xpc_copy_entitlement_for_token("jb.pmap_cs.custom_trust", processToken);
 	if (customTrustObj) {
@@ -335,6 +393,37 @@ int systemwide_process_checkin(audit_token_t *processToken, char **rootPathOut, 
 
 	proc_rele(proc);
 	return 0;
+}
+
+int txm_fix_trustlevel(uint64_t proc)
+{
+    uint64_t task = proc_task(proc);
+	if(!task) return -1;
+
+	uint64_t map = kread_ptr(task + koffsetof(task, map));
+	if (!map) return -1;
+	
+	uint64_t pmap = kread_ptr(map + koffsetof(vm_map, pmap));
+	if (!pmap) return -1;
+
+    uint64_t txm_space_addr = kread_ptr(pmap + koffsetof(pmap, txm_address_space));
+	if(!txm_space_addr) return -1;
+
+    uint64_t mainCodeRegion = kread_ptr(txm_space_addr + 0x40);
+	if(!mainCodeRegion) return -1;
+
+    uint64_t mainCodeSignature = kread_ptr(mainCodeRegion + koffsetof(TXMCodeRegion, codeSignature));
+	if(!mainCodeSignature) return -1;
+
+	uint8_t trustLevel = kread8(mainCodeSignature + 0xC9);
+	uint8_t evaluatedTrust = kread8(mainCodeSignature + 0xC8);
+	if(!(evaluatedTrust>0 && evaluatedTrust<10 && trustLevel>0 && trustLevel<10)) {
+		return -1;
+	}
+    
+    kwrite16(mainCodeSignature + 0xC8, 0x0505); // PMAP_CS_LOCAL_SIGNING=5 on ios16+
+
+    return 0;
 }
 
 int txm_fork_fix(uint64_t parentAddressSpace, uint64_t childAddressSpace)

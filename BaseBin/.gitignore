@@ -3,6 +3,12 @@
 basebin.tar
 basebin.tc
 
+jailbreakd/jailbreakd
+bootstrapper/bootstrapper
+systemhook/*.o
+systemhook/*.d
+jbupdate.sh
+
 libjailbreak/libjailbreak.dylib
 libjailbreak/libjailbreak.dylib.dSYM
 launchdhook/launchdhook.dylib
