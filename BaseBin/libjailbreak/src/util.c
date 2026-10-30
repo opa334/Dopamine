@@ -286,7 +286,7 @@ void pagetable_set_level(uint64_t pt_pa, uint8_t level)
 {
 	if (ksymbol(libsptm_frame_table)) {
 		uint64_t sptmFrame = pa_to_sptm_frame(pt_pa);
-		physwrite16(kvtophys(sptmFrame + koffsetof(sptm_frame, level)), level);
+		physwrite8(kvtophys(sptmFrame + koffsetof(sptm_frame, level)), level);
 	}
 }
 
