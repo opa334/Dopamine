@@ -33,7 +33,7 @@ uint64_t allocateCodeRegionObject(void)
 
 	// Make executable
 	kern_return_t kr;
-	if (__builtin_available(iOS 26, *)) {
+	if (__builtin_available(iOS 19.0, *)) {
 		kr = hookd_vm_protect(mach_task_self_, victimPage, 0x4000, false, VM_PROT_READ | VM_PROT_EXECUTE | VM_PROT_COPY);
 	}
 	else {
