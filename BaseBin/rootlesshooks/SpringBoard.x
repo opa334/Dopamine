@@ -5,6 +5,7 @@
 
 @interface XBSnapshotContainerIdentity : NSObject
 @property (nonatomic, readonly, copy) NSString *bundleIdentifier;
+@property (nonatomic, readonly, copy) NSString *snapshotContainerPath;
 @end
 
 @interface XBApplicationSnapshot : NSObject
@@ -36,13 +37,14 @@
     if (!data.length || !snapshot) {
         return %orig;
     }
-    
-    if ([snapshot.containerIdentity.bundleIdentifier hasPrefix:@"com.apple."]) {
+
+    XBSnapshotContainerIdentity *ident = snapshot.containerIdentity;
+    if ([ident.bundleIdentifier hasPrefix:@"com.apple."] || ![ident.snapshotContainerPath hasPrefix:JBROOT_PATH_NSSTRING(@"/var/mobile/Library/SplashBoard/Snapshots/")]) {
         return %orig;
     }
-    
-    NSString *path = [snapshot _configureDefaultPathWithinGroupForFormat: [[self class] _outputFormatForSnapshot:snapshot]];
-    if (!path)  {
+
+    NSString *path = [snapshot _configureDefaultPathWithinGroupForFormat:[[self class] _outputFormatForSnapshot:snapshot]];
+    if (!path) {
         return NO;
     }
     
