@@ -169,6 +169,13 @@ static int spawn_exec_hook_common(bool isExec,
 	posix_spawnattr_t attr = NULL;
 	if (desc) attr = desc->attrp;
 
+	// We need to track every modification we make to attr and revert them before returning
+	// This is because the caller may reuse the struct for another posix_spawn call
+	bool personaModified = false, flagsModified = false;
+	int personaOrigUid = -1, personaOrigGid = -1;
+	short origFlags = 0;
+	int memlimitActiveOrig = -1, memlimitInactiveOrig = -1;
+
 	kSpawnConfig spawnConfig = spawn_config_for_executable(path, argv);
 
 	if (spawnConfig & kSpawnConfigTrust) {
@@ -239,18 +246,20 @@ static int spawn_exec_hook_common(bool isExec,
 		if (shouldInsertJBEnv) {
 			if (jetsamMultiplier == 0 || isnan(jetsamMultiplier)) jetsamMultiplier = 3; // default value (3x)
 			if (jetsamMultiplier > 1) {
-				int memlimit_active = *(int*)(attrStruct + POSIX_SPAWNATTR_OFF_MEMLIMIT_ACTIVE);
-				if (memlimit_active != -1) {
-					*(int*)(attrStruct + POSIX_SPAWNATTR_OFF_MEMLIMIT_ACTIVE) = memlimit_active * jetsamMultiplier;
+				int memlimitActive = *(int*)(attrStruct + POSIX_SPAWNATTR_OFF_MEMLIMIT_ACTIVE);
+				if (memlimitActive != -1) {
+					memlimitActiveOrig = memlimitActive;
+					*(int*)(attrStruct + POSIX_SPAWNATTR_OFF_MEMLIMIT_ACTIVE) = memlimitActive * jetsamMultiplier;
 				}
-				int memlimit_inactive = *(int*)(attrStruct + POSIX_SPAWNATTR_OFF_MEMLIMIT_INACTIVE);
-				if (memlimit_inactive != -1) {
-					*(int*)(attrStruct + POSIX_SPAWNATTR_OFF_MEMLIMIT_INACTIVE) = memlimit_inactive * jetsamMultiplier;
+				int memlimitInactive = *(int*)(attrStruct + POSIX_SPAWNATTR_OFF_MEMLIMIT_INACTIVE);
+				if (memlimitInactive != -1) {
+					memlimitInactiveOrig = memlimitInactive;
+					*(int*)(attrStruct + POSIX_SPAWNATTR_OFF_MEMLIMIT_INACTIVE) = memlimitInactive * jetsamMultiplier;
 				}
 			}
 		}
 
-		// On iOS 17.6 and up Apple neutered persona overwrites to block going from (non root) -> (root)
+		// On iOS 17.6 and up, Apple neutered persona overwrites to block going from (non root) -> (root)
 		// Since jailbreak infra relies on this, we need to reenable it via our patches
 		// To do this we will spawn the process as suspended, modify the ucred to the desired uid/gid and resume it
 		// POSIX_SPAWN_SETEXEC is not a concern since using it together with POSIX_SPAWN_PERSONA_FLAGS_OVERRIDE is not supported anyways
@@ -276,15 +285,23 @@ static int spawn_exec_hook_common(bool isExec,
 				}
 
 				if (personaFixUid == 0 || personaFixGid == 0) {
-					// Revert any request to become root back to mobile
+					// Backup previous state
+					personaModified = true;
+					personaOrigUid = personaInfo->pspi_uid;
+					personaOrigGid = personaInfo->pspi_gid;
+
+					// Revert any request to become root back to our uid/gid
 					// Otherwise posix_spawn will straight up fail
-					if (personaFixUid == 0) personaInfo->pspi_uid = 501;
-					if (personaFixGid == 0) personaInfo->pspi_gid = 501;
+					if (personaFixUid == 0) personaInfo->pspi_uid = getuid();
+					if (personaFixGid == 0) personaInfo->pspi_gid = getgid();
 
 					if (flags & POSIX_SPAWN_START_SUSPENDED) {
 						personaFixNeedsResume = false;
 					}
 					else {
+						flagsModified = true;
+						origFlags = flags;
+
 						posix_spawnattr_setflags(&attr, flags | POSIX_SPAWN_START_SUSPENDED);
 					}
 				}
@@ -357,6 +374,24 @@ static int spawn_exec_hook_common(bool isExec,
 		if (personaFixNeedsResume) {
 			kill(childPid, SIGCONT);
 		}
+	}
+
+	// Revert any modifications to attr
+	if (personaModified) {
+		struct _posix_spawn_persona_info *personaInfo = *(struct _posix_spawn_persona_info **)(attrStruct + POSIX_SPAWNATTR_OFF_PERSONA);
+		if (personaInfo) {
+			personaInfo->pspi_uid = personaOrigUid;
+			personaInfo->pspi_gid = personaOrigGid;
+		}
+	}
+	if (flagsModified) {
+		posix_spawnattr_setflags(&attr, origFlags);
+	}
+	if (memlimitActiveOrig != -1) {
+		*(int*)(attrStruct + POSIX_SPAWNATTR_OFF_MEMLIMIT_ACTIVE) = memlimitActiveOrig;
+	}
+	if (memlimitInactiveOrig != -1) {
+		*(int*)(attrStruct + POSIX_SPAWNATTR_OFF_MEMLIMIT_INACTIVE) = memlimitInactiveOrig;
 	}
 
 	return r;
