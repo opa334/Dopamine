@@ -41,6 +41,7 @@
 "Settings_Tweak_Injection" = "Cho phép chạy Tweak";
 "Settings_iDownload" = "iDownload (nhà phát triển)";
 "Settings_Verbose_Logs" = "Hiện Log dạng phức tạp";
+"Settings_Auto_Jailbreak" = "Tự động Jailbreak";
 "Settings_Apps_JIT" = "Bật JIT";
 "Settings_Allow_Old_arm64e_ABI_Libraries" = "Dùng thư viện arm64e cũ";
 "Settings_Jetsam_Multiplier" = "Hệ số Jetsam";

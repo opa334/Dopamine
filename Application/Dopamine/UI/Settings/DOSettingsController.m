@@ -236,6 +236,12 @@
                 [verboseLogSpecifier setProperty:@"verboseLogsEnabled" forKey:@"key"];
                 [verboseLogSpecifier setProperty:@NO forKey:@"default"];
                 [specifiers addObject:verboseLogSpecifier];
+
+                PSSpecifier *autoJailbreakSpecifier = [PSSpecifier preferenceSpecifierNamed:DOLocalizedString(@"Settings_Auto_Jailbreak") target:self set:defSetter get:defGetter detail:nil cell:PSSwitchCell edit:nil];
+                [autoJailbreakSpecifier setProperty:@YES forKey:@"enabled"];
+                [autoJailbreakSpecifier setProperty:@"autoJailbreakEnabled" forKey:@"key"];
+                [autoJailbreakSpecifier setProperty:@YES forKey:@"default"];
+                [specifiers addObject:autoJailbreakSpecifier];
             }
             
             PSSpecifier *idownloadSpecifier = [PSSpecifier preferenceSpecifierNamed:DOLocalizedString(@"Settings_iDownload") target:self set:@selector(setIDownloadEnabled:specifier:) get:@selector(readIDownloadEnabled:) detail:nil cell:PSSwitchCell edit:nil];

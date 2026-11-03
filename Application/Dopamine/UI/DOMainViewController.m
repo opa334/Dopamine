@@ -41,14 +41,17 @@
     if (self.didAutoStartJailbreak) return;
     self.didAutoStartJailbreak = YES;
 
+    BOOL autoJailbreakEnabled = [[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"autoJailbreakEnabled" fallback:YES];
     BOOL isJailbroken = [[DOEnvironmentManager sharedManager] isJailbroken];
     BOOL isSupported = [[DOEnvironmentManager sharedManager] isSupported];
     BOOL removeJailbreakEnabled = [[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"removeJailbreakEnabled" fallback:NO];
 
-    if (isJailbroken || !isSupported || removeJailbreakEnabled) return;
+    if (!autoJailbreakEnabled || isJailbroken || !isSupported || removeJailbreakEnabled) return;
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        if (!self.jailbreakBtn.enabled || self.jailbreakBtn.didExpand) return;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        BOOL autoJb = [[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"autoJailbreakEnabled" fallback:YES];
+        BOOL removeJb = [[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"removeJailbreakEnabled" fallback:NO];
+        if (!autoJb || removeJb || !self.jailbreakBtn.enabled || self.jailbreakBtn.didExpand) return;
         [self.jailbreakBtn.button sendActionsForControlEvents:UIControlEventTouchUpInside];
     });
 }
