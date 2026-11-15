@@ -1,0 +1,50 @@
+name: Import ANE Components
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  import-ane:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Fentanyl
+        uses: actions/checkout@v4
+        with:
+          ref: 3.x
+          fetch-depth: 0
+
+      - name: Import upstream ANE directory
+        run: |
+          set -e
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git remote add dopamine https://github.com/WindowsOverMac/Dopamine-27.0.1.git
+          git fetch dopamine 3.x
+
+          git switch -c ane-import
+
+          git checkout dopamine/3.x -- \
+            Application/Dopamine/Exploits/ane
+
+          git add Application/Dopamine/Exploits/ane
+
+          git commit -m "Import upstream ANE research and probe components"
+
+          git push origin ane-import
+
+      - name: Create pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base 3.x \
+            --head ane-import \
+            --title "Import ANE research and exploit components" \
+            --body "Imports the upstream ANE research and probe directory. Existing weightBufs implementation is retained. The imported ANE code is not yet registered as a runnable exploit."
